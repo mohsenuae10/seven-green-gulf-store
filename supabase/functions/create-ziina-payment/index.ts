@@ -78,27 +78,20 @@ serve(async (req) => {
 
     // Create Ziina payment request
     const ziinaPayload = {
-      amount: orderData.totalAmount * 100, // Convert to fils (Ziina uses fils)
-      currency: "AED", // Ziina uses AED
-      description: `طلب Seven Green - ${orderData.quantity} قطعة`,
-      customer: {
-        name: orderData.customerName,
-        email: orderData.customerEmail || `${orderData.customerPhone}@temp.com`,
-        phone: orderData.customerPhone
-      },
-      metadata: {
-        order_id: order.id,
-        product_name: "سيفن جرين",
-        quantity: orderData.quantity.toString()
-      },
-      redirect_url: `${req.headers.get("origin")}/payment-success?order_id=${order.id}`,
-      webhook_url: `${Deno.env.get("SUPABASE_URL")}/functions/v1/ziina-webhook`
+      amount: Math.round(orderData.totalAmount), // Ziina expects amount in AED (no conversion needed)
+      currency_code: "AED",
+      message: `طلب Seven Green - ${orderData.quantity} قطعة من ${orderData.customerName}`,
+      success_url: `${req.headers.get("origin")}/payment-success?order_id=${order.id}`,
+      cancel_url: `${req.headers.get("origin")}/order`,
+      failure_url: `${req.headers.get("origin")}/order`,
+      test: false, // Set to true for testing
+      allow_tips: false
     };
 
     console.log("Creating Ziina payment with payload:", ziinaPayload);
 
-    // Call Ziina API
-    const ziinaResponse = await fetch("https://api.ziina.com/v1/payments", {
+    // Call Ziina API with correct endpoint
+    const ziinaResponse = await fetch("https://api-v2.ziina.com/api/payment_intent", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${Deno.env.get("ZIINA_API_KEY")}`,
@@ -124,7 +117,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: true, 
-        payment_url: ziinaData.payment_url,
+        payment_url: ziinaData.redirect_url,
         order_id: order.id 
       }),
       {
