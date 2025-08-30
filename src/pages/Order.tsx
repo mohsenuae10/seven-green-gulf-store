@@ -25,9 +25,10 @@ const Order = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  // تسعير المنتج
   const price = 299;
   const shipping = 0;
-  const total = price * quantity + shipping;
+  const total = price * quantity + shipping; // بالريال/الدرهم (الدالة ستحوله هللة/فلس)
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -35,9 +36,16 @@ const Order = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validation
-    if (!formData.customerName || !formData.customerPhone || !formData.country || !formData.city || !formData.address || !paymentMethod) {
+
+    // تحقق أساسي
+    if (
+      !formData.customerName ||
+      !formData.customerPhone ||
+      !formData.country ||
+      !formData.city ||
+      !formData.address ||
+      !paymentMethod
+    ) {
       toast({
         title: "خطأ في البيانات",
         description: "يرجى ملء جميع الحقول المطلوبة واختيار طريقة الدفع",
@@ -46,19 +54,31 @@ const Order = () => {
       return;
     }
 
+    // تنسيق بسيط لرقم الهاتف (اختياري)
+    const phone = formData.customerPhone.replace(/\s+/g, "");
+    if (!/^\+?[0-9]{7,15}$/.test(phone)) {
+      toast({
+        title: "رقم هاتف غير صالح",
+        description: "الرجاء إدخال رقم بصيغة دولية صحيحة (مثال: +9665xxxxxxx)",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('create-ziina-payment', {
+      // استدعاء دالة Supabase
+      const { data, error } = await supabase.functions.invoke("create-ziina-payment", {
         body: {
           customerName: formData.customerName,
-          customerPhone: formData.customerPhone,
-          customerEmail: formData.customerEmail,
+          customerPhone: phone,
+          customerEmail: formData.customerEmail || "",
           country: formData.country,
           city: formData.city,
           address: formData.address,
           quantity,
-          totalAmount: total,
+          totalAmount: total,      // الدالة ستحوله إلى هللة/فلس داخليًا
           paymentMethod
         }
       });
@@ -68,18 +88,24 @@ const Order = () => {
         throw new Error(error.message);
       }
 
-      if (data?.success && data?.payment_url) {
-        // Redirect to Ziina payment page
-        window.location.href = data.payment_url;
-      } else {
-        throw new Error(data?.error || "فشل في إنشاء رابط الدفع");
-      }
+      // نتعامل مع أكثر من شكل محتمل للحقول القادمة من الدالة
+      const success = data?.success ?? data?.ok ?? false;
+      const redirectUrl =
+        data?.payment_url || data?.redirect_url || data?.paymentUrl || data?.url;
 
-    } catch (error) {
-      console.error("Order submission error:", error);
+      if (success && redirectUrl) {
+        window.location.href = redirectUrl; // التحويل لصفحة الدفع من Ziina
+      } else {
+        throw new Error(
+          data?.error ||
+            "لم يتم إنشاء رابط الدفع. الرجاء مراجعة سجلات الدالة (Logs) في Supabase."
+        );
+      }
+    } catch (err: any) {
+      console.error("Order submission error:", err);
       toast({
         title: "خطأ في معالجة الطلب",
-        description: error.message || "حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.",
+        description: err?.message || "حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.",
         variant: "destructive"
       });
     } finally {
@@ -89,7 +115,6 @@ const Order = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-primary/5" dir="rtl">
-      
       {/* Header */}
       <div className="bg-background/80 backdrop-blur-sm border-b border-border/50 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
@@ -99,31 +124,27 @@ const Order = () => {
               <span>العودة للمتجر</span>
             </Link>
             <h1 className="text-xl font-bold text-foreground">إتمام الطلب</h1>
-            <div></div>
+            <div />
           </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        
         {/* Section Header */}
         <div className="text-center mb-12 animate-slide-up">
           <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-6 py-2 mb-6">
             <ShoppingCart className="w-5 h-5 text-primary" />
             <span className="text-primary font-medium">اطلب الآن</span>
           </div>
-          
           <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
             احصل على سيفن جرين اليوم
           </h2>
-          
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             اطلب الآن واستمتع بشحن مجاني لجميع دول الخليج مع ضمان الجودة
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="grid lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
-          
           {/* Order Form */}
           <div className="lg:col-span-2">
             <Card className="bg-gradient-card border-border/50 shadow-medium">
@@ -138,8 +159,8 @@ const Order = () => {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="name" className="text-foreground font-medium">الاسم الكامل *</Label>
-                      <Input 
-                        id="name" 
+                      <Input
+                        id="name"
                         placeholder="أدخل اسمك الكامل"
                         value={formData.customerName}
                         onChange={(e) => handleInputChange("customerName", e.target.value)}
@@ -149,9 +170,9 @@ const Order = () => {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="phone" className="text-foreground font-medium">رقم الهاتف *</Label>
-                      <Input 
-                        id="phone" 
-                        placeholder="+966 50 123 4567"
+                      <Input
+                        id="phone"
+                        placeholder="+9665xxxxxxx"
                         value={formData.customerPhone}
                         onChange={(e) => handleInputChange("customerPhone", e.target.value)}
                         className="bg-background/50 border-border/50 focus:border-primary"
@@ -162,8 +183,8 @@ const Order = () => {
 
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-foreground font-medium">البريد الإلكتروني (اختياري)</Label>
-                    <Input 
-                      id="email" 
+                    <Input
+                      id="email"
                       type="email"
                       placeholder="example@email.com"
                       value={formData.customerEmail}
@@ -178,7 +199,7 @@ const Order = () => {
                       <MapPin className="w-5 h-5 text-primary" />
                       معلومات الشحن
                     </h4>
-                    
+
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="country" className="text-foreground font-medium">الدولة *</Label>
@@ -198,8 +219,8 @@ const Order = () => {
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="city" className="text-foreground font-medium">المدينة *</Label>
-                        <Input 
-                          id="city" 
+                        <Input
+                          id="city"
                           placeholder="أدخل اسم المدينة"
                           value={formData.city}
                           onChange={(e) => handleInputChange("city", e.target.value)}
@@ -211,9 +232,9 @@ const Order = () => {
 
                     <div className="space-y-2 mt-4">
                       <Label htmlFor="address" className="text-foreground font-medium">العنوان التفصيلي *</Label>
-                      <Textarea 
-                        id="address" 
-                        placeholder="أدخل العنوان الكامل (الحي، اسم الشارع، رقم المبنى)"
+                      <Textarea
+                        id="address"
+                        placeholder="أدخل العنوان الكامل (الحي، الشارع، رقم المبنى)"
                         rows={3}
                         value={formData.address}
                         onChange={(e) => handleInputChange("address", e.target.value)}
@@ -223,13 +244,13 @@ const Order = () => {
                     </div>
                   </div>
 
-                  {/* Quantity Selection */}
+                  {/* Quantity */}
                   <div className="border-t border-border/50 pt-6">
                     <Label className="text-foreground font-medium mb-4 block">الكمية</Label>
                     <div className="flex items-center gap-4">
-                      <Button 
+                      <Button
                         type="button"
-                        variant="outline" 
+                        variant="outline"
                         size="sm"
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
                         className="w-10 h-10 rounded-full"
@@ -237,9 +258,9 @@ const Order = () => {
                         -
                       </Button>
                       <span className="text-xl font-semibold text-foreground min-w-[3rem] text-center">{quantity}</span>
-                      <Button 
+                      <Button
                         type="button"
-                        variant="outline" 
+                        variant="outline"
                         size="sm"
                         onClick={() => setQuantity(quantity + 1)}
                         className="w-10 h-10 rounded-full"
@@ -250,7 +271,7 @@ const Order = () => {
                     </div>
                   </div>
 
-                  {/* Payment Method Selection */}
+                  {/* Payment Method */}
                   <div className="border-t border-border/50 pt-6">
                     <Label className="text-foreground font-medium mb-4 block">طريقة الدفع *</Label>
                     <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-3">
@@ -264,7 +285,7 @@ const Order = () => {
                           </div>
                         </Label>
                       </div>
-                      
+
                       <div className="flex items-center space-x-2 space-x-reverse">
                         <RadioGroupItem value="apple-pay" id="apple-pay" />
                         <Label htmlFor="apple-pay" className="flex items-center gap-3 cursor-pointer flex-1 p-3 border border-border/50 rounded-lg hover:bg-background/50 transition-colors">
@@ -275,7 +296,7 @@ const Order = () => {
                           </div>
                         </Label>
                       </div>
-                      
+
                       <div className="flex items-center space-x-2 space-x-reverse">
                         <RadioGroupItem value="google-pay" id="google-pay" />
                         <Label htmlFor="google-pay" className="flex items-center gap-3 cursor-pointer flex-1 p-3 border border-border/50 rounded-lg hover:bg-background/50 transition-colors">
@@ -293,10 +314,8 @@ const Order = () => {
             </Card>
           </div>
 
-          {/* Order Summary */}
+          {/* Summary */}
           <div className="space-y-6">
-            
-            {/* Product Card */}
             <Card className="bg-gradient-card border-border/50 shadow-medium overflow-hidden">
               <div className="p-6">
                 <div className="flex items-center gap-4 mb-6">
@@ -315,7 +334,6 @@ const Order = () => {
                   </div>
                 </div>
 
-                {/* Price Breakdown */}
                 <div className="space-y-3 border-t border-border/50 pt-4">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">السعر ({quantity} قطعة)</span>
@@ -331,7 +349,6 @@ const Order = () => {
                   </div>
                 </div>
 
-                {/* Trust Badges */}
                 <div className="grid grid-cols-3 gap-2 mt-6 pt-4 border-t border-border/50">
                   <div className="text-center">
                     <Shield className="w-6 h-6 text-primary mx-auto mb-1" />
@@ -349,10 +366,9 @@ const Order = () => {
               </div>
             </Card>
 
-            {/* Order Button */}
-            <Button 
-              type="submit" 
-              size="lg" 
+            <Button
+              type="submit"
+              size="lg"
               disabled={isLoading}
               className="w-full bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-lg py-6 rounded-2xl"
             >
@@ -360,7 +376,6 @@ const Order = () => {
               {isLoading ? "جاري المعالجة..." : "تأكيد الطلب والدفع"}
             </Button>
 
-            {/* Payment Methods */}
             <Card className="bg-gradient-card border-border/50 p-4">
               <h4 className="font-semibold text-foreground mb-3 text-center">طرق الدفع المتاحة</h4>
               <div className="grid grid-cols-2 gap-2 text-center">
@@ -375,7 +390,6 @@ const Order = () => {
               </div>
             </Card>
 
-            {/* Guarantee */}
             <div className="text-center bg-secondary/10 rounded-xl p-4">
               <Shield className="w-8 h-8 text-secondary mx-auto mb-2" />
               <div className="font-semibold text-secondary">ضمان 30 يوم</div>
