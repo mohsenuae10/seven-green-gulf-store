@@ -1,7 +1,6 @@
 import ProductHero from "@/components/ProductHero";
 import ProductFeatures from "@/components/ProductFeatures";
 import CustomerReviews from "@/components/CustomerReviews";
-import OrderSection from "@/components/OrderSection";
 
 const Index = () => {
   return (
@@ -9,7 +8,6 @@ const Index = () => {
       <ProductHero />
       <ProductFeatures />
       <CustomerReviews />
-      <OrderSection />
     </div>
   );
 };
