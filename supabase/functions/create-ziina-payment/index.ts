@@ -84,13 +84,12 @@ serve(async (req) => {
 
     // Create Ziina payment request
     const ziinaPayload = {
-      amount: Math.round(orderData.totalAmount), // Amount in AED
+      amount: Math.round(orderData.totalAmount * 100), // Convert AED to halalas (100 halalas = 1 AED)
       currency_code: "AED",
       message: `طلب Seven Green - ${orderData.quantity} قطعة من ${orderData.customerName}`,
       success_url: `${finalOrigin}/payment-success?order_id=${order.id}`,
       cancel_url: `${finalOrigin}/order`,
       failure_url: `${finalOrigin}/order`,
-      test: false, // Production mode
       allow_tips: false
     };
 
