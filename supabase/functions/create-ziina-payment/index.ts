@@ -90,12 +90,20 @@ serve(async (req) => {
 
     console.log("Creating Ziina payment with payload:", ziinaPayload);
 
+    // Prepare Ziina API call (use base from secrets if provided; fallback to sandbox)
+    const ziinaApiKey = Deno.env.get("ZIINA_API_KEY");
+    if (!ziinaApiKey) {
+      throw new Error("Missing Ziina API key");
+    }
+    const ziinaBase = Deno.env.get("ZIINA_API_BASE") || "https://api.sandbox.ziina.com";
+
     // Call Ziina API with correct endpoint
-    const ziinaResponse = await fetch("https://api-v2.ziina.com/api/payment_intent", {
+    const ziinaResponse = await fetch(`${ziinaBase}/api/payment_intent`, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${Deno.env.get("ZIINA_API_KEY")}`,
+        "Authorization": `Bearer ${ziinaApiKey}`,
         "Content-Type": "application/json",
+        "Accept": "application/json",
       },
       body: JSON.stringify(ziinaPayload),
     });
@@ -108,11 +116,8 @@ serve(async (req) => {
       throw new Error(`Ziina API error: ${ziinaData.message || "Unknown error"}`);
     }
 
-    // Update order with Ziina payment ID
-    await supabaseAdmin
-      .from("orders")
-      .update({ stripe_session_id: ziinaData.id }) // Reusing this field for Ziina payment ID
-      .eq("id", order.id);
+    // Optionally store the payment intent ID in your orders table if a column exists (e.g., payment_intent_id)
+    // Skipping update here because the current schema doesn't include such a column.
 
     return new Response(
       JSON.stringify({ 
