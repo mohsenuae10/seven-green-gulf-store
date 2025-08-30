@@ -90,7 +90,7 @@ serve(async (req) => {
       success_url: `${finalOrigin}/payment-success?order_id=${order.id}`,
       cancel_url: `${finalOrigin}/order`,
       failure_url: `${finalOrigin}/order`,
-      test: true, // Set to false for production
+      test: false, // Production mode
       allow_tips: false
     };
 
@@ -101,7 +101,7 @@ serve(async (req) => {
     if (!ziinaApiKey) {
       throw new Error("Missing Ziina API key");
     }
-    const configuredBase = Deno.env.get("ZIINA_API_BASE") || "https://api.sandbox.ziina.com";
+    const configuredBase = Deno.env.get("ZIINA_API_BASE") || "https://api.ziina.com";
     const ziinaBase = configuredBase.replace(/\/+$/, "");
     console.log("Using Ziina API base:", ziinaBase);
 
