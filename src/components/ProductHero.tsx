@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Star, ShoppingCart, Leaf, Crown, Shield } from "lucide-react";
+import { Link } from "react-router-dom";
 import heroImage from "@/assets/seven-green-hero.jpg";
 
 const ProductHero = () => {
@@ -70,16 +71,19 @@ const ProductHero = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-end">
-            <Button 
-              size="lg" 
-              className="bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-lg px-8 py-4 rounded-full"
-            >
-              <ShoppingCart className="w-5 h-5 ml-2" />
-              اطلب الآن - 299 ريال
-            </Button>
+            <Link to="/order">
+              <Button 
+                size="lg" 
+                className="bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-lg px-8 py-4 rounded-full"
+              >
+                <ShoppingCart className="w-5 h-5 ml-2" />
+                اطلب الآن - 299 ريال
+              </Button>
+            </Link>
             <Button 
               variant="outline" 
               size="lg"
+              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
               className="border-white/30 text-white hover:bg-white/10 text-lg px-8 py-4 rounded-full backdrop-blur-sm"
             >
               تعرف على المنتج
