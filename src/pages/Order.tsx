@@ -37,13 +37,13 @@ const Order = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // تحقق أساسي
+    // تحقق من صحة البيانات
     if (
-      !formData.customerName ||
-      !formData.customerPhone ||
+      !formData.customerName.trim() ||
+      !formData.customerPhone.trim() ||
       !formData.country ||
-      !formData.city ||
-      !formData.address ||
+      !formData.city.trim() ||
+      !formData.address.trim() ||
       !paymentMethod
     ) {
       toast({
@@ -54,7 +54,7 @@ const Order = () => {
       return;
     }
 
-    // تنسيق بسيط لرقم الهاتف (اختياري)
+    // تحقق من صحة رقم الهاتف
     const phone = formData.customerPhone.replace(/\s+/g, "");
     if (!/^\+?[0-9]{7,15}$/.test(phone)) {
       toast({
@@ -65,20 +65,30 @@ const Order = () => {
       return;
     }
 
+    // تحقق من صحة البريد الإلكتروني إذا تم إدخاله
+    if (formData.customerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.customerEmail)) {
+      toast({
+        title: "بريد إلكتروني غير صالح",
+        description: "الرجاء إدخال عنوان بريد إلكتروني صحيح",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      // استدعاء دالة Supabase
+      // استدعاء دالة إنشاء الدفع
       const { data, error } = await supabase.functions.invoke("create-ziina-payment", {
         body: {
-          customerName: formData.customerName,
+          customerName: formData.customerName.trim(),
           customerPhone: phone,
-          customerEmail: formData.customerEmail || "",
+          customerEmail: formData.customerEmail?.trim() || "",
           country: formData.country,
-          city: formData.city,
-          address: formData.address,
+          city: formData.city.trim(),
+          address: formData.address.trim(),
           quantity,
-          totalAmount: total,      // الدالة ستحوله إلى هللة/فلس داخليًا
+          totalAmount: total,
           paymentMethod
         }
       });
@@ -88,17 +98,24 @@ const Order = () => {
         throw new Error(error.message);
       }
 
-      // نتعامل مع أكثر من شكل محتمل للحقول القادمة من الدالة
-      const success = data?.success ?? data?.ok ?? false;
-      const redirectUrl =
-        data?.payment_url || data?.redirect_url || data?.paymentUrl || data?.url;
+      if (data?.success && data?.payment_url) {
+        // حفظ معرف الطلب في التخزين المحلي للمراجعة لاحقاً
+        if (data.order_id) {
+          localStorage.setItem('lastOrderId', data.order_id);
+        }
+        
+        toast({
+          title: "تم إنشاء الطلب بنجاح",
+          description: "سيتم تحويلك لصفحة الدفع الآن...",
+        });
 
-      if (success && redirectUrl) {
-        window.location.href = redirectUrl; // التحويل لصفحة الدفع من Ziina
+        // تأخير قصير قبل التحويل
+        setTimeout(() => {
+          window.location.href = data.payment_url;
+        }, 1000);
       } else {
         throw new Error(
-          data?.error ||
-            "لم يتم إنشاء رابط الدفع. الرجاء مراجعة سجلات الدالة (Logs) في Supabase."
+          data?.error || "فشل في إنشاء رابط الدفع. يرجى المحاولة مرة أخرى."
         );
       }
     } catch (err: any) {
