@@ -101,7 +101,7 @@ const PaymentSuccess = () => {
             <Button 
               variant="outline" 
               size="lg"
-              onClick={() => window.open("https://wa.me/966500000000", "_blank")}
+              onClick={() => window.open("https://wa.me/966503093939", "_blank")}
               className="hover:scale-105 transition-all duration-300"
             >
               <Phone className="w-5 h-5 ml-2" />
