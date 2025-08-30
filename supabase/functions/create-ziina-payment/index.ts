@@ -95,52 +95,34 @@ serve(async (req) => {
 
     console.log("Creating Ziina payment with payload:", ziinaPayload);
 
-    // Prepare Ziina API call (use base from secrets if provided; fallback to sandbox)
+    // Prepare Ziina API call for production
     const ziinaApiKey = Deno.env.get("ZIINA_API_KEY");
     if (!ziinaApiKey) {
       throw new Error("Missing Ziina API key");
     }
-    const configuredBase = Deno.env.get("ZIINA_API_BASE") || "https://api.ziina.com";
-    const ziinaBase = configuredBase.replace(/\/+$/, "");
-    console.log("Using Ziina API base:", ziinaBase);
+    const ziinaBase = Deno.env.get("ZIINA_API_BASE") || "https://api.ziina.com";
+    console.log("Using Ziina Production API:", ziinaBase);
 
-    // Call Ziina API with correct endpoint and retry with fallback base on network failure
-    let ziinaResponse: Response;
-    try {
-      ziinaResponse = await fetch(`${ziinaBase}/api/payment_intent`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${ziinaApiKey}`,
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify(ziinaPayload),
-      });
-    } catch (fetchErr) {
-      console.error("Primary Ziina base failed:", fetchErr);
-      const fallbackBase = ziinaBase.includes("sandbox") ? "https://api-v2.ziina.com" : "https://api.sandbox.ziina.com";
-      console.log("Retrying Ziina API with fallback base:", fallbackBase);
-      ziinaResponse = await fetch(`${fallbackBase.replace(/\/+$/, "")}/api/payment_intent`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${ziinaApiKey}`,
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify(ziinaPayload),
-      });
-    }
+    // Call Ziina Production API
+    const ziinaResponse = await fetch(`${ziinaBase}/api/payment_intent`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${ziinaApiKey}`,
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify(ziinaPayload),
+    });
 
     const ziinaData = await ziinaResponse.json();
-    console.log("Ziina API response (status " + ziinaResponse.status + "):", ziinaData);
+    console.log("Ziina Production API response (status " + ziinaResponse.status + "):", ziinaData);
 
     if (!ziinaResponse.ok) {
-      console.error("Ziina API error:", ziinaData);
+      console.error("Ziina Production API error:", ziinaData);
       throw new Error(`Ziina API error (${ziinaResponse.status}): ${ziinaData.message || "Unknown error"}`);
     }
 
-    // Optionally store the payment intent ID in your orders table if a column exists (e.g., payment_intent_id)
-    // Skipping update here because the current schema doesn't include such a column.
+    // Production payment processing complete
 
     return new Response(
       JSON.stringify({ 
