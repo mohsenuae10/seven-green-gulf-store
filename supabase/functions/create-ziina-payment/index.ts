@@ -76,14 +76,20 @@ serve(async (req) => {
         total_price: orderData.totalAmount
       });
 
+    // Determine app origin for redirect URLs
+    const originHeader = req.headers.get("origin") || undefined;
+    const refererHeader = req.headers.get("referer") || undefined;
+    const appOrigin = originHeader || (refererHeader ? new URL(refererHeader).origin : undefined);
+    const finalOrigin = appOrigin || new URL(req.url).origin;
+
     // Create Ziina payment request
     const ziinaPayload = {
       amount: Math.round(orderData.totalAmount), // Amount in AED
       currency_code: "AED",
       message: `طلب Seven Green - ${orderData.quantity} قطعة من ${orderData.customerName}`,
-      success_url: `${req.headers.get("origin")}/payment-success?order_id=${order.id}`,
-      cancel_url: `${req.headers.get("origin")}/order`,
-      failure_url: `${req.headers.get("origin")}/order`,
+      success_url: `${finalOrigin}/payment-success?order_id=${order.id}`,
+      cancel_url: `${finalOrigin}/order`,
+      failure_url: `${finalOrigin}/order`,
       test: true, // Set to false for production
       allow_tips: false
     };
@@ -95,25 +101,43 @@ serve(async (req) => {
     if (!ziinaApiKey) {
       throw new Error("Missing Ziina API key");
     }
-    const ziinaBase = Deno.env.get("ZIINA_API_BASE") || "https://api.sandbox.ziina.com";
+    const configuredBase = Deno.env.get("ZIINA_API_BASE") || "https://api.sandbox.ziina.com";
+    const ziinaBase = configuredBase.replace(/\/+$/, "");
+    console.log("Using Ziina API base:", ziinaBase);
 
-    // Call Ziina API with correct endpoint
-    const ziinaResponse = await fetch(`${ziinaBase}/api/payment_intent`, {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${ziinaApiKey}`,
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      },
-      body: JSON.stringify(ziinaPayload),
-    });
+    // Call Ziina API with correct endpoint and retry with fallback base on network failure
+    let ziinaResponse: Response;
+    try {
+      ziinaResponse = await fetch(`${ziinaBase}/api/payment_intent`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${ziinaApiKey}`,
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify(ziinaPayload),
+      });
+    } catch (fetchErr) {
+      console.error("Primary Ziina base failed:", fetchErr);
+      const fallbackBase = ziinaBase.includes("sandbox") ? "https://api-v2.ziina.com" : "https://api.sandbox.ziina.com";
+      console.log("Retrying Ziina API with fallback base:", fallbackBase);
+      ziinaResponse = await fetch(`${fallbackBase.replace(/\/+$/, "")}/api/payment_intent`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${ziinaApiKey}`,
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify(ziinaPayload),
+      });
+    }
 
     const ziinaData = await ziinaResponse.json();
-    console.log("Ziina API response:", ziinaData);
+    console.log("Ziina API response (status " + ziinaResponse.status + "):", ziinaData);
 
     if (!ziinaResponse.ok) {
       console.error("Ziina API error:", ziinaData);
-      throw new Error(`Ziina API error: ${ziinaData.message || "Unknown error"}`);
+      throw new Error(`Ziina API error (${ziinaResponse.status}): ${ziinaData.message || "Unknown error"}`);
     }
 
     // Optionally store the payment intent ID in your orders table if a column exists (e.g., payment_intent_id)
