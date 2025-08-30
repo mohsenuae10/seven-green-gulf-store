@@ -78,13 +78,13 @@ serve(async (req) => {
 
     // Create Ziina payment request
     const ziinaPayload = {
-      amount: Math.round(orderData.totalAmount), // Ziina expects amount in AED (no conversion needed)
+      amount: Math.round(orderData.totalAmount), // Amount in AED
       currency_code: "AED",
       message: `طلب Seven Green - ${orderData.quantity} قطعة من ${orderData.customerName}`,
       success_url: `${req.headers.get("origin")}/payment-success?order_id=${order.id}`,
       cancel_url: `${req.headers.get("origin")}/order`,
       failure_url: `${req.headers.get("origin")}/order`,
-      test: false, // Set to true for testing
+      test: true, // Set to false for production
       allow_tips: false
     };
 
