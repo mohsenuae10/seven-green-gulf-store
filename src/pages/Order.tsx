@@ -5,7 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ShoppingCart, MapPin, User, Crown, Shield, Truck, CreditCard, ArrowRight } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ShoppingCart, MapPin, User, Crown, Shield, Truck, CreditCard, ArrowRight, Smartphone, Zap } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
@@ -20,6 +21,7 @@ const Order = () => {
     address: ""
   });
   const [quantity, setQuantity] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState("card");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
@@ -35,10 +37,10 @@ const Order = () => {
     e.preventDefault();
     
     // Validation
-    if (!formData.customerName || !formData.customerPhone || !formData.country || !formData.city || !formData.address) {
+    if (!formData.customerName || !formData.customerPhone || !formData.country || !formData.city || !formData.address || !paymentMethod) {
       toast({
         title: "خطأ في البيانات",
-        description: "يرجى ملء جميع الحقول المطلوبة",
+        description: "يرجى ملء جميع الحقول المطلوبة واختيار طريقة الدفع",
         variant: "destructive"
       });
       return;
@@ -56,7 +58,8 @@ const Order = () => {
           city: formData.city,
           address: formData.address,
           quantity,
-          totalAmount: total
+          totalAmount: total,
+          paymentMethod
         }
       });
 
@@ -245,6 +248,45 @@ const Order = () => {
                       </Button>
                       <span className="text-muted-foreground">× {price} ريال</span>
                     </div>
+                  </div>
+
+                  {/* Payment Method Selection */}
+                  <div className="border-t border-border/50 pt-6">
+                    <Label className="text-foreground font-medium mb-4 block">طريقة الدفع *</Label>
+                    <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-3">
+                      <div className="flex items-center space-x-2 space-x-reverse">
+                        <RadioGroupItem value="card" id="card" />
+                        <Label htmlFor="card" className="flex items-center gap-3 cursor-pointer flex-1 p-3 border border-border/50 rounded-lg hover:bg-background/50 transition-colors">
+                          <CreditCard className="w-5 h-5 text-primary" />
+                          <div>
+                            <div className="font-medium text-foreground">البطاقات الائتمانية</div>
+                            <div className="text-sm text-muted-foreground">فيزا، ماستركارد، أمريكان إكسبرس</div>
+                          </div>
+                        </Label>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 space-x-reverse">
+                        <RadioGroupItem value="apple-pay" id="apple-pay" />
+                        <Label htmlFor="apple-pay" className="flex items-center gap-3 cursor-pointer flex-1 p-3 border border-border/50 rounded-lg hover:bg-background/50 transition-colors">
+                          <Smartphone className="w-5 h-5 text-primary" />
+                          <div>
+                            <div className="font-medium text-foreground">آبل باي</div>
+                            <div className="text-sm text-muted-foreground">دفع سريع وآمن عبر Touch ID أو Face ID</div>
+                          </div>
+                        </Label>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 space-x-reverse">
+                        <RadioGroupItem value="google-pay" id="google-pay" />
+                        <Label htmlFor="google-pay" className="flex items-center gap-3 cursor-pointer flex-1 p-3 border border-border/50 rounded-lg hover:bg-background/50 transition-colors">
+                          <Zap className="w-5 h-5 text-primary" />
+                          <div>
+                            <div className="font-medium text-foreground">قوقل باي</div>
+                            <div className="text-sm text-muted-foreground">دفع سريع باستخدام حساب قوقل</div>
+                          </div>
+                        </Label>
+                      </div>
+                    </RadioGroup>
                   </div>
                 </div>
               </div>
