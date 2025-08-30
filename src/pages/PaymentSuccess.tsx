@@ -1,19 +1,122 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Package, Truck, Phone, Home } from "lucide-react";
+import { CheckCircle, Package, Truck, Phone, Home, Loader2 } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get('order_id');
-  const [orderData, setOrderData] = useState(null);
+  const [orderData, setOrderData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Here you could fetch order details using the order_id
-    // For now, we'll show a success message
-    console.log("Order ID:", orderId);
-  }, [orderId]);
+    const fetchOrderDetails = async () => {
+      if (!orderId) {
+        setError("معرف الطلب غير موجود");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        // جلب تفاصيل الطلب مع المنتجات
+        const { data: order, error: orderError } = await supabase
+          .from('orders')
+          .select(`
+            *,
+            order_items (
+              *,
+              products (*)
+            )
+          `)
+          .eq('id', orderId)
+          .single();
+
+        if (orderError) {
+          throw new Error(orderError.message);
+        }
+
+        if (order) {
+          setOrderData(order);
+          
+          // تحديث حالة الطلب إلى "مؤكد" إذا كانت "معلقة"
+          if (order.payment_status === 'pending') {
+            await supabase
+              .from('orders')
+              .update({ 
+                payment_status: 'paid',
+                status: 'confirmed'
+              })
+              .eq('id', orderId);
+          }
+        } else {
+          throw new Error("الطلب غير موجود");
+        }
+      } catch (err: any) {
+        console.error("Error fetching order:", err);
+        setError(err.message || "حدث خطأ في جلب تفاصيل الطلب");
+        toast({
+          title: "خطأ",
+          description: "لم نتمكن من جلب تفاصيل طلبك. يرجى المحاولة مرة أخرى.",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrderDetails();
+  }, [orderId, toast]);
+
+  // عرض شاشة التحميل
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-primary/5 flex items-center justify-center" dir="rtl">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 text-primary mx-auto mb-4 animate-spin" />
+          <p className="text-lg text-muted-foreground">جاري تحميل تفاصيل طلبك...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // عرض رسالة الخطأ
+  if (error || !orderData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-background to-primary/5 flex items-center justify-center" dir="rtl">
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-lg mx-auto text-center">
+            <Card className="bg-gradient-card border-border/50 shadow-medium p-8">
+              <h1 className="text-2xl font-bold text-foreground mb-4">عذراً، حدث خطأ</h1>
+              <p className="text-muted-foreground mb-6">
+                {error || "لم نتمكن من العثور على طلبك. يرجى التحقق من رقم الطلب والمحاولة مرة أخرى."}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link to="/">
+                  <Button size="lg" className="bg-gradient-primary">
+                    <Home className="w-5 h-5 ml-2" />
+                    العودة للمتجر
+                  </Button>
+                </Link>
+                <Button 
+                  variant="outline" 
+                  size="lg"
+                  onClick={() => window.open("https://wa.me/966503093939", "_blank")}
+                >
+                  <Phone className="w-5 h-5 ml-2" />
+                  تواصل معنا
+                </Button>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-primary/5 flex items-center justify-center" dir="rtl">
@@ -36,13 +139,42 @@ const PaymentSuccess = () => {
               شكراً لك على ثقتك في سيفن جرين. تم استلام طلبك وسيتم معالجته قريباً.
             </p>
 
-            {orderId && (
-              <div className="bg-primary/10 rounded-lg p-4 mb-6">
-                <p className="text-foreground font-medium">
-                  رقم الطلب: <span className="font-mono text-primary">#{orderId.slice(-8)}</span>
-                </p>
+            {/* Order Details */}
+            <div className="bg-primary/10 rounded-lg p-6 mb-6 text-right">
+              <h3 className="text-lg font-bold text-foreground mb-4">تفاصيل الطلب</h3>
+              
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">رقم الطلب:</span>
+                  <span className="font-mono text-primary">#{orderId?.slice(-8)}</span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">اسم العميل:</span>
+                  <span className="font-medium text-foreground">{orderData.customer_name}</span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">رقم الهاتف:</span>
+                  <span className="font-medium text-foreground">{orderData.customer_phone}</span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">العنوان:</span>
+                  <span className="font-medium text-foreground">{orderData.city}, {orderData.country}</span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">المبلغ الإجمالي:</span>
+                  <span className="font-bold text-primary">{orderData.total_amount} ريال</span>
+                </div>
+                
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">حالة الطلب:</span>
+                  <span className="font-medium text-secondary">مؤكد ومدفوع</span>
+                </div>
               </div>
-            )}
+            </div>
 
             {/* Next Steps */}
             <div className="grid md:grid-cols-3 gap-4 mt-8">
