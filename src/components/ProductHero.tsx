@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, ShoppingCart, Leaf, Crown, Shield, Settings, Play, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/seven-green-hero-new.jpg";
+import heroImage from "@/assets/seven-green-product-main.jpg";
 import { useProductPrice } from "@/hooks/useProductPrice";
 
 const ProductHero = () => {
