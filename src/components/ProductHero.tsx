@@ -3,10 +3,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Star, ShoppingCart, Leaf, Crown, Shield, Settings, Play, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/seven-green-hero.jpg";
-import productImage from "@/assets/seven-green-product-1.jpg";
-import beautyImage from "@/assets/seven-green-beauty-1.jpg";
-import collectionImage from "@/assets/seven-green-collection.jpg";
-import transformationImage from "@/assets/hair-transformation.jpg";
 import { useProductPrice } from "@/hooks/useProductPrice";
 
 const ProductHero = () => {
@@ -153,7 +149,7 @@ const ProductHero = () => {
             </div>
           </div>
 
-          {/* Product Images - Left side for RTL */}
+          {/* Product Image - Left side for RTL */}
           <div className="order-1 lg:order-2 relative animate-fade-in">
             <div className="relative">
               {/* Glowing effect behind image */}
@@ -192,62 +188,118 @@ const ProductHero = () => {
           {/* Gallery Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            {/* Product Shot */}
+            {/* Certificates */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
               <img 
-                src={productImage} 
-                alt="منتج سيفن جرين الأصلي"
+                src="/lovable-uploads/34e3ec2a-fc02-4dc5-832e-8e3c95d538bc.png" 
+                alt="شهادات أمان وجودة سيفن جرين"
                 className="w-full h-64 object-cover"
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">المنتج الأصلي</h3>
-                <p className="text-white/70 text-sm">تصميم فاخر بمكونات طبيعية</p>
+                <h3 className="text-white font-semibold mb-2">الشهادات والأمان</h3>
+                <p className="text-white/70 text-sm">منتج آمن ومُعتمد رسمياً</p>
               </CardContent>
             </Card>
 
-            {/* Beauty Shot */}
+            {/* Product Stats */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
               <img 
-                src={beautyImage} 
-                alt="نتائج سيفن جرين على الشعر"
+                src="/lovable-uploads/0c009587-187a-4c47-8318-01d391fab457.png" 
+                alt="إحصائيات فعالية سيفن جرين"
                 className="w-full h-64 object-cover"
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">النتائج المذهلة</h3>
-                <p className="text-white/70 text-sm">شعر صحي ولامع وقوي</p>
+                <h3 className="text-white font-semibold mb-2">الفعالية المُثبتة</h3>
+                <p className="text-white/70 text-sm">نتائج علمية مُوثقة</p>
               </CardContent>
             </Card>
 
-            {/* Collection */}
+            {/* Hair Problems */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
               <img 
-                src={collectionImage} 
-                alt="مجموعة سيفن جرين الكاملة"
+                src="/lovable-uploads/3c289658-bf58-4017-b4dd-1233f018534f.png" 
+                alt="مشاكل الشعر التي يعالجها سيفن جرين"
                 className="w-full h-64 object-cover"
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">المجموعة الفاخرة</h3>
-                <p className="text-white/70 text-sm">تشكيلة متكاملة للعناية بالشعر</p>
+                <h3 className="text-white font-semibold mb-2">مشاكل الشعر</h3>
+                <p className="text-white/70 text-sm">حلول لجميع مشاكل الشعر</p>
+              </CardContent>
+            </Card>
+
+            {/* Natural Ingredients */}
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
+              <img 
+                src="/lovable-uploads/e811e78f-3694-4fda-bc61-637c435f2623.png" 
+                alt="المكونات الطبيعية في سيفن جرين"
+                className="w-full h-64 object-cover"
+              />
+              <CardContent className="p-4 text-center">
+                <h3 className="text-white font-semibold mb-2">المكونات الطبيعية</h3>
+                <p className="text-white/70 text-sm">12 عشب طبيعي مختار بعناية</p>
+              </CardContent>
+            </Card>
+
+            {/* Hair Care Benefits */}
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
+              <img 
+                src="/lovable-uploads/04d3f7fc-1557-4bb3-801f-dcb481c7e7c4.png" 
+                alt="فوائد العناية بالشعر من سيفن جرين"
+                className="w-full h-64 object-cover"
+              />
+              <CardContent className="p-4 text-center">
+                <h3 className="text-white font-semibold mb-2">الفوائد الشاملة</h3>
+                <p className="text-white/70 text-sm">عناية متكاملة للشعر</p>
+              </CardContent>
+            </Card>
+
+            {/* Product Comparison */}
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
+              <img 
+                src="/lovable-uploads/6bf5c396-1aac-4f59-a75e-36012a8524d9.png" 
+                alt="مقارنة سيفن جرين مع المنتجات الأخرى"
+                className="w-full h-64 object-cover"
+              />
+              <CardContent className="p-4 text-center">
+                <h3 className="text-white font-semibold mb-2">التميز الطبيعي</h3>
+                <p className="text-white/70 text-sm">أفضل من المنتجات الكيميائية</p>
               </CardContent>
             </Card>
           </div>
 
-          {/* Before & After Section */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
-            <div className="text-center mb-8">
-              <h3 className="text-3xl font-bold text-white mb-4">شاهد الفرق بنفسك</h3>
-              <p className="text-white/80">نتائج حقيقية من عملائنا الراضين</p>
-            </div>
-            <div className="relative rounded-2xl overflow-hidden">
+          {/* Additional Product Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+            
+            {/* Usage Instructions */}
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden">
               <img 
-                src={transformationImage} 
-                alt="قبل وبعد استخدام سيفن جرين"
-                className="w-full h-auto"
+                src="/lovable-uploads/6e004fdb-9c1b-47d6-80df-179d406e3a27.png" 
+                alt="طريقة استخدام سيفن جرين"
+                className="w-full h-80 object-cover"
               />
-              <div className="absolute top-4 left-4 bg-green-500 text-white px-4 py-2 rounded-full font-bold">
-                نتائج خلال 4 أسابيع
-              </div>
-            </div>
+              <CardContent className="p-6 text-center">
+                <h3 className="text-white font-semibold text-xl mb-3">طريقة الاستخدام السهلة</h3>
+                <p className="text-white/70">استخدام بسيط وفعال مع نتائج سريعة ومضمونة</p>
+              </CardContent>
+            </Card>
+
+            {/* Special Offer */}
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden">
+              <img 
+                src="/lovable-uploads/8eb13276-b714-49ad-b518-70389a31bb9e.png" 
+                alt="عرض خاص على سيفن جرين"
+                className="w-full h-80 object-cover"
+              />
+              <CardContent className="p-6 text-center">
+                <h3 className="text-white font-semibold text-xl mb-3">عرض خاص محدود</h3>
+                <p className="text-white/70">اطلب الآن واحصل على هدايا مجانية مع المنتج</p>
+                <Link to="/order">
+                  <Button className="mt-4 bg-gradient-secondary hover:scale-105 transition-all">
+                    اطلب الآن بالعرض الخاص
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
