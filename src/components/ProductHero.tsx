@@ -152,10 +152,10 @@ const ProductHero = () => {
               />
               
               {/* Floating elements */}
-              <div className="absolute -top-4 lg:-top-6 -right-4 lg:-right-6 bg-secondary text-secondary-foreground rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center font-bold text-sm lg:text-lg shadow-medium animate-bounce-in">
+              <div className="absolute -top-4 lg:-top-6 -right-4 lg:-right-6 bg-secondary text-secondary-foreground rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center font-bold text-sm lg:text-lg shadow-medium animate-bounce-in z-20">
                 جديد
               </div>
-              <div className="absolute -bottom-3 lg:-bottom-4 -left-3 lg:-left-4 bg-white/20 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 lg:p-4 shadow-medium">
+              <div className="absolute -bottom-3 lg:-bottom-4 -left-3 lg:-left-4 bg-white/20 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 lg:p-4 shadow-medium z-20">
                 <div className="text-white text-center">
                   <div className="text-xl lg:text-2xl font-bold text-secondary">{productPrice}</div>
                   <div className="text-xs lg:text-sm">درهم إماراتي</div>
