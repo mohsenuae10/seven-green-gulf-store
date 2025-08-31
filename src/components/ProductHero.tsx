@@ -108,25 +108,15 @@ const ProductHero = () => {
               </div>
             </div>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 justify-center lg:justify-end">
+            {/* CTA Button */}
+            <div className="flex justify-center lg:justify-end">
               <Link to="/order">
                 <Button 
                   size="lg" 
-                  className="w-full sm:w-auto bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-base lg:text-lg px-6 lg:px-8 py-3 lg:py-4 rounded-full"
+                  className="w-full sm:w-auto bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-base lg:text-lg px-8 lg:px-12 py-4 lg:py-6 rounded-full"
                 >
-                  <ShoppingCart className="w-4 h-4 lg:w-5 lg:h-5 ml-2" />
-                  اطلب الآن - {productPrice} درهم
-                </Button>
-              </Link>
-              <Link to="/product-details">
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 text-base lg:text-lg px-6 lg:px-8 py-3 lg:py-4 rounded-full backdrop-blur-sm"
-                >
-                  <Play className="w-4 h-4 lg:w-5 lg:h-5 ml-2" />
-                  شاهد النتائج
+                  <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6 ml-2" />
+                  اشتر الآن - {productPrice} درهم
                 </Button>
               </Link>
             </div>
@@ -294,7 +284,7 @@ const ProductHero = () => {
                 <p className="text-white/70">اطلب الآن واحصل على هدايا مجانية مع المنتج</p>
                 <Link to="/order">
                   <Button className="mt-4 bg-gradient-secondary hover:scale-105 transition-all">
-                    اطلب الآن بالعرض الخاص
+                    اشتر الآن
                   </Button>
                 </Link>
               </CardContent>
