@@ -1,8 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const MobileNav = () => {
+  const location = useLocation();
+  const isOrderPage = location.pathname === "/order";
+
+  if (isOrderPage) {
+    return null;
+  }
 
   return (
     <>
