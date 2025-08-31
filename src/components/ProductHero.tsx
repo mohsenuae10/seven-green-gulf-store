@@ -99,6 +99,9 @@ const ProductHero = () => {
             <div className="space-y-3 lg:space-y-4">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-7xl font-bold text-white leading-tight">
                 سيفن جرين
+                <span className="block text-lg sm:text-xl lg:text-2xl xl:text-3xl text-secondary font-semibold mt-1">
+                  SEVEN GREEN
+                </span>
                 <span className="block text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-secondary font-light mt-2">
                   صابون السرو والأوسمان الطبيعي
                 </span>

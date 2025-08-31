@@ -158,7 +158,10 @@ const Order = () => {
       <div className="mobile-container py-4 sm:py-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-6 lg:mb-8 px-4">
-            <h1 className="mobile-heading font-bold text-gray-900 mb-2">اطلب سيفن جرين الآن</h1>
+            <h1 className="mobile-heading font-bold text-gray-900 mb-2">
+              اطلب سيفن جرين الآن
+              <span className="block text-base font-medium text-primary mt-1">SEVEN GREEN</span>
+            </h1>
             <p className="text-gray-600 mobile-text">املأ النموذج أدناه لإتمام طلبك</p>
           </div>
 
@@ -174,6 +177,7 @@ const Order = () => {
                   />
                   <div className="flex-1">
                     <h3 className="font-bold text-foreground text-lg">سيفن جرين</h3>
+                    <p className="font-semibold text-primary text-sm">SEVEN GREEN</p>
                     <p className="text-muted-foreground text-sm">منتج العناية بالشعر الطبيعي</p>
                     <div className="flex items-center gap-1 mt-1">
                       <span className="text-secondary text-sm">★★★★★</span>
