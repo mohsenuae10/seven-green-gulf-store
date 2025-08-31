@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import OrderSection from "@/components/OrderSection";
 import { useProductPrice } from "@/hooks/useProductPrice";
-import heroImage from "@/assets/seven-green-official.jpg";
 
 const ProductDetails = () => {
   const { price, loading } = useProductPrice();
@@ -152,7 +151,7 @@ const ProductDetails = () => {
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img 
-                src={heroImage} 
+                src="/lovable-uploads/041679a0-cfbf-4c0d-9690-17f3c2287e80.png" 
                 alt="Seven Green منتج العناية بالشعر الطبيعي"
                 className="w-full h-auto"
               />
