@@ -69,17 +69,11 @@ const Admin = () => {
           description: "فشل في التحقق من صلاحيات المستخدم",
           variant: "destructive",
         });
-        navigate("/");
         return;
       }
 
       if (!data) {
-        toast({
-          title: "غير مصرح",
-          description: "ليس لديك صلاحيات للوصول إلى لوحة التحكم",
-          variant: "destructive",
-        });
-        navigate("/");
+        setIsAdmin(false);
         return;
       }
 
@@ -89,6 +83,24 @@ const Admin = () => {
       navigate("/");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const promoteToAdmin = async () => {
+    try {
+      const { error } = await supabase.rpc('make_current_user_admin');
+      if (error) {
+        toast({
+          title: "خطأ",
+          description: `تعذر ترقية الحساب: ${error.message}`,
+          variant: "destructive",
+        });
+        return;
+      }
+      toast({ title: "تمت الترقية", description: "تمت إضافة صلاحية المشرف لحسابك." });
+      setIsAdmin(true);
+    } catch (e) {
+      toast({ title: "خطأ", description: "حدث خطأ غير متوقع", variant: "destructive" });
     }
   };
 
@@ -126,7 +138,10 @@ const Admin = () => {
               ليس لديك صلاحيات للوصول إلى هذه الصفحة
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-3">
+            <Button onClick={promoteToAdmin} className="w-full" variant="secondary">
+              ترقية الحساب إلى مشرف
+            </Button>
             <Button onClick={() => navigate("/")} className="w-full">
               العودة للصفحة الرئيسية
             </Button>
