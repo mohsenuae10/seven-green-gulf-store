@@ -62,13 +62,43 @@ const ProductHero = () => {
   
   return (
     <section className="relative min-h-screen overflow-hidden">
+      {/* Transparent Header */}
+      <header className="absolute top-0 left-0 right-0 z-30 bg-white/5 backdrop-blur-md border-b border-white/10">
+        <div className="mobile-container">
+          <div className="flex items-center justify-between py-4 px-4 sm:px-0">
+            {/* Logo Section */}
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-gradient-secondary rounded-xl flex items-center justify-center shadow-glow">
+                <Crown className="w-6 h-6 text-white" />
+              </div>
+              <div className="text-left">
+                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-wider">
+                  SEVEN GREEN
+                </h1>
+                <p className="text-xs text-secondary font-medium">سيفن جرين</p>
+              </div>
+            </div>
+
+            {/* Admin Link */}
+            <Link to="/auth" className="hidden sm:block">
+              <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300">
+                <Settings className="w-4 h-4 ml-2" />
+                لوحة التحكم
+              </Button>
+            </Link>
+
+            {/* Mobile Menu Button */}
+            <Link to="/auth" className="sm:hidden">
+              <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10 w-10 h-10 p-0 rounded-full">
+                <Settings className="w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </header>
+
       {/* Admin Link - Hidden on mobile, shown on desktop */}
-      <Link to="/auth" className="absolute top-4 left-4 z-20 hidden sm:block">
-        <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10">
-          <Settings className="w-4 h-4 ml-2" />
-          لوحة التحكم
-        </Button>
-      </Link>
+      {/* Removed as it's now in the header */}
 
       {/* Background with gradient overlay */}
       <div className="absolute inset-0 bg-gradient-hero opacity-90"></div>
@@ -81,7 +111,7 @@ const ProductHero = () => {
         <Crown className="w-24 h-24 text-secondary animate-pulse" />
       </div>
 
-      <div className="mobile-container relative z-10 mt-16 sm:mt-0">
+      <div className="mobile-container relative z-10 pt-20 sm:pt-24 lg:pt-16">
         
         {/* Main Hero Content */}
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[calc(100vh-4rem)] sm:min-h-screen py-8 sm:py-12 lg:py-20">
