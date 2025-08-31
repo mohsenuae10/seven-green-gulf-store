@@ -71,8 +71,30 @@ const ProductHero = () => {
           <div className="flex items-center justify-between py-4 px-4 sm:px-0">
             {/* Logo Section */}
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-glow border border-white/20">
-                <Triangle className="w-6 h-6 text-secondary fill-secondary" />
+              <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-glow border border-white/20 relative overflow-hidden">
+                {/* Custom Triangle Logo */}
+                <div className="relative">
+                  <svg width="24" height="24" viewBox="0 0 24 24" className="text-secondary">
+                    <defs>
+                      <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" className="text-secondary" stopColor="currentColor" stopOpacity="1"/>
+                        <stop offset="100%" className="text-secondary" stopColor="currentColor" stopOpacity="0.7"/>
+                      </linearGradient>
+                    </defs>
+                    <path 
+                      d="M12 2 L21 19 L3 19 Z" 
+                      fill="url(#triangleGradient)" 
+                      stroke="currentColor" 
+                      strokeWidth="1"
+                      className="drop-shadow-sm"
+                    />
+                    {/* Inner highlight */}
+                    <path 
+                      d="M12 5 L18 17 L6 17 Z" 
+                      fill="rgba(255,255,255,0.2)" 
+                    />
+                  </svg>
+                </div>
               </div>
               <div className="text-left">
                 <h1 className="text-xl sm:text-2xl font-bold text-white tracking-wider">
