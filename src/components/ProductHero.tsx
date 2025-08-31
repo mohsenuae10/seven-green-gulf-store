@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, ShoppingCart, Leaf, Crown, Shield, Play, CheckCircle } from "lucide-react";
+import { Star, ShoppingCart, Leaf, Crown, Shield, Play, CheckCircle, Triangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -71,8 +71,8 @@ const ProductHero = () => {
           <div className="flex items-center justify-between py-4 px-4 sm:px-0">
             {/* Logo Section */}
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-secondary rounded-xl flex items-center justify-center shadow-glow border border-white/20">
-                <span className="text-white font-bold text-lg tracking-wider">7G</span>
+              <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-glow border border-white/20">
+                <Triangle className="w-6 h-6 text-secondary fill-secondary" />
               </div>
               <div className="text-left">
                 <h1 className="text-xl sm:text-2xl font-bold text-white tracking-wider">
