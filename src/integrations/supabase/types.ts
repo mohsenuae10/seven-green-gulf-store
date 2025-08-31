@@ -166,6 +166,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_first_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       current_user_has_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"] }
         Returns: boolean
@@ -176,6 +180,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      make_current_user_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
     }
     Enums: {
