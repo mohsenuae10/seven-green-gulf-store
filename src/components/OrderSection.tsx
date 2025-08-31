@@ -209,16 +209,6 @@ const OrderSection = () => {
               </div>
             </Card>
 
-            {/* Order Button */}
-            <Link to="/order">
-              <Button 
-                size="lg" 
-                className="w-full bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-lg py-6 rounded-2xl"
-              >
-                <ShoppingCart className="w-5 h-5 ml-2" />
-                اشتر الآن
-              </Button>
-            </Link>
 
             {/* Payment Methods */}
             <Card className="bg-gradient-card border-border/50 p-4">
