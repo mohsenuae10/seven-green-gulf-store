@@ -1,12 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Star, ShoppingCart, Leaf, Crown, Shield } from "lucide-react";
+import { Star, ShoppingCart, Leaf, Crown, Shield, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/seven-green-hero.jpg";
 
 const ProductHero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Admin Link */}
+      <Link to="/auth" className="absolute top-4 left-4 z-20">
+        <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10">
+          <Settings className="w-4 h-4 ml-2" />
+          لوحة التحكم
+        </Button>
+      </Link>
       {/* Background with gradient overlay */}
       <div className="absolute inset-0 bg-gradient-hero opacity-90"></div>
       
