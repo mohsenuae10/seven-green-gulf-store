@@ -1,7 +1,7 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { useProductPrice } from "@/hooks/useProductPrice";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,29 +23,9 @@ const Order = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [productPrice, setProductPrice] = useState(299);
+  const { price: productPrice } = useProductPrice({ fallback: 299 });
   const { toast } = useToast();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchProductPrice();
-  }, []);
-
-  const fetchProductPrice = async () => {
-    try {
-      const { data } = await supabase
-        .from('products')
-        .select('price')
-        .eq('is_active', true)
-        .single();
-      
-      if (data?.price) {
-        setProductPrice(data.price);
-      }
-    } catch (error) {
-      console.error('Error fetching product price:', error);
-    }
-  };
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));

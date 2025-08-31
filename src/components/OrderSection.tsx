@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
+import { useProductPrice } from "@/hooks/useProductPrice";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,29 +10,9 @@ import { ShoppingCart, MapPin, Phone, User, CreditCard, Truck, Shield, Crown } f
 
 const OrderSection = () => {
   const [quantity, setQuantity] = useState(1);
-  const [price, setPrice] = useState(299);
+  const { price } = useProductPrice({ fallback: 299 });
   const shipping = 0; // Free shipping
   const total = price * quantity + shipping;
-
-  useEffect(() => {
-    fetchProductPrice();
-  }, []);
-
-  const fetchProductPrice = async () => {
-    try {
-      const { data } = await supabase
-        .from('products')
-        .select('price')
-        .eq('is_active', true)
-        .single();
-      
-      if (data?.price) {
-        setPrice(data.price);
-      }
-    } catch (error) {
-      console.error('Error fetching product price:', error);
-    }
-  };
 
   return (
     <section className="py-20 bg-gradient-to-b from-background to-primary/5" dir="rtl" id="order">
