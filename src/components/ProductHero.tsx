@@ -156,7 +156,7 @@ const ProductHero = () => {
               
               {/* Main product image */}
               <img 
-                src="/lovable-uploads/041679a0-cfbf-4c0d-9690-17f3c2287e80.png" 
+                src="/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png" 
                 alt="سيفن جرين للعناية بالشعر" 
                 className="relative z-10 w-full max-w-lg mx-auto rounded-3xl shadow-strong hover:scale-105 transition-transform duration-500"
               />
