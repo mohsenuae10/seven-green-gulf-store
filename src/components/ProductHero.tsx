@@ -71,8 +71,8 @@ const ProductHero = () => {
           <div className="flex items-center justify-between py-4 px-4 sm:px-0">
             {/* Logo Section */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-secondary rounded-xl flex items-center justify-center shadow-glow">
-                <Crown className="w-6 h-6 text-white" />
+              <div className="w-12 h-12 bg-gradient-secondary rounded-xl flex items-center justify-center shadow-glow border border-white/20">
+                <span className="text-white font-bold text-lg tracking-wider">7G</span>
               </div>
               <div className="text-left">
                 <h1 className="text-xl sm:text-2xl font-bold text-white tracking-wider">
