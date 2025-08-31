@@ -3,9 +3,62 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Star, ShoppingCart, Leaf, Crown, Shield, Settings, Play, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProductPrice } from "@/hooks/useProductPrice";
+import useEmblaCarousel from 'embla-carousel-react';
+import Autoplay from 'embla-carousel-autoplay';
+import { useCallback, useEffect, useState } from 'react';
 
 const ProductHero = () => {
   const { price: productPrice } = useProductPrice({ fallback: 299 });
+  
+  // Carousel configuration
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { 
+      loop: true,
+      dragFree: true,
+      containScroll: 'trimSnaps'
+    }, 
+    [Autoplay({ delay: 4000, stopOnInteraction: false })]
+  );
+  
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+
+  const scrollTo = useCallback(
+    (index: number) => emblaApi && emblaApi.scrollTo(index),
+    [emblaApi],
+  );
+
+  const onInit = useCallback((emblaApi: any) => {
+    setScrollSnaps(emblaApi.scrollSnapList());
+  }, []);
+
+  const onSelect = useCallback((emblaApi: any) => {
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, []);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    onInit(emblaApi);
+    onSelect(emblaApi);
+    emblaApi.on('reInit', onInit);
+    emblaApi.on('select', onSelect);
+  }, [emblaApi, onInit, onSelect]);
+
+  const productImages = [
+    {
+      src: "/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png",
+      alt: "سيفن جرين للعناية بالشعر"
+    },
+    {
+      src: "/lovable-uploads/8d004a44-148f-471d-949f-6cc6b414bd1d.png", 
+      alt: "سيفن جرين - عبوة طبيعية"
+    },
+    {
+      src: "/lovable-uploads/b7fcf75b-d26d-4d69-971f-2b17e4dd3f6f.png",
+      alt: "سيفن جرين - فوائد طبيعية"
+    }
+  ];
   
   return (
     <section className="relative min-h-screen overflow-hidden">
@@ -138,47 +191,52 @@ const ProductHero = () => {
             </div>
           </div>
 
-          {/* Product Image - Left side for RTL */}
+          {/* Product Carousel - Left side for RTL */}
           <div className="order-1 lg:order-2 relative animate-fade-in">
             <div className="relative">
-              {/* Glowing effect behind image */}
+              {/* Glowing effect behind carousel */}
               <div className="absolute inset-0 bg-gradient-secondary opacity-30 blur-3xl rounded-full transform rotate-12"></div>
               
-              {/* Animated Product Images Carousel */}
+              {/* Product Images Carousel */}
               <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
-                <div className="relative overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong">
-                  {/* Image 1 */}
-                  <img 
-                    src="/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png" 
-                    alt="سيفن جرين للعناية بالشعر" 
-                    className="w-full h-auto transition-all duration-1000 animate-[fadeIn_4s_ease-in-out_infinite_0s,scaleUpDown_4s_ease-in-out_infinite_0s]"
-                    style={{
-                      animationDelay: '0s',
-                      opacity: 1
-                    }}
-                  />
-                  
-                  {/* Image 2 - Overlayed and animated */}
-                  <img 
-                    src="/lovable-uploads/8d004a44-148f-471d-949f-6cc6b414bd1d.png" 
-                    alt="سيفن جرين - عبوة طبيعية" 
-                    className="absolute top-0 left-0 w-full h-auto transition-all duration-1000 animate-[fadeInOut_8s_ease-in-out_infinite_2s,scaleUpDown_8s_ease-in-out_infinite_2s]"
-                    style={{
-                      animationDelay: '2s',
-                      opacity: 0
-                    }}
-                  />
-                  
-                  {/* Image 3 - Overlayed and animated */}
-                  <img 
-                    src="/lovable-uploads/b7fcf75b-d26d-4d69-971f-2b17e4dd3f6f.png" 
-                    alt="سيفن جرين - فوائد طبيعية" 
-                    className="absolute top-0 left-0 w-full h-auto transition-all duration-1000 animate-[fadeInOut_12s_ease-in-out_infinite_4s,scaleUpDown_12s_ease-in-out_infinite_4s]"
-                    style={{
-                      animationDelay: '4s',
-                      opacity: 0
-                    }}
-                  />
+                <div className="embla overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong" ref={emblaRef}>
+                  <div className="embla__container flex">
+                    {productImages.map((image, index) => (
+                      <div key={index} className="embla__slide flex-[0_0_100%] min-w-0">
+                        <img 
+                          src={image.src}
+                          alt={image.alt}
+                          className="w-full h-auto block hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Carousel Dots */}
+                <div className="flex justify-center gap-2 mt-6">
+                  {scrollSnaps.map((_, index) => (
+                    <button
+                      key={index}
+                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        index === selectedIndex 
+                          ? 'bg-secondary scale-125 shadow-glow' 
+                          : 'bg-white/40 hover:bg-white/60'
+                      }`}
+                      onClick={() => scrollTo(index)}
+                      aria-label={`الانتقال إلى الصورة ${index + 1}`}
+                    />
+                  ))}
+                </div>
+                
+                {/* Swipe indicator for mobile */}
+                <div className="flex items-center justify-center gap-2 mt-3 text-white/60 text-xs sm:hidden">
+                  <div className="flex gap-1">
+                    <div className="w-1 h-1 bg-white/40 rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
+                    <div className="w-1 h-1 bg-white/40 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-1 h-1 bg-white/40 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                  </div>
+                  <span>اسحب للتنقل</span>
                 </div>
               </div>
               
