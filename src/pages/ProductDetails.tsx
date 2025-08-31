@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import OrderSection from "@/components/OrderSection";
 import { useProductPrice } from "@/hooks/useProductPrice";
-import heroImage from "@/assets/seven-green-hero-final.jpg";
+import heroImage from "@/assets/seven-green-official.jpg";
 
 const ProductDetails = () => {
   const { price, loading } = useProductPrice();

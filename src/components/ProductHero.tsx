@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, ShoppingCart, Leaf, Crown, Shield, Settings, Play, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import heroImage from "@/assets/seven-green-hero-final.jpg";
+import heroImage from "@/assets/seven-green-official.jpg";
 import { useProductPrice } from "@/hooks/useProductPrice";
 
 const ProductHero = () => {
@@ -48,12 +48,12 @@ const ProductHero = () => {
               <h1 className="text-5xl lg:text-7xl font-bold text-white leading-tight">
                 سيفن جرين
                 <span className="block text-3xl lg:text-4xl text-secondary font-light mt-2">
-                  للعناية المتقدمة بالشعر
+                  صابون السرو والأوسمان الطبيعي
                 </span>
               </h1>
               
               <p className="text-xl text-white/90 max-w-2xl leading-relaxed">
-                تركيبة فريدة مُستوحاة من الطب الصيني التقليدي، مُصممة خصيصاً لتقوية الشعر ومنع تساقطه
+                تركيبة طبيعية متقدمة من أوراق السرو ونبات الأوسمان، مُصممة لمنع تساقط الشعر والتحكم في الزيوت
               </p>
             </div>
 
