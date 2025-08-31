@@ -28,13 +28,13 @@ const ProductHero = () => {
         <Crown className="w-24 h-24 text-secondary animate-pulse" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="mobile-container relative z-10">
         
         {/* Main Hero Content */}
-        <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-20">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-screen py-12 sm:py-16 lg:py-20">
           
           {/* Product Content - Right side for RTL */}
-          <div className="order-2 lg:order-1 space-y-8 animate-slide-up text-center lg:text-right" dir="rtl">
+          <div className="order-2 lg:order-1 space-y-6 lg:space-y-8 animate-slide-up text-center lg:text-right px-4 sm:px-0" dir="rtl">
             
             {/* Brand Badge */}
             <div className="inline-flex items-center gap-2 bg-secondary/20 backdrop-blur-sm rounded-full px-6 py-2 border border-secondary/30">
@@ -43,30 +43,30 @@ const ProductHero = () => {
             </div>
 
             {/* Main Heading */}
-            <div className="space-y-4">
-              <h1 className="text-5xl lg:text-7xl font-bold text-white leading-tight">
+            <div className="space-y-3 lg:space-y-4">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-7xl font-bold text-white leading-tight">
                 سيفن جرين
-                <span className="block text-3xl lg:text-4xl text-secondary font-light mt-2">
+                <span className="block text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-secondary font-light mt-2">
                   صابون السرو والأوسمان الطبيعي
                 </span>
               </h1>
               
-              <p className="text-xl text-white/90 max-w-2xl leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-2xl leading-relaxed mx-auto lg:mx-0">
                 تركيبة طبيعية متقدمة من أوراق السرو ونبات الأوسمان، مُصممة لمنع تساقط الشعر والتحكم في الزيوت
               </p>
             </div>
 
             {/* Features Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
               {[
                 { icon: Leaf, title: "طبيعي 100%", desc: "مكونات عضوية صينية" },
                 { icon: Shield, title: "آمن ومُختبر", desc: "معايير جودة عالمية" },
                 { icon: Crown, title: "فاخر", desc: "تقنية صينية متقدمة" }
               ].map((feature, index) => (
-                <Card key={index} className="bg-white/10 backdrop-blur-sm border-white/20 p-4 text-center animate-bounce-in" style={{animationDelay: `${index * 0.2}s`}}>
-                  <feature.icon className="w-8 h-8 text-secondary mx-auto mb-2" />
-                  <h3 className="font-semibold text-white">{feature.title}</h3>
-                  <p className="text-sm text-white/70">{feature.desc}</p>
+                <Card key={index} className="bg-white/10 backdrop-blur-sm border-white/20 p-3 lg:p-4 text-center animate-bounce-in" style={{animationDelay: `${index * 0.2}s`}}>
+                  <feature.icon className="w-6 h-6 lg:w-8 lg:h-8 text-secondary mx-auto mb-2" />
+                  <h3 className="font-semibold text-white text-sm lg:text-base">{feature.title}</h3>
+                  <p className="text-xs lg:text-sm text-white/70">{feature.desc}</p>
                 </Card>
               ))}
             </div>
@@ -83,39 +83,39 @@ const ProductHero = () => {
             </div>
 
             {/* Success Stories */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl lg:rounded-2xl p-4 lg:p-6 border border-white/20">
               <div className="flex items-center gap-3 mb-4">
-                <CheckCircle className="w-6 h-6 text-green-400" />
-                <span className="text-white font-semibold">نتائج مُثبتة علمياً</span>
+                <CheckCircle className="w-5 h-5 lg:w-6 lg:h-6 text-green-400" />
+                <span className="text-white font-semibold text-sm lg:text-base">نتائج مُثبتة علمياً</span>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-secondary">97%</div>
-                  <div className="text-sm text-white/70">تحسن في كثافة الشعر</div>
+                  <div className="text-xl lg:text-2xl font-bold text-secondary">97%</div>
+                  <div className="text-xs lg:text-sm text-white/70">تحسن في كثافة الشعر</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-secondary">85%</div>
-                  <div className="text-sm text-white/70">تقليل التساقط</div>
+                  <div className="text-xl lg:text-2xl font-bold text-secondary">85%</div>
+                  <div className="text-xs lg:text-sm text-white/70">تقليل التساقط</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-secondary">92%</div>
-                  <div className="text-sm text-white/70">زيادة اللمعان</div>
+                  <div className="text-xl lg:text-2xl font-bold text-secondary">92%</div>
+                  <div className="text-xs lg:text-sm text-white/70">زيادة اللمعان</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-secondary">4 أسابيع</div>
-                  <div className="text-sm text-white/70">لظهور النتائج</div>
+                  <div className="text-xl lg:text-2xl font-bold text-secondary">4 أسابيع</div>
+                  <div className="text-xs lg:text-sm text-white/70">لظهور النتائج</div>
                 </div>
               </div>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-end">
+            <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 justify-center lg:justify-end">
               <Link to="/order">
                 <Button 
                   size="lg" 
-                  className="bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-lg px-8 py-4 rounded-full"
+                  className="w-full sm:w-auto bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-base lg:text-lg px-6 lg:px-8 py-3 lg:py-4 rounded-full"
                 >
-                  <ShoppingCart className="w-5 h-5 ml-2" />
+                  <ShoppingCart className="w-4 h-4 lg:w-5 lg:h-5 ml-2" />
                   اطلب الآن - {productPrice} درهم
                 </Button>
               </Link>
@@ -123,26 +123,26 @@ const ProductHero = () => {
                 <Button 
                   variant="outline" 
                   size="lg"
-                  className="border-white/30 text-white hover:bg-white/10 text-lg px-8 py-4 rounded-full backdrop-blur-sm"
+                  className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 text-base lg:text-lg px-6 lg:px-8 py-3 lg:py-4 rounded-full backdrop-blur-sm"
                 >
-                  <Play className="w-5 h-5 ml-2" />
+                  <Play className="w-4 h-4 lg:w-5 lg:h-5 ml-2" />
                   شاهد النتائج
                 </Button>
               </Link>
             </div>
 
             {/* Trust Badges */}
-            <div className="flex items-center justify-center lg:justify-end gap-6 text-white/60 text-sm">
+            <div className="flex flex-wrap items-center justify-center lg:justify-end gap-4 lg:gap-6 text-white/60 text-xs lg:text-sm">
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4" />
+                <Shield className="w-3 h-3 lg:w-4 lg:h-4" />
                 <span>ضمان الجودة</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full bg-gradient-secondary"></div>
+                <div className="w-3 h-3 lg:w-4 lg:h-4 rounded-full bg-gradient-secondary"></div>
                 <span>شحن مجاني</span>
               </div>
               <div className="flex items-center gap-2">
-                <Crown className="w-4 h-4" />
+                <Crown className="w-3 h-3 lg:w-4 lg:h-4" />
                 <span>منتج حصري</span>
               </div>
             </div>
@@ -158,17 +158,17 @@ const ProductHero = () => {
               <img 
                 src="/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png" 
                 alt="سيفن جرين للعناية بالشعر" 
-                className="relative z-10 w-full max-w-lg mx-auto rounded-3xl shadow-strong hover:scale-105 transition-transform duration-500"
+                className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto rounded-2xl lg:rounded-3xl shadow-strong hover:scale-105 transition-transform duration-500"
               />
               
               {/* Floating elements */}
-              <div className="absolute -top-6 -right-6 bg-secondary text-secondary-foreground rounded-full w-20 h-20 flex items-center justify-center font-bold text-lg shadow-medium animate-bounce-in">
+              <div className="absolute -top-4 lg:-top-6 -right-4 lg:-right-6 bg-secondary text-secondary-foreground rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center font-bold text-sm lg:text-lg shadow-medium animate-bounce-in">
                 جديد
               </div>
-              <div className="absolute -bottom-4 -left-4 bg-white/20 backdrop-blur-sm rounded-2xl p-4 shadow-medium">
+              <div className="absolute -bottom-3 lg:-bottom-4 -left-3 lg:-left-4 bg-white/20 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 lg:p-4 shadow-medium">
                 <div className="text-white text-center">
-                  <div className="text-2xl font-bold text-secondary">{productPrice}</div>
-                  <div className="text-sm">درهم إماراتي</div>
+                  <div className="text-xl lg:text-2xl font-bold text-secondary">{productPrice}</div>
+                  <div className="text-xs lg:text-sm">درهم إماراتي</div>
                 </div>
               </div>
             </div>
@@ -176,16 +176,16 @@ const ProductHero = () => {
         </div>
 
         {/* Product Gallery Section */}
-        <div className="py-20 space-y-12">
-          <div className="text-center space-y-4">
-            <h2 className="text-4xl font-bold text-white">معرض المنتج</h2>
-            <p className="text-white/80 max-w-2xl mx-auto">
+        <div className="py-12 sm:py-16 lg:py-20 space-y-8 lg:space-y-12">
+          <div className="text-center space-y-3 lg:space-y-4 px-4">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">معرض المنتج</h2>
+            <p className="text-white/80 max-w-2xl mx-auto text-sm sm:text-base lg:text-lg">
               اكتشف جمال وفعالية سيفن جرين من خلال هذه المجموعة المتميزة من الصور
             </p>
           </div>
 
           {/* Gallery Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="mobile-grid px-4">
             
             {/* Certificates */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
@@ -267,7 +267,7 @@ const ProductHero = () => {
           </div>
 
           {/* Additional Product Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mt-8 lg:mt-12 px-4">
             
             {/* Usage Instructions */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden">
