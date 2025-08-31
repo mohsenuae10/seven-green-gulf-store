@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ShoppingCart, MapPin, Phone, User, CreditCard, Truck, Shield, Crown } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const OrderSection = () => {
   const [quantity, setQuantity] = useState(1);
@@ -209,13 +210,15 @@ const OrderSection = () => {
             </Card>
 
             {/* Order Button */}
-            <Button 
-              size="lg" 
-              className="w-full bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-lg py-6 rounded-2xl"
-            >
-              <ShoppingCart className="w-5 h-5 ml-2" />
-              تأكيد الطلب والدفع
-            </Button>
+            <Link to="/order">
+              <Button 
+                size="lg" 
+                className="w-full bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-lg py-6 rounded-2xl"
+              >
+                <ShoppingCart className="w-5 h-5 ml-2" />
+                اشتر الآن
+              </Button>
+            </Link>
 
             {/* Payment Methods */}
             <Card className="bg-gradient-card border-border/50 p-4">
