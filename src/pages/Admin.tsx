@@ -135,15 +135,19 @@ const Admin = () => {
           <CardHeader>
             <CardTitle>غير مصرح</CardTitle>
             <CardDescription>
-              ليس لديك صلاحيات للوصول إلى هذه الصفحة
+              ليس لديك صلاحيات للوصول إلى هذه الصفحة. يرجى التواصل مع المدير لمنحك صلاحيات الوصول.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button onClick={promoteToAdmin} className="w-full" variant="secondary">
-              ترقية الحساب إلى مشرف
-            </Button>
             <Button onClick={() => navigate("/")} className="w-full">
               العودة للصفحة الرئيسية
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => window.open("https://wa.me/966503093939", "_blank")}
+              className="w-full"
+            >
+              تواصل مع الإدارة
             </Button>
           </CardContent>
         </Card>

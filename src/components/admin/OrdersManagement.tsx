@@ -211,7 +211,9 @@ export function OrdersManagement() {
                       <TableCell className="font-medium">
                         {order.customer_name}
                       </TableCell>
-                      <TableCell>{order.customer_phone}</TableCell>
+                      <TableCell>
+                        {order.customer_phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}
+                      </TableCell>
                       <TableCell>{order.total_amount} درهم</TableCell>
                       <TableCell>
                         <Select

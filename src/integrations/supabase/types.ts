@@ -174,6 +174,23 @@ export type Database = {
         Args: { _role: Database["public"]["Enums"]["app_role"] }
         Returns: boolean
       }
+      get_order_secure: {
+        Args: { order_id_param: string }
+        Returns: {
+          address: string
+          city: string
+          country: string
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string
+          id: string
+          payment_status: string
+          status: string
+          total_amount: number
+          updated_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

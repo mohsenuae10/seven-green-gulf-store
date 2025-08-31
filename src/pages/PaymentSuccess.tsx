@@ -6,10 +6,25 @@ import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+interface OrderData {
+  id: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_email: string;
+  country: string;
+  city: string;
+  address: string;
+  total_amount: number;
+  status: string;
+  payment_status: string;
+  created_at: string;
+  updated_at: string;
+}
+
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get('order_id');
-  const [orderData, setOrderData] = useState<any>(null);
+  const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
@@ -23,27 +38,19 @@ const PaymentSuccess = () => {
       }
 
       try {
-        // جلب تفاصيل الطلب مع المنتجات
-        const { data: order, error: orderError } = await supabase
-          .from('orders')
-          .select(`
-            *,
-            order_items (
-              *,
-              products (*)
-            )
-          `)
-          .eq('id', orderId)
-          .single();
+        // Use secure function instead of direct database query
+        const { data, error: orderError } = await supabase
+          .rpc('get_order_secure', { order_id_param: orderId });
 
         if (orderError) {
           throw new Error(orderError.message);
         }
 
-        if (order) {
+        if (data && data.length > 0) {
+          const order = data[0];
           setOrderData(order);
           
-          // تحديث حالة الطلب إلى "مؤكد" إذا كانت "معلقة"
+          // Update payment status if still pending
           if (order.payment_status === 'pending') {
             await supabase
               .from('orders')
@@ -72,7 +79,7 @@ const PaymentSuccess = () => {
     fetchOrderDetails();
   }, [orderId, toast]);
 
-  // عرض شاشة التحميل
+  // Loading state
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-primary/5 flex items-center justify-center" dir="rtl">
@@ -84,7 +91,7 @@ const PaymentSuccess = () => {
     );
   }
 
-  // عرض رسالة الخطأ
+  // Error state
   if (error || !orderData) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-background to-primary/5 flex items-center justify-center" dir="rtl">
@@ -156,7 +163,9 @@ const PaymentSuccess = () => {
                 
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">رقم الهاتف:</span>
-                  <span className="font-medium text-foreground">{orderData.customer_phone}</span>
+                  <span className="font-medium text-foreground">
+                    {orderData.customer_phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}
+                  </span>
                 </div>
                 
                 <div className="flex justify-between">
