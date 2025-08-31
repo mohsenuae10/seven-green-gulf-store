@@ -23,36 +23,25 @@ const PaymentSuccess = () => {
       }
 
       try {
-        // جلب تفاصيل الطلب مع المنتجات
-        const { data: order, error: orderError } = await supabase
-          .from('orders')
-          .select(`
-            *,
-            order_items (
-              *,
-              products (*)
-            )
-          `)
-          .eq('id', orderId)
-          .single();
+        // جلب تفاصيل الطلب عبر Edge Function لتجاوز RLS بشكل آمن
+        const response = await fetch(
+          'https://dnvchztawygtkdddsiwn.supabase.co/functions/v1/get-order',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ order_id: orderId }),
+          }
+        );
 
-        if (orderError) {
-          throw new Error(orderError.message);
+        if (!response.ok) {
+          const errText = await response.text();
+          throw new Error(errText || 'فشل في جلب تفاصيل الطلب');
         }
+
+        const { order } = await response.json();
 
         if (order) {
           setOrderData(order);
-          
-          // تحديث حالة الطلب إلى "مؤكد" إذا كانت "معلقة"
-          if (order.payment_status === 'pending') {
-            await supabase
-              .from('orders')
-              .update({ 
-                payment_status: 'paid',
-                status: 'confirmed'
-              })
-              .eq('id', orderId);
-          }
         } else {
           throw new Error("الطلب غير موجود");
         }
