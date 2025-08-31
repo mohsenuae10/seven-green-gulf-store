@@ -89,14 +89,15 @@ const ProductHero = () => {
                 اطلب الآن - {productPrice} درهم
               </Button>
             </Link>
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-              className="border-white/30 text-white hover:bg-white/10 text-lg px-8 py-4 rounded-full backdrop-blur-sm"
-            >
-              تعرف على المنتج
-            </Button>
+            <Link to="/product-details">
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="border-white/30 text-white hover:bg-white/10 text-lg px-8 py-4 rounded-full backdrop-blur-sm"
+              >
+                تعرف على المنتج
+              </Button>
+            </Link>
           </div>
 
           {/* Trust Badges */}
