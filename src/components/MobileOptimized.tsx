@@ -10,8 +10,8 @@ const MobileOptimized = ({ children, className = "" }: MobileOptimizedProps) => 
     <div className={`mobile-optimized overflow-x-hidden max-w-full scroll-smooth ${className}`}>
       {children}
       
-      {/* Mobile spacing for bottom navigation */}
-      <div className="h-20 sm:hidden" />
+      {/* Mobile spacing for bottom buy button */}
+      <div className="h-24 sm:hidden" />
     </div>
   );
 };

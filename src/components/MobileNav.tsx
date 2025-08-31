@@ -11,7 +11,6 @@ const MobileNav = () => {
   const navItems = [
     { icon: Home, label: "الرئيسية", href: "/", id: "home" },
     { icon: Package, label: "المنتج", href: "/product-details", id: "product" },
-    { icon: ShoppingCart, label: "اطلب الآن", href: "/order", id: "order" },
     { icon: User, label: "الإدارة", href: "/auth", id: "admin" },
   ];
 
@@ -19,23 +18,18 @@ const MobileNav = () => {
 
   return (
     <>
-      {/* Mobile Bottom Navigation */}
+      {/* Mobile Buy Now Button - Fixed Bottom */}
       <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-t border-border shadow-strong sm:hidden">
-        <div className="grid grid-cols-4 gap-1 p-2">
-          {navItems.map((item) => (
-            <Link
-              key={item.id}
-              to={item.href}
-              className={`flex flex-col items-center justify-center p-3 rounded-lg transition-all duration-200 ${
-                isActive(item.href)
-                  ? "bg-primary text-primary-foreground shadow-medium"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-              }`}
+        <div className="p-4">
+          <Link to="/order" className="block">
+            <Button 
+              size="lg" 
+              className="w-full bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-lg py-4 rounded-full touch-target"
             >
-              <item.icon className="w-5 h-5 mb-1" />
-              <span className="text-xs font-medium">{item.label}</span>
-            </Link>
-          ))}
+              <ShoppingCart className="w-6 h-6 ml-2" />
+              اشتر الآن
+            </Button>
+          </Link>
         </div>
       </div>
 
