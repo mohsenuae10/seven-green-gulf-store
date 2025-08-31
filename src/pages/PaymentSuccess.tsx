@@ -50,15 +50,18 @@ const PaymentSuccess = () => {
           const order = data[0];
           setOrderData(order);
           
-          // Update payment status if still pending
+          // Update payment status if still pending using secure function
           if (order.payment_status === 'pending') {
-            await supabase
-              .from('orders')
-              .update({ 
-                payment_status: 'paid',
-                status: 'confirmed'
-              })
-              .eq('id', orderId);
+            await supabase.rpc('update_order_payment_status', {
+              order_id_param: orderId
+            });
+            
+            // Update local state to reflect the change
+            setOrderData({
+              ...order,
+              payment_status: 'paid',
+              status: 'confirmed'
+            });
           }
         } else {
           throw new Error("الطلب غير موجود");
