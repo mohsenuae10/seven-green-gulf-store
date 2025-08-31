@@ -151,7 +151,7 @@ const ProductDetails = () => {
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <img 
-                src="/src/assets/seven-green-hero.jpg" 
+                src="/lovable-uploads/0e891736-0a89-458a-b475-c684dcb57afd.png" 
                 alt="Seven Green منتج العناية بالشعر الطبيعي"
                 className="w-full h-auto"
               />
