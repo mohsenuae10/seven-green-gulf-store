@@ -144,18 +144,49 @@ const ProductHero = () => {
               {/* Glowing effect behind image */}
               <div className="absolute inset-0 bg-gradient-secondary opacity-30 blur-3xl rounded-full transform rotate-12"></div>
               
-              {/* Main product image */}
-              <img 
-                src="/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png" 
-                alt="سيفن جرين للعناية بالشعر" 
-                className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto rounded-2xl lg:rounded-3xl shadow-strong hover:scale-105 transition-transform duration-500"
-              />
+              {/* Animated Product Images Carousel */}
+              <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
+                <div className="relative overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong">
+                  {/* Image 1 */}
+                  <img 
+                    src="/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png" 
+                    alt="سيفن جرين للعناية بالشعر" 
+                    className="w-full h-auto transition-all duration-1000 animate-[fadeIn_4s_ease-in-out_infinite_0s,scaleUpDown_4s_ease-in-out_infinite_0s]"
+                    style={{
+                      animationDelay: '0s',
+                      opacity: 1
+                    }}
+                  />
+                  
+                  {/* Image 2 - Overlayed and animated */}
+                  <img 
+                    src="/lovable-uploads/8d004a44-148f-471d-949f-6cc6b414bd1d.png" 
+                    alt="سيفن جرين - عبوة طبيعية" 
+                    className="absolute top-0 left-0 w-full h-auto transition-all duration-1000 animate-[fadeInOut_8s_ease-in-out_infinite_2s,scaleUpDown_8s_ease-in-out_infinite_2s]"
+                    style={{
+                      animationDelay: '2s',
+                      opacity: 0
+                    }}
+                  />
+                  
+                  {/* Image 3 - Overlayed and animated */}
+                  <img 
+                    src="/lovable-uploads/b7fcf75b-d26d-4d69-971f-2b17e4dd3f6f.png" 
+                    alt="سيفن جرين - فوائد طبيعية" 
+                    className="absolute top-0 left-0 w-full h-auto transition-all duration-1000 animate-[fadeInOut_12s_ease-in-out_infinite_4s,scaleUpDown_12s_ease-in-out_infinite_4s]"
+                    style={{
+                      animationDelay: '4s',
+                      opacity: 0
+                    }}
+                  />
+                </div>
+              </div>
               
               {/* Floating elements */}
-              <div className="absolute -top-4 lg:-top-6 -right-4 lg:-right-6 bg-secondary text-secondary-foreground rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center font-bold text-sm lg:text-lg shadow-medium animate-bounce-in z-20">
+              <div className="absolute -top-4 lg:-top-6 -right-4 lg:-right-6 bg-secondary text-secondary-foreground rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center font-bold text-sm lg:text-lg shadow-medium animate-bounce-in z-30">
                 جديد
               </div>
-              <div className="absolute -bottom-3 lg:-bottom-4 -left-3 lg:-left-4 bg-white/20 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 lg:p-4 shadow-medium z-20">
+              <div className="absolute -bottom-3 lg:-bottom-4 -left-3 lg:-left-4 bg-white/20 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 lg:p-4 shadow-medium z-30">
                 <div className="text-white text-center">
                   <div className="text-xl lg:text-2xl font-bold text-secondary">{productPrice}</div>
                   <div className="text-xs lg:text-sm">درهم إماراتي</div>
