@@ -166,7 +166,24 @@ const Order = () => {
             <CardHeader className="pb-4">
               <CardTitle className="text-right mobile-subheading">معلومات الطلب</CardTitle>
               <CardDescription className="text-right mobile-text">
-                سيفن جرين - منتج العناية بالشعر الطبيعي
+                <div className="flex items-center gap-3 mt-3 p-3 bg-accent/20 rounded-lg">
+                  <img 
+                    src="/lovable-uploads/8d004a44-148f-471d-949f-6cc6b414bd1d.png" 
+                    alt="سيفن جرين - منتج العناية بالشعر" 
+                    className="w-16 h-16 object-cover rounded-lg shadow-sm"
+                  />
+                  <div className="flex-1">
+                    <h3 className="font-bold text-foreground text-lg">سيفن جرين</h3>
+                    <p className="text-muted-foreground text-sm">منتج العناية بالشعر الطبيعي</p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <span className="text-secondary text-sm">★★★★★</span>
+                      <span className="text-xs text-muted-foreground">(4.9)</span>
+                    </div>
+                  </div>
+                  <div className="text-left">
+                    <span className="text-xl font-bold text-primary">{productPrice} درهم</span>
+                  </div>
+                </div>
               </CardDescription>
             </CardHeader>
             <CardContent className="p-4 sm:p-6">
