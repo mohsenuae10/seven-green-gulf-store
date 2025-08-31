@@ -195,6 +195,9 @@ export function OrdersManagement() {
                     <TableHead>رقم الطلب</TableHead>
                     <TableHead>اسم العميل</TableHead>
                     <TableHead>رقم الهاتف</TableHead>
+                    <TableHead>الدولة</TableHead>
+                    <TableHead>المدينة</TableHead>
+                    <TableHead>العنوان</TableHead>
                     <TableHead>المبلغ الإجمالي</TableHead>
                     <TableHead>حالة الطلب</TableHead>
                     <TableHead>حالة الدفع</TableHead>
@@ -213,6 +216,11 @@ export function OrdersManagement() {
                       </TableCell>
                       <TableCell>
                         {order.customer_phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}
+                      </TableCell>
+                      <TableCell>{order.country}</TableCell>
+                      <TableCell>{order.city}</TableCell>
+                      <TableCell className="max-w-xs truncate" title={order.address}>
+                        {order.address}
                       </TableCell>
                       <TableCell>{order.total_amount} درهم</TableCell>
                       <TableCell>
