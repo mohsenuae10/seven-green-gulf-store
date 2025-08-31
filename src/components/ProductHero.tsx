@@ -84,13 +84,6 @@ const ProductHero = () => {
 
             {/* Currency Switcher */}
             <CurrencySwitcher variant="header" />
-
-            {/* Mobile Menu Button */}
-            <Link to="/auth" className="sm:hidden">
-              <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10 w-10 h-10 p-0 rounded-full">
-                <Crown className="w-4 h-4" />
-              </Button>
-            </Link>
           </div>
         </div>
       </header>
