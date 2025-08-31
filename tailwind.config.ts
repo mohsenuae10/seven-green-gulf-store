@@ -30,7 +30,8 @@ export default {
 		extend: {
 			fontFamily: {
 				'arabic': ['Tajawal', 'sans-serif'],
-				'sans': ['Inter', 'Tajawal', 'sans-serif'],
+				'english': ['Inter', 'sans-serif'],
+				'sans': ['Tajawal', 'Inter', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
