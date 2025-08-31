@@ -1,15 +1,14 @@
+
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { ShoppingCart, MapPin, User, Crown, Shield, Truck, CreditCard, ArrowRight, Smartphone, Zap } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { Link } from "react-router-dom";
+import { AlertCircle, Loader2 } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Order = () => {
   const [formData, setFormData] = useState({
@@ -18,402 +17,272 @@ const Order = () => {
     customerEmail: "",
     country: "",
     city: "",
-    address: ""
+    address: "",
+    quantity: 1,
   });
-  const [quantity, setQuantity] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState("card");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
-  // تسعير المنتج
-  const price = 299;
-  const shipping = 0;
-  const total = price * quantity + shipping; // بالريال/الدرهم (الدالة ستحوله هللة/فلس)
+  const PRODUCT_PRICE = 299; // AED
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (error) setError(null);
+  };
+
+  const validateForm = () => {
+    if (!formData.customerName.trim()) {
+      setError("يرجى إدخال الاسم");
+      return false;
+    }
+    if (!formData.customerPhone.trim()) {
+      setError("يرجى إدخال رقم الهاتف");
+      return false;
+    }
+    if (!formData.country) {
+      setError("يرجى اختيار الدولة");
+      return false;
+    }
+    if (!formData.city.trim()) {
+      setError("يرجى إدخال المدينة");
+      return false;
+    }
+    if (!formData.address.trim()) {
+      setError("يرجى إدخال العنوان");
+      return false;
+    }
+    if (formData.quantity < 1) {
+      setError("يجب أن تكون الكمية أكبر من صفر");
+      return false;
+    }
+    return true;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // تحقق من صحة البيانات
-    if (
-      !formData.customerName.trim() ||
-      !formData.customerPhone.trim() ||
-      !formData.country ||
-      !formData.city.trim() ||
-      !formData.address.trim() ||
-      !paymentMethod
-    ) {
-      toast({
-        title: "خطأ في البيانات",
-        description: "يرجى ملء جميع الحقول المطلوبة واختيار طريقة الدفع",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // تحقق من صحة رقم الهاتف
-    const phone = formData.customerPhone.replace(/\s+/g, "");
-    if (!/^\+?[0-9]{7,15}$/.test(phone)) {
-      toast({
-        title: "رقم هاتف غير صالح",
-        description: "الرجاء إدخال رقم بصيغة دولية صحيحة (مثال: +9665xxxxxxx)",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // تحقق من صحة البريد الإلكتروني إذا تم إدخاله
-    if (formData.customerEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.customerEmail)) {
-      toast({
-        title: "بريد إلكتروني غير صالح",
-        description: "الرجاء إدخال عنوان بريد إلكتروني صحيح",
-        variant: "destructive"
-      });
+    
+    if (!validateForm()) {
       return;
     }
 
     setIsLoading(true);
+    setError(null);
 
     try {
-      // استدعاء دالة إنشاء الدفع
-      const { data, error } = await supabase.functions.invoke("create-ziina-payment", {
-        body: {
-          customerName: formData.customerName.trim(),
-          customerPhone: phone,
-          customerEmail: formData.customerEmail?.trim() || "",
-          country: formData.country,
-          city: formData.city.trim(),
-          address: formData.address.trim(),
-          quantity,
-          totalAmount: total,
-          paymentMethod
-        }
+      const totalAmount = PRODUCT_PRICE * formData.quantity;
+      
+      console.log("Submitting order with data:", { ...formData, totalAmount });
+      
+      const response = await fetch('/functions/v1/create-ziina-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          totalAmount,
+        }),
       });
 
-      if (error) {
-        console.error("Payment error:", error);
-        throw new Error(error.message);
+      const result = await response.json();
+      console.log("Payment response:", result);
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "فشل في معالجة الطلب");
       }
 
-      if (data?.success && data?.payment_url) {
-        // حفظ معرف الطلب في التخزين المحلي للمراجعة لاحقاً
-        if (data.order_id) {
-          localStorage.setItem('lastOrderId', data.order_id);
-        }
-        
-        toast({
-          title: "تم إنشاء الطلب بنجاح",
-          description: "سيتم تحويلك لصفحة الدفع الآن...",
-        });
-
-        // تأخير قصير قبل التحويل
-        setTimeout(() => {
-          window.location.href = data.payment_url;
-        }, 1000);
+      if (result.payment_url) {
+        console.log("Redirecting to payment URL:", result.payment_url);
+        window.location.href = result.payment_url;
       } else {
-        throw new Error(
-          data?.error || "فشل في إنشاء رابط الدفع. يرجى المحاولة مرة أخرى."
-        );
+        throw new Error("لم يتم إنشاء رابط الدفع");
       }
-    } catch (err: any) {
-      console.error("Order submission error:", err);
+
+    } catch (error) {
+      console.error("Order submission error:", error);
+      const errorMessage = error instanceof Error ? error.message : "حدث خطأ غير متوقع";
+      setError(errorMessage);
+      
       toast({
-        title: "خطأ في معالجة الطلب",
-        description: err?.message || "حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى.",
-        variant: "destructive"
+        title: "خطأ في الطلب",
+        description: errorMessage,
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
     }
   };
 
+  const totalAmount = PRODUCT_PRICE * formData.quantity;
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-primary/5" dir="rtl">
-      {/* Header */}
-      <div className="bg-background/80 backdrop-blur-sm border-b border-border/50 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
-              <ArrowRight className="w-5 h-5" />
-              <span>العودة للمتجر</span>
-            </Link>
-            <h1 className="text-xl font-bold text-foreground">إتمام الطلب</h1>
-            <div />
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white py-8">
+      <div className="container mx-auto px-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">اطلب سيفن جرين الآن</h1>
+            <p className="text-gray-600">املأ النموذج أدناه لإتمام طلبك</p>
           </div>
-        </div>
-      </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Section Header */}
-        <div className="text-center mb-12 animate-slide-up">
-          <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-6 py-2 mb-6">
-            <ShoppingCart className="w-5 h-5 text-primary" />
-            <span className="text-primary font-medium">اطلب الآن</span>
-          </div>
-          <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
-            احصل على سيفن جرين اليوم
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            اطلب الآن واستمتع بشحن مجاني لجميع دول الخليج مع ضمان الجودة
-          </p>
-        </div>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-right">معلومات الطلب</CardTitle>
+              <CardDescription className="text-right">
+                سيفن جرين - منتج العناية بالشعر الطبيعي
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {error && (
+                <Alert variant="destructive" className="mb-6">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription className="text-right">
+                    {error}
+                  </AlertDescription>
+                </Alert>
+              )}
 
-        <form onSubmit={handleSubmit} className="grid lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
-          {/* Order Form */}
-          <div className="lg:col-span-2">
-            <Card className="bg-gradient-card border-border/50 shadow-medium">
-              <div className="p-8">
-                <h3 className="text-2xl font-bold text-foreground mb-8 flex items-center gap-3">
-                  <User className="w-6 h-6 text-primary" />
-                  معلومات الطلب
-                </h3>
-
-                <div className="space-y-6">
-                  {/* Personal Information */}
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="name" className="text-foreground font-medium">الاسم الكامل *</Label>
-                      <Input
-                        id="name"
-                        placeholder="أدخل اسمك الكامل"
-                        value={formData.customerName}
-                        onChange={(e) => handleInputChange("customerName", e.target.value)}
-                        className="bg-background/50 border-border/50 focus:border-primary"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="phone" className="text-foreground font-medium">رقم الهاتف *</Label>
-                      <Input
-                        id="phone"
-                        placeholder="+9665xxxxxxx"
-                        value={formData.customerPhone}
-                        onChange={(e) => handleInputChange("customerPhone", e.target.value)}
-                        className="bg-background/50 border-border/50 focus:border-primary"
-                        required
-                      />
-                    </div>
-                  </div>
-
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-foreground font-medium">البريد الإلكتروني (اختياري)</Label>
+                    <Label htmlFor="name" className="text-right block">الاسم الكامل *</Label>
                     <Input
-                      id="email"
-                      type="email"
-                      placeholder="example@email.com"
-                      value={formData.customerEmail}
-                      onChange={(e) => handleInputChange("customerEmail", e.target.value)}
-                      className="bg-background/50 border-border/50 focus:border-primary"
+                      id="name"
+                      type="text"
+                      placeholder="أدخل اسمك الكامل"
+                      value={formData.customerName}
+                      onChange={(e) => handleInputChange("customerName", e.target.value)}
+                      className="text-right"
+                      required
                     />
                   </div>
 
-                  {/* Shipping Information */}
-                  <div className="border-t border-border/50 pt-6">
-                    <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                      <MapPin className="w-5 h-5 text-primary" />
-                      معلومات الشحن
-                    </h4>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="country" className="text-foreground font-medium">الدولة *</Label>
-                        <Select value={formData.country} onValueChange={(value) => handleInputChange("country", value)} required>
-                          <SelectTrigger className="bg-background/50 border-border/50 focus:border-primary">
-                            <SelectValue placeholder="اختر الدولة" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="sa">السعودية</SelectItem>
-                            <SelectItem value="ae">الإمارات</SelectItem>
-                            <SelectItem value="kw">الكويت</SelectItem>
-                            <SelectItem value="qa">قطر</SelectItem>
-                            <SelectItem value="bh">البحرين</SelectItem>
-                            <SelectItem value="om">عُمان</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="city" className="text-foreground font-medium">المدينة *</Label>
-                        <Input
-                          id="city"
-                          placeholder="أدخل اسم المدينة"
-                          value={formData.city}
-                          onChange={(e) => handleInputChange("city", e.target.value)}
-                          className="bg-background/50 border-border/50 focus:border-primary"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2 mt-4">
-                      <Label htmlFor="address" className="text-foreground font-medium">العنوان التفصيلي *</Label>
-                      <Textarea
-                        id="address"
-                        placeholder="أدخل العنوان الكامل (الحي، الشارع، رقم المبنى)"
-                        rows={3}
-                        value={formData.address}
-                        onChange={(e) => handleInputChange("address", e.target.value)}
-                        className="bg-background/50 border-border/50 focus:border-primary resize-none"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  {/* Quantity */}
-                  <div className="border-t border-border/50 pt-6">
-                    <Label className="text-foreground font-medium mb-4 block">الكمية</Label>
-                    <div className="flex items-center gap-4">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="w-10 h-10 rounded-full"
-                      >
-                        -
-                      </Button>
-                      <span className="text-xl font-semibold text-foreground min-w-[3rem] text-center">{quantity}</span>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="w-10 h-10 rounded-full"
-                      >
-                        +
-                      </Button>
-                      <span className="text-muted-foreground">× {price} ريال</span>
-                    </div>
-                  </div>
-
-                  {/* Payment Method */}
-                  <div className="border-t border-border/50 pt-6">
-                    <Label className="text-foreground font-medium mb-4 block">طريقة الدفع *</Label>
-                    <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-3">
-                      <div className="flex items-center space-x-2 space-x-reverse">
-                        <RadioGroupItem value="card" id="card" />
-                        <Label htmlFor="card" className="flex items-center gap-3 cursor-pointer flex-1 p-3 border border-border/50 rounded-lg hover:bg-background/50 transition-colors">
-                          <CreditCard className="w-5 h-5 text-primary" />
-                          <div>
-                            <div className="font-medium text-foreground">البطاقات الائتمانية</div>
-                            <div className="text-sm text-muted-foreground">فيزا، ماستركارد، أمريكان إكسبرس</div>
-                          </div>
-                        </Label>
-                      </div>
-
-                      <div className="flex items-center space-x-2 space-x-reverse">
-                        <RadioGroupItem value="apple-pay" id="apple-pay" />
-                        <Label htmlFor="apple-pay" className="flex items-center gap-3 cursor-pointer flex-1 p-3 border border-border/50 rounded-lg hover:bg-background/50 transition-colors">
-                          <Smartphone className="w-5 h-5 text-primary" />
-                          <div>
-                            <div className="font-medium text-foreground">آبل باي</div>
-                            <div className="text-sm text-muted-foreground">دفع سريع وآمن عبر Touch ID أو Face ID</div>
-                          </div>
-                        </Label>
-                      </div>
-
-                      <div className="flex items-center space-x-2 space-x-reverse">
-                        <RadioGroupItem value="google-pay" id="google-pay" />
-                        <Label htmlFor="google-pay" className="flex items-center gap-3 cursor-pointer flex-1 p-3 border border-border/50 rounded-lg hover:bg-background/50 transition-colors">
-                          <Zap className="w-5 h-5 text-primary" />
-                          <div>
-                            <div className="font-medium text-foreground">قوقل باي</div>
-                            <div className="text-sm text-muted-foreground">دفع سريع باستخدام حساب قوقل</div>
-                          </div>
-                        </Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          {/* Summary */}
-          <div className="space-y-6">
-            <Card className="bg-gradient-card border-border/50 shadow-medium overflow-hidden">
-              <div className="p-6">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-20 h-20 bg-gradient-primary rounded-xl flex items-center justify-center">
-                    <Crown className="w-10 h-10 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-foreground">سيفن جرين</h3>
-                    <p className="text-muted-foreground text-sm">للعناية المتقدمة بالشعر</p>
-                    <div className="flex items-center gap-1 mt-1">
-                      {[1,2,3,4,5].map((star) => (
-                        <div key={star} className="w-3 h-3 bg-secondary rounded-full"></div>
-                      ))}
-                      <span className="text-xs text-muted-foreground mr-2">4.9 (2,847)</span>
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="text-right block">رقم الهاتف *</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="+971501234567"
+                      value={formData.customerPhone}
+                      onChange={(e) => handleInputChange("customerPhone", e.target.value)}
+                      className="text-right"
+                      required
+                    />
                   </div>
                 </div>
 
-                <div className="space-y-3 border-t border-border/50 pt-4">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">السعر ({quantity} قطعة)</span>
-                    <span className="font-medium">{price * quantity} ريال</span>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-right block">البريد الإلكتروني (اختياري)</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="example@email.com"
+                    value={formData.customerEmail}
+                    onChange={(e) => handleInputChange("customerEmail", e.target.value)}
+                    className="text-right"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="country" className="text-right block">الدولة *</Label>
+                    <Select
+                      value={formData.country}
+                      onValueChange={(value) => handleInputChange("country", value)}
+                      required
+                    >
+                      <SelectTrigger className="text-right">
+                        <SelectValue placeholder="اختر الدولة" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="UAE">الإمارات العربية المتحدة</SelectItem>
+                        <SelectItem value="Saudi Arabia">المملكة العربية السعودية</SelectItem>
+                        <SelectItem value="Qatar">قطر</SelectItem>
+                        <SelectItem value="Kuwait">الكويت</SelectItem>
+                        <SelectItem value="Bahrain">البحرين</SelectItem>
+                        <SelectItem value="Oman">عمان</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">الشحن</span>
-                    <span className="font-medium text-secondary">مجاني</span>
-                  </div>
-                  <div className="flex justify-between text-lg font-bold border-t border-border/50 pt-3">
-                    <span>المجموع</span>
-                    <span className="text-primary">{total} ريال</span>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="city" className="text-right block">المدينة *</Label>
+                    <Input
+                      id="city"
+                      type="text"
+                      placeholder="أدخل المدينة"
+                      value={formData.city}
+                      onChange={(e) => handleInputChange("city", e.target.value)}
+                      className="text-right"
+                      required
+                    />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 mt-6 pt-4 border-t border-border/50">
-                  <div className="text-center">
-                    <Shield className="w-6 h-6 text-primary mx-auto mb-1" />
-                    <span className="text-xs text-muted-foreground">آمن</span>
-                  </div>
-                  <div className="text-center">
-                    <Truck className="w-6 h-6 text-primary mx-auto mb-1" />
-                    <span className="text-xs text-muted-foreground">شحن سريع</span>
-                  </div>
-                  <div className="text-center">
-                    <CreditCard className="w-6 h-6 text-primary mx-auto mb-1" />
-                    <span className="text-xs text-muted-foreground">دفع آمن</span>
+                <div className="space-y-2">
+                  <Label htmlFor="address" className="text-right block">العنوان الكامل *</Label>
+                  <Input
+                    id="address"
+                    type="text"
+                    placeholder="أدخل العنوان التفصيلي"
+                    value={formData.address}
+                    onChange={(e) => handleInputChange("address", e.target.value)}
+                    className="text-right"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="quantity" className="text-right block">الكمية</Label>
+                  <div className="flex items-center gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleInputChange("quantity", Math.max(1, formData.quantity - 1))}
+                      disabled={formData.quantity <= 1}
+                    >
+                      -
+                    </Button>
+                    <span className="text-lg font-semibold w-8 text-center">{formData.quantity}</span>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleInputChange("quantity", formData.quantity + 1)}
+                    >
+                      +
+                    </Button>
                   </div>
                 </div>
-              </div>
-            </Card>
 
-            <Button
-              type="submit"
-              size="lg"
-              disabled={isLoading}
-              className="w-full bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-lg py-6 rounded-2xl"
-            >
-              <ShoppingCart className="w-5 h-5 ml-2" />
-              {isLoading ? "جاري المعالجة..." : "تأكيد الطلب والدفع"}
-            </Button>
-
-            <Card className="bg-gradient-card border-border/50 p-4">
-              <h4 className="font-semibold text-foreground mb-3 text-center">طرق الدفع المتاحة</h4>
-              <div className="grid grid-cols-2 gap-2 text-center">
-                <div className="bg-background/30 rounded-lg p-2">
-                  <CreditCard className="w-6 h-6 mx-auto mb-1 text-primary" />
-                  <span className="text-xs text-muted-foreground">بطاقة ائتمان</span>
+                <div className="border-t pt-4">
+                  <div className="flex justify-between items-center text-lg font-semibold">
+                    <span>المجموع: {totalAmount} درهم</span>
+                    <span>({PRODUCT_PRICE} درهم × {formData.quantity})</span>
+                  </div>
                 </div>
-                <div className="bg-background/30 rounded-lg p-2">
-                  <div className="w-6 h-6 mx-auto mb-1 bg-secondary rounded"></div>
-                  <span className="text-xs text-muted-foreground">محافظ رقمية</span>
-                </div>
-              </div>
-            </Card>
 
-            <div className="text-center bg-secondary/10 rounded-xl p-4">
-              <Shield className="w-8 h-8 text-secondary mx-auto mb-2" />
-              <div className="font-semibold text-secondary">ضمان 30 يوم</div>
-              <div className="text-sm text-muted-foreground">أو استرداد كامل للمبلغ</div>
-            </div>
-          </div>
-        </form>
+                <Button
+                  type="submit"
+                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      جاري المعالجة...
+                    </>
+                  ) : (
+                    "تأكيد الطلب والدفع"
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
