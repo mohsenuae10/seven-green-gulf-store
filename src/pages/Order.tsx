@@ -8,10 +8,20 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Loader2, Phone, Flag } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import MobileNav from "@/components/MobileNav";
 import MobileOptimized from "@/components/MobileOptimized";
+
+// Country data with codes and flags
+const countries = [
+  { code: "AE", name: "الإمارات العربية المتحدة", flag: "🇦🇪", phoneCode: "+971" },
+  { code: "SA", name: "المملكة العربية السعودية", flag: "🇸🇦", phoneCode: "+966" },
+  { code: "QA", name: "قطر", flag: "🇶🇦", phoneCode: "+974" },
+  { code: "KW", name: "الكويت", flag: "🇰🇼", phoneCode: "+965" },
+  { code: "BH", name: "البحرين", flag: "🇧🇭", phoneCode: "+973" },
+  { code: "OM", name: "عمان", flag: "🇴🇲", phoneCode: "+968" },
+];
 
 const Order = () => {
   const [formData, setFormData] = useState({
@@ -19,6 +29,7 @@ const Order = () => {
     customerPhone: "",
     customerEmail: "",
     country: "",
+    countryCode: "+971", // Default to UAE
     city: "",
     address: "",
     quantity: 1,
@@ -169,29 +180,63 @@ const Order = () => {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name" className="text-right block mobile-text font-medium">الاسم الكامل *</Label>
-                    <Input
-                      id="name"
-                      type="text"
-                      placeholder="أدخل اسمك الكامل"
-                      value={formData.customerName}
-                      onChange={(e) => handleInputChange("customerName", e.target.value)}
-                      className="text-right mobile-input touch-target"
-                      required
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-right block mobile-text font-medium">الاسم الكامل *</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="أدخل اسمك الكامل"
+                    value={formData.customerName}
+                    onChange={(e) => handleInputChange("customerName", e.target.value)}
+                    className="text-right mobile-input touch-target"
+                    required
+                  />
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-right block mobile-text font-medium">رقم الهاتف *</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-right block mobile-text font-medium flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    رقم الهاتف *
+                  </Label>
+                  <div className="flex gap-2">
+                    <Select
+                      value={formData.countryCode}
+                      onValueChange={(value) => {
+                        handleInputChange("countryCode", value);
+                        // Also set the country based on phone code
+                        const country = countries.find(c => c.phoneCode === value);
+                        if (country) {
+                          handleInputChange("country", country.code);
+                        }
+                      }}
+                    >
+                      <SelectTrigger className="w-[140px] text-right touch-target">
+                        <SelectValue>
+                          <div className="flex items-center gap-2">
+                            <span>{countries.find(c => c.phoneCode === formData.countryCode)?.flag}</span>
+                            <span>{formData.countryCode}</span>
+                          </div>
+                        </SelectValue>
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg z-50">
+                        {countries.map((country) => (
+                          <SelectItem key={country.code} value={country.phoneCode} className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <div className="flex items-center gap-2">
+                              <span>{country.flag}</span>
+                              <span>{country.phoneCode}</span>
+                              <span className="text-sm text-muted-foreground">{country.name}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="+971501234567"
+                      placeholder="501234567"
                       value={formData.customerPhone}
                       onChange={(e) => handleInputChange("customerPhone", e.target.value)}
-                      className="text-right mobile-input touch-target"
+                      className="text-right mobile-input touch-target flex-1"
                       required
                     />
                   </div>
@@ -211,22 +256,41 @@ const Order = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="country" className="text-right block mobile-text font-medium">الدولة *</Label>
+                    <Label htmlFor="country" className="text-right block mobile-text font-medium flex items-center gap-2">
+                      <Flag className="w-4 h-4" />
+                      الدولة *
+                    </Label>
                     <Select
                       value={formData.country}
-                      onValueChange={(value) => handleInputChange("country", value)}
+                      onValueChange={(value) => {
+                        handleInputChange("country", value);
+                        // Update country code based on selected country
+                        const country = countries.find(c => c.code === value);
+                        if (country) {
+                          handleInputChange("countryCode", country.phoneCode);
+                        }
+                      }}
                       required
                     >
                       <SelectTrigger className="text-right touch-target">
-                        <SelectValue placeholder="اختر الدولة" />
+                        <SelectValue placeholder="اختر الدولة">
+                          {formData.country && (
+                            <div className="flex items-center gap-2">
+                              <span>{countries.find(c => c.code === formData.country)?.flag}</span>
+                              <span>{countries.find(c => c.code === formData.country)?.name}</span>
+                            </div>
+                          )}
+                        </SelectValue>
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="UAE">الإمارات العربية المتحدة</SelectItem>
-                        <SelectItem value="Saudi Arabia">المملكة العربية السعودية</SelectItem>
-                        <SelectItem value="Qatar">قطر</SelectItem>
-                        <SelectItem value="Kuwait">الكويت</SelectItem>
-                        <SelectItem value="Bahrain">البحرين</SelectItem>
-                        <SelectItem value="Oman">عمان</SelectItem>
+                      <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg z-50">
+                        {countries.map((country) => (
+                          <SelectItem key={country.code} value={country.code} className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                            <div className="flex items-center gap-2">
+                              <span>{country.flag}</span>
+                              <span>{country.name}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
