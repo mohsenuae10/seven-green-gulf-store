@@ -1,14 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, ShoppingCart, Leaf, Crown, Shield, Settings, Play, CheckCircle } from "lucide-react";
+import { Star, ShoppingCart, Leaf, Crown, Shield, Play, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProductPrice } from "@/hooks/useProductPrice";
+import { useCurrency } from "@/hooks/useCurrency";
+import CurrencySwitcher from "@/components/CurrencySwitcher";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useCallback, useEffect, useState } from 'react';
 
 const ProductHero = () => {
   const { price: productPrice } = useProductPrice({ fallback: 299 });
+  const { formatPrice } = useCurrency();
   
   // Carousel configuration
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -79,18 +82,13 @@ const ProductHero = () => {
               </div>
             </div>
 
-            {/* Admin Link */}
-            <Link to="/auth" className="hidden sm:block">
-              <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10 transition-all duration-300">
-                <Settings className="w-4 h-4 ml-2" />
-                لوحة التحكم
-              </Button>
-            </Link>
+            {/* Currency Switcher */}
+            <CurrencySwitcher variant="header" />
 
             {/* Mobile Menu Button */}
             <Link to="/auth" className="sm:hidden">
               <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10 w-10 h-10 p-0 rounded-full">
-                <Settings className="w-4 h-4" />
+                <Crown className="w-4 h-4" />
               </Button>
             </Link>
           </div>
@@ -202,7 +200,7 @@ const ProductHero = () => {
                   className="w-full sm:w-auto bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-base lg:text-lg px-8 lg:px-12 py-4 lg:py-6 rounded-full"
                 >
                   <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6 ml-2" />
-                  اشتر الآن - {productPrice} درهم
+                  اشتر الآن - {formatPrice(productPrice)}
                 </Button>
               </Link>
             </div>
@@ -279,8 +277,8 @@ const ProductHero = () => {
               </div>
               <div className="absolute -bottom-3 lg:-bottom-4 -left-3 lg:-left-4 bg-white/20 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 lg:p-4 shadow-medium z-30">
                 <div className="text-white text-center">
-                  <div className="text-xl lg:text-2xl font-bold text-secondary">{productPrice}</div>
-                  <div className="text-xs lg:text-sm">درهم إماراتي</div>
+                  <div className="text-xl lg:text-2xl font-bold text-secondary">{formatPrice(productPrice)}</div>
+                  <div className="text-xs lg:text-sm">سعر المنتج</div>
                 </div>
               </div>
             </div>

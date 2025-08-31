@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProductPrice } from "@/hooks/useProductPrice";
+import { useCurrency } from "@/hooks/useCurrency";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -37,6 +38,7 @@ const Order = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { price: productPrice } = useProductPrice({ fallback: 299 });
+  const { formatPrice } = useCurrency();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -185,7 +187,7 @@ const Order = () => {
                     </div>
                   </div>
                   <div className="text-left">
-                    <span className="text-xl font-bold text-primary">{productPrice} درهم</span>
+                    <span className="text-xl font-bold text-primary">{formatPrice(productPrice)}</span>
                   </div>
                 </div>
               </CardDescription>
@@ -371,8 +373,8 @@ const Order = () => {
 
                 <div className="border-t pt-4 bg-accent/30 -mx-4 px-4 py-4 lg:-mx-6 lg:px-6 rounded-lg">
                   <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-lg lg:text-xl font-semibold">
-                    <span className="text-primary">المجموع: {totalAmount} درهم</span>
-                    <span className="text-muted-foreground text-sm lg:text-base">({productPrice} درهم × {formData.quantity})</span>
+                    <span className="text-primary">المجموع: {formatPrice(totalAmount)}</span>
+                    <span className="text-muted-foreground text-sm lg:text-base">({formatPrice(productPrice)} × {formData.quantity})</span>
                   </div>
                 </div>
 
