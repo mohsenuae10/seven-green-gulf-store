@@ -215,7 +215,7 @@ export function OrdersManagement() {
                         {order.customer_name}
                       </TableCell>
                       <TableCell>
-                        {order.customer_phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')}
+                        {order.customer_phone}
                       </TableCell>
                       <TableCell>{order.country}</TableCell>
                       <TableCell>{order.city}</TableCell>
