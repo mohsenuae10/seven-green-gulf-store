@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, ShoppingCart, Leaf, Crown, Shield, Settings, Play, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import heroImage from "@/assets/seven-green-hero-new.jpg";
 import { useProductPrice } from "@/hooks/useProductPrice";
 
 const ProductHero = () => {
@@ -156,7 +157,7 @@ const ProductHero = () => {
               
               {/* Main product image */}
               <img 
-                src="/lovable-uploads/0e891736-0a89-458a-b475-c684dcb57afd.png" 
+                src={heroImage} 
                 alt="سيفن جرين للعناية بالشعر" 
                 className="relative z-10 w-full max-w-lg mx-auto rounded-3xl shadow-strong hover:scale-105 transition-transform duration-500"
               />
