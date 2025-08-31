@@ -10,6 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import MobileNav from "@/components/MobileNav";
+import MobileOptimized from "@/components/MobileOptimized";
 
 const Order = () => {
   const [formData, setFormData] = useState({
@@ -140,22 +142,23 @@ const Order = () => {
   const totalAmount = productPrice * formData.quantity;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-white py-8">
-      <div className="container mx-auto px-4">
+    <MobileOptimized className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+      <MobileNav />
+      <div className="mobile-container py-4 sm:py-8">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">اطلب سيفن جرين الآن</h1>
-            <p className="text-gray-600">املأ النموذج أدناه لإتمام طلبك</p>
+          <div className="text-center mb-6 lg:mb-8 px-4">
+            <h1 className="mobile-heading font-bold text-gray-900 mb-2">اطلب سيفن جرين الآن</h1>
+            <p className="text-gray-600 mobile-text">املأ النموذج أدناه لإتمام طلبك</p>
           </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-right">معلومات الطلب</CardTitle>
-              <CardDescription className="text-right">
+          <Card className="mobile-card shadow-medium border-border/50">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-right mobile-subheading">معلومات الطلب</CardTitle>
+              <CardDescription className="text-right mobile-text">
                 سيفن جرين - منتج العناية بالشعر الطبيعي
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 sm:p-6">
               {error && (
                 <Alert variant="destructive" className="mb-6">
                   <AlertCircle className="h-4 w-4" />
@@ -165,56 +168,56 @@ const Order = () => {
                 </Alert>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="name" className="text-right block">الاسم الكامل *</Label>
+                    <Label htmlFor="name" className="text-right block mobile-text font-medium">الاسم الكامل *</Label>
                     <Input
                       id="name"
                       type="text"
                       placeholder="أدخل اسمك الكامل"
                       value={formData.customerName}
                       onChange={(e) => handleInputChange("customerName", e.target.value)}
-                      className="text-right"
+                      className="text-right mobile-input touch-target"
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="phone" className="text-right block">رقم الهاتف *</Label>
+                    <Label htmlFor="phone" className="text-right block mobile-text font-medium">رقم الهاتف *</Label>
                     <Input
                       id="phone"
                       type="tel"
                       placeholder="+971501234567"
                       value={formData.customerPhone}
                       onChange={(e) => handleInputChange("customerPhone", e.target.value)}
-                      className="text-right"
+                      className="text-right mobile-input touch-target"
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-right block">البريد الإلكتروني (اختياري)</Label>
+                  <Label htmlFor="email" className="text-right block mobile-text font-medium">البريد الإلكتروني (اختياري)</Label>
                   <Input
                     id="email"
                     type="email"
                     placeholder="example@email.com"
                     value={formData.customerEmail}
                     onChange={(e) => handleInputChange("customerEmail", e.target.value)}
-                    className="text-right"
+                    className="text-right mobile-input touch-target"
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="country" className="text-right block">الدولة *</Label>
+                    <Label htmlFor="country" className="text-right block mobile-text font-medium">الدولة *</Label>
                     <Select
                       value={formData.country}
                       onValueChange={(value) => handleInputChange("country", value)}
                       required
                     >
-                      <SelectTrigger className="text-right">
+                      <SelectTrigger className="text-right touch-target">
                         <SelectValue placeholder="اختر الدولة" />
                       </SelectTrigger>
                       <SelectContent>
@@ -229,66 +232,68 @@ const Order = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="city" className="text-right block">المدينة *</Label>
+                    <Label htmlFor="city" className="text-right block mobile-text font-medium">المدينة *</Label>
                     <Input
                       id="city"
                       type="text"
                       placeholder="أدخل المدينة"
                       value={formData.city}
                       onChange={(e) => handleInputChange("city", e.target.value)}
-                      className="text-right"
+                      className="text-right mobile-input touch-target"
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="address" className="text-right block">العنوان الكامل *</Label>
+                  <Label htmlFor="address" className="text-right block mobile-text font-medium">العنوان الكامل *</Label>
                   <Input
                     id="address"
                     type="text"
                     placeholder="أدخل العنوان التفصيلي"
                     value={formData.address}
                     onChange={(e) => handleInputChange("address", e.target.value)}
-                    className="text-right"
+                    className="text-right mobile-input touch-target"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="quantity" className="text-right block">الكمية</Label>
-                  <div className="flex items-center gap-3">
+                  <Label htmlFor="quantity" className="text-right block mobile-text font-medium">الكمية</Label>
+                  <div className="flex items-center justify-center gap-4">
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
+                      size="lg"
                       onClick={() => handleInputChange("quantity", Math.max(1, formData.quantity - 1))}
                       disabled={formData.quantity <= 1}
+                      className="touch-target w-12 h-12 rounded-full"
                     >
                       -
                     </Button>
-                    <span className="text-lg font-semibold w-8 text-center">{formData.quantity}</span>
+                    <span className="text-xl lg:text-2xl font-semibold w-12 text-center">{formData.quantity}</span>
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
+                      size="lg"
                       onClick={() => handleInputChange("quantity", formData.quantity + 1)}
+                      className="touch-target w-12 h-12 rounded-full"
                     >
                       +
                     </Button>
                   </div>
                 </div>
 
-                <div className="border-t pt-4">
-                  <div className="flex justify-between items-center text-lg font-semibold">
-                    <span>المجموع: {totalAmount} درهم</span>
-                    <span>({productPrice} درهم × {formData.quantity})</span>
+                <div className="border-t pt-4 bg-accent/30 -mx-4 px-4 py-4 lg:-mx-6 lg:px-6 rounded-lg">
+                  <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-lg lg:text-xl font-semibold">
+                    <span className="text-primary">المجموع: {totalAmount} درهم</span>
+                    <span className="text-muted-foreground text-sm lg:text-base">({productPrice} درهم × {formData.quantity})</span>
                   </div>
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full bg-green-600 hover:bg-green-700 text-white py-3"
+                  className="w-full bg-gradient-secondary hover:bg-gradient-primary text-white mobile-button touch-target rounded-full shadow-glow hover:scale-105 transition-all duration-300"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -305,7 +310,7 @@ const Order = () => {
           </Card>
         </div>
       </div>
-    </div>
+    </MobileOptimized>
   );
 };
 

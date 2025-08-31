@@ -9,8 +9,8 @@ const ProductHero = () => {
   
   return (
     <section className="relative min-h-screen overflow-hidden">
-      {/* Admin Link */}
-      <Link to="/auth" className="absolute top-4 left-4 z-20">
+      {/* Admin Link - Hidden on mobile, shown on desktop */}
+      <Link to="/auth" className="absolute top-4 left-4 z-20 hidden sm:block">
         <Button variant="ghost" size="sm" className="text-white/70 hover:text-white hover:bg-white/10">
           <Settings className="w-4 h-4 ml-2" />
           لوحة التحكم
@@ -28,10 +28,10 @@ const ProductHero = () => {
         <Crown className="w-24 h-24 text-secondary animate-pulse" />
       </div>
 
-      <div className="mobile-container relative z-10">
+      <div className="mobile-container relative z-10 mt-16 sm:mt-0">
         
         {/* Main Hero Content */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-screen py-12 sm:py-16 lg:py-20">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[calc(100vh-4rem)] sm:min-h-screen py-8 sm:py-12 lg:py-20">
           
           {/* Product Content - Right side for RTL */}
           <div className="order-2 lg:order-1 space-y-6 lg:space-y-8 animate-slide-up text-center lg:text-right px-4 sm:px-0" dir="rtl">
