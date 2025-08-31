@@ -1,10 +1,33 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Star, ShoppingCart, Leaf, Crown, Shield, Settings } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import heroImage from "@/assets/seven-green-hero.jpg";
 
 const ProductHero = () => {
+  const [productPrice, setProductPrice] = useState<number>(299);
+
+  useEffect(() => {
+    fetchProductPrice();
+  }, []);
+
+  const fetchProductPrice = async () => {
+    try {
+      const { data } = await supabase
+        .from('products')
+        .select('price')
+        .eq('is_active', true)
+        .single();
+      
+      if (data?.price) {
+        setProductPrice(data.price);
+      }
+    } catch (error) {
+      console.error('Error fetching product price:', error);
+    }
+  };
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Admin Link */}
@@ -84,7 +107,7 @@ const ProductHero = () => {
                 className="bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-lg px-8 py-4 rounded-full"
               >
                 <ShoppingCart className="w-5 h-5 ml-2" />
-                اطلب الآن - 299 ريال
+                اطلب الآن - {productPrice} درهم
               </Button>
             </Link>
             <Button 
@@ -133,8 +156,8 @@ const ProductHero = () => {
             </div>
             <div className="absolute -bottom-4 -left-4 bg-white/20 backdrop-blur-sm rounded-2xl p-4 shadow-medium">
               <div className="text-white text-center">
-                <div className="text-2xl font-bold text-secondary">299</div>
-                <div className="text-sm">ريال سعودي</div>
+                <div className="text-2xl font-bold text-secondary">{productPrice}</div>
+                <div className="text-sm">درهم إماراتي</div>
               </div>
             </div>
           </div>

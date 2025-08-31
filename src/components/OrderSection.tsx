@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -9,9 +10,29 @@ import { ShoppingCart, MapPin, Phone, User, CreditCard, Truck, Shield, Crown } f
 
 const OrderSection = () => {
   const [quantity, setQuantity] = useState(1);
-  const price = 299;
+  const [price, setPrice] = useState(299);
   const shipping = 0; // Free shipping
   const total = price * quantity + shipping;
+
+  useEffect(() => {
+    fetchProductPrice();
+  }, []);
+
+  const fetchProductPrice = async () => {
+    try {
+      const { data } = await supabase
+        .from('products')
+        .select('price')
+        .eq('is_active', true)
+        .single();
+      
+      if (data?.price) {
+        setPrice(data.price);
+      }
+    } catch (error) {
+      console.error('Error fetching product price:', error);
+    }
+  };
 
   return (
     <section className="py-20 bg-gradient-to-b from-background to-primary/5" dir="rtl" id="order">
@@ -143,7 +164,7 @@ const OrderSection = () => {
                       >
                         +
                       </Button>
-                      <span className="text-muted-foreground">× {price} ريال</span>
+                      <span className="text-muted-foreground">× {price} درهم</span>
                     </div>
                   </div>
                 </form>
@@ -177,7 +198,7 @@ const OrderSection = () => {
                 <div className="space-y-3 border-t border-border/50 pt-4">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">السعر ({quantity} قطعة)</span>
-                    <span className="font-medium">{price * quantity} ريال</span>
+                    <span className="font-medium">{price * quantity} درهم</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">الشحن</span>
@@ -185,7 +206,7 @@ const OrderSection = () => {
                   </div>
                   <div className="flex justify-between text-lg font-bold border-t border-border/50 pt-3">
                     <span>المجموع</span>
-                    <span className="text-primary">{total} ريال</span>
+                    <span className="text-primary">{total} درهم</span>
                   </div>
                 </div>
 

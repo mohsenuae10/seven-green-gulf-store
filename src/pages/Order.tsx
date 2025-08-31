@@ -1,6 +1,7 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,10 +23,29 @@ const Order = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [productPrice, setProductPrice] = useState(299);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const PRODUCT_PRICE = 299; // AED
+  useEffect(() => {
+    fetchProductPrice();
+  }, []);
+
+  const fetchProductPrice = async () => {
+    try {
+      const { data } = await supabase
+        .from('products')
+        .select('price')
+        .eq('is_active', true)
+        .single();
+      
+      if (data?.price) {
+        setProductPrice(data.price);
+      }
+    } catch (error) {
+      console.error('Error fetching product price:', error);
+    }
+  };
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -72,7 +92,7 @@ const Order = () => {
     setError(null);
 
     try {
-      const totalAmount = PRODUCT_PRICE * formData.quantity;
+      const totalAmount = productPrice * formData.quantity;
       
       console.log("Submitting order with data:", { ...formData, totalAmount });
       
@@ -137,7 +157,7 @@ const Order = () => {
     }
   };
 
-  const totalAmount = PRODUCT_PRICE * formData.quantity;
+  const totalAmount = productPrice * formData.quantity;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-white py-8">
@@ -282,7 +302,7 @@ const Order = () => {
                 <div className="border-t pt-4">
                   <div className="flex justify-between items-center text-lg font-semibold">
                     <span>المجموع: {totalAmount} درهم</span>
-                    <span>({PRODUCT_PRICE} درهم × {formData.quantity})</span>
+                    <span>({productPrice} درهم × {formData.quantity})</span>
                   </div>
                 </div>
 
