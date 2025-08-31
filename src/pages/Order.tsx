@@ -76,10 +76,11 @@ const Order = () => {
       
       console.log("Submitting order with data:", { ...formData, totalAmount });
       
-      const response = await fetch('/functions/v1/create-ziina-payment', {
+      const response = await fetch('https://dnvchztawygtkdddsiwn.supabase.co/functions/v1/create-ziina-payment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRudmNoenRhd3lndGtkZGRzaXduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY1NjI4MjIsImV4cCI6MjA3MjEzODgyMn0.7Q3xdzggqnYmQicpp6wjfmLlyp40f0sCnr0G6NWQNfM',
         },
         body: JSON.stringify({
           ...formData,
@@ -87,10 +88,30 @@ const Order = () => {
         }),
       });
 
-      const result = await response.json();
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+
+      // Check if response is ok
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response:", errorText);
+        throw new Error(`خطأ في الخادم: ${response.status}`);
+      }
+
+      // Try to parse JSON response
+      let result;
+      try {
+        const responseText = await response.text();
+        console.log("Raw response:", responseText);
+        result = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("Failed to parse JSON:", parseError);
+        throw new Error("استجابة غير صحيحة من الخادم");
+      }
+
       console.log("Payment response:", result);
 
-      if (!response.ok || !result.success) {
+      if (!result.success) {
         throw new Error(result.error || "فشل في معالجة الطلب");
       }
 
