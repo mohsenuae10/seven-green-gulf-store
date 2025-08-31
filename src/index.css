@@ -56,6 +56,9 @@
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
+    /* Arabic Font */
+    --font-arabic: 'Tajawal', sans-serif;
+
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
@@ -134,7 +137,8 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground;
+    font-family: var(--font-arabic);
     background: linear-gradient(to bottom, hsl(var(--background)), hsl(var(--accent)));
     min-height: 100vh;
     /* Mobile optimizations */
@@ -142,6 +146,16 @@
     text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* English text styling */
+  .font-english {
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Arabic text styling - default */
+  .font-arabic {
+    font-family: var(--font-arabic);
   }
 
   /* Mobile viewport fix */
