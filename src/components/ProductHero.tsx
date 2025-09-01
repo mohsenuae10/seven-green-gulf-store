@@ -246,8 +246,8 @@ const ProductHero = () => {
               </div>
             </div>
 
-            {/* CTA Button */}
-            <div className="flex justify-center lg:justify-end">
+            {/* CTA Buttons */}
+            <div className="flex flex-col items-center lg:items-end gap-4">
               <Link to="/order">
                 <Button 
                   size="lg" 
@@ -255,6 +255,16 @@ const ProductHero = () => {
                 >
                   <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6 ml-2" />
                   اشتر الآن - {formatPrice(productPrice)}
+                </Button>
+              </Link>
+              
+              <Link to="/product-details">
+                <Button 
+                  variant="outline"
+                  size="lg"
+                  className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 hover:border-white/50 transition-all duration-300 text-base lg:text-lg px-8 lg:px-12 py-3 lg:py-4 rounded-full"
+                >
+                  تفاصيل المنتج
                 </Button>
               </Link>
             </div>
