@@ -1,5 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { Droplets, Heart, Sparkles, Users, Clock, Award } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const ProductFeatures = () => {
   const features = [
@@ -41,6 +43,19 @@ const ProductFeatures = () => {
     }
   ];
 
+  const [benefits, setBenefits] = useState<string[]>([]);
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from('site_content')
+        .select('content')
+        .eq('section', 'features')
+        .maybeSingle();
+      const arr = (data as any)?.content?.benefits;
+      if (Array.isArray(arr)) setBenefits(arr);
+    })();
+  }, []);
+
   return (
     <section className="py-20 bg-gradient-to-b from-background to-accent/20" dir="rtl">
       <div className="container mx-auto px-4">
@@ -64,38 +79,61 @@ const ProductFeatures = () => {
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((feature, index) => (
-            <Card 
-              key={index}
-              className="group relative overflow-hidden bg-gradient-card border-border/50 hover:border-primary/30 transition-all duration-500 hover:scale-105 hover:shadow-medium animate-bounce-in"
-              style={{animationDelay: `${index * 0.1}s`}}
-            >
-              {/* Gradient background */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
-              
-              <div className="relative p-8 text-center">
-                {/* Icon */}
-                <div className="relative mb-6">
-                  <div className="w-16 h-16 mx-auto bg-gradient-primary rounded-2xl flex items-center justify-center shadow-soft group-hover:shadow-medium transition-all duration-300 group-hover:scale-110">
-                    <feature.icon className="w-8 h-8 text-primary-foreground" />
+          {benefits.length > 0 ? (
+            benefits.map((b, index) => (
+              <Card 
+                key={index}
+                className="group relative overflow-hidden bg-gradient-card border-border/50 hover:border-primary/30 transition-all duration-500 hover:scale-105 hover:shadow-medium animate-bounce-in"
+                style={{animationDelay: `${index * 0.1}s`}}
+              >
+                <div className="relative p-8 text-center">
+                  <div className="relative mb-6">
+                    <div className="w-16 h-16 mx-auto bg-gradient-primary rounded-2xl flex items-center justify-center shadow-soft group-hover:shadow-medium transition-all duration-300 group-hover:scale-110">
+                      <Award className="w-8 h-8 text-primary-foreground" />
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-primary rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
                   </div>
-                  <div className="absolute inset-0 bg-gradient-primary rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
+                  <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
+                    {b}
+                  </h3>
+                  <div className="mt-6 h-1 w-12 bg-gradient-primary mx-auto rounded-full opacity-50 group-hover:opacity-100 group-hover:w-20 transition-all duration-300"></div>
                 </div>
-
-                {/* Content */}
-                <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
-                  {feature.title}
-                </h3>
+              </Card>
+            ))
+          ) : (
+            features.map((feature, index) => (
+              <Card 
+                key={index}
+                className="group relative overflow-hidden bg-gradient-card border-border/50 hover:border-primary/30 transition-all duration-500 hover:scale-105 hover:shadow-medium animate-bounce-in"
+                style={{animationDelay: `${index * 0.1}s`}}
+              >
+                {/* Gradient background */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
                 
-                <p className="text-muted-foreground leading-relaxed">
-                  {feature.description}
-                </p>
-
-                {/* Decorative line */}
-                <div className="mt-6 h-1 w-12 bg-gradient-primary mx-auto rounded-full opacity-50 group-hover:opacity-100 group-hover:w-20 transition-all duration-300"></div>
-              </div>
-            </Card>
-          ))}
+                <div className="relative p-8 text-center">
+                  {/* Icon */}
+                  <div className="relative mb-6">
+                    <div className="w-16 h-16 mx-auto bg-gradient-primary rounded-2xl flex items-center justify-center shadow-soft group-hover:shadow-medium transition-all duration-300 group-hover:scale-110">
+                      <feature.icon className="w-8 h-8 text-primary-foreground" />
+                    </div>
+                    <div className="absolute inset-0 bg-gradient-primary rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
+                  </div>
+  
+                  {/* Content */}
+                  <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
+                    {feature.title}
+                  </h3>
+                  
+                  <p className="text-muted-foreground leading-relaxed">
+                    {feature.description}
+                  </p>
+  
+                  {/* Decorative line */}
+                  <div className="mt-6 h-1 w-12 bg-gradient-primary mx-auto rounded-full opacity-50 group-hover:opacity-100 group-hover:w-20 transition-all duration-300"></div>
+                </div>
+              </Card>
+            ))
+          )}
         </div>
 
         {/* Bottom CTA */}

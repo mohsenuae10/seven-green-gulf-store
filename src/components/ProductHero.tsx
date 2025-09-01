@@ -8,6 +8,7 @@ import CurrencySwitcher from "@/components/CurrencySwitcher";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useCallback, useEffect, useState } from 'react';
+import { supabase } from "@/integrations/supabase/client";
 
 const ProductHero = () => {
   const { price: productPrice } = useProductPrice({ fallback: 299 });
@@ -48,7 +49,7 @@ const ProductHero = () => {
     emblaApi.on('select', onSelect);
   }, [emblaApi, onInit, onSelect]);
 
-  const productImages = [
+  const [productImages, setProductImages] = useState<{ src: string; alt: string }[]>([
     {
       src: "/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png",
       alt: "سيفن جرين للعناية بالشعر"
@@ -69,7 +70,54 @@ const ProductHero = () => {
       src: "/lovable-uploads/0ccb67ab-d696-4efc-9b4e-9b8eee196109.png",
       alt: "سيفن جرين - صابون السرو والأوسمان الطبيعي مع العبوة"
     }
-  ];
+  ]);
+
+  const [heroTitle, setHeroTitle] = useState<string>('سيفن جرين');
+  const [heroSubtitle, setHeroSubtitle] = useState<string>('SEVEN GREEN');
+  const [heroDescription, setHeroDescription] = useState<string>('تركيبة طبيعية متقدمة من أوراق السرو ونبات الأوسمان، مُصممة لمنع تساقط الشعر والتحكم في الزيوت');
+  const [heroFeatures, setHeroFeatures] = useState<string[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const { data: site } = await supabase
+          .from('site_content')
+          .select('title, description, content')
+          .eq('section', 'hero')
+          .maybeSingle();
+        if (site) {
+          if (site.title) setHeroTitle(site.title);
+          const c: any = site.content || {};
+          if (c.subtitle) setHeroSubtitle(c.subtitle);
+          if (c.description) setHeroDescription(c.description);
+          if (Array.isArray(c.features)) setHeroFeatures(c.features);
+        }
+      } catch {}
+
+      try {
+        const { data: prod } = await supabase
+          .from('products')
+          .select('id')
+          .eq('is_active', true)
+          .order('created_at')
+          .limit(1)
+          .maybeSingle();
+        const productId = prod?.id;
+        if (productId) {
+          const { data: imgs } = await supabase
+            .from('product_images')
+            .select('image_url, alt_text, display_order')
+            .eq('product_id', productId)
+            .order('display_order');
+          if (imgs && imgs.length) {
+            setProductImages(imgs.map(i => ({ src: i.image_url, alt: i.alt_text || 'صورة المنتج' })));
+          }
+        }
+      } catch {}
+    };
+
+    load();
+  }, []);
   
   return (
     <section className="relative min-h-screen overflow-hidden">
@@ -132,9 +180,9 @@ const ProductHero = () => {
             {/* Main Heading */}
             <div className="space-y-3 lg:space-y-4">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-7xl font-bold text-white leading-tight">
-                سيفن جرين
+                {heroTitle}
                 <span className="block text-lg sm:text-xl lg:text-2xl xl:text-3xl text-secondary font-semibold mt-1 font-english">
-                  SEVEN GREEN
+                  {heroSubtitle}
                 </span>
                 <span className="block text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-secondary font-light mt-2">
                   صابون السرو والأوسمان الطبيعي
@@ -142,21 +190,21 @@ const ProductHero = () => {
               </h1>
               
               <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-2xl leading-relaxed mx-auto lg:mx-0">
-                تركيبة طبيعية متقدمة من أوراق السرو ونبات الأوسمان، مُصممة لمنع تساقط الشعر والتحكم في الزيوت
+                {heroDescription}
               </p>
             </div>
 
             {/* Features Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
-              {[
+              {(heroFeatures.length ? heroFeatures.map((t, i) => ({ icon: [Leaf, Shield, Crown][i % 3], title: t })) : [
                 { icon: Leaf, title: "طبيعي 100%", desc: "مكونات عضوية صينية" },
                 { icon: Shield, title: "آمن ومُختبر", desc: "معايير جودة عالمية" },
                 { icon: Crown, title: "فاخر", desc: "تقنية صينية متقدمة" }
-              ].map((feature, index) => (
+              ]).map((feature, index) => (
                 <Card key={index} className="bg-white/10 backdrop-blur-sm border-white/20 p-3 lg:p-4 text-center animate-bounce-in" style={{animationDelay: `${index * 0.2}s`}}>
                   <feature.icon className="w-6 h-6 lg:w-8 lg:h-8 text-secondary mx-auto mb-2" />
                   <h3 className="font-semibold text-white text-sm lg:text-base">{feature.title}</h3>
-                  <p className="text-xs lg:text-sm text-white/70">{feature.desc}</p>
+                  {feature.desc && <p className="text-xs lg:text-sm text-white/70">{feature.desc}</p>}
                 </Card>
               ))}
             </div>
