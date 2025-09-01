@@ -64,6 +64,10 @@ const ProductHero = () => {
     {
       src: "/lovable-uploads/72685aea-a9c9-4296-8daa-59448d17e405.png",
       alt: "سيفن جرين - المنتج الطبيعي والعبوة الأصلية"
+    },
+    {
+      src: "/lovable-uploads/0ccb67ab-d696-4efc-9b4e-9b8eee196109.png",
+      alt: "سيفن جرين - صابون السرو والأوسمان الطبيعي مع العبوة"
     }
   ];
   
