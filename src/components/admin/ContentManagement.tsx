@@ -306,7 +306,7 @@ const ContentManagement = () => {
                 )}
 
                 {/* Save Button */}
-                <div className="flex justify-end pt-4 border-t">
+                <div className="flex justify-center pt-6 mt-6 border-t border-border">
                   <Button
                     onClick={() => {
                       toast({
@@ -315,7 +315,8 @@ const ContentManagement = () => {
                       });
                     }}
                     disabled={saving === content.id}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3"
+                    size="lg"
                   >
                     {saving === content.id ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
