@@ -4,7 +4,9 @@ import {
   ShoppingCart, 
   Package, 
   LogOut,
-  BarChart3
+  BarChart3,
+  Image,
+  FileText
 } from "lucide-react";
 import {
   Sidebar,
@@ -32,6 +34,8 @@ const menuItems = [
   { id: "dashboard", title: "لوحة المعلومات", icon: LayoutDashboard },
   { id: "orders", title: "إدارة الطلبات", icon: ShoppingCart },
   { id: "products", title: "إدارة المنتجات", icon: Package },
+  { id: "images", title: "إدارة الصور", icon: Image },
+  { id: "content", title: "إدارة المحتوى", icon: FileText },
 ];
 
 export function AdminSidebar({ activeSection, setActiveSection, user, onSignOut }: AdminSidebarProps) {
