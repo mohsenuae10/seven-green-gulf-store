@@ -304,6 +304,27 @@ const ContentManagement = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Save Button */}
+                <div className="flex justify-end pt-4 border-t">
+                  <Button
+                    onClick={() => {
+                      toast({
+                        title: 'تم الحفظ',
+                        description: 'تم حفظ جميع التغييرات بنجاح',
+                      });
+                    }}
+                    disabled={saving === content.id}
+                    className="flex items-center gap-2"
+                  >
+                    {saving === content.id ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Save className="w-4 h-4" />
+                    )}
+                    حفظ التغييرات
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
