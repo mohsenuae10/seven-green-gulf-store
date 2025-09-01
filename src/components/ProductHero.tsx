@@ -262,7 +262,7 @@ const ProductHero = () => {
                 <Button 
                   variant="outline"
                   size="lg"
-                  className="w-full sm:w-auto border-white/30 text-white hover:bg-white/10 hover:border-white/50 transition-all duration-300 text-base lg:text-lg px-8 lg:px-12 py-3 lg:py-4 rounded-full"
+                  className="w-full sm:w-auto border-white/30 text-primary bg-white/90 hover:bg-white hover:text-primary/80 transition-all duration-300 text-base lg:text-lg px-8 lg:px-12 py-3 lg:py-4 rounded-full"
                 >
                   تفاصيل المنتج
                 </Button>
