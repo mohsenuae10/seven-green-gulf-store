@@ -60,6 +60,10 @@ const ProductHero = () => {
     {
       src: "/lovable-uploads/b7fcf75b-d26d-4d69-971f-2b17e4dd3f6f.png",
       alt: "سيفن جرين - فوائد طبيعية"
+    },
+    {
+      src: "/lovable-uploads/72685aea-a9c9-4296-8daa-59448d17e405.png",
+      alt: "سيفن جرين - المنتج الطبيعي والعبوة الأصلية"
     }
   ];
   
