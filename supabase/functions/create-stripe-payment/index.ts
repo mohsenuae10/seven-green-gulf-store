@@ -137,7 +137,7 @@ serve(async (req) => {
       customer: customerId,
       line_items: [
         {
-          price: "price_1S8mOD9IHXjyx3CsN2xVD9PS", // Updated Stripe price ID for 115 AED
+          price: "price_1S8mUd9IHXjyx3CsLe0LnjlI", // New Stripe price ID for 115 AED
           quantity: quantity,
         },
       ],
