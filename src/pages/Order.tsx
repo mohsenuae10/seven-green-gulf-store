@@ -91,20 +91,26 @@ const Order = () => {
       
       console.log("Submitting order with data:", { ...formData, totalAmount });
       
-      const response = await fetch('https://dnvchztawygtkdddsiwn.supabase.co/functions/v1/create-ziina-payment', {
+      const response = await fetch('https://dnvchztawygtkdddsiwn.supabase.co/functions/v1/create-stripe-payment', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRudmNoenRhd3lndGtkZGRzaXduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY1NjI4MjIsImV4cCI6MjA3MjEzODgyMn0.7Q3xdzggqnYmQicpp6wjfmLlyp40f0sCnr0G6NWQNfM',
         },
         body: JSON.stringify({
-          ...formData,
+          customerName: formData.customerName,
+          customerEmail: formData.customerEmail,
+          customerPhone: formData.customerPhone,
+          country: formData.country,
+          city: formData.city,
+          address: formData.address,
+          quantity: formData.quantity,
           totalAmount,
+          currency: 'AED',
         }),
       });
 
       console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
 
       // Check if response is ok
       if (!response.ok) {
@@ -131,8 +137,13 @@ const Order = () => {
       }
 
       if (result.payment_url) {
-        console.log("Redirecting to payment URL:", result.payment_url);
-        window.location.href = result.payment_url;
+        console.log("Opening Stripe checkout in new tab:", result.payment_url);
+        window.open(result.payment_url, '_blank');
+        
+        toast({
+          title: "تم إنشاء الطلب بنجاح",
+          description: "تم فتح صفحة الدفع في نافذة جديدة",
+        });
       } else {
         throw new Error("لم يتم إنشاء رابط الدفع");
       }
