@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,16 +16,49 @@ import MobileNav from "@/components/MobileNav";
 import MobileOptimized from "@/components/MobileOptimized";
 
 // Country data with codes and flags
-const countries = [
-  { code: "AE", name: "الإمارات العربية المتحدة", flag: "🇦🇪", phoneCode: "+971" },
-  { code: "SA", name: "المملكة العربية السعودية", flag: "🇸🇦", phoneCode: "+966" },
-  { code: "QA", name: "قطر", flag: "🇶🇦", phoneCode: "+974" },
-  { code: "KW", name: "الكويت", flag: "🇰🇼", phoneCode: "+965" },
-  { code: "BH", name: "البحرين", flag: "🇧🇭", phoneCode: "+973" },
-  { code: "OM", name: "عمان", flag: "🇴🇲", phoneCode: "+968" },
+const getCountries = (language: string) => [
+  { 
+    code: "AE", 
+    name: language === 'ar' ? "الإمارات العربية المتحدة" : "United Arab Emirates", 
+    flag: "🇦🇪", 
+    phoneCode: "+971" 
+  },
+  { 
+    code: "SA", 
+    name: language === 'ar' ? "المملكة العربية السعودية" : "Saudi Arabia", 
+    flag: "🇸🇦", 
+    phoneCode: "+966" 
+  },
+  { 
+    code: "QA", 
+    name: language === 'ar' ? "قطر" : "Qatar", 
+    flag: "🇶🇦", 
+    phoneCode: "+974" 
+  },
+  { 
+    code: "KW", 
+    name: language === 'ar' ? "الكويت" : "Kuwait", 
+    flag: "🇰🇼", 
+    phoneCode: "+965" 
+  },
+  { 
+    code: "BH", 
+    name: language === 'ar' ? "البحرين" : "Bahrain", 
+    flag: "🇧🇭", 
+    phoneCode: "+973" 
+  },
+  { 
+    code: "OM", 
+    name: language === 'ar' ? "عمان" : "Oman", 
+    flag: "🇴🇲", 
+    phoneCode: "+968" 
+  },
 ];
 
 const Order = () => {
+  const { language, t } = useLanguage();
+  const countries = getCountries(language);
+  
   const [formData, setFormData] = useState({
     customerName: "",
     customerPhone: "",
@@ -50,27 +84,27 @@ const Order = () => {
 
   const validateForm = () => {
     if (!formData.customerName.trim()) {
-      setError("يرجى إدخال الاسم");
+      setError(t('order.validation.name'));
       return false;
     }
     if (!formData.customerPhone.trim()) {
-      setError("يرجى إدخال رقم الهاتف");
+      setError(t('order.validation.phone'));
       return false;
     }
     if (!formData.country) {
-      setError("يرجى اختيار الدولة");
+      setError(t('order.validation.country'));
       return false;
     }
     if (!formData.city.trim()) {
-      setError("يرجى إدخال المدينة");
+      setError(t('order.validation.city'));
       return false;
     }
     if (!formData.address.trim()) {
-      setError("يرجى إدخال العنوان");
+      setError(t('order.validation.address'));
       return false;
     }
     if (formData.quantity < 1) {
-      setError("يجب أن تكون الكمية أكبر من صفر");
+      setError(t('order.validation.quantity'));
       return false;
     }
     return true;
@@ -141,8 +175,8 @@ const Order = () => {
         window.open(result.payment_url, '_blank');
         
         toast({
-          title: "تم إنشاء الطلب بنجاح",
-          description: "تم فتح صفحة الدفع في نافذة جديدة",
+          title: t('order.success.title'),
+          description: t('order.success.desc'),
         });
       } else {
         throw new Error("لم يتم إنشاء رابط الدفع");
@@ -154,7 +188,7 @@ const Order = () => {
       setError(errorMessage);
       
       toast({
-        title: "خطأ في الطلب",
+        title: t('order.error.title'),
         description: errorMessage,
         variant: "destructive",
       });
@@ -166,21 +200,21 @@ const Order = () => {
   const totalAmount = productPrice * formData.quantity;
 
   return (
-    <MobileOptimized className="min-h-screen bg-gradient-to-br from-green-50 to-white">
+    <MobileOptimized className="min-h-screen bg-gradient-to-br from-green-50 to-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <MobileNav />
       <div className="mobile-container py-4 sm:py-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-6 lg:mb-8 px-4">
             <h1 className="mobile-heading font-bold text-gray-900 mb-2">
-              اطلب سيفن جرين الآن
+              {t('order.title')}
               <span className="block text-base font-medium text-primary mt-1">SEVEN GREEN</span>
             </h1>
-            <p className="text-gray-600 mobile-text">املأ النموذج أدناه لإتمام طلبك</p>
+            <p className="text-gray-600 mobile-text">{t('order.subtitle')}</p>
           </div>
 
           <Card className="mobile-card shadow-medium border-border/50">
             <CardHeader className="pb-4">
-              <CardTitle className="text-right mobile-subheading">معلومات الطلب</CardTitle>
+              <CardTitle className={`mobile-subheading ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.form.title')}</CardTitle>
               <CardDescription className="text-right mobile-text">
                 <div className="flex items-center gap-3 mt-3 p-3 bg-accent/20 rounded-lg">
                   <img 
@@ -215,22 +249,22 @@ const Order = () => {
 
               <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-right block mobile-text font-medium">الاسم الكامل *</Label>
+                  <Label htmlFor="name" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.name')} *</Label>
                   <Input
                     id="name"
                     type="text"
-                    placeholder="أدخل اسمك الكامل"
+                    placeholder={t('order.name.placeholder')}
                     value={formData.customerName}
                     onChange={(e) => handleInputChange("customerName", e.target.value)}
-                    className="text-right mobile-input touch-target"
+                    className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-right block mobile-text font-medium flex items-center gap-2">
+                  <Label htmlFor="phone" className={`block mobile-text font-medium flex items-center gap-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                     <Phone className="w-4 h-4" />
-                    رقم الهاتف *
+                    {t('order.phone')} *
                   </Label>
                   <div className="flex gap-2">
                     <Select
@@ -267,32 +301,32 @@ const Order = () => {
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="501234567"
+                      placeholder={t('order.phone.placeholder')}
                       value={formData.customerPhone}
                       onChange={(e) => handleInputChange("customerPhone", e.target.value)}
-                      className="text-right mobile-input touch-target flex-1"
+                      className={`mobile-input touch-target flex-1 ${language === 'ar' ? 'text-right' : 'text-left'}`}
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-right block mobile-text font-medium">البريد الإلكتروني (اختياري)</Label>
+                  <Label htmlFor="email" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.email')}</Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="example@email.com"
+                    placeholder={t('order.email.placeholder')}
                     value={formData.customerEmail}
                     onChange={(e) => handleInputChange("customerEmail", e.target.value)}
-                    className="text-right mobile-input touch-target"
+                    className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
                   />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="country" className="text-right block mobile-text font-medium flex items-center gap-2">
+                    <Label htmlFor="country" className={`block mobile-text font-medium flex items-center gap-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                       <Flag className="w-4 h-4" />
-                      الدولة *
+                      {t('order.country')} *
                     </Label>
                     <Select
                       value={formData.country}
@@ -306,8 +340,8 @@ const Order = () => {
                       }}
                       required
                     >
-                      <SelectTrigger className="text-right touch-target">
-                        <SelectValue placeholder="اختر الدولة">
+                      <SelectTrigger className={`touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+                        <SelectValue placeholder={t('order.country.placeholder')}>
                           {formData.country && (
                             <div className="flex items-center gap-2">
                               <span>{countries.find(c => c.code === formData.country)?.flag}</span>
@@ -330,34 +364,34 @@ const Order = () => {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="city" className="text-right block mobile-text font-medium">المدينة *</Label>
+                    <Label htmlFor="city" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.city')} *</Label>
                     <Input
                       id="city"
                       type="text"
-                      placeholder="أدخل المدينة"
+                      placeholder={t('order.city.placeholder')}
                       value={formData.city}
                       onChange={(e) => handleInputChange("city", e.target.value)}
-                      className="text-right mobile-input touch-target"
+                      className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
                       required
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="address" className="text-right block mobile-text font-medium">العنوان الكامل *</Label>
+                  <Label htmlFor="address" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.address')} *</Label>
                   <Input
                     id="address"
                     type="text"
-                    placeholder="أدخل العنوان التفصيلي"
+                    placeholder={t('order.address.placeholder')}
                     value={formData.address}
                     onChange={(e) => handleInputChange("address", e.target.value)}
-                    className="text-right mobile-input touch-target"
+                    className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="quantity" className="text-right block mobile-text font-medium">الكمية</Label>
+                  <Label htmlFor="quantity" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.quantity')}</Label>
                   <div className="flex items-center justify-center gap-4">
                     <Button
                       type="button"
@@ -384,7 +418,7 @@ const Order = () => {
 
                 <div className="border-t pt-4 bg-accent/30 -mx-4 px-4 py-4 lg:-mx-6 lg:px-6 rounded-lg">
                   <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-lg lg:text-xl font-semibold">
-                    <span className="text-primary">المجموع: {formatPrice(totalAmount)}</span>
+                    <span className="text-primary">{t('order.total')}: {formatPrice(totalAmount)}</span>
                     <span className="text-muted-foreground text-sm lg:text-base">({formatPrice(productPrice)} × {formData.quantity})</span>
                   </div>
                 </div>
@@ -397,7 +431,7 @@ const Order = () => {
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      جاري المعالجة...
+                      {t('order.processing')}
                     </>
                   ) : (
                     "تأكيد الطلب والدفع"

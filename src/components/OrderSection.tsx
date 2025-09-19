@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useProductPrice } from "@/hooks/useProductPrice";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,28 +11,29 @@ import { ShoppingCart, MapPin, Phone, User, CreditCard, Truck, Shield, Crown } f
 import { Link } from "react-router-dom";
 
 const OrderSection = () => {
+  const { language, t } = useLanguage();
   const [quantity, setQuantity] = useState(1);
   const { price } = useProductPrice({ fallback: 299 });
   const shipping = 0; // Free shipping
   const total = price * quantity + shipping;
 
   return (
-    <section className="py-20 bg-gradient-to-b from-background to-primary/5" dir="rtl" id="order">
+    <section className="py-20 bg-gradient-to-b from-background to-primary/5" dir={language === 'ar' ? 'rtl' : 'ltr'} id="order">
       <div className="container mx-auto px-4">
         
         {/* Section Header */}
         <div className="text-center mb-16 animate-slide-up">
           <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-6 py-2 mb-6">
             <ShoppingCart className="w-5 h-5 text-primary" />
-            <span className="text-primary font-medium">اطلب الآن</span>
+            <span className="text-primary font-medium">{t('order.section.badge')}</span>
           </div>
           
           <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
-            احصل على سيفن جرين اليوم
+            {t('order.section.title')}
           </h2>
           
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            اطلب الآن واستمتع بشحن مجاني لجميع دول الخليج مع ضمان الجودة
+            {t('order.section.desc')}
           </p>
         </div>
 

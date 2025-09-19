@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import OrderSection from "@/components/OrderSection";
 import { useProductPrice } from "@/hooks/useProductPrice";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const ProductDetails = () => {
+  const { language, t } = useLanguage();
   const { price, loading } = useProductPrice();
 
   const ingredients = [
@@ -100,14 +102,14 @@ const ProductDetails = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-background/80">
+    <div className="min-h-screen bg-gradient-to-br from-background to-background/80" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       {/* Header */}
       <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
               <ChevronLeft className="h-5 w-5" />
-              <span className="font-medium">العودة للصفحة الرئيسية</span>
+              <span className="font-medium">{t('product.back')}</span>
             </Link>
             <h1 className="text-2xl font-bold text-primary">Seven Green</h1>
           </div>
@@ -120,14 +122,14 @@ const ProductDetails = () => {
           <div className="space-y-6">
             <div className="space-y-4">
               <Badge variant="secondary" className="text-sm">
-                منتج طبيعي 100%
+                {t('hero.badge')}
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
-                Seven Green
-                <span className="block text-primary">لشعر قوي وصحي</span>
+                {t('product.title')}
+                <span className="block text-primary">{t('product.subtitle')}</span>
               </h1>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                علاج طبيعي متقدم للشعر، مُصمم خصيصاً لتقوية الشعر ومنع تساقطه وتحفيز نموه بمكونات طبيعية خالصة ومختبرة علمياً.
+                {t('product.description')}
               </p>
             </div>
             
