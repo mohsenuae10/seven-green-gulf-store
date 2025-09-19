@@ -54,31 +54,31 @@ const ProductHero = () => {
   }, [emblaApi, onInit, onSelect]);
 
   const [productImages, setProductImages] = useState<{ src: string; alt: string }[]>([
-    {
-      src: "/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png",
-      alt: "سيفن جرين للعناية بالشعر"
-    },
-    {
-      src: "/lovable-uploads/8d004a44-148f-471d-949f-6cc6b414bd1d.png", 
-      alt: "سيفن جرين - عبوة طبيعية"
-    },
-    {
-      src: "/lovable-uploads/b7fcf75b-d26d-4d69-971f-2b17e4dd3f6f.png",
-      alt: "سيفن جرين - فوائد طبيعية"
-    },
-    {
-      src: "/lovable-uploads/72685aea-a9c9-4296-8daa-59448d17e405.png",
-      alt: "سيفن جرين - المنتج الطبيعي والعبوة الأصلية"
-    },
-    {
-      src: "/lovable-uploads/0ccb67ab-d696-4efc-9b4e-9b8eee196109.png",
-      alt: "سيفن جرين - صابون السرو والأوسمان الطبيعي مع العبوة"
-    }
+      {
+        src: "/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png",
+        alt: "Seven Green Hair Care Product"
+      },
+      {
+        src: "/lovable-uploads/8d004a44-148f-471d-949f-6cc6b414bd1d.png", 
+        alt: "Seven Green - Natural Package"
+      },
+      {
+        src: "/lovable-uploads/b7fcf75b-d26d-4d69-971f-2b17e4dd3f6f.png",
+        alt: "Seven Green - Natural Benefits"
+      },
+      {
+        src: "/lovable-uploads/72685aea-a9c9-4296-8daa-59448d17e405.png",
+        alt: "Seven Green - Natural Product and Original Package"
+      },
+      {
+        src: "/lovable-uploads/0ccb67ab-d696-4efc-9b4e-9b8eee196109.png",
+        alt: "Seven Green - Natural Cypress and Rosemary Soap with Package"
+      }
   ]);
 
-  const [heroTitle, setHeroTitle] = useState<string>('سيفن جرين');
+  const [heroTitle, setHeroTitle] = useState<string>('Seven Green');
   const [heroSubtitle, setHeroSubtitle] = useState<string>('SEVEN GREEN');
-  const [heroDescription, setHeroDescription] = useState<string>('تركيبة طبيعية متقدمة من أوراق السرو ونبات الأوسمان، مُصممة لمنع تساقط الشعر والتحكم في الزيوت');
+  const [heroDescription, setHeroDescription] = useState<string>('Advanced natural formula from cypress leaves and rosemary plant, designed to prevent hair loss and control oils');
   const [heroFeatures, setHeroFeatures] = useState<string[]>([]);
 
   useEffect(() => {
@@ -113,9 +113,9 @@ const ProductHero = () => {
             .select('image_url, alt_text, display_order')
             .eq('product_id', productId)
             .order('display_order');
-          if (imgs && imgs.length) {
-            setProductImages(imgs.map(i => ({ src: i.image_url, alt: i.alt_text || 'صورة المنتج' })));
-          }
+            if (imgs && imgs.length) {
+              setProductImages(imgs.map(i => ({ src: i.image_url, alt: i.alt_text || 'Product Image' })));
+            }
         }
       } catch {}
     };
@@ -143,7 +143,7 @@ const ProductHero = () => {
                 <h1 className="text-xl sm:text-2xl font-bold text-white tracking-wider font-english">
                   SEVEN GREEN
                 </h1>
-                <p className="text-xs text-secondary font-medium">سيفن جرين</p>
+                <p className="text-xs text-secondary font-medium">Seven Green</p>
               </div>
             </div>
 
@@ -372,7 +372,7 @@ const ProductHero = () => {
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
               <img 
                 src="/lovable-uploads/34e3ec2a-fc02-4dc5-832e-8e3c95d538bc.png" 
-                alt="شهادات أمان وجودة سيفن جرين"
+                alt="Seven Green Safety and Quality Certificates"
                 className="w-full h-64 object-cover"
               />
               <CardContent className="p-4 text-center">
