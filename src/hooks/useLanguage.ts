@@ -352,7 +352,7 @@ export const useLanguage = () => {
 };
 
 export const useLanguageHook = () => {
-  const [language, setLanguageState] = useState<Language>('ar');
+  const [language, setLanguageState] = useState<Language>('en');
 
   useEffect(() => {
     const savedLanguage = localStorage.getItem('language') as Language;
