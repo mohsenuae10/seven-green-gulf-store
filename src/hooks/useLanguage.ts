@@ -95,6 +95,34 @@ const translations = {
     "country.bahrain": "البحرين",
     "country.oman": "عمان",
     
+    // Ingredients
+    "ingredients.title": "المكونات الطبيعية الفعالة",
+    "ingredients.description": "كل مكون مختار بعناية من أجود المصادر الطبيعية لضمان أقصى فائدة لشعرك",
+    "ingredients.benefits": "الفوائد:",
+    
+    // Usage Steps
+    "usage.step1.title": "التحضير",
+    "usage.step1.desc": "اغسلي شعرك بالشامبو المناسب وجففيه بلطف بالمنشفة",
+    "usage.step2.title": "التطبيق",
+    "usage.step2.desc": "ضعي كمية مناسبة من Seven Green على راحة يدك ووزعيها على الشعر من الجذور حتى الأطراف",
+    "usage.step3.title": "التدليك",
+    "usage.step3.desc": "دلكي فروة الرأس بلطف بحركات دائرية لمدة 2-3 دقائق لتحفيز الدورة الدموية",
+    "usage.step4.title": "الانتظار",
+    "usage.step4.desc": "اتركي المنتج على شعرك لمدة 15-20 دقيقة ليتغلغل بعمق في خصلات الشعر",
+    "usage.step5.title": "الشطف",
+    "usage.step5.desc": "اشطفي شعرك بالماء الفاتر جيداً حتى إزالة المنتج بالكامل",
+    
+    // Product Benefits
+    "benefits.title": "فوائد Seven Green المذهلة",
+    "benefits.1": "يقوي الشعر من الجذور حتى الأطراف",
+    "benefits.2": "يمنع تساقط الشعر بفعالية مثبتة علمياً",
+    "benefits.3": "يحفز نمو شعر جديد وصحي",
+    "benefits.4": "يمنح لمعاناً طبيعياً وإشراقاً واضحاً",
+    "benefits.5": "يرطب الشعر الجاف ويغذيه بعمق",
+    "benefits.6": "يحمي من تأثير العوامل البيئية الضارة",
+    "benefits.7": "يقلل من تجعد الشعر ويسهل تصفيفه",
+    "benefits.8": "آمن للاستخدام اليومي، خالٍ من الكيماويات الضارة",
+    
     // Gallery Section
     "gallery.certificates.title": "الشهادات والأمان",
     "gallery.certificates.desc": "منتج آمن ومُعتمد رسمياً",
@@ -284,6 +312,34 @@ const translations = {
     "country.kuwait": "Kuwait",
     "country.bahrain": "Bahrain",
     "country.oman": "Oman",
+    
+    // Ingredients
+    "ingredients.title": "Effective Natural Ingredients",
+    "ingredients.description": "Each ingredient carefully selected from the finest natural sources to ensure maximum benefit for your hair",
+    "ingredients.benefits": "Benefits:",
+    
+    // Usage Steps
+    "usage.step1.title": "Preparation",
+    "usage.step1.desc": "Wash your hair with suitable shampoo and gently dry with a towel",
+    "usage.step2.title": "Application", 
+    "usage.step2.desc": "Apply an appropriate amount of Seven Green to your palm and distribute on hair from roots to tips",
+    "usage.step3.title": "Massage",
+    "usage.step3.desc": "Gently massage the scalp in circular motions for 2-3 minutes to stimulate blood circulation",
+    "usage.step4.title": "Wait",
+    "usage.step4.desc": "Leave the product on your hair for 15-20 minutes to penetrate deeply into hair strands",
+    "usage.step5.title": "Rinse",
+    "usage.step5.desc": "Rinse your hair thoroughly with lukewarm water until the product is completely removed",
+    
+    // Product Benefits
+    "benefits.title": "Amazing Benefits of Seven Green",
+    "benefits.1": "Strengthens hair from roots to tips",
+    "benefits.2": "Prevents hair loss with scientifically proven effectiveness",
+    "benefits.3": "Stimulates new healthy hair growth",
+    "benefits.4": "Gives natural shine and clear radiance",
+    "benefits.5": "Moisturizes dry hair and nourishes it deeply",
+    "benefits.6": "Protects from harmful environmental factors",
+    "benefits.7": "Reduces hair frizz and makes styling easier",
+    "benefits.8": "Safe for daily use, free from harmful chemicals",
   }
 };
 

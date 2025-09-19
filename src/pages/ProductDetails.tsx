@@ -13,11 +13,11 @@ const ProductDetails = () => {
   const { formatPrice } = useCurrency();
   const { price, loading } = useProductPrice();
 
-  const ingredients = [
+  const getIngredients = () => language === 'ar' ? [
     {
       name: "زيت الأرغان المغربي",
       description: "يغذي الشعر ويمنحه لمعاناً طبيعياً ونعومة فائقة",
-      benefits: ["ترطيب عمي", "لمعان طبيعي", "حماية من التلف"]
+      benefits: ["ترطيب عميق", "لمعان طبيعي", "حماية من التلف"]
     },
     {
       name: "خلاصة الجينسنغ",
@@ -44,48 +44,120 @@ const ProductDetails = () => {
       description: "ينظف فروة الرأس ويوازن إفراز الزيوت الطبيعية",
       benefits: ["تنظيف عميق", "توازن الزيوت", "تهدئة الالتهابات"]
     }
-  ];
-
-  const usageSteps = [
+  ] : [
     {
-      step: 1,
-      title: "التحضير",
-      description: "اغسلي شعرك بالشامبو المناسب وجففيه بلطف بالمنشفة"
+      name: "Moroccan Argan Oil",
+      description: "Nourishes hair and gives it natural shine and exceptional softness",
+      benefits: ["Deep moisturizing", "Natural shine", "Protection from damage"]
     },
     {
-      step: 2,
-      title: "التطبيق",
-      description: "ضعي كمية مناسبة من Seven Green على راحة يدك ووزعيها على الشعر من الجذور حتى الأطراف"
+      name: "Ginseng Extract",
+      description: "Stimulates blood circulation in the scalp and promotes hair growth",
+      benefits: ["Growth stimulation", "Root strengthening", "Prevents hair loss"]
     },
     {
-      step: 3,
-      title: "التدليك",
-      description: "دلكي فروة الرأس بلطف بحركات دائرية لمدة 2-3 دقائق لتحفيز الدورة الدموية"
+      name: "Natural Vitamin E",
+      description: "Powerful antioxidant that protects hair from harmful environmental factors",
+      benefits: ["UV protection", "Free radical resistance", "Delays graying"]
     },
     {
-      step: 4,
-      title: "الانتظار",
-      description: "اتركي المنتج على شعرك لمدة 15-20 دقيقة ليتغلغل بعمق في خصلات الشعر"
+      name: "Virgin Coconut Oil",
+      description: "Deeply moisturizes hair, prevents breakage and gives it a silky texture",
+      benefits: ["Intensive moisturizing", "Prevents breakage", "Silky smoothness"]
     },
     {
-      step: 5,
-      title: "الشطف",
-      description: "اشطفي شعرك بالماء الفاتر جيداً حتى إزالة المنتج بالكامل"
+      name: "Plant Keratin Protein",
+      description: "Rebuilds damaged hair structure and strengthens it from within",
+      benefits: ["Structure rebuilding", "Structural strengthening", "Natural flexibility"]
+    },
+    {
+      name: "Green Tea Extract",
+      description: "Cleanses the scalp and balances natural oil secretion",
+      benefits: ["Deep cleansing", "Oil balance", "Inflammation relief"]
     }
   ];
 
-  const benefits = [
-    "يقوي الشعر من الجذور حتى الأطراف",
-    "يمنع تساقط الشعر بفعالية مثبتة علمياً",
-    "يحفز نمو شعر جديد وصحي",
-    "يمنح لمعاناً طبيعياً وإشراقاً واضحاً",
-    "يرطب الشعر الجاف ويغذيه بعمق",
-    "يحمي من تأثير العوامل البيئية الضارة",
-    "يقلل من تجعد الشعر ويسهل تصفيفه",
-    "آمن للاستخدام اليومي، خالٍ من الكيماويات الضارة"
+  const ingredients = getIngredients();
+
+  const getUsageSteps = () => language === 'ar' ? [
+    {
+      step: 1,
+      title: t('usage.step1.title'),
+      description: t('usage.step1.desc')
+    },
+    {
+      step: 2,
+      title: t('usage.step2.title'),
+      description: t('usage.step2.desc')
+    },
+    {
+      step: 3,
+      title: t('usage.step3.title'),
+      description: t('usage.step3.desc')
+    },
+    {
+      step: 4,
+      title: t('usage.step4.title'),
+      description: t('usage.step4.desc')
+    },
+    {
+      step: 5,
+      title: t('usage.step5.title'),
+      description: t('usage.step5.desc')
+    }
+  ] : [
+    {
+      step: 1,
+      title: t('usage.step1.title'),
+      description: t('usage.step1.desc')
+    },
+    {
+      step: 2,
+      title: t('usage.step2.title'),
+      description: t('usage.step2.desc')
+    },
+    {
+      step: 3,
+      title: t('usage.step3.title'),
+      description: t('usage.step3.desc')
+    },
+    {
+      step: 4,
+      title: t('usage.step4.title'),
+      description: t('usage.step4.desc')
+    },
+    {
+      step: 5,
+      title: t('usage.step5.title'),
+      description: t('usage.step5.desc')
+    }
   ];
 
-  const certifications = [
+  const usageSteps = getUsageSteps();
+
+  const getBenefits = () => language === 'ar' ? [
+    t('benefits.1'),
+    t('benefits.2'),
+    t('benefits.3'),
+    t('benefits.4'),
+    t('benefits.5'),
+    t('benefits.6'),
+    t('benefits.7'),
+    t('benefits.8')
+  ] : [
+    t('benefits.1'),
+    t('benefits.2'),
+    t('benefits.3'),
+    t('benefits.4'),
+    t('benefits.5'),
+    t('benefits.6'),
+    t('benefits.7'),
+    t('benefits.8')
+  ];
+
+  const benefits = getBenefits();
+
+  const getCertifications = () => language === 'ar' ? [
     {
       icon: <Leaf className="h-8 w-8" />,
       title: "100% طبيعي",
@@ -101,7 +173,25 @@ const ProductDetails = () => {
       title: "تقييم ممتاز",
       description: "رضا العملاء 98%"
     }
+  ] : [
+    {
+      icon: <Leaf className="h-8 w-8" />,
+      title: "100% Natural",
+      description: "Pure natural ingredients"
+    },
+    {
+      icon: <Shield className="h-8 w-8" />,
+      title: "Safe & Tested",
+      description: "Safety and quality tests"
+    },
+    {
+      icon: <Star className="h-8 w-8" />,
+      title: "Excellent Rating",
+      description: "98% customer satisfaction"
+    }
   ];
+
+  const certifications = getCertifications();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-background/80" dir={language === 'ar' ? 'rtl' : 'ltr'}>
@@ -187,7 +277,7 @@ const ProductDetails = () => {
       <section className="container mx-auto px-4 py-12">
         <Card>
           <CardHeader>
-            <CardTitle className="text-2xl text-center">فوائد Seven Green المذهلة</CardTitle>
+            <CardTitle className="text-2xl text-center">{t('benefits.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -205,9 +295,9 @@ const ProductDetails = () => {
       {/* Ingredients */}
       <section className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-foreground mb-4">المكونات الطبيعية الفعالة</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-4">{t('ingredients.title')}</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            كل مكون مختار بعناية من أجود المصادر الطبيعية لضمان أقصى فائدة لشعرك
+            {t('ingredients.description')}
           </p>
         </div>
 
@@ -220,7 +310,7 @@ const ProductDetails = () => {
               <CardContent className="space-y-4">
                 <p className="text-muted-foreground text-sm">{ingredient.description}</p>
                 <div className="space-y-2">
-                  <h4 className="font-semibold text-foreground text-sm">الفوائد:</h4>
+                  <h4 className="font-semibold text-foreground text-sm">{t('ingredients.benefits')}</h4>
                   <ul className="space-y-1">
                     {ingredient.benefits.map((benefit, benefitIndex) => (
                       <li key={benefitIndex} className="flex items-center gap-2 text-sm">

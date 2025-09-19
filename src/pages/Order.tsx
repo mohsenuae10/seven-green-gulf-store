@@ -156,7 +156,7 @@ const Order = () => {
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Error response:", errorText);
-        throw new Error(`خطأ في الخادم: ${response.status}`);
+        throw new Error(language === 'ar' ? `خطأ في الخادم: ${response.status}` : `Server error: ${response.status}`);
       }
 
       // Try to parse JSON response
@@ -167,13 +167,13 @@ const Order = () => {
         result = JSON.parse(responseText);
       } catch (parseError) {
         console.error("Failed to parse JSON:", parseError);
-        throw new Error("استجابة غير صحيحة من الخادم");
+        throw new Error(language === 'ar' ? "استجابة غير صحيحة من الخادم" : "Invalid server response");
       }
 
       console.log("Payment response:", result);
 
       if (!result.success) {
-        throw new Error(result.error || "فشل في معالجة الطلب");
+        throw new Error(result.error || (language === 'ar' ? "فشل في معالجة الطلب" : "Failed to process order"));
       }
 
       if (result.payment_url) {
@@ -185,12 +185,12 @@ const Order = () => {
           description: t('order.success.desc'),
         });
       } else {
-        throw new Error("لم يتم إنشاء رابط الدفع");
+        throw new Error(language === 'ar' ? "لم يتم إنشاء رابط الدفع" : "Payment link was not created");
       }
 
     } catch (error) {
       console.error("Order submission error:", error);
-      const errorMessage = error instanceof Error ? error.message : "حدث خطأ غير متوقع";
+      const errorMessage = error instanceof Error ? error.message : (language === 'ar' ? "حدث خطأ غير متوقع" : "An unexpected error occurred");
       setError(errorMessage);
       
       toast({
@@ -229,9 +229,9 @@ const Order = () => {
                     className="w-16 h-16 object-cover rounded-lg shadow-sm"
                   />
                   <span className="flex-1">
-                    <span className="block font-bold text-foreground text-lg">سيفن جرين</span>
+                    <span className="block font-bold text-foreground text-lg">{language === 'ar' ? 'سيفن جرين' : 'Seven Green'}</span>
                     <span className="block font-semibold text-primary text-sm">SEVEN GREEN</span>
-                    <span className="block text-muted-foreground text-sm">منتج العناية بالشعر الطبيعي</span>
+                    <span className="block text-muted-foreground text-sm">{language === 'ar' ? 'منتج العناية بالشعر الطبيعي' : 'Natural Hair Care Product'}</span>
                     <span className="flex items-center gap-1 mt-1">
                       <span className="text-secondary text-sm">★★★★★</span>
                       <span className="text-xs text-muted-foreground">(4.9)</span>
