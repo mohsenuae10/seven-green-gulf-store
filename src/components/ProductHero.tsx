@@ -14,7 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 const ProductHero = () => {
   const { price: productPrice } = useProductPrice({ fallback: 299 });
-  const { formatPrice } = useCurrency();
+  const { formatPrice, selectedCurrency } = useCurrency();
   const { language, t } = useLanguage();
   
   // Carousel configuration
