@@ -17,19 +17,33 @@ const currencies: Record<Currency, CurrencyData> = {
 };
 
 export function useCurrency() {
-  const [selectedCurrency, setSelectedCurrency] = useState<Currency>('AED');
+  const [selectedCurrency, setSelectedCurrencyState] = useState<Currency>('AED');
 
   // Load currency from localStorage on mount
   useEffect(() => {
     const saved = localStorage.getItem('selectedCurrency') as Currency;
     if (saved && currencies[saved]) {
-      setSelectedCurrency(saved);
+      setSelectedCurrencyState(saved);
     }
+  }, []);
+
+  // Listen for currency change events across app
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent).detail as Currency;
+      if (detail && currencies[detail]) {
+        setSelectedCurrencyState(detail);
+      }
+    };
+    window.addEventListener('currencychange' as any, handler as any);
+    return () => window.removeEventListener('currencychange' as any, handler as any);
   }, []);
 
   // Save currency to localStorage when changed
   useEffect(() => {
-    localStorage.setItem('selectedCurrency', selectedCurrency);
+    try {
+      localStorage.setItem('selectedCurrency', selectedCurrency);
+    } catch {}
   }, [selectedCurrency]);
 
   const convertPrice = (priceInAED: number): number => {
@@ -50,6 +64,14 @@ export function useCurrency() {
   const getCurrencyData = (currency: Currency) => currencies[currency];
   const getCurrentCurrency = () => currencies[selectedCurrency];
   const getAllCurrencies = () => Object.values(currencies);
+
+  const setSelectedCurrency = (code: Currency) => {
+    setSelectedCurrencyState(code);
+    try {
+      localStorage.setItem('selectedCurrency', code);
+    } catch {}
+    window.dispatchEvent(new CustomEvent('currencychange', { detail: code }));
+  };
 
   return {
     selectedCurrency,
