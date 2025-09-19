@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
+import { useCurrency } from "@/hooks/useCurrency";
 import {
   Table,
   TableBody,
@@ -37,6 +38,7 @@ interface Order {
 }
 
 export function OrdersManagement() {
+  const { formatPrice } = useCurrency();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -222,7 +224,7 @@ export function OrdersManagement() {
                       <TableCell className="max-w-xs truncate" title={order.address}>
                         {order.address}
                       </TableCell>
-                      <TableCell>{order.total_amount} درهم</TableCell>
+                      <TableCell>{formatPrice(order.total_amount)}</TableCell>
                       <TableCell>
                         <Select
                           value={order.status}

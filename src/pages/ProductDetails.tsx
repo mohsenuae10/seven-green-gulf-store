@@ -5,10 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import OrderSection from "@/components/OrderSection";
 import { useProductPrice } from "@/hooks/useProductPrice";
+import { useCurrency } from "@/hooks/useCurrency";
 import { useLanguage } from "@/hooks/useLanguage";
 
 const ProductDetails = () => {
   const { language, t } = useLanguage();
+  const { formatPrice } = useCurrency();
   const { price, loading } = useProductPrice();
 
   const ingredients = [
@@ -144,7 +146,7 @@ const ProductDetails = () => {
 
             <div className="flex items-center gap-4">
               <div className="text-3xl font-bold text-primary">
-                {loading ? "..." : `${price} د.إ`}
+                {loading ? "..." : formatPrice(price)}
               </div>
               <Badge variant="destructive">وفر 40%</Badge>
             </div>

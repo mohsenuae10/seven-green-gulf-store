@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useProductPrice } from "@/hooks/useProductPrice";
+import { useCurrency } from "@/hooks/useCurrency";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,6 +13,7 @@ import { Link } from "react-router-dom";
 
 const OrderSection = () => {
   const { language, t } = useLanguage();
+  const { formatPrice } = useCurrency();
   const [quantity, setQuantity] = useState(1);
   const { price } = useProductPrice({ fallback: 299 });
   const shipping = 0; // Free shipping
@@ -148,7 +150,7 @@ const OrderSection = () => {
                       >
                         +
                       </Button>
-                      <span className="text-muted-foreground">× {price} {language === 'ar' ? 'درهم' : 'AED'}</span>
+                      <span className="text-muted-foreground">× {formatPrice(price)}</span>
                     </div>
                   </div>
                 </form>
@@ -182,7 +184,7 @@ const OrderSection = () => {
                 <div className="space-y-3 border-t border-border/50 pt-4">
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{t('order.price.breakdown')} ({quantity} {language === 'ar' ? 'قطعة' : 'piece'})</span>
-                    <span className="font-medium">{price * quantity} {language === 'ar' ? 'درهم' : 'AED'}</span>
+                    <span className="font-medium">{formatPrice(price * quantity)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">{language === 'ar' ? 'الشحن' : 'Shipping'}</span>
@@ -190,7 +192,7 @@ const OrderSection = () => {
                   </div>
                   <div className="flex justify-between text-lg font-bold border-t border-border/50 pt-3">
                     <span>{t('order.total')}</span>
-                    <span className="text-primary">{total} {language === 'ar' ? 'درهم' : 'AED'}</span>
+                    <span className="text-primary">{formatPrice(total)}</span>
                   </div>
                 </div>
 

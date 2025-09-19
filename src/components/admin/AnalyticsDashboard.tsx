@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
+import { useCurrency } from "@/hooks/useCurrency";
 import { 
   ShoppingCart, 
   Package, 
@@ -21,6 +22,7 @@ interface AnalyticsData {
 }
 
 export function AnalyticsDashboard() {
+  const { formatPrice } = useCurrency();
   const [analytics, setAnalytics] = useState<AnalyticsData>({
     totalOrders: 0,
     totalRevenue: 0,
@@ -114,7 +116,7 @@ export function AnalyticsDashboard() {
     },
     {
       title: "إجمالي الإيرادات",
-      value: `${analytics.totalRevenue} درهم`,
+      value: formatPrice(analytics.totalRevenue),
       icon: DollarSign,
       description: "المبيعات الإجمالية",
       color: "text-green-600",
@@ -185,7 +187,7 @@ export function AnalyticsDashboard() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium">{order.total_amount} درهم</p>
+                      <p className="font-medium">{formatPrice(order.total_amount)}</p>
                       <p className={`text-xs ${
                         order.status === 'delivered' ? 'text-green-600' : 
                         order.status === 'pending' ? 'text-orange-600' : 'text-blue-600'
@@ -235,8 +237,8 @@ export function AnalyticsDashboard() {
                 <span>متوسط قيمة الطلب</span>
                 <span className="font-bold">
                   {analytics.totalOrders > 0 
-                    ? Math.round(analytics.totalRevenue / analytics.totalOrders)
-                    : 0} درهم
+                    ? formatPrice(Math.round(analytics.totalRevenue / analytics.totalOrders))
+                    : formatPrice(0)}
                 </span>
               </div>
             </div>

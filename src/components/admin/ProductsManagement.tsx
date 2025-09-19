@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
+import { useCurrency } from "@/hooks/useCurrency";
 import {
   Table,
   TableBody,
@@ -38,6 +39,7 @@ interface Product {
 }
 
 export function ProductsManagement() {
+  const { formatPrice, getCurrentCurrency } = useCurrency();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -274,7 +276,7 @@ export function ProductsManagement() {
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="price">السعر (درهم)</Label>
+                    <Label htmlFor="price">السعر ({getCurrentCurrency().symbol})</Label>
                     <Input
                       id="price"
                       type="number"
@@ -370,7 +372,7 @@ export function ProductsManagement() {
                       <TableCell className="font-medium">
                         {product.name}
                       </TableCell>
-                      <TableCell>{product.price} درهم</TableCell>
+                      <TableCell>{formatPrice(product.price)}</TableCell>
                       <TableCell>{product.stock_quantity}</TableCell>
                       <TableCell>
                         <span className={`inline-flex px-2 py-1 text-xs rounded-full ${
