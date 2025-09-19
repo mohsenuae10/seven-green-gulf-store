@@ -16,6 +16,7 @@ const ProductHero = () => {
   const { price: productPrice } = useProductPrice({ fallback: 299 });
   const { formatPrice, selectedCurrency } = useCurrency();
   const { language, t } = useLanguage();
+  console.log('[ProductHero] currency:', selectedCurrency, 'price:', formatPrice(productPrice));
   
   // Carousel configuration
   const [emblaRef, emblaApi] = useEmblaCarousel(
