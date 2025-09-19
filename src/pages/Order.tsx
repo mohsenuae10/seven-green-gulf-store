@@ -30,6 +30,12 @@ const getCountries = (language: string) => [
     phoneCode: "+966" 
   },
   { 
+    code: "US", 
+    name: language === 'ar' ? "الولايات المتحدة الأمريكية" : "United States", 
+    flag: "🇺🇸", 
+    phoneCode: "+1" 
+  },
+  { 
     code: "QA", 
     name: language === 'ar' ? "قطر" : "Qatar", 
     flag: "🇶🇦", 

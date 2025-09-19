@@ -86,6 +86,15 @@ const translations = {
     "reviews.english.5": "Best investment for my hair beauty! Natural scent and immediate results. I will definitely continue using it.",
     "reviews.english.6": "Luxury product with high quality. Really worth the price and more. My hair became like advertisement hair!",
     
+    // Countries
+    "country.uae": "الإمارات العربية المتحدة",
+    "country.saudi": "المملكة العربية السعودية", 
+    "country.usa": "الولايات المتحدة الأمريكية",
+    "country.qatar": "قطر",
+    "country.kuwait": "الكويت",
+    "country.bahrain": "البحرين",
+    "country.oman": "عمان",
+    
     // Gallery Section
     "gallery.certificates.title": "الشهادات والأمان",
     "gallery.certificates.desc": "منتج آمن ومُعتمد رسمياً",
@@ -266,6 +275,15 @@ const translations = {
     "product.faq.3.a": "Yes, Seven Green is designed to suit all hair types: oily, dry, mixed, and colored.",
     "product.faq.4.q": "Can it be used with other products?",
     "product.faq.4.a": "It can be safely combined with your current hair care routine, but a simple test is recommended first.",
+    
+    // Countries
+    "country.uae": "United Arab Emirates",
+    "country.saudi": "Saudi Arabia", 
+    "country.usa": "United States",
+    "country.qatar": "Qatar",
+    "country.kuwait": "Kuwait",
+    "country.bahrain": "Bahrain",
+    "country.oman": "Oman",
   }
 };
 
