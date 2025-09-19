@@ -1,10 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const MobileNav = () => {
   const location = useLocation();
   const isOrderPage = location.pathname === "/order";
+  const { t } = useLanguage();
 
   if (isOrderPage) {
     return null;
@@ -21,7 +23,7 @@ const MobileNav = () => {
               className="w-full bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-lg py-4 rounded-full touch-target"
             >
               <ShoppingCart className="w-6 h-6 ml-2" />
-              اشتر الآن
+              {t('hero.buy.now')}
             </Button>
           </Link>
         </div>

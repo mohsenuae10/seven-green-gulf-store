@@ -4,7 +4,9 @@ import { Star, ShoppingCart, Leaf, Crown, Shield, Play, CheckCircle, Triangle } 
 import { Link } from "react-router-dom";
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useLanguage } from "@/hooks/useLanguage";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { useCallback, useEffect, useState } from 'react';
@@ -13,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 const ProductHero = () => {
   const { price: productPrice } = useProductPrice({ fallback: 299 });
   const { formatPrice } = useCurrency();
+  const { language, t } = useLanguage();
   
   // Carousel configuration
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -143,8 +146,11 @@ const ProductHero = () => {
               </div>
             </div>
 
-            {/* Currency Switcher */}
-            <CurrencySwitcher variant="header" />
+            {/* Language and Currency Switchers */}
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher />
+              <CurrencySwitcher variant="header" />
+            </div>
           </div>
         </div>
       </header>
@@ -169,12 +175,12 @@ const ProductHero = () => {
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center min-h-[calc(100vh-4rem)] sm:min-h-screen py-8 sm:py-12 lg:py-20">
           
           {/* Product Content - Right side for RTL */}
-          <div className="order-2 lg:order-1 space-y-6 lg:space-y-8 animate-slide-up text-center lg:text-right px-4 sm:px-0" dir="rtl">
+          <div className={`order-2 lg:order-1 space-y-6 lg:space-y-8 animate-slide-up text-center px-4 sm:px-0 ${language === 'ar' ? 'lg:text-right' : 'lg:text-left'}`} dir={language === 'ar' ? 'rtl' : 'ltr'}>
             
             {/* Brand Badge */}
             <div className="inline-flex items-center gap-2 bg-secondary/20 backdrop-blur-sm rounded-full px-6 py-2 border border-secondary/30">
               <Crown className="w-5 h-5 text-secondary" />
-              <span className="text-secondary-foreground font-medium">منتج طبيعي 100%</span>
+              <span className="text-secondary-foreground font-medium">{t('hero.badge')}</span>
             </div>
 
             {/* Main Heading */}
@@ -185,21 +191,21 @@ const ProductHero = () => {
                   {heroSubtitle}
                 </span>
                 <span className="block text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-secondary font-light mt-2">
-                  صابون السرو والأوسمان الطبيعي
+                  {t('hero.subtitle')}
                 </span>
               </h1>
               
               <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-2xl leading-relaxed mx-auto lg:mx-0">
-                {heroDescription}
+                {t('hero.description')}
               </p>
             </div>
 
             {/* Features Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 lg:gap-4">
               {(heroFeatures.length ? heroFeatures.map((t, i) => ({ icon: [Leaf, Shield, Crown][i % 3], title: t })) : [
-                { icon: Leaf, title: "طبيعي 100%", desc: "مكونات عضوية صينية" },
-                { icon: Shield, title: "آمن ومُختبر", desc: "معايير جودة عالمية" },
-                { icon: Crown, title: "فاخر", desc: "تقنية صينية متقدمة" }
+                { icon: Leaf, title: t('hero.feature.natural'), desc: t('hero.feature.natural.desc') },
+                { icon: Shield, title: t('hero.feature.safe'), desc: t('hero.feature.safe.desc') },
+                { icon: Crown, title: t('hero.feature.luxury'), desc: t('hero.feature.luxury.desc') }
               ]).map((feature, index) => (
                 <Card key={index} className="bg-white/10 backdrop-blur-sm border-white/20 p-3 lg:p-4 text-center animate-bounce-in" style={{animationDelay: `${index * 0.2}s`}}>
                   <feature.icon className="w-6 h-6 lg:w-8 lg:h-8 text-secondary mx-auto mb-2" />
@@ -210,51 +216,51 @@ const ProductHero = () => {
             </div>
 
             {/* Rating */}
-            <div className="flex items-center justify-center lg:justify-end gap-2">
+            <div className={`flex items-center gap-2 ${language === 'ar' ? 'justify-center lg:justify-end' : 'justify-center lg:justify-start'}`}>
               <div className="flex gap-1">
                 {[1,2,3,4,5].map((star) => (
                   <Star key={star} className="w-5 h-5 fill-secondary text-secondary" />
                 ))}
               </div>
               <span className="text-white font-medium">4.9</span>
-              <span className="text-white/70">(2,847 تقييم)</span>
+              <span className="text-white/70">(2,847 {t('hero.reviews')})</span>
             </div>
 
             {/* Success Stories */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl lg:rounded-2xl p-4 lg:p-6 border border-white/20">
               <div className="flex items-center gap-3 mb-4">
                 <CheckCircle className="w-5 h-5 lg:w-6 lg:h-6 text-green-400" />
-                <span className="text-white font-semibold text-sm lg:text-base">نتائج مُثبتة علمياً</span>
+                <span className="text-white font-semibold text-sm lg:text-base">{t('hero.success.title')}</span>
               </div>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 text-center">
                 <div>
                   <div className="text-xl lg:text-2xl font-bold text-secondary">97%</div>
-                  <div className="text-xs lg:text-sm text-white/70">تحسن في كثافة الشعر</div>
+                  <div className="text-xs lg:text-sm text-white/70">{t('hero.stat.density')}</div>
                 </div>
                 <div>
                   <div className="text-xl lg:text-2xl font-bold text-secondary">85%</div>
-                  <div className="text-xs lg:text-sm text-white/70">تقليل التساقط</div>
+                  <div className="text-xs lg:text-sm text-white/70">{t('hero.stat.reduction')}</div>
                 </div>
                 <div>
                   <div className="text-xl lg:text-2xl font-bold text-secondary">92%</div>
-                  <div className="text-xs lg:text-sm text-white/70">زيادة اللمعان</div>
+                  <div className="text-xs lg:text-sm text-white/70">{t('hero.stat.shine')}</div>
                 </div>
                 <div>
-                  <div className="text-xl lg:text-2xl font-bold text-secondary">4 أسابيع</div>
-                  <div className="text-xs lg:text-sm text-white/70">لظهور النتائج</div>
+                  <div className="text-xl lg:text-2xl font-bold text-secondary">4 {t('hero.stat.weeks')}</div>
+                  <div className="text-xs lg:text-sm text-white/70">{t('hero.stat.weeks.desc')}</div>
                 </div>
               </div>
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col items-center lg:items-end gap-4">
+            <div className={`flex flex-col items-center gap-4 ${language === 'ar' ? 'lg:items-end' : 'lg:items-start'}`}>
               <Link to="/order">
                 <Button 
                   size="lg" 
                   className="w-full sm:w-auto bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-base lg:text-lg px-8 lg:px-12 py-4 lg:py-6 rounded-full"
                 >
-                  <ShoppingCart className="w-5 h-5 lg:w-6 lg:h-6 ml-2" />
-                  اشتر الآن - {formatPrice(productPrice)}
+                  <ShoppingCart className={`w-5 h-5 lg:w-6 lg:h-6 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
+                  {t('hero.buy.now')} - {formatPrice(productPrice)}
                 </Button>
               </Link>
               
@@ -264,24 +270,24 @@ const ProductHero = () => {
                   size="lg"
                   className="w-full sm:w-auto border-white/30 text-primary bg-white/90 hover:bg-white hover:text-primary/80 transition-all duration-300 text-base lg:text-lg px-8 lg:px-12 py-3 lg:py-4 rounded-full"
                 >
-                  تفاصيل المنتج
+                  {t('hero.product.details')}
                 </Button>
               </Link>
             </div>
 
             {/* Trust Badges */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-end gap-4 lg:gap-6 text-white/60 text-xs lg:text-sm">
+            <div className={`flex flex-wrap items-center gap-4 lg:gap-6 text-white/60 text-xs lg:text-sm ${language === 'ar' ? 'justify-center lg:justify-end' : 'justify-center lg:justify-start'}`}>
               <div className="flex items-center gap-2">
                 <Shield className="w-3 h-3 lg:w-4 lg:h-4" />
-                <span>ضمان الجودة</span>
+                <span>{t('hero.guarantee')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 lg:w-4 lg:h-4 rounded-full bg-gradient-secondary"></div>
-                <span>شحن مجاني</span>
+                <span>{t('hero.free.shipping')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Crown className="w-3 h-3 lg:w-4 lg:h-4" />
-                <span>منتج حصري</span>
+                <span>{t('hero.exclusive')}</span>
               </div>
             </div>
           </div>
@@ -319,7 +325,7 @@ const ProductHero = () => {
                           : 'bg-white/40 hover:bg-white/60'
                       }`}
                       onClick={() => scrollTo(index)}
-                      aria-label={`الانتقال إلى الصورة ${index + 1}`}
+                      aria-label={`${t('nav.image.alt')} ${index + 1}`}
                     />
                   ))}
                 </div>
@@ -331,18 +337,18 @@ const ProductHero = () => {
                     <div className="w-1 h-1 bg-white/40 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                     <div className="w-1 h-1 bg-white/40 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
                   </div>
-                  <span>اسحب للتنقل</span>
+                  <span>{t('hero.swipe')}</span>
                 </div>
               </div>
               
               {/* Floating elements */}
               <div className="absolute -top-4 lg:-top-6 -right-4 lg:-right-6 bg-secondary text-secondary-foreground rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center font-bold text-sm lg:text-lg shadow-medium animate-bounce-in z-30">
-                جديد
+                {t('hero.new')}
               </div>
               <div className="absolute -bottom-3 lg:-bottom-4 -left-3 lg:-left-4 bg-white/20 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 lg:p-4 shadow-medium z-30">
                 <div className="text-white text-center">
-                  <div className="text-xl lg:text-2xl font-bold text-secondary">{formatPrice(productPrice)}</div>
-                  <div className="text-xs lg:text-sm">سعر المنتج</div>
+                <div className="text-xl lg:text-2xl font-bold text-secondary">{formatPrice(productPrice)}</div>
+                <div className="text-xs lg:text-sm">{t('hero.price')}</div>
                 </div>
               </div>
             </div>
@@ -352,9 +358,9 @@ const ProductHero = () => {
         {/* Product Gallery Section */}
         <div className="py-12 sm:py-16 lg:py-20 space-y-8 lg:space-y-12">
           <div className="text-center space-y-3 lg:space-y-4 px-4">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">معرض المنتج</h2>
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">{t('hero.gallery.title')}</h2>
             <p className="text-white/80 max-w-2xl mx-auto text-sm sm:text-base lg:text-lg">
-              اكتشف جمال وفعالية سيفن جرين من خلال هذه المجموعة المتميزة من الصور
+              {t('hero.gallery.description')}
             </p>
           </div>
 
@@ -369,8 +375,8 @@ const ProductHero = () => {
                 className="w-full h-64 object-cover"
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">الشهادات والأمان</h3>
-                <p className="text-white/70 text-sm">منتج آمن ومُعتمد رسمياً</p>
+                <h3 className="text-white font-semibold mb-2">{t('gallery.certificates.title')}</h3>
+                <p className="text-white/70 text-sm">{t('gallery.certificates.desc')}</p>
               </CardContent>
             </Card>
 
@@ -382,8 +388,8 @@ const ProductHero = () => {
                 className="w-full h-64 object-cover"
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">الفعالية المُثبتة</h3>
-                <p className="text-white/70 text-sm">نتائج علمية مُوثقة</p>
+                <h3 className="text-white font-semibold mb-2">{t('gallery.effectiveness.title')}</h3>
+                <p className="text-white/70 text-sm">{t('gallery.effectiveness.desc')}</p>
               </CardContent>
             </Card>
 
@@ -395,8 +401,8 @@ const ProductHero = () => {
                 className="w-full h-64 object-cover"
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">مشاكل الشعر</h3>
-                <p className="text-white/70 text-sm">حلول لجميع مشاكل الشعر</p>
+                <h3 className="text-white font-semibold mb-2">{t('gallery.hair.problems.title')}</h3>
+                <p className="text-white/70 text-sm">{t('gallery.hair.problems.desc')}</p>
               </CardContent>
             </Card>
 
@@ -408,8 +414,8 @@ const ProductHero = () => {
                 className="w-full h-64 object-cover"
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">المكونات الطبيعية</h3>
-                <p className="text-white/70 text-sm">12 عشب طبيعي مختار بعناية</p>
+                <h3 className="text-white font-semibold mb-2">{t('gallery.natural.ingredients.title')}</h3>
+                <p className="text-white/70 text-sm">{t('gallery.natural.ingredients.desc')}</p>
               </CardContent>
             </Card>
 
@@ -421,8 +427,8 @@ const ProductHero = () => {
                 className="w-full h-64 object-cover"
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">الفوائد الشاملة</h3>
-                <p className="text-white/70 text-sm">عناية متكاملة للشعر</p>
+                <h3 className="text-white font-semibold mb-2">{t('gallery.comprehensive.benefits.title')}</h3>
+                <p className="text-white/70 text-sm">{t('gallery.comprehensive.benefits.desc')}</p>
               </CardContent>
             </Card>
 
@@ -434,8 +440,8 @@ const ProductHero = () => {
                 className="w-full h-64 object-cover"
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">التميز الطبيعي</h3>
-                <p className="text-white/70 text-sm">أفضل من المنتجات الكيميائية</p>
+                <h3 className="text-white font-semibold mb-2">{t('gallery.natural.excellence.title')}</h3>
+                <p className="text-white/70 text-sm">{t('gallery.natural.excellence.desc')}</p>
               </CardContent>
             </Card>
           </div>
@@ -451,8 +457,8 @@ const ProductHero = () => {
                 className="w-full h-80 object-cover"
               />
               <CardContent className="p-6 text-center">
-                <h3 className="text-white font-semibold text-xl mb-3">طريقة الاستخدام السهلة</h3>
-                <p className="text-white/70">استخدام بسيط وفعال مع نتائج سريعة ومضمونة</p>
+                <h3 className="text-white font-semibold text-xl mb-3">{t('gallery.usage.instructions.title')}</h3>
+                <p className="text-white/70">{t('gallery.usage.instructions.desc')}</p>
               </CardContent>
             </Card>
 
@@ -464,11 +470,11 @@ const ProductHero = () => {
                 className="w-full h-80 object-cover"
               />
               <CardContent className="p-6 text-center">
-                <h3 className="text-white font-semibold text-xl mb-3">عرض خاص محدود</h3>
-                <p className="text-white/70">اطلب الآن واحصل على هدايا مجانية مع المنتج</p>
+                <h3 className="text-white font-semibold text-xl mb-3">{t('gallery.special.offer.title')}</h3>
+                <p className="text-white/70">{t('gallery.special.offer.desc')}</p>
                 <Link to="/order">
                   <Button className="mt-4 bg-gradient-secondary hover:scale-105 transition-all">
-                    اشتر الآن
+                    {t('hero.buy.now')}
                   </Button>
                 </Link>
               </CardContent>

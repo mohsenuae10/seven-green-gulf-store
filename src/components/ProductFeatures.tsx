@@ -2,43 +2,46 @@ import { Card } from "@/components/ui/card";
 import { Droplets, Heart, Sparkles, Users, Clock, Award } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const ProductFeatures = () => {
+  const { language, t } = useLanguage();
+  
   const features = [
     {
       icon: Droplets,
-      title: "ترطيب عميق",
-      description: "يوفر ترطيب عميق ومستدام للشعر الجاف والتالف",
+      title: t('features.deep.hydration'),
+      description: t('features.deep.hydration.desc'),
       gradient: "from-blue-500 to-cyan-500"
     },
     {
       icon: Heart,
-      title: "مكونات طبيعية",
-      description: "تركيبة من الزيوت الطبيعية والخلاصات النباتية المغذية",
+      title: t('features.natural.ingredients'),
+      description: t('features.natural.ingredients.desc'),
       gradient: "from-green-500 to-emerald-500"
     },
     {
       icon: Sparkles,
-      title: "لمعان طبيعي",
-      description: "يمنح الشعر لمعان صحي وطبيعي بدون مواد كيميائية ضارة",
+      title: t('features.natural.shine'),
+      description: t('features.natural.shine.desc'),
       gradient: "from-yellow-500 to-amber-500"
     },
     {
       icon: Users,
-      title: "مناسب لجميع الأنواع",
-      description: "يناسب جميع أنواع الشعر من العادي إلى المصبوغ والمعالج",
+      title: t('features.all.types'),
+      description: t('features.all.types.desc'),
       gradient: "from-purple-500 to-pink-500"
     },
     {
       icon: Clock,
-      title: "نتائج سريعة",
-      description: "تظهر النتائج من الاستخدام الأول مع تحسن مستمر",
+      title: t('features.fast.results'),
+      description: t('features.fast.results.desc'),
       gradient: "from-orange-500 to-red-500"
     },
     {
       icon: Award,
-      title: "معتمد عالمياً",
-      description: "حاصل على شهادات الجودة العالمية وموثوق من الخبراء",
+      title: t('features.globally.certified'),
+      description: t('features.globally.certified.desc'),
       gradient: "from-indigo-500 to-purple-500"
     }
   ];
@@ -57,23 +60,22 @@ const ProductFeatures = () => {
   }, []);
 
   return (
-    <section className="py-20 bg-gradient-to-b from-background to-accent/20" dir="rtl">
+    <section className="py-20 bg-gradient-to-b from-background to-accent/20" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="container mx-auto px-4">
         
         {/* Section Header */}
         <div className="text-center mb-16 animate-slide-up">
           <div className="inline-flex items-center gap-2 bg-primary/10 rounded-full px-6 py-2 mb-6">
             <Sparkles className="w-5 h-5 text-primary" />
-            <span className="text-primary font-medium">مميزات المنتج</span>
+            <span className="text-primary font-medium">{t('features.badge')}</span>
           </div>
           
           <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
-            لماذا سيفن جرين؟
+            {t('features.title')}
           </h2>
           
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            اكتشف الفرق مع تركيبتنا الفريدة التي تجمع بين أفضل المكونات الطبيعية 
-            لتحقيق النتائج التي تحلم بها لشعرك
+            {t('features.description')}
           </p>
         </div>
 
@@ -140,7 +142,7 @@ const ProductFeatures = () => {
         <div className="text-center mt-16 animate-fade-in">
           <div className="inline-flex items-center gap-3 bg-gradient-primary text-primary-foreground rounded-full px-8 py-4 shadow-glow hover:scale-105 transition-transform cursor-pointer">
             <Award className="w-6 h-6" />
-            <span className="font-semibold text-lg">جرب المنتج الآن واستمتع بالفرق</span>
+            <span className="font-semibold text-lg">{t('features.cta')}</span>
           </div>
         </div>
       </div>

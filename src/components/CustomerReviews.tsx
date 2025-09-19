@@ -1,9 +1,12 @@
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, Quote } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const CustomerReviews = () => {
-  const reviews = [
+  const { language, t } = useLanguage();
+  
+  const reviews = language === 'ar' ? [
     {
       name: "سارة أحمد",
       location: "الرياض، السعودية",
@@ -52,21 +55,70 @@ const CustomerReviews = () => {
       avatar: "AQ",
       verified: true
     }
+  ] : [
+    {
+      name: "Sarah Ahmed",
+      location: "Riyadh, Saudi Arabia",
+      rating: 5,
+      comment: t('reviews.english.1'),
+      avatar: "SA",
+      verified: true
+    },
+    {
+      name: "Fatima Al-Ali",
+      location: "Dubai, UAE",
+      rating: 5,
+      comment: t('reviews.english.2'),
+      avatar: "FA",
+      verified: true
+    },
+    {
+      name: "Nora Al-Zahrani",
+      location: "Jeddah, Saudi Arabia", 
+      rating: 5,
+      comment: t('reviews.english.3'),
+      avatar: "NZ",
+      verified: true
+    },
+    {
+      name: "Maryam Al-Kandari",
+      location: "Kuwait",
+      rating: 5,
+      comment: t('reviews.english.4'),
+      avatar: "MK",
+      verified: true
+    },
+    {
+      name: "Hind Al-Bahraini",
+      location: "Manama, Bahrain",
+      rating: 5,
+      comment: t('reviews.english.5'),
+      avatar: "HB",
+      verified: true
+    },
+    {
+      name: "Alia Al-Qatari",
+      location: "Doha, Qatar",
+      rating: 5,
+      comment: t('reviews.english.6'),
+      avatar: "AQ",
+      verified: true
+    }
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-b from-accent/20 to-background" dir="rtl">
+    <section className="py-20 bg-gradient-to-b from-accent/20 to-background" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="container mx-auto px-4">
         
         {/* Section Header */}
         <div className="text-center mb-16 animate-slide-up">
           <div className="inline-flex items-center gap-2 bg-secondary/20 rounded-full px-6 py-2 mb-6">
             <Quote className="w-5 h-5 text-secondary" />
-            <span className="text-secondary-foreground font-medium">آراء العملاء</span>
+            <span className="text-secondary-foreground font-medium">{t('reviews.badge')}</span>
           </div>
           
           <h2 className="text-4xl lg:text-5xl font-bold text-foreground mb-6">
-            ماذا يقول عملاؤنا؟
+            {t('reviews.title')}
           </h2>
           
           <div className="flex items-center justify-center gap-2 mb-4">
@@ -76,11 +128,11 @@ const CustomerReviews = () => {
               ))}
             </div>
             <span className="text-2xl font-bold text-secondary">4.9</span>
-            <span className="text-muted-foreground">(2,847 تقييم)</span>
+            <span className="text-muted-foreground">(2,847 {t('reviews.badge')})</span>
           </div>
           
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            أكثر من 10,000 عميلة راضية في دول الخليج يؤكدن فعالية المنتج
+            {t('reviews.description')}
           </p>
         </div>
 
@@ -144,10 +196,10 @@ const CustomerReviews = () => {
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 animate-fade-in">
           {[
-            { number: "10,000+", label: "عميلة راضية" },
-            { number: "4.9/5", label: "تقييم العملاء" },
-            { number: "98%", label: "نسبة الرضا" },
-            { number: "30 يوم", label: "ضمان الاسترداد" }
+            { number: "10,000+", label: t('reviews.stats.customers') },
+            { number: "4.9/5", label: t('reviews.stats.rating') },
+            { number: "98%", label: t('reviews.stats.satisfaction') },
+            { number: language === 'ar' ? "30 يوم" : "30 days", label: t('reviews.stats.guarantee') }
           ].map((stat, index) => (
             <div key={index} className="text-center">
               <div className="text-3xl lg:text-4xl font-bold text-primary mb-2">{stat.number}</div>
