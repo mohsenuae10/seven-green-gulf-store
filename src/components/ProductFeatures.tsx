@@ -59,6 +59,10 @@ const ProductFeatures = () => {
     })();
   }, []);
 
+  const hasArabic = benefits.some((b) => /[\u0600-\u06FF]/.test(b));
+  const hasLatin = benefits.some((b) => /[A-Za-z]/.test(b));
+  const useCustom = benefits.length > 0 && ((language === 'ar' && hasArabic) || (language === 'en' && hasLatin));
+
   return (
     <section className="py-20 bg-gradient-to-b from-background to-accent/20" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <div className="container mx-auto px-4">
@@ -81,7 +85,7 @@ const ProductFeatures = () => {
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {benefits.length > 0 ? (
+          {useCustom ? (
             benefits.map((b, index) => (
               <Card 
                 key={index}
