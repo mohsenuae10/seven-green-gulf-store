@@ -65,17 +65,16 @@ export function useCurrency() {
   const getCurrentCurrency = () => currencies[selectedCurrency];
   const getAllCurrencies = () => Object.values(currencies);
 
-  const setSelectedCurrency = (code: Currency) => {
+  const changeCurrency = (code: Currency) => {
     setSelectedCurrencyState(code);
     try {
       localStorage.setItem('selectedCurrency', code);
     } catch {}
     window.dispatchEvent(new CustomEvent('currencychange', { detail: code }));
   };
-
   return {
     selectedCurrency,
-    setSelectedCurrency,
+    changeCurrency,
     convertPrice,
     formatPrice,
     getCurrencyData,

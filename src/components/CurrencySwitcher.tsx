@@ -8,7 +8,7 @@ interface CurrencySwitcherProps {
 }
 
 const CurrencySwitcher = ({ className = "", variant = "header" }: CurrencySwitcherProps) => {
-  const { selectedCurrency, setSelectedCurrency, getAllCurrencies, getCurrentCurrency } = useCurrency();
+  const { selectedCurrency, changeCurrency, getAllCurrencies, getCurrentCurrency } = useCurrency();
   const currencies = getAllCurrencies();
   const currentCurrency = getCurrentCurrency();
 
@@ -17,7 +17,7 @@ const CurrencySwitcher = ({ className = "", variant = "header" }: CurrencySwitch
       <div className={`flex items-center gap-2 ${className}`}>
         <Select
           value={selectedCurrency}
-          onValueChange={(value: Currency) => setSelectedCurrency(value)}
+          onValueChange={(value: Currency) => changeCurrency(value)}
         >
           <SelectTrigger className="w-[120px] bg-white/10 border-white/20 text-white hover:bg-white/20 transition-all duration-300">
             <SelectValue>
@@ -54,7 +54,7 @@ const CurrencySwitcher = ({ className = "", variant = "header" }: CurrencySwitch
           key={currency.code}
           variant={selectedCurrency === currency.code ? "default" : "outline"}
           size="sm"
-          onClick={() => setSelectedCurrency(currency.code)}
+          onClick={() => changeCurrency(currency.code)}
           className="h-8 px-2 text-xs"
         >
           <span className="mr-1">{currency.flag}</span>
