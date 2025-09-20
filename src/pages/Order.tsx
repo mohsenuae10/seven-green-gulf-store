@@ -177,13 +177,8 @@ const Order = () => {
       }
 
       if (result.payment_url) {
-        console.log("Opening Stripe checkout in new tab:", result.payment_url);
-        window.open(result.payment_url, '_blank');
-        
-        toast({
-          title: t('order.success.title'),
-          description: t('order.success.desc'),
-        });
+        console.log("Redirecting to Stripe checkout:", result.payment_url);
+        window.location.href = result.payment_url;
       } else {
         throw new Error(language === 'ar' ? "لم يتم إنشاء رابط الدفع" : "Payment link was not created");
       }
