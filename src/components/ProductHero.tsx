@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Star, ShoppingCart, Leaf, Crown, Shield, Play, CheckCircle, Triangle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProductPrice } from "@/hooks/useProductPrice";
@@ -13,7 +14,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 
 const ProductHero = () => {
-  const { price: productPrice } = useProductPrice({ fallback: 299 });
+  const { price: productPrice, loading: priceLoading } = useProductPrice({ fallback: 299 });
   const { formatPrice, selectedCurrency } = useCurrency();
   const { language, t } = useLanguage();
   console.log('[ProductHero] currency:', selectedCurrency, 'price:', formatPrice(productPrice));
@@ -261,7 +262,7 @@ const ProductHero = () => {
                   className="w-full sm:w-auto bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-base lg:text-lg px-8 lg:px-12 py-4 lg:py-6 rounded-full"
                 >
                   <ShoppingCart className={`w-5 h-5 lg:w-6 lg:h-6 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
-                  {t('hero.buy.now')} - {formatPrice(productPrice)}
+                  {t('hero.buy.now')} - {priceLoading ? <Skeleton className="inline w-16 h-4" /> : formatPrice(productPrice)}
                 </Button>
               </Link>
               
@@ -348,7 +349,9 @@ const ProductHero = () => {
               </div>
               <div className="absolute -bottom-3 lg:-bottom-4 -left-3 lg:-left-4 bg-white/20 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 lg:p-4 shadow-medium z-30">
                 <div className="text-white text-center">
-                <div className="text-xl lg:text-2xl font-bold text-secondary">{formatPrice(productPrice)}</div>
+                <div className="text-xl lg:text-2xl font-bold text-secondary">
+                  {priceLoading ? <Skeleton className="w-20 h-6 mx-auto" /> : formatPrice(productPrice)}
+                </div>
                 <div className="text-xs lg:text-sm">{t('hero.price')}</div>
                 </div>
               </div>
