@@ -7,17 +7,17 @@ interface CurrencyData {
   symbol: string;
   name: string;
   flag: string;
-  rate: number; // Exchange rate relative to AED
+  rate: number; // Exchange rate relative to SAR
 }
 
 const currencies: Record<Currency, CurrencyData> = {
-  AED: { code: 'AED', symbol: 'درهم', name: 'درهم إماراتي', flag: '🇦🇪', rate: 1 },
-  SAR: { code: 'SAR', symbol: 'ريال', name: 'ريال سعودي', flag: '🇸🇦', rate: 1.02 }, // 1 AED = ~1.02 SAR
-  USD: { code: 'USD', symbol: '$', name: 'دولار أمريكي', flag: '🇺🇸', rate: 0.27 }, // 1 AED = ~0.27 USD
+  SAR: { code: 'SAR', symbol: 'ريال', name: 'ريال سعودي', flag: '🇸🇦', rate: 1 }, // Base currency
+  AED: { code: 'AED', symbol: 'درهم', name: 'درهم إماراتي', flag: '🇦🇪', rate: 0.98 }, // 1 SAR = ~0.98 AED
+  USD: { code: 'USD', symbol: '$', name: 'دولار أمريكي', flag: '🇺🇸', rate: 0.27 }, // 1 SAR = ~0.27 USD
 };
 
 export function useCurrency() {
-  const [selectedCurrency, setSelectedCurrencyState] = useState<Currency>('AED');
+  const [selectedCurrency, setSelectedCurrencyState] = useState<Currency>('SAR');
 
   // Load currency from localStorage on mount
   useEffect(() => {
@@ -46,13 +46,13 @@ export function useCurrency() {
     } catch {}
   }, [selectedCurrency]);
 
-  const convertPrice = (priceInAED: number): number => {
+  const convertPrice = (priceInSAR: number): number => {
     const rate = currencies[selectedCurrency].rate;
-    return Math.round(priceInAED * rate);
+    return Math.round(priceInSAR * rate);
   };
 
-  const formatPrice = (priceInAED: number): string => {
-    const convertedPrice = convertPrice(priceInAED);
+  const formatPrice = (priceInSAR: number): string => {
+    const convertedPrice = convertPrice(priceInSAR);
     const currency = currencies[selectedCurrency];
     
     if (selectedCurrency === 'USD') {
