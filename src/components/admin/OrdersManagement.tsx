@@ -240,7 +240,16 @@ export function OrdersManagement() {
                         </div>
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{new Date(order.created_at).toLocaleDateString('ar-AE')}</span>
+                          <div className="text-sm">
+                            <div>{new Date(order.created_at).toLocaleDateString('ar-AE')}</div>
+                            <div className="text-muted-foreground text-xs">
+                              {new Date(order.created_at).toLocaleTimeString('ar-AE', { 
+                                hour: '2-digit', 
+                                minute: '2-digit',
+                                hour12: true 
+                              })}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
