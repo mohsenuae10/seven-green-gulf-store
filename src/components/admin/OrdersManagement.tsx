@@ -6,21 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { useCurrency } from "@/hooks/useCurrency";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Eye, Edit2 } from "lucide-react";
+import { Eye, Package, User, MapPin, Phone, Mail, Calendar, CreditCard } from "lucide-react";
 
 interface Order {
   id: string;
@@ -200,93 +192,120 @@ export function OrdersManagement() {
               <p className="text-muted-foreground">لا توجد طلبات حتى الآن</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>رقم الطلب</TableHead>
-                    <TableHead>اسم العميل</TableHead>
-                    <TableHead>رقم الهاتف</TableHead>
-                    <TableHead>الدولة</TableHead>
-                    <TableHead>المدينة</TableHead>
-                    <TableHead>العنوان</TableHead>
-                    <TableHead>عدد المباع</TableHead>
-                    <TableHead>المبلغ الإجمالي</TableHead>
-                    <TableHead>حالة الطلب</TableHead>
-                    <TableHead>حالة الدفع</TableHead>
-                    <TableHead>تاريخ الطلب</TableHead>
-                    <TableHead>الإجراءات</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {orders.map((order) => (
-                    <TableRow key={order.id}>
-                      <TableCell className="font-mono text-xs">
-                        {order.id.slice(-8)}...
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {order.customer_name}
-                      </TableCell>
-                      <TableCell>
-                        {order.customer_phone}
-                      </TableCell>
-                      <TableCell>{order.country}</TableCell>
-                      <TableCell>{order.city}</TableCell>
-                      <TableCell className="max-w-xs truncate" title={order.address}>
-                        {order.address}
-                      </TableCell>
-                      <TableCell className="text-center">
-                        <Badge variant="outline" className="bg-primary/10">
-                          {order.total_items || 0} قطعة
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{formatPrice(order.total_amount)}</TableCell>
-                      <TableCell>
-                        <Select
-                          value={order.status}
-                          onValueChange={(value) => updateOrderStatus(order.id, value)}
-                        >
-                          <SelectTrigger className="w-32">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">في الانتظار</SelectItem>
-                            <SelectItem value="confirmed">مؤكد</SelectItem>
-                            <SelectItem value="shipped">تم الشحن</SelectItem>
-                            <SelectItem value="delivered">تم التسليم</SelectItem>
-                            <SelectItem value="cancelled">ملغي</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                      <TableCell>
-                        <Select
-                          value={order.payment_status}
-                          onValueChange={(value) => updatePaymentStatus(order.id, value)}
-                        >
-                          <SelectTrigger className="w-32">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">في الانتظار</SelectItem>
-                            <SelectItem value="paid">مدفوع</SelectItem>
-                            <SelectItem value="failed">فشل</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                      <TableCell>
-                        {new Date(order.created_at).toLocaleDateString('ar-AE')}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="outline">
-                            <Eye className="h-4 w-4" />
-                          </Button>
+            <div className="grid gap-6">
+              {orders.map((order) => (
+                <Card key={order.id} className="relative">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Package className="h-4 w-4 text-primary" />
+                        <CardTitle className="text-lg font-mono">
+                          #{order.id.slice(-8)}
+                        </CardTitle>
+                      </div>
+                      <div className="flex gap-2">
+                        {getStatusBadge(order.status)}
+                        {getPaymentStatusBadge(order.payment_status)}
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {/* Customer Info */}
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4 text-muted-foreground" />
+                          <span className="font-medium">{order.customer_name}</span>
                         </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">{order.customer_phone}</span>
+                        </div>
+                        {order.customer_email && (
+                          <div className="flex items-center gap-2">
+                            <Mail className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm">{order.customer_email}</span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">{order.country}, {order.city}</span>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+                          <span className="text-sm text-muted-foreground">{order.address}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <span className="text-sm">{new Date(order.created_at).toLocaleDateString('ar-AE')}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Order Summary */}
+                    <div className="border-t pt-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-4">
+                          <Badge variant="outline" className="bg-primary/10">
+                            <Package className="h-3 w-3 mr-1" />
+                            {order.total_items || 0} قطعة
+                          </Badge>
+                          <div className="flex items-center gap-2">
+                            <CreditCard className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-lg font-semibold">{formatPrice(order.total_amount)}</span>
+                          </div>
+                        </div>
+                        <Button size="sm" variant="outline">
+                          <Eye className="h-4 w-4 mr-1" />
+                          عرض التفاصيل
+                        </Button>
+                      </div>
+
+                      {/* Status Controls */}
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">حالة الطلب</label>
+                          <Select
+                            value={order.status}
+                            onValueChange={(value) => updateOrderStatus(order.id, value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pending">في الانتظار</SelectItem>
+                              <SelectItem value="confirmed">مؤكد</SelectItem>
+                              <SelectItem value="shipped">تم الشحن</SelectItem>
+                              <SelectItem value="delivered">تم التسليم</SelectItem>
+                              <SelectItem value="cancelled">ملغي</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <label className="text-sm font-medium">حالة الدفع</label>
+                          <Select
+                            value={order.payment_status}
+                            onValueChange={(value) => updatePaymentStatus(order.id, value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="pending">في الانتظار</SelectItem>
+                              <SelectItem value="paid">مدفوع</SelectItem>
+                              <SelectItem value="failed">فشل</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           )}
         </CardContent>
