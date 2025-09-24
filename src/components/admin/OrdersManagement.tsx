@@ -35,6 +35,7 @@ interface Order {
   payment_status: string;
   created_at: string;
   updated_at: string;
+  total_items?: number;
 }
 
 export function OrdersManagement() {
@@ -51,7 +52,10 @@ export function OrdersManagement() {
     try {
       const { data, error } = await supabase
         .from('orders')
-        .select('*')
+        .select(`
+          *,
+          order_items(quantity)
+        `)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -64,7 +68,13 @@ export function OrdersManagement() {
         return;
       }
 
-      setOrders(data || []);
+      // Calculate total items for each order
+      const ordersWithTotals = (data || []).map((order: any) => ({
+        ...order,
+        total_items: order.order_items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0
+      }));
+
+      setOrders(ordersWithTotals);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast({
@@ -200,6 +210,7 @@ export function OrdersManagement() {
                     <TableHead>الدولة</TableHead>
                     <TableHead>المدينة</TableHead>
                     <TableHead>العنوان</TableHead>
+                    <TableHead>عدد المباع</TableHead>
                     <TableHead>المبلغ الإجمالي</TableHead>
                     <TableHead>حالة الطلب</TableHead>
                     <TableHead>حالة الدفع</TableHead>
@@ -223,6 +234,11 @@ export function OrdersManagement() {
                       <TableCell>{order.city}</TableCell>
                       <TableCell className="max-w-xs truncate" title={order.address}>
                         {order.address}
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Badge variant="outline" className="bg-primary/10">
+                          {order.total_items || 0} قطعة
+                        </Badge>
                       </TableCell>
                       <TableCell>{formatPrice(order.total_amount)}</TableCell>
                       <TableCell>
