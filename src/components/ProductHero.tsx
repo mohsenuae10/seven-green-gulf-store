@@ -262,7 +262,12 @@ const ProductHero = () => {
                   className="w-full sm:w-auto bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-base lg:text-lg px-8 lg:px-12 py-4 lg:py-6 rounded-full"
                 >
                   <ShoppingCart className={`w-5 h-5 lg:w-6 lg:h-6 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
-                  {t('hero.buy.now')} - {priceLoading ? <Skeleton className="inline w-16 h-4" /> : formatPrice(productPrice)}
+                  {t('hero.buy.now')} - {priceLoading ? <Skeleton className="inline w-16 h-4" /> : (
+                    <span className="flex items-center gap-2">
+                      <span className="text-white/70 line-through text-sm">{formatPrice(115)}</span>
+                      <span className="text-white font-bold">{formatPrice(productPrice)}</span>
+                    </span>
+                  )}
                 </Button>
               </Link>
               
@@ -344,17 +349,32 @@ const ProductHero = () => {
               </div>
               
               {/* Floating elements */}
-              <div className="absolute -top-4 lg:-top-6 -right-4 lg:-right-6 bg-secondary text-secondary-foreground rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center font-bold text-sm lg:text-lg shadow-medium animate-bounce-in z-30">
-                {t('hero.new')}
-              </div>
-              <div className="absolute -bottom-3 lg:-bottom-4 -left-3 lg:-left-4 bg-white/20 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 lg:p-4 shadow-medium z-30">
-                <div className="text-white text-center">
-                <div className="text-xl lg:text-2xl font-bold text-secondary">
-                  {priceLoading ? <Skeleton className="w-20 h-6 mx-auto" /> : formatPrice(productPrice)}
-                </div>
-                <div className="text-xs lg:text-sm">{t('hero.price')}</div>
-                </div>
-              </div>
+               {/* خصم/توفير */}
+               <div className="absolute -top-4 lg:-top-6 -left-4 lg:-left-6 bg-red-500 text-white rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center font-bold text-xs lg:text-sm shadow-medium animate-bounce-in z-30">
+                 <div className="text-center">
+                   <div>وفر</div>
+                   <div>{Math.round(((115 - productPrice) / 115) * 100)}%</div>
+                 </div>
+               </div>
+               
+               {/* جديد */}
+               <div className="absolute -top-4 lg:-top-6 -right-4 lg:-right-6 bg-secondary text-secondary-foreground rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center font-bold text-sm lg:text-lg shadow-medium animate-bounce-in z-30">
+                 {t('hero.new')}
+               </div>
+               <div className="absolute -bottom-3 lg:-bottom-4 -left-3 lg:-left-4 bg-white/20 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 lg:p-4 shadow-medium z-30">
+                 <div className="text-white text-center">
+                   {priceLoading ? <Skeleton className="w-20 h-6 mx-auto" /> : (
+                     <div>
+                       <div className="text-sm text-white/70 line-through">{formatPrice(115)}</div>
+                       <div className="text-xl lg:text-2xl font-bold text-secondary">{formatPrice(productPrice)}</div>
+                       <div className="text-xs bg-red-500 text-white px-2 py-1 rounded-full mt-1">
+                         وفر {Math.round(((115 - productPrice) / 115) * 100)}%
+                       </div>
+                     </div>
+                   )}
+                   <div className="text-xs lg:text-sm mt-1">{t('hero.price')}</div>
+                 </div>
+               </div>
             </div>
           </div>
         </div>
