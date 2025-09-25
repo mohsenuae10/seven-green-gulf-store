@@ -137,7 +137,7 @@ serve(async (req) => {
       customer: customerId,
       line_items: [
         {
-          price: "price_1SBB5U9IHXjyx3CsicRKdZFr", // New Stripe price ID for 71 SAR
+          price: "price_1SBB5U9IHXjyx3CsicRKdZFr", // Stripe price ID for 71 SAR
           quantity: quantity,
         },
       ],
@@ -166,7 +166,7 @@ serve(async (req) => {
     console.error("Error in create-stripe-payment:", error);
     return new Response(JSON.stringify({ 
       success: false,
-      error: error.message 
+      error: error instanceof Error ? error.message : String(error)
     }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,

@@ -166,7 +166,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message || "حدث خطأ غير متوقع"
+        error: error instanceof Error ? error.message : "حدث خطأ غير متوقع"
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
