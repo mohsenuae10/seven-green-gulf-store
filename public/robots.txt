@@ -1,8 +1,10 @@
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 1
 
 User-agent: Twitterbot
 Allow: /
@@ -10,5 +12,33 @@ Allow: /
 User-agent: facebookexternalhit
 Allow: /
 
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
 User-agent: *
 Allow: /
+Crawl-delay: 2
+
+# Sitemaps
+Sitemap: https://sevengreen.lovable.app/sitemap.xml
+
+# Disallow admin sections
+Disallow: /admin
+Disallow: /auth
+Disallow: /*.json$
+Disallow: /api/
+
+# Allow important pages
+Allow: /
+Allow: /product-details
+Allow: /order
+Allow: /payment-success
+
+# Cache directives
+# Host: sevengreen.lovable.app

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Main Page -->
+  <url>
+    <loc>https://sevengreen.lovable.app/</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevengreen.lovable.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://sevengreen.lovable.app/en" />
+    <image:image>
+      <image:loc>https://sevengreen.lovable.app/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png</image:loc>
+      <image:title>صابون سيفن جرين الطبيعي</image:title>
+      <image:caption>صابون طبيعي من السرو والأوسمان لمنع تساقط الشعر</image:caption>
+    </image:image>
+  </url>
+
+  <!-- Product Details -->
+  <url>
+    <loc>https://sevengreen.lovable.app/product-details</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevengreen.lovable.app/product-details" />
+  </url>
+
+  <!-- Order Page -->
+  <url>
+    <loc>https://sevengreen.lovable.app/order</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevengreen.lovable.app/order" />
+  </url>
+
+  <!-- Payment Success -->
+  <url>
+    <loc>https://sevengreen.lovable.app/payment-success</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+</urlset>
