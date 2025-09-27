@@ -18,7 +18,12 @@ interface AnalyticsData {
   totalProducts: number;
   pendingOrders: number;
   completedOrders: number;
+  paidOrders: number;
+  confirmedOrders: number;
+  shippedOrders: number;
   recentOrders: any[];
+  monthlyRevenue: number;
+  paidRevenue: number;
 }
 
 export function AnalyticsDashboard() {
@@ -29,7 +34,12 @@ export function AnalyticsDashboard() {
     totalProducts: 0,
     pendingOrders: 0,
     completedOrders: 0,
+    paidOrders: 0,
+    confirmedOrders: 0,
+    shippedOrders: 0,
     recentOrders: [],
+    monthlyRevenue: 0,
+    paidRevenue: 0,
   });
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
@@ -72,18 +82,41 @@ export function AnalyticsDashboard() {
 
       // Calculate analytics
       const totalOrders = orders?.length || 0;
-      const totalRevenue = orders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
-      const totalProducts = products?.length || 0;
+      const paidOrders = orders?.filter(order => order.payment_status === 'paid')?.length || 0;
+      const confirmedOrders = orders?.filter(order => order.status === 'confirmed')?.length || 0;
+      const shippedOrders = orders?.filter(order => order.status === 'shipped')?.length || 0;
       const pendingOrders = orders?.filter(order => order.status === 'pending')?.length || 0;
       const completedOrders = orders?.filter(order => order.status === 'delivered')?.length || 0;
+      
+      // Calculate revenues - total and only from paid orders
+      const totalRevenue = orders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
+      const paidRevenue = orders?.filter(order => order.payment_status === 'paid')
+        .reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
+      
+      // Calculate monthly revenue (current month)
+      const currentMonth = new Date().getMonth();
+      const currentYear = new Date().getFullYear();
+      const monthlyRevenue = orders?.filter(order => {
+        const orderDate = new Date(order.created_at);
+        return order.payment_status === 'paid' && 
+               orderDate.getMonth() === currentMonth && 
+               orderDate.getFullYear() === currentYear;
+      }).reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
+      
+      const totalProducts = products?.length || 0;
       const recentOrders = orders?.slice(0, 5) || [];
 
       setAnalytics({
         totalOrders,
         totalRevenue,
+        paidRevenue,
+        monthlyRevenue,
         totalProducts,
         pendingOrders,
         completedOrders,
+        paidOrders,
+        confirmedOrders,
+        shippedOrders,
         recentOrders,
       });
     } catch (error) {
@@ -115,18 +148,18 @@ export function AnalyticsDashboard() {
       color: "text-blue-600",
     },
     {
-      title: "إجمالي الإيرادات",
-      value: formatPrice(analytics.totalRevenue),
+      title: "الإيرادات المدفوعة",
+      value: formatPrice(analytics.paidRevenue),
       icon: DollarSign,
-      description: "المبيعات الإجمالية",
+      description: "من الطلبات المدفوعة",
       color: "text-green-600",
     },
     {
-      title: "عدد المنتجات",
-      value: analytics.totalProducts,
-      icon: Package,
-      description: "منتجات في المتجر",
-      color: "text-purple-600",
+      title: "طلبات مدفوعة",
+      value: analytics.paidOrders,
+      icon: TrendingUp,
+      description: "طلبات تم دفعها",
+      color: "text-emerald-600",
     },
     {
       title: "طلبات في الانتظار",
@@ -218,26 +251,36 @@ export function AnalyticsDashboard() {
           <CardContent>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span>الطلبات المكتملة</span>
+                <span>طلبات مؤكدة</span>
+                <span className="font-bold text-blue-600">{analytics.confirmedOrders}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>طلبات مشحونة</span>
+                <span className="font-bold text-purple-600">{analytics.shippedOrders}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>طلبات مكتملة</span>
                 <span className="font-bold text-green-600">{analytics.completedOrders}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span>الطلبات قيد المعالجة</span>
-                <span className="font-bold text-orange-600">{analytics.pendingOrders}</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span>معدل النجاح</span>
-                <span className="font-bold text-blue-600">
+                <span>معدل الدفع</span>
+                <span className="font-bold text-emerald-600">
                   {analytics.totalOrders > 0 
-                    ? Math.round((analytics.completedOrders / analytics.totalOrders) * 100)
+                    ? Math.round((analytics.paidOrders / analytics.totalOrders) * 100)
                     : 0}%
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span>متوسط قيمة الطلب</span>
+                <span>إيرادات هذا الشهر</span>
+                <span className="font-bold text-green-600">
+                  {formatPrice(analytics.monthlyRevenue)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>متوسط الطلب المدفوع</span>
                 <span className="font-bold">
-                  {analytics.totalOrders > 0 
-                    ? formatPrice(Math.round(analytics.totalRevenue / analytics.totalOrders))
+                  {analytics.paidOrders > 0 
+                    ? formatPrice(Math.round(analytics.paidRevenue / analytics.paidOrders))
                     : formatPrice(0)}
                 </span>
               </div>
