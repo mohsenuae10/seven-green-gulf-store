@@ -114,9 +114,19 @@ export function OrdersManagement() {
 
   const updatePaymentStatus = async (orderId: string, paymentStatus: string) => {
     try {
+      // If setting payment to paid, also set status to confirmed
+      const updateData: any = { 
+        payment_status: paymentStatus, 
+        updated_at: new Date().toISOString() 
+      };
+      
+      if (paymentStatus === 'paid') {
+        updateData.status = 'confirmed';
+      }
+
       const { error } = await supabase
         .from('orders')
-        .update({ payment_status: paymentStatus, updated_at: new Date().toISOString() })
+        .update(updateData)
         .eq('id', orderId);
 
       if (error) {
