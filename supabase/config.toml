@@ -1,1 +1,4 @@
 project_id = "dnvchztawygtkdddsiwn"
+
+[functions.send-shipping-notification]
+verify_jwt = false
