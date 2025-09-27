@@ -35,7 +35,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('Sending shipping notification to:', customerEmail);
 
     const emailResponse = await resend.emails.send({
-      from: "Seven Green Store <onboarding@resend.dev>",
+      from: "Seven Green Store <noreply@sevengreen.com>",
       to: [customerEmail],
       subject: `تم شحن طلبك #${orderId.slice(-8)}`,
       html: `
