@@ -12,6 +12,7 @@ import { ProductsManagement } from "@/components/admin/ProductsManagement";
 import ProductImageManagement from "@/components/admin/ProductImageManagement";
 import ContentManagement from "@/components/admin/ContentManagement";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
+import { ShippingManagement } from "@/components/admin/ShippingManagement";
 
 const Admin = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -161,6 +162,8 @@ const Admin = () => {
     switch (activeSection) {
       case "orders":
         return <OrdersManagement />;
+      case "shipping":
+        return <ShippingManagement />;
       case "products":
         return <ProductsManagement />;
       case "images":

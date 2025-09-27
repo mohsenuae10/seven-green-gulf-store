@@ -6,7 +6,8 @@ import {
   LogOut,
   BarChart3,
   Image,
-  FileText
+  FileText,
+  Truck
 } from "lucide-react";
 import {
   Sidebar,
@@ -33,6 +34,7 @@ interface AdminSidebarProps {
 const menuItems = [
   { id: "dashboard", title: "لوحة المعلومات", icon: LayoutDashboard },
   { id: "orders", title: "إدارة الطلبات", icon: ShoppingCart },
+  { id: "shipping", title: "إدارة الشحن", icon: Truck },
   { id: "products", title: "إدارة المنتجات", icon: Package },
   { id: "images", title: "إدارة الصور", icon: Image },
   { id: "content", title: "إدارة المحتوى", icon: FileText },
