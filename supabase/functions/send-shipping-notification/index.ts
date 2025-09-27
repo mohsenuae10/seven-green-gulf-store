@@ -79,13 +79,6 @@ const handler = async (req: Request): Promise<Response> => {
                 <p><strong>رقم التتبع:</strong> ${trackingNumber}</p>
               </div>
 
-              ${sellerNotes ? `
-              <div class="order-info">
-                <h3>ملاحظات خاصة:</h3>
-                <p>${sellerNotes}</p>
-              </div>
-              ` : ''}
-
               <p>سيصل طلبك خلال 3-7 أيام عمل. في حال وجود أي استفسار، لا تتردد في التواصل معنا.</p>
               
               <div style="text-align: center;">
