@@ -240,6 +240,20 @@ const OrderSection = () => {
               </div>
             </Card>
 
+            {/* Contact Support */}
+            <Card className="bg-gradient-card border-border/50 p-4">
+              <h4 className="font-semibold text-foreground mb-3 text-center">{language === 'ar' ? 'تواصل معنا' : 'Contact Us'}</h4>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.open("https://wa.me/971508824227", "_blank")}
+                className="w-full hover:scale-105 transition-all duration-300"
+              >
+                <Phone className="w-4 h-4 ml-2" />
+                {language === 'ar' ? 'واتساب +971508824227' : 'WhatsApp +971508824227'}
+              </Button>
+            </Card>
+
             {/* Guarantee */}
             <div className="text-center bg-secondary/10 rounded-xl p-4">
               <Shield className="w-8 h-8 text-secondary mx-auto mb-2" />
