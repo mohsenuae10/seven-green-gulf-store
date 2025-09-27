@@ -70,8 +70,12 @@ export type Database = {
           customer_phone: string
           id: string
           payment_status: string | null
+          seller_notes: string | null
+          shipped_at: string | null
+          shipping_company: string | null
           status: string | null
           total_amount: number
+          tracking_number: string | null
           updated_at: string
           user_id: string | null
         }
@@ -85,8 +89,12 @@ export type Database = {
           customer_phone: string
           id?: string
           payment_status?: string | null
+          seller_notes?: string | null
+          shipped_at?: string | null
+          shipping_company?: string | null
           status?: string | null
           total_amount: number
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -100,8 +108,12 @@ export type Database = {
           customer_phone?: string
           id?: string
           payment_status?: string | null
+          seller_notes?: string | null
+          shipped_at?: string | null
+          shipping_company?: string | null
           status?: string | null
           total_amount?: number
+          tracking_number?: string | null
           updated_at?: string
           user_id?: string | null
         }
