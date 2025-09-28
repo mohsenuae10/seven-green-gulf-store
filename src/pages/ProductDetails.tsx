@@ -428,6 +428,20 @@ const ProductDetails = () => {
           </CardContent>
         </Card>
       </section>
+
+      {/* Fixed Buy Button */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-t shadow-lg p-4">
+        <div className="container mx-auto">
+          <Link to="/order" className="block">
+            <Button 
+              size="lg" 
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-lg py-4 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl"
+            >
+              {t('hero.buy.now')} - {loading ? "..." : formatPrice(price)}
+            </Button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 };
