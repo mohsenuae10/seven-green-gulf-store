@@ -31,10 +31,6 @@ const PaymentMethods = () => {
       icon: <img src={googlePayLogo} alt="Google Pay" className="h-6 w-auto" />,
     },
     {
-      name: "American Express",
-      icon: <img src={amexLogo} alt="American Express" className="h-6 w-auto" />,
-    },
-    {
       name: "PayPal",
       icon: <img src={paypalLogo} alt="PayPal" className="h-6 w-auto" />,
     },
