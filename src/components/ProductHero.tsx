@@ -9,7 +9,6 @@ import { useLanguage } from "@/hooks/useLanguage";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay';
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 
@@ -22,11 +21,10 @@ const ProductHero = () => {
   // Carousel configuration
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { 
-      loop: true,
+      loop: false,
       dragFree: true,
       containScroll: 'trimSnaps'
-    }, 
-    [Autoplay({ delay: 4000, stopOnInteraction: false })]
+    }
   );
   
   const [selectedIndex, setSelectedIndex] = useState(0);
