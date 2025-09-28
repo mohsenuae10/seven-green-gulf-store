@@ -43,10 +43,21 @@
     <link rel="alternate" hreflang="en" href="https://sevengreen.lovable.app/en" />
     <link rel="alternate" hreflang="x-default" href="https://sevengreen.lovable.app/" />
     
-    <!-- Google Fonts - Tajawal for Arabic & Inter for English -->
+    <!-- Resource Hints for Performance -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Preload Critical Fonts with font-display: swap -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Tajawal:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Tajawal:wght@400;500;600;700&display=swap"></noscript>
+    
+    <!-- Fallback font loading for better performance -->
+    <style>
+      /* Critical CSS: Font display fallbacks */
+      body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; }
+    </style>
 
     <meta property="og:title" content="🌿 سيفن جرين | أفضل صابون طبيعي لمنع تساقط الشعر في الخليج 2024" />
     <meta property="og:description" content="صابون سيفن جرين الطبيعي 100% من السرو والأوسمان | يمنع تساقط الشعر ويحكم الزيوت | توصيل مجاني للسعودية والخليج | احصل على شعر صحي وقوي!" />
@@ -258,6 +269,21 @@
 
   <body>
     <div id="root"></div>
+    
+    <!-- Optimize script loading -->
+    <script>
+      // Preload critical resources
+      if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => {
+          // Preload next page resources during idle time
+          const link = document.createElement('link');
+          link.rel = 'prefetch';
+          link.href = '/order';
+          document.head.appendChild(link);
+        });
+      }
+    </script>
+    
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
