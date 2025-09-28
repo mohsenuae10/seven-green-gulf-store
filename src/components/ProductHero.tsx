@@ -11,6 +11,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
+import OptimizedImage from "@/components/OptimizedImage";
 
 const ProductHero = () => {
   const { price: productPrice, loading: priceLoading } = useProductPrice({ fallback: 299 });
@@ -281,10 +282,14 @@ const ProductHero = () => {
                     {productImages.map((image, index) => (
                       <div key={index} className="embla__slide flex-[0_0_100%] min-w-0">
                         <div className="aspect-square overflow-hidden rounded-2xl lg:rounded-3xl">
-                          <img 
+                          <OptimizedImage 
                             src={image.src}
                             alt={image.alt}
                             className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                            priority={index === 0}
+                            width={512}
+                            height={512}
                           />
                         </div>
                       </div>
@@ -364,10 +369,13 @@ const ProductHero = () => {
             
             {/* Certificates */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
-              <img 
+              <OptimizedImage 
                 src="/lovable-uploads/34e3ec2a-fc02-4dc5-832e-8e3c95d538bc.png" 
                 alt="Seven Green Safety and Quality Certificates"
                 className="w-full h-64 object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                width={371}
+                height={371}
               />
               <CardContent className="p-4 text-center">
                 <h3 className="text-white font-semibold mb-2">{t('gallery.certificates.title')}</h3>
@@ -377,10 +385,13 @@ const ProductHero = () => {
 
             {/* Product Stats */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
-              <img 
+              <OptimizedImage 
                 src="/lovable-uploads/0c009587-187a-4c47-8318-01d391fab457.png" 
                 alt="إحصائيات فعالية سيفن جرين"
                 className="w-full h-64 object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                width={371}
+                height={256}
               />
               <CardContent className="p-4 text-center">
                 <h3 className="text-white font-semibold mb-2">{t('gallery.effectiveness.title')}</h3>
@@ -390,10 +401,13 @@ const ProductHero = () => {
 
             {/* Hair Problems */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
-              <img 
+              <OptimizedImage 
                 src="/lovable-uploads/3c289658-bf58-4017-b4dd-1233f018534f.png" 
                 alt="مشاكل الشعر التي يعالجها سيفن جرين"
                 className="w-full h-64 object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                width={371}
+                height={256}
               />
               <CardContent className="p-4 text-center">
                 <h3 className="text-white font-semibold mb-2">{t('gallery.hair.problems.title')}</h3>
@@ -403,10 +417,13 @@ const ProductHero = () => {
 
             {/* Natural Ingredients */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
-              <img 
+              <OptimizedImage 
                 src="/lovable-uploads/e811e78f-3694-4fda-bc61-637c435f2623.png" 
                 alt="المكونات الطبيعية في سيفن جرين"
                 className="w-full h-64 object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                width={371}
+                height={256}
               />
               <CardContent className="p-4 text-center">
                 <h3 className="text-white font-semibold mb-2">{t('gallery.natural.ingredients.title')}</h3>
@@ -416,10 +433,13 @@ const ProductHero = () => {
 
             {/* Hair Care Benefits */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
-              <img 
+              <OptimizedImage 
                 src="/lovable-uploads/04d3f7fc-1557-4bb3-801f-dcb481c7e7c4.png" 
                 alt="فوائد العناية بالشعر من سيفن جرين"
                 className="w-full h-64 object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                width={371}
+                height={256}
               />
               <CardContent className="p-4 text-center">
                 <h3 className="text-white font-semibold mb-2">{t('gallery.comprehensive.benefits.title')}</h3>
@@ -429,10 +449,13 @@ const ProductHero = () => {
 
             {/* Product Comparison */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
-              <img 
+              <OptimizedImage 
                 src="/lovable-uploads/6bf5c396-1aac-4f59-a75e-36012a8524d9.png" 
                 alt="مقارنة سيفن جرين مع المنتجات الأخرى"
                 className="w-full h-64 object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                width={371}
+                height={256}
               />
               <CardContent className="p-4 text-center">
                 <h3 className="text-white font-semibold mb-2">{t('gallery.natural.excellence.title')}</h3>
@@ -446,10 +469,13 @@ const ProductHero = () => {
             
             {/* Usage Instructions */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden">
-              <img 
+              <OptimizedImage 
                 src="/lovable-uploads/6e004fdb-9c1b-47d6-80df-179d406e3a27.png" 
                 alt="طريقة استخدام سيفن جرين"
                 className="w-full h-80 object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                width={574}
+                height={320}
               />
               <CardContent className="p-6 text-center">
                 <h3 className="text-white font-semibold text-xl mb-3">{t('gallery.usage.instructions.title')}</h3>
@@ -459,10 +485,13 @@ const ProductHero = () => {
 
             {/* Special Offer */}
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden">
-              <img 
+              <OptimizedImage 
                 src="/lovable-uploads/8eb13276-b714-49ad-b518-70389a31bb9e.png" 
                 alt="عرض خاص على سيفن جرين"
                 className="w-full h-80 object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                width={574}
+                height={320}
               />
               <CardContent className="p-6 text-center">
                 <h3 className="text-white font-semibold text-xl mb-3">{t('gallery.special.offer.title')}</h3>

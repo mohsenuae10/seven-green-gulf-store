@@ -15,6 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import MobileNav from "@/components/MobileNav";
 import MobileOptimized from "@/components/MobileOptimized";
 import PaymentMethods from "@/components/PaymentMethods";
+import OptimizedImage from "@/components/OptimizedImage";
 
 // Country data with codes and flags
 const getCountries = (language: string) => [
@@ -243,10 +244,13 @@ const Order = () => {
               <CardTitle className={`mobile-subheading ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.form.title')}</CardTitle>
               <CardDescription className={`${language === 'ar' ? 'text-right' : 'text-left'} mobile-text`}>
                 <span className="flex items-center gap-3 mt-3 p-3 bg-accent/20 rounded-lg">
-                  <img 
+                  <OptimizedImage 
                     src="/lovable-uploads/8d004a44-148f-471d-949f-6cc6b414bd1d.png" 
                     alt="سيفن جرين - منتج العناية بالشعر" 
                     className="w-16 h-16 object-cover rounded-lg shadow-sm"
+                    width={64}
+                    height={64}
+                    priority
                   />
                   <span className="flex-1">
                     <span className="block font-bold text-foreground text-lg">{language === 'ar' ? 'سيفن جرين' : 'Seven Green'}</span>

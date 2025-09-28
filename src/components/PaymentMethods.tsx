@@ -1,6 +1,7 @@
 import { useLanguage } from "@/hooks/useLanguage";
 import { Card } from "@/components/ui/card";
 import { Shield } from "lucide-react";
+import OptimizedImage from "@/components/OptimizedImage";
 
 // Import the actual payment logos
 import visaLogo from "@/assets/payment-logos/visa.svg";
@@ -16,23 +17,23 @@ const PaymentMethods = () => {
   const paymentMethods = [
     {
       name: "Visa",
-      icon: <img src={visaLogo} alt="Visa" className="h-6 w-auto" />,
+      icon: <OptimizedImage src={visaLogo} alt="Visa" className="h-6 w-auto" width={48} height={24} priority />,
     },
     {
       name: "Mastercard",
-      icon: <img src={mastercardLogo} alt="Mastercard" className="h-6 w-auto" />,
+      icon: <OptimizedImage src={mastercardLogo} alt="Mastercard" className="h-6 w-auto" width={48} height={24} priority />,
     },
     {
       name: "Apple Pay",
-      icon: <img src={applePayLogo} alt="Apple Pay" className="h-6 w-auto" />,
+      icon: <OptimizedImage src={applePayLogo} alt="Apple Pay" className="h-6 w-auto" width={48} height={24} priority />,
     },
     {
       name: "Google Pay",
-      icon: <img src={googlePayLogo} alt="Google Pay" className="h-6 w-auto" />,
+      icon: <OptimizedImage src={googlePayLogo} alt="Google Pay" className="h-6 w-auto" width={48} height={24} priority />,
     },
     {
       name: "PayPal",
-      icon: <img src={paypalLogo} alt="PayPal" className="h-6 w-auto" />,
+      icon: <OptimizedImage src={paypalLogo} alt="PayPal" className="h-6 w-auto" width={48} height={24} priority />,
     },
   ];
 

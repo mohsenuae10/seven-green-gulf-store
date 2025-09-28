@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import OptimizedImage from "@/components/OptimizedImage";
 
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -246,10 +247,14 @@ const ProductDetails = () => {
 
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <img 
+              <OptimizedImage 
                 src="/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png" 
                 alt="Seven Green منتج العناية بالشعر الطبيعي"
                 className="w-full h-auto"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+                width={800}
+                height={600}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
             </div>
