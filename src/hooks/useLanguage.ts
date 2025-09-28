@@ -184,9 +184,21 @@ const translations = {
     "order.guarantee.desc": "أو استرداد كامل للأموال",
     "order.price.breakdown": "السعر",
     "order.shipping.free": "مجاني",
-    "order.trust.safe": "آمن",
-    "order.trust.fast": "شحن سريع",
-    "order.trust.secure": "دفع آمن",
+     "order.trust.safe": "آمن",
+     "order.trust.fast": "شحن سريع",
+     "order.trust.secure": "دفع آمن",
+     
+     // Product Details  
+     "product.title": "سيفن جرين",
+     "product.subtitle": "للشعر القوي والصحي",
+     "product.description": "علاج طبيعي متقدم للشعر، مُصمم خصيصاً لتقوية الشعر ومنع تساقطه وتحفيز نموه بمكونات طبيعية خالصة مُختبرة علمياً.",
+     "product.rating": "تقييم",
+     "product.save": "وفر 40%",
+     "product.new": "جديد!",
+     "product.back": "العودة للرئيسية",
+     "product.benefits.title": "فوائد سيفن جرين المذهلة",
+     "product.ingredients.title": "المكونات الطبيعية الفعالة",
+     "product.ingredients.desc": "كل مكون مختار بعناية من أجود المصادر الطبيعية لضمان أقصى فائدة لشعرك",
   },
   en: {
     // Header

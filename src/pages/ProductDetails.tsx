@@ -203,7 +203,9 @@ const ProductDetails = () => {
               <ChevronLeft className="h-5 w-5" />
               <span className="font-medium">{t('product.back')}</span>
             </Link>
-            <h1 className="text-2xl font-bold text-primary">Seven Green</h1>
+            <h1 className="text-2xl font-bold text-primary">
+              {language === 'ar' ? 'سيفن جرين' : 'Seven Green'}
+            </h1>
           </div>
         </div>
       </header>
