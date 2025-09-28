@@ -14,6 +14,7 @@ import { AlertCircle, Loader2, Phone, Flag } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import MobileNav from "@/components/MobileNav";
 import MobileOptimized from "@/components/MobileOptimized";
+import PaymentMethods from "@/components/PaymentMethods";
 
 // Country data with codes and flags
 const getCountries = (language: string) => [
@@ -447,6 +448,8 @@ const Order = () => {
                     <span className="text-muted-foreground text-sm lg:text-base">({formatPrice(productPrice)} × {formData.quantity})</span>
                   </div>
                 </div>
+
+                <PaymentMethods />
 
                 <Button
                   type="submit"
