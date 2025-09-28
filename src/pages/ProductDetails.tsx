@@ -15,7 +15,7 @@ const ProductDetails = () => {
 
   const getIngredients = () => language === 'ar' ? [
     {
-      name: "زيت الأرغان المغربي",
+      name: "زيت الأرغان الكوري",
       description: "يغذي الشعر ويمنحه لمعاناً طبيعياً ونعومة فائقة",
       benefits: ["ترطيب عميق", "لمعان طبيعي", "حماية من التلف"]
     },
@@ -46,7 +46,7 @@ const ProductDetails = () => {
     }
   ] : [
     {
-      name: "Moroccan Argan Oil",
+      name: "Korean Argan Oil",
       description: "Nourishes hair and gives it natural shine and exceptional softness",
       benefits: ["Deep moisturizing", "Natural shine", "Protection from damage"]
     },
