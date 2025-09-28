@@ -8,10 +8,12 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { useLanguage } from "@/hooks/useLanguage";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import useEmblaCarousel from 'embla-carousel-react';
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import OptimizedImage from "@/components/OptimizedImage";
+
+// Dynamic import for Embla carousel to reduce initial bundle size
+const useEmblaCarousel = () => import('embla-carousel-react').then(module => module.default);
 
 const ProductHero = () => {
   const { price: productPrice, loading: priceLoading } = useProductPrice({ fallback: 299 });
@@ -19,14 +21,33 @@ const ProductHero = () => {
   const { language, t } = useLanguage();
   console.log('[ProductHero] currency:', selectedCurrency, 'price:', formatPrice(productPrice));
   
-  // Carousel configuration
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { 
-      loop: false,
-      dragFree: true,
-      containScroll: 'trimSnaps'
-    }
-  );
+  // State for carousel
+  const [emblaRef, setEmblaRef] = useState<any>(null);
+  const [emblaApi, setEmblaApi] = useState<any>(null);
+  const [carouselLoaded, setCarouselLoaded] = useState(false);
+  
+  // Initialize carousel dynamically
+  useEffect(() => {
+    const initCarousel = async () => {
+      try {
+        const useEmblaCarouselModule = await useEmblaCarousel();
+        const [emblaRefCallback, emblaApiInstance] = useEmblaCarouselModule(
+          { 
+            loop: false,
+            dragFree: true,
+            containScroll: 'trimSnaps'
+          }
+        );
+        setEmblaRef(emblaRefCallback);
+        setEmblaApi(emblaApiInstance);
+        setCarouselLoaded(true);
+      } catch (error) {
+        console.error('Failed to load carousel:', error);
+      }
+    };
+
+    initCarousel();
+  }, []);
   
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
@@ -51,7 +72,7 @@ const ProductHero = () => {
   }, []);
 
   useEffect(() => {
-    if (!emblaApi) return;
+    if (!emblaApi || !carouselLoaded) return;
 
     // Defer initialization to prevent forced reflows
     const initCarousel = () => {
@@ -68,7 +89,7 @@ const ProductHero = () => {
       emblaApi?.off('reInit', onInit);
       emblaApi?.off('select', onSelect);
     };
-  }, [emblaApi, onInit, onSelect]);
+  }, [emblaApi, carouselLoaded, onInit, onSelect]);
 
   const [productImages, setProductImages] = useState<{ src: string; alt: string }[]>([]);
 
@@ -294,41 +315,51 @@ const ProductHero = () => {
               
               {/* Product Images Carousel */}
               <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
-                <div className="embla overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong" ref={emblaRef}>
-                  <div className="embla__container flex">
-                    {productImages.map((image, index) => (
-                      <div key={index} className="embla__slide flex-[0_0_100%] min-w-0">
-                        <div className="aspect-square overflow-hidden rounded-2xl lg:rounded-3xl">
-                          <OptimizedImage 
-                            src={image.src}
-                            alt={image.alt}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            priority={index === 0}
-                            width={512}
-                            height={512}
-                          />
+                {carouselLoaded ? (
+                  <div className="embla overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong" ref={emblaRef}>
+                    <div className="embla__container flex">
+                      {productImages.map((image, index) => (
+                        <div key={index} className="embla__slide flex-[0_0_100%] min-w-0">
+                          <div className="aspect-square overflow-hidden rounded-2xl lg:rounded-3xl">
+                            <OptimizedImage 
+                              src={image.src}
+                              alt={image.alt}
+                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                              priority={index === 0}
+                              width={512}
+                              height={512}
+                            />
+                          </div>
                         </div>
-                      </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="aspect-square overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong bg-muted animate-pulse">
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="text-muted-foreground">Loading gallery...</div>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Carousel Dots - only show when carousel is loaded */}
+                {carouselLoaded && (
+                  <div className="flex justify-center gap-2 mt-6">
+                    {scrollSnaps.map((_, index) => (
+                      <button
+                        key={index}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                          index === selectedIndex 
+                            ? 'bg-secondary scale-125 shadow-glow' 
+                            : 'bg-white/40 hover:bg-white/60'
+                        }`}
+                        onClick={() => scrollTo(index)}
+                        aria-label={`${t('nav.image.alt')} ${index + 1}`}
+                      />
                     ))}
                   </div>
-                </div>
-                
-                {/* Carousel Dots */}
-                <div className="flex justify-center gap-2 mt-6">
-                  {scrollSnaps.map((_, index) => (
-                    <button
-                      key={index}
-                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                        index === selectedIndex 
-                          ? 'bg-secondary scale-125 shadow-glow' 
-                          : 'bg-white/40 hover:bg-white/60'
-                      }`}
-                      onClick={() => scrollTo(index)}
-                      aria-label={`${t('nav.image.alt')} ${index + 1}`}
-                    />
-                  ))}
-                </div>
+                )}
                 
                 {/* Swipe indicator for mobile */}
                 <div className="flex items-center justify-center gap-2 mt-3 text-white/60 text-xs sm:hidden">
