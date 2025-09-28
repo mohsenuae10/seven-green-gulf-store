@@ -165,7 +165,7 @@ const Order = () => {
         body: JSON.stringify({
           customerName: formData.customerName,
           customerEmail: formData.customerEmail,
-          customerPhone: formData.customerPhone,
+          customerPhone: `${formData.countryCode}${formData.customerPhone}`,
           country: formData.country,
           city: formData.city,
           address: formData.address,

@@ -173,32 +173,22 @@ export function OrdersManagement() {
   };
 
   const formatPhoneNumber = (phone: string) => {
-    // Check if phone starts with country code
+    // If phone already has country code, return as is
     if (phone.startsWith('+')) {
       return phone;
     }
     
-    // Common country codes for Gulf countries
-    const countryCodes: { [key: string]: string } = {
-      'UAE': '+971',
-      'Saudi Arabia': '+966',
-      'Kuwait': '+965',
-      'Qatar': '+974',
-      'Bahrain': '+973',
-      'Oman': '+968'
-    };
-    
-    // Try to determine country code based on phone length and patterns
-    if (phone.startsWith('5') && phone.length === 9) {
-      return `+966${phone}`; // Saudi Arabia
-    } else if (phone.startsWith('5') && phone.length === 8) {
-      return `+971${phone}`; // UAE
-    } else if (phone.length === 8) {
-      return `+965${phone}`; // Kuwait
+    // If phone doesn't start with +, it might be already formatted with country code but without +
+    // Let's check if it starts with common country codes
+    if (phone.startsWith('971') || phone.startsWith('966') || phone.startsWith('965') || 
+        phone.startsWith('974') || phone.startsWith('973') || phone.startsWith('968') ||
+        phone.startsWith('20') || phone.startsWith('962') || phone.startsWith('212') ||
+        phone.startsWith('964') || phone.startsWith('1')) {
+      return `+${phone}`;
     }
     
-    // Default fallback
-    return phone.startsWith('0') ? phone : `+${phone}`;
+    // If none of the above, return as is (might be local format)
+    return phone;
   };
 
   const getStatusBadge = (status: string) => {
