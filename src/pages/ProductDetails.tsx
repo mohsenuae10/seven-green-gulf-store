@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import OrderSection from "@/components/OrderSection";
+
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -358,9 +358,18 @@ const ProductDetails = () => {
         </Card>
       </section>
 
-      {/* Order Section */}
+      {/* Buy Now Section */}
       <section className="container mx-auto px-4 py-12">
-        <OrderSection />
+        <div className="text-center">
+          <Link to="/order">
+            <Button 
+              size="lg" 
+              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white px-12 py-6 text-xl font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            >
+              {t('hero.buy.now')} - {loading ? "..." : formatPrice(price)}
+            </Button>
+          </Link>
+        </div>
       </section>
 
       {/* FAQ */}
