@@ -37,20 +37,37 @@ const ProductHero = () => {
   );
 
   const onInit = useCallback((emblaApi: any) => {
-    setScrollSnaps(emblaApi.scrollSnapList());
+    // Use requestAnimationFrame to defer layout reads until next frame
+    requestAnimationFrame(() => {
+      setScrollSnaps(emblaApi.scrollSnapList());
+    });
   }, []);
 
   const onSelect = useCallback((emblaApi: any) => {
-    setSelectedIndex(emblaApi.selectedScrollSnap());
+    // Use requestAnimationFrame to defer layout reads until next frame
+    requestAnimationFrame(() => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    });
   }, []);
 
   useEffect(() => {
     if (!emblaApi) return;
 
-    onInit(emblaApi);
-    onSelect(emblaApi);
-    emblaApi.on('reInit', onInit);
-    emblaApi.on('select', onSelect);
+    // Defer initialization to prevent forced reflows
+    const initCarousel = () => {
+      onInit(emblaApi);
+      onSelect(emblaApi);
+      emblaApi.on('reInit', onInit);
+      emblaApi.on('select', onSelect);
+    };
+
+    // Use requestAnimationFrame to defer until after initial render
+    requestAnimationFrame(initCarousel);
+
+    return () => {
+      emblaApi?.off('reInit', onInit);
+      emblaApi?.off('select', onSelect);
+    };
   }, [emblaApi, onInit, onSelect]);
 
   const [productImages, setProductImages] = useState<{ src: string; alt: string }[]>([]);
