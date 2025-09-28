@@ -190,7 +190,7 @@ const translations = {
      
      // Product Details  
      "product.title": "سيفن جرين",
-     "product.subtitle": "للشعر القوي والصحي",
+     "product.subtitle": "SEVEN GREEN",
      "product.description": "شامبو طبيعي متقدم للشعر، مُصمم خصيصاً لتقوية الشعر ومنع تساقطه وتحفيز نموه بمكونات طبيعية خالصة مُختبرة علمياً.",
      "product.rating": "تقييم",
      "product.save": "وفر 40%",
@@ -342,7 +342,7 @@ const translations = {
     
     // Product Details
     "product.title": "Seven Green",
-    "product.subtitle": "For Strong & Healthy Hair",
+    "product.subtitle": "SEVEN GREEN",
     "product.description": "Advanced natural hair shampoo, specially designed to strengthen hair, prevent hair loss, and stimulate growth with pure natural ingredients scientifically tested.",
     "product.rating": "reviews",
     "product.save": "Save 40%",
