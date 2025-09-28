@@ -52,28 +52,7 @@ const ProductHero = () => {
     emblaApi.on('select', onSelect);
   }, [emblaApi, onInit, onSelect]);
 
-  const [productImages, setProductImages] = useState<{ src: string; alt: string }[]>([
-      {
-        src: "/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png",
-        alt: "Seven Green Hair Care Product"
-      },
-      {
-        src: "/lovable-uploads/8d004a44-148f-471d-949f-6cc6b414bd1d.png", 
-        alt: "Seven Green - Natural Package"
-      },
-      {
-        src: "/lovable-uploads/b7fcf75b-d26d-4d69-971f-2b17e4dd3f6f.png",
-        alt: "Seven Green - Natural Benefits"
-      },
-      {
-        src: "/lovable-uploads/72685aea-a9c9-4296-8daa-59448d17e405.png",
-        alt: "Seven Green - Natural Product and Original Package"
-      },
-      {
-        src: "/lovable-uploads/0ccb67ab-d696-4efc-9b4e-9b8eee196109.png",
-        alt: "Seven Green - Natural Cypress and Rosemary Soap with Package"
-      }
-  ]);
+  const [productImages, setProductImages] = useState<{ src: string; alt: string }[]>([]);
 
   const [heroTitle, setHeroTitle] = useState<string>('Seven Green');
   const [heroSubtitle, setHeroSubtitle] = useState<string>('SEVEN GREEN');
