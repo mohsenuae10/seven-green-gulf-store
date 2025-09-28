@@ -132,14 +132,6 @@ const ProductHero = () => {
           <div className="flex items-center justify-between py-4 px-4 sm:px-0">
             {/* Logo Section */}
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center shadow-glow border border-white/20 relative overflow-hidden">
-                {/* Leaf Logo */}
-                <img 
-                  src="/lovable-uploads/9921e123-3994-40c0-8e5d-59f1265019f2.png" 
-                  alt="Seven Green Logo" 
-                  className="w-8 h-8 object-contain"
-                />
-              </div>
               <div className="text-left">
                 <h1 className="text-xl sm:text-2xl font-bold text-white tracking-wider font-english">
                   SEVEN GREEN
