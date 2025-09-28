@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Eye, Package, User, MapPin, Phone, Mail, Calendar, CreditCard } from "lucide-react";
+import { Eye, Package, User, MapPin, Phone, Mail, Calendar, CreditCard, Copy } from "lucide-react";
 
 interface Order {
   id: string;
@@ -155,6 +155,52 @@ export function OrdersManagement() {
     }
   };
 
+  const copyPhoneNumber = async (phoneNumber: string) => {
+    try {
+      await navigator.clipboard.writeText(phoneNumber);
+      toast({
+        title: "تم النسخ",
+        description: "تم نسخ رقم الهاتف بنجاح",
+      });
+    } catch (error) {
+      console.error('Error copying phone number:', error);
+      toast({
+        title: "خطأ",
+        description: "فشل في نسخ رقم الهاتف",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const formatPhoneNumber = (phone: string) => {
+    // Check if phone starts with country code
+    if (phone.startsWith('+')) {
+      return phone;
+    }
+    
+    // Common country codes for Gulf countries
+    const countryCodes: { [key: string]: string } = {
+      'UAE': '+971',
+      'Saudi Arabia': '+966',
+      'Kuwait': '+965',
+      'Qatar': '+974',
+      'Bahrain': '+973',
+      'Oman': '+968'
+    };
+    
+    // Try to determine country code based on phone length and patterns
+    if (phone.startsWith('5') && phone.length === 9) {
+      return `+966${phone}`; // Saudi Arabia
+    } else if (phone.startsWith('5') && phone.length === 8) {
+      return `+971${phone}`; // UAE
+    } else if (phone.length === 8) {
+      return `+965${phone}`; // Kuwait
+    }
+    
+    // Default fallback
+    return phone.startsWith('0') ? phone : `+${phone}`;
+  };
+
   const getStatusBadge = (status: string) => {
     const statusMap = {
       pending: { label: "في الانتظار", variant: "secondary" as const },
@@ -227,9 +273,22 @@ export function OrdersManagement() {
                           <User className="h-4 w-4 text-muted-foreground" />
                           <span className="font-medium">{order.customer_name}</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Phone className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{order.customer_phone}</span>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Phone className="h-4 w-4 text-muted-foreground" />
+                            <div className="flex flex-col">
+                              <span className="text-sm font-medium">{formatPhoneNumber(order.customer_phone)}</span>
+                              <span className="text-xs text-muted-foreground">رقم الجوال مع مفتاح الدولة</span>
+                            </div>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => copyPhoneNumber(formatPhoneNumber(order.customer_phone))}
+                            className="h-8 w-8 p-0 hover:bg-primary/10"
+                          >
+                            <Copy className="h-3 w-3" />
+                          </Button>
                         </div>
                         {order.customer_email && (
                           <div className="flex items-center gap-2">
