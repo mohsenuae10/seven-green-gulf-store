@@ -364,11 +364,28 @@ const ProductDetails = () => {
           <Link to="/order">
             <Button 
               size="lg" 
-              className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white px-12 py-6 text-xl font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+              className="group relative bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white px-12 py-6 text-xl font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-fade-in overflow-hidden"
             >
-              {t('hero.buy.now')} - {loading ? "..." : formatPrice(price)}
+              {/* Background Animation */}
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+              
+              {/* Pulse Ring */}
+              <div className="absolute inset-0 rounded-full border-2 border-white/30 scale-110 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500"></div>
+              
+              {/* Button Text */}
+              <span className="relative z-10 flex items-center gap-2">
+                {t('hero.buy.now')} - {loading ? "..." : formatPrice(price)}
+                <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
+              </span>
             </Button>
           </Link>
+          
+          {/* Floating Elements */}
+          <div className="relative mt-8">
+            <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-primary rounded-full animate-bounce delay-0"></div>
+            <div className="absolute -top-6 left-1/2 transform -translate-x-8 w-1.5 h-1.5 bg-secondary rounded-full animate-bounce delay-150"></div>
+            <div className="absolute -top-6 left-1/2 transform translate-x-8 w-1.5 h-1.5 bg-secondary rounded-full animate-bounce delay-300"></div>
+          </div>
         </div>
       </section>
 
