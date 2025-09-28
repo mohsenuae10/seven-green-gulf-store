@@ -311,11 +311,13 @@ const ProductHero = () => {
                   <div className="embla__container flex">
                     {productImages.map((image, index) => (
                       <div key={index} className="embla__slide flex-[0_0_100%] min-w-0">
-                        <img 
-                          src={image.src}
-                          alt={image.alt}
-                          className="w-full h-auto block hover:scale-105 transition-transform duration-500"
-                        />
+                        <div className="aspect-square overflow-hidden rounded-2xl lg:rounded-3xl">
+                          <img 
+                            src={image.src}
+                            alt={image.alt}
+                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>
