@@ -8,13 +8,16 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface ShippingNotificationRequest {
+interface OrderCreatedRequest {
   customerName: string;
   customerEmail: string;
   orderId: string;
-  trackingNumber: string;
-  shippingCompany: string;
-  sellerNotes?: string;
+  totalAmount: number;
+  productName: string;
+  customerPhone: string;
+  address: string;
+  city: string;
+  country: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -27,59 +30,80 @@ const handler = async (req: Request): Promise<Response> => {
       customerName,
       customerEmail,
       orderId,
-      trackingNumber,
-      shippingCompany,
-      sellerNotes,
-    }: ShippingNotificationRequest = await req.json();
+      totalAmount,
+      productName,
+      customerPhone,
+      address,
+      city,
+      country,
+    }: OrderCreatedRequest = await req.json();
 
-    console.log('Sending shipping notification to:', customerEmail);
+    console.log('Sending order created notification to:', customerEmail);
 
     const emailResponse = await resend.emails.send({
       from: "Seven Green Store <orders@sevensgreen.com>",
       to: [customerEmail],
-      subject: `تم شحن طلبك #${orderId.slice(-8)} - رقم التتبع: ${trackingNumber}`,
+      subject: `تم استلام طلبك #${orderId.slice(-8)} بنجاح`,
       html: `
         <!DOCTYPE html>
         <html dir="rtl" lang="ar">
         <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>تم شحن طلبك</title>
+          <title>تم استلام طلبك</title>
           <style>
             body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
             .container { max-width: 600px; margin: 0 auto; background-color: white; }
             .header { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 30px; text-align: center; }
             .content { padding: 30px; }
             .order-info { background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; }
-            .tracking-box { background: #e0f2fe; border: 2px solid #0891b2; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; }
+            .success-box { background: #dbeafe; border: 2px solid #3b82f6; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; }
             .footer { background: #f1f5f9; padding: 20px; text-align: center; color: #64748b; }
             .btn { display: inline-block; background: #10b981; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 10px 0; }
+            .price { font-size: 24px; font-weight: bold; color: #10b981; }
+            .pending { color: #f59e0b; font-weight: bold; }
           </style>
         </head>
         <body>
           <div class="container">
             <div class="header">
-              <h1>🚚 تم شحن طلبك!</h1>
+              <h1>📦 تم استلام طلبك!</h1>
               <p>مرحباً ${customerName}</p>
             </div>
             
             <div class="content">
-              <p>نحن سعداء لإعلامك بأن طلبك قد تم شحنه بنجاح!</p>
+              <div class="success-box">
+                <h2>✅ تم إنشاء طلبك بنجاح!</h2>
+                <p>شكراً لك على طلبك. تم استلام طلبك وهو الآن قيد المراجعة والمعالجة.</p>
+              </div>
               
               <div class="order-info">
                 <h3>تفاصيل الطلب:</h3>
                 <p><strong>رقم الطلب:</strong> #${orderId.slice(-8)}</p>
-                <p><strong>شركة الشحن:</strong> ${shippingCompany}</p>
-                <p><strong>رقم التتبع:</strong> <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">${trackingNumber}</code></p>
+                <p><strong>المنتج:</strong> ${productName}</p>
+                <p><strong>المبلغ الإجمالي:</strong> <span class="price">${totalAmount} درهم</span></p>
+                <p><strong>حالة الطلب:</strong> <span class="pending">قيد المراجعة ⏳</span></p>
+                
+                <h4>معلومات الشحن:</h4>
+                <p><strong>الاسم:</strong> ${customerName}</p>
+                <p><strong>رقم الهاتف:</strong> ${customerPhone}</p>
+                <p><strong>العنوان:</strong> ${address}</p>
+                <p><strong>المدينة:</strong> ${city}</p>
+                <p><strong>الدولة:</strong> ${country}</p>
               </div>
 
-              <div class="tracking-box">
-                <h3>📦 تتبع شحنتك</h3>
-                <p>يمكنك تتبع حالة شحنتك باستخدام رقم التتبع أعلاه</p>
-                <p><strong>رقم التتبع:</strong> ${trackingNumber}</p>
-              </div>
+              <h3>الخطوات التالية:</h3>
+              <ul style="text-align: right;">
+                <li>سيتم مراجعة طلبك خلال 24 ساعة</li>
+                <li>بعد قبول الطلب، ستتلقى رسالة تأكيد بالدفع</li>
+                <li>سيتم تجهيز طلبك خلال 1-2 يوم عمل بعد الدفع</li>
+                <li>ستتلقى إشعار آخر مع رقم التتبع عند الشحن</li>
+              </ul>
 
-              <p>سيصل طلبك خلال 3-7 أيام عمل. في حال وجود أي استفسار، لا تتردد في التواصل معنا.</p>
+              <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                <h4 style="color: #92400e; margin-top: 0;">ملاحظة هامة:</h4>
+                <p style="color: #92400e; margin-bottom: 0;">هذا إشعار بإنشاء الطلب فقط. ستتلقى إشعار منفصل عند تأكيد الدفع وإشعار آخر عند الشحن مع رقم التتبع.</p>
+              </div>
               
               <div style="text-align: center;">
                 <a href="https://wa.me/971508824227" class="btn">تواصل معنا عبر واتساب</a>
@@ -89,6 +113,7 @@ const handler = async (req: Request): Promise<Response> => {
             <div class="footer">
               <p>شكراً لاختيارك متجر Seven Green</p>
               <p>Seven Green Store - منتجات طبيعية عالية الجودة</p>
+              <p>هذه رسالة تلقائية، يرجى عدم الرد عليها مباشرة</p>
             </div>
           </div>
         </body>
@@ -96,7 +121,7 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Shipping notification sent successfully:", emailResponse);
+    console.log("Order created notification sent successfully:", emailResponse);
 
     return new Response(JSON.stringify(emailResponse), {
       status: 200,
@@ -106,7 +131,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
     });
   } catch (error: any) {
-    console.error("Error in send-shipping-notification function:", error);
+    console.error("Error in send-order-created function:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       {

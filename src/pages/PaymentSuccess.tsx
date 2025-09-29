@@ -56,7 +56,7 @@ const PaymentSuccess = () => {
               order_id_param: orderId
             });
             
-            // Send payment confirmation email
+            // Send payment confirmation email (different from order created email)
             try {
               await supabase.functions.invoke('send-payment-confirmation', {
                 body: {
