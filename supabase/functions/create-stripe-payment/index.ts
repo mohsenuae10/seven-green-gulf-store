@@ -132,33 +132,6 @@ serve(async (req) => {
       throw new Error("Failed to create order item");
     }
     
-    // Send order created notification email
-    try {
-      const { error: emailError } = await supabase.functions.invoke('send-order-created', {
-        body: {
-          customerName,
-          customerEmail,
-          orderId: orderData.id,
-          totalAmount,
-          productName: 'منتج Seven Green للعناية بالشعر',
-          customerPhone,
-          address,
-          city,
-          country
-        }
-      });
-      
-      if (emailError) {
-        console.error("Error sending order created email:", emailError);
-      } else {
-        console.log("Order created notification sent successfully");
-      }
-    } catch (emailError) {
-      console.error("Error sending order created email:", emailError);
-      // Don't fail the whole process if email fails
-    }
-
-    
     // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
