@@ -139,9 +139,39 @@ export function OrdersManagement() {
         return;
       }
 
+      // If payment status changed to paid, send payment confirmation email
+      if (paymentStatus === 'paid') {
+        try {
+          // First get the order details to send the email
+          const { data: orderDetails, error: orderError } = await supabase
+            .from('orders')
+            .select('*')
+            .eq('id', orderId)
+            .single();
+
+          if (!orderError && orderDetails) {
+            await supabase.functions.invoke('send-payment-confirmation', {
+              body: {
+                customerName: orderDetails.customer_name,
+                customerEmail: orderDetails.customer_email,
+                orderId: orderId,
+                totalAmount: orderDetails.total_amount,
+                productName: 'منتج Seven Green للعناية بالشعر'
+              }
+            });
+            console.log('Payment confirmation email sent successfully from admin');
+          }
+        } catch (emailError) {
+          console.error('Error sending payment confirmation email from admin:', emailError);
+          // Don't fail the whole process if email fails
+        }
+      }
+
       toast({
         title: "تم التحديث",
-        description: "تم تحديث حالة الدفع بنجاح",
+        description: paymentStatus === 'paid' 
+          ? "تم تحديث حالة الدفع بنجاح وإرسال إشعار للعميل" 
+          : "تم تحديث حالة الدفع بنجاح",
       });
 
       fetchOrders(); // Refresh orders
