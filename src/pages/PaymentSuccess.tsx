@@ -56,6 +56,23 @@ const PaymentSuccess = () => {
               order_id_param: orderId
             });
             
+            // Send payment confirmation email
+            try {
+              await supabase.functions.invoke('send-payment-confirmation', {
+                body: {
+                  customerName: order.customer_name,
+                  customerEmail: order.customer_email,
+                  orderId: orderId,
+                  totalAmount: order.total_amount,
+                  productName: 'منتج Seven Green للعناية بالشعر'
+                }
+              });
+              console.log('Payment confirmation email sent successfully');
+            } catch (emailError) {
+              console.error('Error sending payment confirmation email:', emailError);
+              // Don't fail the whole process if email fails
+            }
+            
             // Update local state to reflect the change
             setOrderData({
               ...order,
