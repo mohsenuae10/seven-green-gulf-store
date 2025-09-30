@@ -175,7 +175,9 @@ const ProductHero = () => {
             {/* Main Heading */}
             <div className="space-y-3 lg:space-y-4">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-7xl font-bold text-white leading-tight">
+                <span className="block text-secondary font-semibold">صابونة</span>
                 {heroTitle}
+                <span className="block text-secondary font-semibold">المثلثة</span>
                 <span className="block text-lg sm:text-xl lg:text-2xl xl:text-3xl text-secondary font-semibold mt-1 font-english">
                   {heroSubtitle}
                 </span>
