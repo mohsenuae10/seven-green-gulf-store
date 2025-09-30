@@ -29,8 +29,8 @@ const FAQ = () => {
       answer: "نحن واثقون من جودة منتجنا، لذا نقدم ضمان استرداد المال خلال 30 يوماً. إذا لم تكن راضياً عن النتائج، يمكنك إرجاع المنتج واسترداد كامل المبلغ دون أي أسئلة."
     },
     {
-      question: "هل توفرون الشحن المجاني؟",
-      answer: "نعم، نوفر شحن مجاني لجميع الطلبات إلى السعودية والإمارات والكويت وقطر والبحرين وعمان واليمن. يستغرق التوصيل عادة 2-5 أيام عمل حسب موقعك."
+      question: "هل توفرون التوصيل لجميع الدول؟",
+      answer: "نعم، نوفر التوصيل لجميع دول الخليج: السعودية، الإمارات، الكويت، قطر، البحرين، عمان، واليمن. يستغرق التوصيل عادة 2-5 أيام عمل حسب موقعك."
     },
     {
       question: "ما الذي يجعل سيفن جرين مختلفاً عن المنتجات الأخرى؟",
@@ -62,8 +62,8 @@ const FAQ = () => {
       answer: "We are confident in the quality of our product, so we offer a 30-day money-back guarantee. If you are not satisfied with the results, you can return the product and receive a full refund with no questions asked."
     },
     {
-      question: "Do you offer free shipping?",
-      answer: "Yes, we offer free shipping for all orders to Saudi Arabia, UAE, Kuwait, Qatar, Bahrain, Oman, and Yemen. Delivery usually takes 2-5 business days depending on your location."
+      question: "Do you offer delivery to all countries?",
+      answer: "Yes, we offer delivery to all GCC countries: Saudi Arabia, UAE, Kuwait, Qatar, Bahrain, Oman, and Yemen. Delivery usually takes 2-5 business days depending on your location."
     },
     {
       question: "What makes Seven Green different from other products?",

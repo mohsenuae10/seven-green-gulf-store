@@ -276,10 +276,6 @@ const ProductHero = () => {
                 <span>{t('hero.guarantee')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 lg:w-4 lg:h-4 rounded-full bg-gradient-secondary"></div>
-                <span>{t('hero.free.shipping')}</span>
-              </div>
-              <div className="flex items-center gap-2">
                 <Crown className="w-3 h-3 lg:w-4 lg:h-4" />
                 <span>{t('hero.exclusive')}</span>
               </div>

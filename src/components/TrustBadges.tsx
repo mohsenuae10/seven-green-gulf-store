@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Shield, Truck, RefreshCcw, Award, Lock, Headphones } from "lucide-react";
+import { Shield, RefreshCcw, Award, Lock, Headphones } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import visaLogo from "@/assets/payment-logos/visa.svg";
 import mastercardLogo from "@/assets/payment-logos/mastercard.svg";
@@ -16,12 +16,6 @@ const TrustBadges = () => {
       title: "دفع آمن 100%",
       description: "تشفير SSL 256-bit",
       color: "from-green-500 to-emerald-600"
-    },
-    {
-      icon: Truck,
-      title: "شحن مجاني",
-      description: "لجميع دول الخليج",
-      color: "from-blue-500 to-cyan-600"
     },
     {
       icon: RefreshCcw,
@@ -53,12 +47,6 @@ const TrustBadges = () => {
       title: "100% Secure Payment",
       description: "256-bit SSL encryption",
       color: "from-green-500 to-emerald-600"
-    },
-    {
-      icon: Truck,
-      title: "Free Shipping",
-      description: "All GCC countries",
-      color: "from-blue-500 to-cyan-600"
     },
     {
       icon: RefreshCcw,
@@ -99,7 +87,7 @@ const TrustBadges = () => {
       <div className="container mx-auto px-4">
         
         {/* Trust Badges Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12">
           {badges.map((badge, index) => (
             <Card
               key={index}
