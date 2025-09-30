@@ -6,23 +6,23 @@
   <!-- Main Page -->
   <url>
     <loc>https://sevensgreen.com/</loc>
-    <lastmod>2024-01-01</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/en" />
     <image:image>
-      <image:loc>https://sevensgreen.com/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png</image:loc>
-      <image:title>صابون سيفن جرين الطبيعي</image:title>
-      <image:caption>صابون طبيعي من السرو والأوسمان لمنع تساقط الشعر</image:caption>
+      <image:loc>https://sevensgreen.com/images/seven-green-icon.png</image:loc>
+      <image:title>صابونة سيفن جرين المثلثة الطبيعية</image:title>
+      <image:caption>صابون طبيعي من السرو والأوسمان لمنع تساقط الشعر والتحكم في الزيوت</image:caption>
     </image:image>
   </url>
 
   <!-- Product Details -->
   <url>
     <loc>https://sevensgreen.com/product-details</loc>
-    <lastmod>2024-01-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/product-details" />
   </url>
@@ -30,8 +30,8 @@
   <!-- Order Page -->
   <url>
     <loc>https://sevensgreen.com/order</loc>
-    <lastmod>2024-01-01</lastmod>
-    <changefreq>monthly</changefreq>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/order" />
   </url>
@@ -39,9 +39,9 @@
   <!-- Payment Success -->
   <url>
     <loc>https://sevensgreen.com/payment-success</loc>
-    <lastmod>2024-01-01</lastmod>
+    <lastmod>2025-01-15</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <priority>0.3</priority>
   </url>
 
 </urlset>
