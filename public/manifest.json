@@ -12,13 +12,13 @@
   "dir": "rtl",
   "icons": [
     {
-      "src": "https://sevensgreen.com/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png",
+      "src": "/lovable-uploads/seven-green-icon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://sevensgreen.com/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png",
+      "src": "/lovable-uploads/seven-green-icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
@@ -26,7 +26,7 @@
   ],
   "screenshots": [
     {
-      "src": "https://sevensgreen.com/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png",
+      "src": "/lovable-uploads/seven-green-icon.png",
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide"
