@@ -117,7 +117,6 @@
       },
       "category": "صابون طبيعي",
       "sku": "SG-SOAP-001",
-      "gtin13": "1234567890123",
       "material": "أوراق السرو الطبيعية، نبات الأوسمان، زيوت طبيعية",
       "weight": "100g",
       "color": "أخضر طبيعي",
@@ -168,6 +167,36 @@
             "value": "0",
             "currency": "AED"
           },
+          "shippingDestination": [
+            {
+              "@type": "DefinedRegion",
+              "addressCountry": "SA"
+            },
+            {
+              "@type": "DefinedRegion",
+              "addressCountry": "AE"
+            },
+            {
+              "@type": "DefinedRegion",
+              "addressCountry": "YE"
+            },
+            {
+              "@type": "DefinedRegion",
+              "addressCountry": "KW"
+            },
+            {
+              "@type": "DefinedRegion",
+              "addressCountry": "QA"
+            },
+            {
+              "@type": "DefinedRegion",
+              "addressCountry": "BH"
+            },
+            {
+              "@type": "DefinedRegion",
+              "addressCountry": "OM"
+            }
+          ],
           "deliveryTime": {
             "@type": "ShippingDeliveryTime",
             "handlingTime": {
@@ -197,8 +226,11 @@
         },
         "hasMerchantReturnPolicy": {
           "@type": "MerchantReturnPolicy",
+          "applicableCountry": ["SA", "AE", "YE", "KW", "QA", "BH", "OM"],
           "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-          "merchantReturnDays": 30
+          "merchantReturnDays": 30,
+          "returnMethod": "https://schema.org/ReturnByMail",
+          "returnFees": "https://schema.org/FreeReturn"
         }
       },
       "aggregateRating": {
