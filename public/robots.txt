@@ -26,7 +26,7 @@ Allow: /
 Crawl-delay: 2
 
 # Sitemaps
-Sitemap: https://sevengreen.lovable.app/sitemap.xml
+Sitemap: https://sevensgreen.com/sitemap.xml
 
 # Disallow admin sections
 Disallow: /admin
@@ -41,4 +41,4 @@ Allow: /order
 Allow: /payment-success
 
 # Cache directives
-# Host: sevengreen.lovable.app
+# Host: sevensgreen.com
