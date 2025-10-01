@@ -272,20 +272,74 @@
     }
     </script>
     
-    <!-- Additional Structured Data for Local Business -->
+    <!-- Organization Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "Seven Green Store",
+      "alternateName": "متجر سيفن جرين",
       "url": "https://sevensgreen.com",
-      "logo": "https://sevensgreen.com/images/seven-green-icon.png",
-      "description": "متجر سيفن جرين للمنتجات الطبيعية في دول الخليج والسعودية واليمن",
-      "areaServed": ["السعودية", "الإمارات", "اليمن", "الكويت", "قطر", "البحرين", "عمان"],
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://sevensgreen.com/images/seven-green-icon.png",
+        "width": "512",
+        "height": "512"
+      },
+      "description": "متجر سيفن جرين للمنتجات الطبيعية - متخصصون في صابون السرو والأوسمان الطبيعي لمنع تساقط الشعر في دول الخليج والسعودية واليمن",
+      "slogan": "جمالك الطبيعي يبدأ من هنا",
+      "areaServed": [
+        {
+          "@type": "Country",
+          "name": "السعودية"
+        },
+        {
+          "@type": "Country",
+          "name": "الإمارات العربية المتحدة"
+        },
+        {
+          "@type": "Country",
+          "name": "اليمن"
+        },
+        {
+          "@type": "Country",
+          "name": "الكويت"
+        },
+        {
+          "@type": "Country",
+          "name": "قطر"
+        },
+        {
+          "@type": "Country",
+          "name": "البحرين"
+        },
+        {
+          "@type": "Country",
+          "name": "عمان"
+        }
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "خدمة العملاء",
+        "areaServed": ["SA", "AE", "YE", "KW", "QA", "BH", "OM"],
+        "availableLanguage": ["Arabic", "English"]
+      },
       "sameAs": [
         "https://www.instagram.com/sevengreen",
-        "https://www.facebook.com/sevengreen"
-      ]
+        "https://www.facebook.com/sevengreen",
+        "https://www.snapchat.com/add/sevengreen"
+      ],
+      "founders": [
+        {
+          "@type": "Person",
+          "name": "Seven Green Founders"
+        }
+      ],
+      "foundingDate": "2024",
+      "numberOfEmployees": {
+        "@type": "QuantitativeValue",
+        "value": "10"
+      }
     }
     </script>
     
