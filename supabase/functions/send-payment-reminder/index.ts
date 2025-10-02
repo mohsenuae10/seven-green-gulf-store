@@ -27,7 +27,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Sending payment reminder to:", customerEmail);
 
     const emailResponse = await resend.emails.send({
-      from: "Seven Green <noreply@sevengreen.com>", // تحتاج تغيير sevengreen.com لنطاقك المتحقق منه
+      from: "Seven Green <noreply@sevensgreen.com>",
       to: [customerEmail],
       subject: "تذكير بالدفع - Seven Green",
       html: `
