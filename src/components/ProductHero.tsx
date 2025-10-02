@@ -11,6 +11,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import OptimizedImage from "@/components/OptimizedImage";
+import sevenGreenLogo from "@/assets/seven-green-logo.png";
 
 const ProductHero = () => {
   const { price: productPrice, loading: priceLoading } = useProductPrice({ fallback: 299 });
@@ -87,6 +88,11 @@ const ProductHero = () => {
           <div className="flex items-center justify-between py-4 px-4 sm:px-0">
             {/* Logo Section */}
             <div className="flex items-center gap-3">
+              <img 
+                src={sevenGreenLogo} 
+                alt="Seven Green Logo" 
+                className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+              />
               <div className="text-left">
                 <h1 className="text-xl sm:text-2xl font-bold text-white tracking-wider font-english">
                   SEVEN GREEN
