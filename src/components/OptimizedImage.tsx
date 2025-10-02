@@ -22,52 +22,14 @@ const OptimizedImage = ({
   const [imageError, setImageError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Generate responsive image URLs for different sizes
-  const generateResponsiveUrls = (originalSrc: string) => {
-    // For Supabase storage URLs, we can add transformation parameters
-    if (originalSrc.includes('supabase.co/storage')) {
-      const baseUrl = originalSrc.split('?')[0];
-      return {
-        '640w': `${baseUrl}?width=640&quality=80&format=webp`,
-        '768w': `${baseUrl}?width=768&quality=80&format=webp`,
-        '1024w': `${baseUrl}?width=1024&quality=80&format=webp`,
-        '1280w': `${baseUrl}?width=1280&quality=80&format=webp`,
-        fallback: originalSrc
-      };
-    }
-    
-    // For other URLs, return as-is (could be enhanced with external image optimization service)
-    return {
-      fallback: originalSrc
-    };
-  };
-
-  const urls = generateResponsiveUrls(src);
-  
-  // Create srcSet string for responsive images
-  const createSrcSet = () => {
-    const entries = Object.entries(urls).filter(([key]) => key !== 'fallback');
-    if (entries.length === 0) return undefined;
-    
-    return entries.map(([size, url]) => `${url} ${size}`).join(', ');
-  };
-
-  const srcSet = createSrcSet();
+  // Supabase Storage doesn't support URL transformation parameters by default
+  // Use the original URL directly for better compatibility
+  const imageUrl = src;
 
   return (
-    <picture>
-      {/* WebP source with responsive sizes */}
-      {srcSet && (
-        <source
-          srcSet={srcSet}
-          sizes={sizes}
-          type="image/webp"
-        />
-      )}
-      
-      {/* Fallback image */}
+    <div className="relative">
       <img
-        src={urls.fallback}
+        src={imageUrl}
         alt={alt}
         className={`${className} transition-opacity duration-300 ${
           isLoaded ? 'opacity-100' : 'opacity-0'
@@ -76,7 +38,6 @@ const OptimizedImage = ({
         decoding="async"
         width={width}
         height={height}
-        sizes={sizes}
         onLoad={() => setIsLoaded(true)}
         onError={() => setImageError(true)}
         style={{
@@ -87,16 +48,16 @@ const OptimizedImage = ({
       
       {/* Loading skeleton */}
       {!isLoaded && !imageError && (
-        <div className={`${className} bg-muted animate-pulse`} />
+        <div className={`absolute inset-0 ${className} bg-muted animate-pulse`} />
       )}
       
       {/* Error fallback */}
       {imageError && (
-        <div className={`${className} bg-muted flex items-center justify-center text-muted-foreground`}>
+        <div className={`absolute inset-0 ${className} bg-muted flex items-center justify-center text-muted-foreground`}>
           <span className="text-sm">Image unavailable</span>
         </div>
       )}
-    </picture>
+    </div>
   );
 };
 
