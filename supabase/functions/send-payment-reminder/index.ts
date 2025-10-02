@@ -89,7 +89,11 @@ const handler = async (req: Request): Promise<Response> => {
                 </div>
                 <div class="detail-row">
                   <span><strong>تاريخ الطلب:</strong></span>
-                  <span>${new Date(orderDate).toLocaleDateString('ar-SA')}</span>
+                  <span>${new Date(orderDate).toLocaleDateString('ar-EG', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                  })}</span>
                 </div>
                 <div class="detail-row" style="border-bottom: none;">
                   <span><strong>المبلغ الإجمالي:</strong></span>
