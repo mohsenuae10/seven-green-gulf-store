@@ -317,13 +317,12 @@ const ProductHero = () => {
                   <div className="embla__container flex">
                     {productImages.length > 0 ? productImages.map((image, index) => (
                       <div key={index} className="embla__slide flex-[0_0_100%] min-w-0">
-                        <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 flex items-center justify-center p-4">
-                          <OptimizedImage 
+                        <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 flex items-center justify-center">
+                          <img 
                             src={image.src}
                             alt={image.alt}
-                            className="max-w-full max-h-full object-contain"
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                            priority={index === 0}
+                            className="max-w-full max-h-full object-contain p-4"
+                            loading={index === 0 ? 'eager' : 'lazy'}
                           />
                         </div>
                       </div>
