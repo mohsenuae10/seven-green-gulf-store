@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { Helmet } from "react-helmet";
 import { ArrowRight, Leaf, Shield, Star, CheckCircle, ChevronLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +15,19 @@ const ProductDetails = () => {
   const { language, t } = useLanguage();
   const { formatPrice } = useCurrency();
   const { price, loading } = useProductPrice();
+  
+  useEffect(() => {
+    document.documentElement.lang = language === 'ar' ? 'ar' : 'en';
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+  }, [language]);
+  
+  const title = language === 'ar'
+    ? "تفاصيل منتج سفن جرين | المكونات والفوائد | شامبو طبيعي 100%"
+    : "Seven Green Product Details | Ingredients & Benefits | 100% Natural Shampoo";
+    
+  const description = language === 'ar'
+    ? "اكتشف مكونات سفن جرين الطبيعية: زيت الأرغان الكوري، الجينسنغ، فيتامين E، زيت جوز الهند، الكيراتين النباتي والشاي الأخضر. منتج آمن ومُختبر لعلاج تساقط الشعر وتكثيفه."
+    : "Discover Seven Green's natural ingredients: Korean Argan Oil, Ginseng, Vitamin E, Coconut Oil, Plant Keratin and Green Tea. Safe and tested product for hair loss treatment and thickening.";
 
   const getIngredients = () => language === 'ar' ? [
     {
@@ -195,9 +210,47 @@ const ProductDetails = () => {
   const certifications = getCertifications();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-background/80" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+    <>
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content="https://sevensgreen.com/product" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <link rel="canonical" href="https://sevensgreen.com/product" />
+        
+        {/* Product Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            "name": language === 'ar' ? "سفن جرين - شامبو طبيعي" : "Seven Green - Natural Shampoo",
+            "description": description,
+            "brand": {
+              "@type": "Brand",
+              "name": "Seven Green"
+            },
+            "offers": {
+              "@type": "Offer",
+              "price": price || "25",
+              "priceCurrency": "AED",
+              "availability": "https://schema.org/InStock"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": "4.8",
+              "reviewCount": "127"
+            }
+          })}
+        </script>
+      </Helmet>
+      
+      <div className="min-h-screen bg-gradient-to-br from-background to-background/80" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        {/* Header */}
+        <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Link to="/" className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
@@ -211,8 +264,8 @@ const ProductDetails = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-12">
+        {/* Hero Section */}
+        <section className="container mx-auto px-4 py-12" aria-label="Product Hero">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <div className="space-y-4">
@@ -220,8 +273,8 @@ const ProductDetails = () => {
                 {t('hero.badge')}
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
-                {t('product.title')}
-                <span className="block text-primary">{t('product.subtitle')}</span>
+                {language === 'ar' ? 'سفن جرين Seven Green' : 'Seven Green'}
+                <span className="block text-primary">{language === 'ar' ? 'شامبو وصابونة طبيعية 100%' : '100% Natural Shampoo & Soap'}</span>
               </h1>
               <p className="text-lg text-muted-foreground leading-relaxed">
                 {t('product.description')}
@@ -249,7 +302,9 @@ const ProductDetails = () => {
             <div className="relative rounded-2xl overflow-hidden shadow-2xl">
               <OptimizedImage 
                 src="/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png" 
-                alt="Seven Green منتج العناية بالشعر الطبيعي"
+                alt={language === 'ar' 
+                  ? "صابونة سفن جرين الطبيعية - الصابونة المثلثة الأصلية لعلاج تساقط الشعر" 
+                  : "Seven Green Natural Soap - Original Triangle Soap for Hair Loss Treatment"}
                 className="w-full h-auto"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
@@ -265,8 +320,8 @@ const ProductDetails = () => {
         </div>
       </section>
 
-      {/* Certifications */}
-      <section className="container mx-auto px-4 py-8">
+        {/* Certifications */}
+        <section className="container mx-auto px-4 py-8" aria-label="Product Certifications">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {certifications.map((cert, index) => (
             <Card key={index} className="text-center p-6 border-primary/20">
@@ -280,8 +335,8 @@ const ProductDetails = () => {
         </div>
       </section>
 
-      {/* Benefits */}
-      <section className="container mx-auto px-4 py-12">
+        {/* Benefits */}
+        <section className="container mx-auto px-4 py-12" aria-label="Product Benefits">
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl text-center">{t('benefits.title')}</CardTitle>
@@ -299,8 +354,8 @@ const ProductDetails = () => {
         </Card>
       </section>
 
-      {/* Ingredients */}
-      <section className="container mx-auto px-4 py-12">
+        {/* Ingredients */}
+        <section className="container mx-auto px-4 py-12" aria-label="Natural Ingredients">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">{t('ingredients.title')}</h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -333,8 +388,8 @@ const ProductDetails = () => {
         </div>
       </section>
 
-      {/* Usage Instructions */}
-      <section className="container mx-auto px-4 py-12">
+        {/* Usage Instructions */}
+        <section className="container mx-auto px-4 py-12" aria-label="Usage Instructions">
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl text-center">طريقة الاستخدام الصحيحة</CardTitle>
@@ -365,8 +420,8 @@ const ProductDetails = () => {
         </Card>
       </section>
 
-      {/* Buy Now Section */}
-      <section className="container mx-auto px-4 py-12">
+        {/* Buy Now Section */}
+        <section className="container mx-auto px-4 py-12" aria-label="Purchase">
         <div className="text-center">
           <Link to="/order">
             <Button 
@@ -394,10 +449,10 @@ const ProductDetails = () => {
             <div className="absolute -top-6 left-1/2 transform translate-x-8 w-1.5 h-1.5 bg-secondary rounded-full animate-bounce delay-300"></div>
           </div>
         </div>
-      </section>
+        </section>
 
-      {/* FAQ */}
-      <section className="container mx-auto px-4 py-12">
+        {/* FAQ */}
+        <section className="container mx-auto px-4 py-12" aria-label="Frequently Asked Questions">
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl text-center">الأسئلة الشائعة</CardTitle>
@@ -449,7 +504,8 @@ const ProductDetails = () => {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 
