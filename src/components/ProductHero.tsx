@@ -313,24 +313,18 @@ const ProductHero = () => {
               
               {/* Product Images Carousel */}
               <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
-                <div className="embla overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong" ref={emblaRef}>
-                  <div className="embla__container flex">
-                    {productImages.length > 0 ? productImages.map((image, index) => (
-                      <div key={index} className="embla__slide flex-[0_0_100%] min-w-0">
-                        <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 flex items-center justify-center">
-                          <img 
-                            src={image.src}
-                            alt={image.alt}
-                            className="max-w-full max-h-full object-contain p-4"
-                            loading={index === 0 ? 'eager' : 'lazy'}
-                          />
-                        </div>
-                      </div>
-                    )) : (
-                      <div className="embla__slide flex-[0_0_100%] min-w-0">
-                        <div className="aspect-square w-full bg-white/10 rounded-2xl lg:rounded-3xl flex items-center justify-center">
-                          <span className="text-white/50">لا توجد صور</span>
-                        </div>
+                <div className="overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong">
+                  <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 flex items-center justify-center">
+                    {productImages.length > 0 ? (
+                      <img
+                        src={productImages[selectedIndex]?.src}
+                        alt={productImages[selectedIndex]?.alt || 'Product Image'}
+                        className="max-w-full max-h-full object-contain p-4"
+                        loading={selectedIndex === 0 ? 'eager' : 'lazy'}
+                      />
+                    ) : (
+                      <div className="aspect-square w-full bg-white/10 rounded-2xl lg:rounded-3xl flex items-center justify-center">
+                        <span className="text-white/50">لا توجد صور</span>
                       </div>
                     )}
                   </div>
@@ -339,7 +333,7 @@ const ProductHero = () => {
                 {/* Navigation Arrows */}
                 <button
                   type="button"
-                  onClick={() => emblaApi?.scrollPrev()}
+                  onClick={() => setSelectedIndex((i) => (i - 1 + productImages.length) % Math.max(productImages.length, 1))}
                   className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary rounded-full w-8 h-8 flex items-center justify-center shadow-medium"
                   aria-label={t('nav.prev')}
                 >
@@ -347,7 +341,7 @@ const ProductHero = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => emblaApi?.scrollNext()}
+                  onClick={() => setSelectedIndex((i) => (i + 1) % Math.max(productImages.length, 1))}
                   className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary rounded-full w-8 h-8 flex items-center justify-center shadow-medium"
                   aria-label={t('nav.next')}
                 >
@@ -356,7 +350,7 @@ const ProductHero = () => {
                 
                 {/* Carousel Dots */}
                 <div className="flex justify-center gap-2 mt-6">
-                  {scrollSnaps.map((_, index) => (
+                  {productImages.map((_, index) => (
                     <button
                       key={index}
                       className={`w-3 h-3 rounded-full transition-all duration-300 ${
@@ -364,7 +358,7 @@ const ProductHero = () => {
                           ? 'bg-secondary scale-125 shadow-glow' 
                           : 'bg-white/40 hover:bg-white/60'
                       }`}
-                      onClick={() => scrollTo(index)}
+                      onClick={() => setSelectedIndex(index)}
                       aria-label={`${t('nav.image.alt')} ${index + 1}`}
                     />
                   ))}
@@ -375,7 +369,7 @@ const ProductHero = () => {
                   {productImages.map((thumb, i) => (
                     <button
                       key={`thumb-${i}`}
-                      onClick={() => scrollTo(i)}
+                      onClick={() => setSelectedIndex(i)}
                       className={`rounded-md border ${i === selectedIndex ? 'border-secondary' : 'border-white/30'} bg-white/10 p-1`}
                       aria-label={`thumbnail ${i + 1}`}
                     >
