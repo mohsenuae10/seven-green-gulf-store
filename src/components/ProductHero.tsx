@@ -125,6 +125,20 @@ const ProductHero = () => {
 
     load();
   }, []);
+
+  // Reinitialize carousel when images are loaded/changed
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.reInit();
+    requestAnimationFrame(() => {
+      setScrollSnaps(emblaApi.scrollSnapList());
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    });
+    // Reset autoplay after reInit
+    // @ts-ignore - plugin instance exposes reset
+    autoplayRef.current?.reset?.();
+    console.log('[ProductHero] Carousel reInit with images:', productImages.length);
+  }, [emblaApi, productImages.length]);
   
   return (
     <section className="relative min-h-screen overflow-hidden">

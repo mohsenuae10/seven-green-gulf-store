@@ -31,6 +31,7 @@ const OptimizedImage = ({
       <img
         src={imageUrl}
         alt={alt}
+        draggable={false}
         className={`${className} transition-opacity duration-300 ${
           isLoaded ? 'opacity-100' : 'opacity-0'
         }`}
@@ -48,7 +49,7 @@ const OptimizedImage = ({
       
       {/* Loading skeleton */}
       {!isLoaded && !imageError && (
-        <div className={`absolute inset-0 ${className} bg-muted animate-pulse`} />
+        <div className={`absolute inset-0 ${className} bg-muted animate-pulse pointer-events-none`} />
       )}
       
       {/* Error fallback */}
