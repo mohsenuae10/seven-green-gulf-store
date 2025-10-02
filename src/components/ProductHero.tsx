@@ -36,6 +36,8 @@ const ProductHero = () => {
   
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
+
 
   const scrollTo = useCallback(
     (index: number) => emblaApi && emblaApi.scrollTo(index),
@@ -145,6 +147,7 @@ const ProductHero = () => {
     if (productImages.length <= 1) return;
     
     const interval = setInterval(() => {
+      setSlideDirection('right');
       setSelectedIndex((current) => (current + 1) % productImages.length);
     }, 3000);
     
@@ -332,7 +335,11 @@ const ProductHero = () => {
                         key={selectedIndex}
                         src={productImages[selectedIndex]?.src}
                         alt={productImages[selectedIndex]?.alt || 'Product Image'}
-                        className="max-w-full max-h-full object-contain p-4 animate-fade-in"
+                        className={`max-w-full max-h-full object-contain p-4 ${
+                          slideDirection === 'right' 
+                            ? 'animate-[slide-in-from-right_0.5s_ease-out]' 
+                            : 'animate-[slide-in-from-left_0.5s_ease-out]'
+                        }`}
                         loading={selectedIndex === 0 ? 'eager' : 'lazy'}
                       />
                     ) : (
@@ -346,7 +353,10 @@ const ProductHero = () => {
                 {/* Navigation Arrows */}
                 <button
                   type="button"
-                  onClick={() => setSelectedIndex((i) => (i - 1 + productImages.length) % Math.max(productImages.length, 1))}
+                  onClick={() => {
+                    setSlideDirection('left');
+                    setSelectedIndex((i) => (i - 1 + productImages.length) % Math.max(productImages.length, 1));
+                  }}
                   className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary rounded-full w-10 h-10 flex items-center justify-center shadow-medium transition-all duration-300 hover:scale-110 z-20"
                   aria-label={t('nav.prev')}
                 >
@@ -354,7 +364,10 @@ const ProductHero = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setSelectedIndex((i) => (i + 1) % Math.max(productImages.length, 1))}
+                  onClick={() => {
+                    setSlideDirection('right');
+                    setSelectedIndex((i) => (i + 1) % Math.max(productImages.length, 1));
+                  }}
                   className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary rounded-full w-10 h-10 flex items-center justify-center shadow-medium transition-all duration-300 hover:scale-110 z-20"
                   aria-label={t('nav.next')}
                 >
