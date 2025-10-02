@@ -63,6 +63,7 @@ export function ProductsManagement() {
       const { data, error } = await supabase
         .from('products')
         .select('*')
+        .eq('is_active', true)
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -200,6 +201,32 @@ export function ProductsManagement() {
         .eq('id', productId);
 
       if (error) {
+        // If the product is referenced in order_items, archive (soft delete) instead
+        if ((error as any).code === '23503') {
+          console.error('FK constraint - archiving instead of deleting:', error);
+          const { error: updateError } = await supabase
+            .from('products')
+            .update({ is_active: false, stock_quantity: 0, updated_at: new Date().toISOString() })
+            .eq('id', productId);
+
+          if (updateError) {
+            console.error('Error archiving product:', updateError);
+            toast({
+              title: "خطأ",
+              description: "فشل في أرشفة المنتج المرتبط بطلبات",
+              variant: "destructive",
+            });
+            return;
+          }
+
+          toast({
+            title: "تمت الأرشفة",
+            description: "لا يمكن حذف المنتج لأنه مرتبط بطلبات؛ تم أرشفته وإخفاؤه",
+          });
+          fetchProducts();
+          return;
+        }
+
         console.error('Error deleting product:', error);
         toast({
           title: "خطأ",
