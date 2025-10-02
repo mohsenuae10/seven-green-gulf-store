@@ -8,8 +8,6 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { useLanguage } from "@/hooks/useLanguage";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import useEmblaCarousel from 'embla-carousel-react';
-import Autoplay from 'embla-carousel-autoplay';
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import OptimizedImage from "@/components/OptimizedImage";
@@ -20,63 +18,7 @@ const ProductHero = () => {
   const { language, t } = useLanguage();
   console.log('[ProductHero] currency:', selectedCurrency, 'price:', formatPrice(productPrice));
   
-  // Carousel configuration with autoplay
-  const autoplayRef = useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: true })
-  );
-  
-  const [emblaRef, emblaApi] = useEmblaCarousel(
-    { 
-      loop: true,
-      dragFree: false,
-      align: 'start'
-    },
-    [autoplayRef.current]
-  );
-  
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
-
-
-  const scrollTo = useCallback(
-    (index: number) => emblaApi && emblaApi.scrollTo(index),
-    [emblaApi],
-  );
-
-  const onInit = useCallback((emblaApi: any) => {
-    // Use requestAnimationFrame to defer layout reads until next frame
-    requestAnimationFrame(() => {
-      setScrollSnaps(emblaApi.scrollSnapList());
-    });
-  }, []);
-
-  const onSelect = useCallback((emblaApi: any) => {
-    // Use requestAnimationFrame to defer layout reads until next frame
-    requestAnimationFrame(() => {
-      setSelectedIndex(emblaApi.selectedScrollSnap());
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!emblaApi) return;
-
-    // Defer initialization to prevent forced reflows
-    const initCarousel = () => {
-      onInit(emblaApi);
-      onSelect(emblaApi);
-      emblaApi.on('reInit', onInit);
-      emblaApi.on('select', onSelect);
-    };
-
-    // Use requestAnimationFrame to defer until after initial render
-    requestAnimationFrame(initCarousel);
-
-    return () => {
-      emblaApi?.off('reInit', onInit);
-      emblaApi?.off('select', onSelect);
-    };
-  }, [emblaApi, onInit, onSelect]);
-
   const [productImages, setProductImages] = useState<{ src: string; alt: string }[]>([]);
 
   const [heroTitle, setHeroTitle] = useState<string>('Seven Green');
@@ -127,16 +69,14 @@ const ProductHero = () => {
     load();
   }, []);
 
-  // Reinitialize carousel when images are loaded/changed
+  // Auto-advance carousel
   useEffect(() => {
-    if (!emblaApi) return;
-    emblaApi.reInit();
-    requestAnimationFrame(() => {
-      setScrollSnaps(emblaApi.scrollSnapList());
-      setSelectedIndex(emblaApi.selectedScrollSnap());
-    });
-    console.log('[ProductHero] Carousel reInit with images:', productImages.length);
-  }, [emblaApi, productImages.length]);
+    if (productImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setSelectedIndex((prev) => (prev + 1) % productImages.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [productImages.length]);
   
   
   return (
@@ -312,55 +252,51 @@ const ProductHero = () => {
               
               {/* Product Images Carousel */}
               <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
-                <div className="overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong" ref={emblaRef}>
-                  <div className="flex">
-                    {productImages.length > 0 ? productImages.map((image, index) => (
-                      <div key={index} className="flex-[0_0_100%] min-w-0 relative">
-                        <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 backdrop-blur-sm flex items-center justify-center">
-                          <img 
-                            src={image.src}
-                            alt={image.alt}
-                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-                            loading={index === 0 ? 'eager' : 'lazy'}
-                          />
-                        </div>
-                      </div>
-                    )) : (
-                      <div className="flex-[0_0_100%] min-w-0">
-                        <div className="aspect-square w-full bg-white/10 rounded-2xl lg:rounded-3xl flex items-center justify-center">
-                          <span className="text-white/50">لا توجد صور</span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                {/* Main Image Display */}
+                <div className="relative overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong">
+                  {productImages.length > 0 ? (
+                    <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 backdrop-blur-sm flex items-center justify-center">
+                      <img 
+                        key={selectedIndex}
+                        src={productImages[selectedIndex].src}
+                        alt={productImages[selectedIndex].alt}
+                        className="w-full h-full object-cover animate-fade-in"
+                        loading="eager"
+                      />
+                    </div>
+                  ) : (
+                    <div className="aspect-square w-full bg-white/10 rounded-2xl lg:rounded-3xl flex items-center justify-center">
+                      <span className="text-white/50">لا توجد صور</span>
+                    </div>
+                  )}
+                  
+                  {/* Navigation Arrows */}
+                  {productImages.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedIndex((prev) => (prev - 1 + productImages.length) % productImages.length)}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-primary rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 z-20"
+                        aria-label="Previous"
+                      >
+                        <span className="text-2xl font-bold">‹</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedIndex((prev) => (prev + 1) % productImages.length)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-primary rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 z-20"
+                        aria-label="Next"
+                      >
+                        <span className="text-2xl font-bold">›</span>
+                      </button>
+                    </>
+                  )}
                 </div>
-                
-                {/* Navigation Arrows */}
-                {productImages.length > 1 && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => emblaApi?.scrollPrev()}
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-primary rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 z-20"
-                      aria-label="Previous"
-                    >
-                      <span className="text-2xl font-bold">‹</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => emblaApi?.scrollNext()}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-primary rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 z-20"
-                      aria-label="Next"
-                    >
-                      <span className="text-2xl font-bold">›</span>
-                    </button>
-                  </>
-                )}
                 
                 {/* Carousel Dots */}
                 {productImages.length > 1 && (
                   <div className="flex justify-center gap-2 mt-6">
-                    {scrollSnaps.map((_, index) => (
+                    {productImages.map((_, index) => (
                       <button
                         key={index}
                         className={`w-3 h-3 rounded-full transition-all duration-300 ${
@@ -368,7 +304,7 @@ const ProductHero = () => {
                             ? 'bg-secondary w-8 shadow-glow' 
                             : 'bg-white/40 hover:bg-white/60'
                         }`}
-                        onClick={() => emblaApi?.scrollTo(index)}
+                        onClick={() => setSelectedIndex(index)}
                         aria-label={`Image ${index + 1}`}
                       />
                     ))}
@@ -381,15 +317,19 @@ const ProductHero = () => {
                     {productImages.map((thumb, i) => (
                       <button
                         key={`thumb-${i}`}
-                        onClick={() => emblaApi?.scrollTo(i)}
-                        className={`flex-shrink-0 rounded-lg border-2 transition-all duration-300 ${
+                        onClick={() => setSelectedIndex(i)}
+                        className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
                           i === selectedIndex 
-                            ? 'border-secondary scale-110 shadow-glow' 
-                            : 'border-white/30 hover:border-white/50 hover:scale-105'
-                        } bg-white/10 p-1`}
-                        aria-label={`thumbnail ${i + 1}`}
+                            ? 'border-secondary shadow-glow scale-110' 
+                            : 'border-white/30 hover:border-white/60 opacity-70 hover:opacity-100'
+                        }`}
                       >
-                        <img src={thumb.src} alt={thumb.alt} className="w-14 h-14 object-cover rounded" />
+                        <img 
+                          src={thumb.src}
+                          alt={thumb.alt}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
                       </button>
                     ))}
                   </div>
