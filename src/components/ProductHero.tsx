@@ -139,6 +139,18 @@ const ProductHero = () => {
     autoplayRef.current?.reset?.();
     console.log('[ProductHero] Carousel reInit with images:', productImages.length);
   }, [emblaApi, productImages.length]);
+
+  // Auto-rotate images every 3 seconds
+  useEffect(() => {
+    if (productImages.length <= 1) return;
+    
+    const interval = setInterval(() => {
+      setSelectedIndex((current) => (current + 1) % productImages.length);
+    }, 3000);
+    
+    return () => clearInterval(interval);
+  }, [productImages.length]);
+  
   
   return (
     <section className="relative min-h-screen overflow-hidden">
