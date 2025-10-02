@@ -8,6 +8,7 @@ interface OptimizedImageProps {
   priority?: boolean;
   width?: number;
   height?: number;
+  fill?: boolean;
 }
 
 const OptimizedImage = ({ 
@@ -17,7 +18,8 @@ const OptimizedImage = ({
   sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
   priority = false,
   width,
-  height
+  height,
+  fill = false
 }: OptimizedImageProps) => {
   const [imageError, setImageError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -43,7 +45,7 @@ const OptimizedImage = ({
         onError={() => setImageError(true)}
         style={{
           maxWidth: '100%',
-          height: 'auto'
+          height: fill ? '100%' : 'auto'
         }}
       />
       

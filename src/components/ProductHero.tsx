@@ -105,7 +105,7 @@ const ProductHero = () => {
           .from('products')
           .select('id')
           .eq('is_active', true)
-          .order('created_at')
+          .order('updated_at', { ascending: false })
           .limit(1)
           .maybeSingle();
         const productId = prod?.id;
@@ -321,9 +321,10 @@ const ProductHero = () => {
                           <OptimizedImage 
                             src={image.src}
                             alt={image.alt}
-                            className="absolute inset-0 w-full h-full object-contain p-4"
+                            className="w-full h-full object-contain p-4"
                             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                             priority={index === 0}
+                            fill
                           />
                         </div>
                       </div>
