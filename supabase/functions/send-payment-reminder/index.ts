@@ -42,45 +42,86 @@ const handler = async (req: Request): Promise<Response> => {
             .content { padding: 30px; }
             .order-details { background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0; }
             .detail-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
-            .button { display: inline-block; background-color: #10b981; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+            .payment-button { 
+              display: inline-block; 
+              background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+              color: white; 
+              padding: 15px 40px; 
+              text-decoration: none; 
+              border-radius: 8px; 
+              margin: 20px 0;
+              font-size: 18px;
+              font-weight: bold;
+              text-align: center;
+              box-shadow: 0 4px 6px rgba(16, 185, 129, 0.3);
+            }
+            .payment-button:hover {
+              background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            }
             .footer { background-color: #f9fafb; padding: 20px; text-align: center; color: #6b7280; font-size: 14px; }
+            .urgent-notice { 
+              background-color: #fef3c7; 
+              border-right: 4px solid #f59e0b; 
+              padding: 15px; 
+              margin: 20px 0; 
+              border-radius: 5px;
+            }
           </style>
         </head>
         <body>
           <div class="container">
             <div class="header">
-              <h1>تذكير بالدفع</h1>
+              <h1>⚠️ تذكير مهم بالدفع</h1>
             </div>
             <div class="content">
               <p>عزيزي/عزيزتي ${customerName}،</p>
-              <p>نود تذكيرك بأن طلبك ما زال في انتظار الدفع.</p>
+              
+              <div class="urgent-notice">
+                <strong>⏰ طلبك في انتظار الدفع</strong>
+                <p style="margin: 5px 0 0 0;">يرجى إتمام عملية الدفع لضمان معالجة طلبك وشحنه في أسرع وقت ممكن.</p>
+              </div>
               
               <div class="order-details">
-                <h3>تفاصيل الطلب:</h3>
+                <h3>📦 تفاصيل الطلب:</h3>
                 <div class="detail-row">
                   <span><strong>رقم الطلب:</strong></span>
-                  <span>${orderId.substring(0, 8)}</span>
+                  <span>#${orderId.substring(0, 8).toUpperCase()}</span>
                 </div>
                 <div class="detail-row">
                   <span><strong>تاريخ الطلب:</strong></span>
                   <span>${new Date(orderDate).toLocaleDateString('ar-SA')}</span>
                 </div>
-                <div class="detail-row">
+                <div class="detail-row" style="border-bottom: none;">
                   <span><strong>المبلغ الإجمالي:</strong></span>
-                  <span>${totalAmount} ريال</span>
+                  <span style="color: #10b981; font-size: 20px; font-weight: bold;">${totalAmount} ريال</span>
                 </div>
               </div>
 
-              <p>لإكمال طلبك، يرجى إتمام عملية الدفع في أقرب وقت ممكن.</p>
-              <p>إذا كان لديك أي استفسار، لا تتردد في التواصل معنا.</p>
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="https://sevensgreen.com/order?id=${orderId}" class="payment-button">
+                  💳 إتمام الدفع الآن
+                </a>
+              </div>
+
+              <p style="text-align: center; color: #6b7280; font-size: 14px;">
+                أو انسخ الرابط التالي:<br>
+                <a href="https://sevensgreen.com/order?id=${orderId}" style="color: #10b981;">
+                  https://sevensgreen.com/order?id=${orderId}
+                </a>
+              </p>
 
               <p style="margin-top: 30px;">
-                <strong>شكراً لك،</strong><br>
-                فريق Seven Green
+                إذا كان لديك أي استفسار أو مشكلة في الدفع، لا تتردد في التواصل معنا.
+              </p>
+
+              <p style="margin-top: 30px;">
+                <strong>شكراً لثقتك بنا،</strong><br>
+                فريق Seven Green 🌿
               </p>
             </div>
             <div class="footer">
               <p>هذا البريد الإلكتروني تم إرساله تلقائياً، يرجى عدم الرد عليه.</p>
+              <p>Seven Green - منتجات العناية الطبيعية بالشعر</p>
             </div>
           </div>
         </body>
