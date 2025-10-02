@@ -84,8 +84,8 @@ const ProductIngredients = () => {
           
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             {language === 'ar' 
-              ? 'تركيبة فريدة من 7 مكونات طبيعية صينية قديمة، تم اختبارها علمياً لضمان أفضل النتائج لصحة شعرك'
-              : 'A unique formula of 7 ancient Chinese natural ingredients, scientifically tested to ensure the best results for your hair health'}
+              ? 'صابونة سفن جرين تحتوي على تركيبة فريدة من 7 مكونات طبيعية صينية قديمة، تم اختبار شامبو سفن جرين علمياً لضمان أفضل النتائج لصحة شعرك'
+              : 'Seven Green soap contains a unique formula of 7 ancient Chinese natural ingredients, scientifically tested to ensure the best results for your hair health'}
           </p>
         </div>
 
