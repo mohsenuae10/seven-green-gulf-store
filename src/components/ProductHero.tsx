@@ -312,21 +312,21 @@ const ProductHero = () => {
               
               {/* Product Images Carousel */}
               <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
-                <div className="embla overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong" ref={emblaRef}>
-                  <div className="embla__container flex">
+                <div className="overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong" ref={emblaRef}>
+                  <div className="flex">
                     {productImages.length > 0 ? productImages.map((image, index) => (
-                      <div key={index} className="embla__slide flex-[0_0_100%] min-w-0">
-                        <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 flex items-center justify-center">
+                      <div key={index} className="flex-[0_0_100%] min-w-0 relative">
+                        <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 backdrop-blur-sm flex items-center justify-center">
                           <img 
                             src={image.src}
                             alt={image.alt}
-                            className="max-w-full max-h-full object-contain p-4 transition-opacity duration-300"
+                            className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                             loading={index === 0 ? 'eager' : 'lazy'}
                           />
                         </div>
                       </div>
                     )) : (
-                      <div className="embla__slide flex-[0_0_100%] min-w-0">
+                      <div className="flex-[0_0_100%] min-w-0">
                         <div className="aspect-square w-full bg-white/10 rounded-2xl lg:rounded-3xl flex items-center justify-center">
                           <span className="text-white/50">لا توجد صور</span>
                         </div>
