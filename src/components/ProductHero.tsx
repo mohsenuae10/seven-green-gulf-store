@@ -314,12 +314,13 @@ const ProductHero = () => {
               {/* Product Images Carousel */}
               <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
                 <div className="overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong">
-                  <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 flex items-center justify-center">
+                  <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 flex items-center justify-center relative">
                     {productImages.length > 0 ? (
                       <img
+                        key={selectedIndex}
                         src={productImages[selectedIndex]?.src}
                         alt={productImages[selectedIndex]?.alt || 'Product Image'}
-                        className="max-w-full max-h-full object-contain p-4"
+                        className="max-w-full max-h-full object-contain p-4 animate-fade-in"
                         loading={selectedIndex === 0 ? 'eager' : 'lazy'}
                       />
                     ) : (
@@ -334,18 +335,18 @@ const ProductHero = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedIndex((i) => (i - 1 + productImages.length) % Math.max(productImages.length, 1))}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary rounded-full w-8 h-8 flex items-center justify-center shadow-medium"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary rounded-full w-10 h-10 flex items-center justify-center shadow-medium transition-all duration-300 hover:scale-110 z-20"
                   aria-label={t('nav.prev')}
                 >
-                  ‹
+                  <span className="text-2xl font-bold">‹</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setSelectedIndex((i) => (i + 1) % Math.max(productImages.length, 1))}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary rounded-full w-8 h-8 flex items-center justify-center shadow-medium"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary rounded-full w-10 h-10 flex items-center justify-center shadow-medium transition-all duration-300 hover:scale-110 z-20"
                   aria-label={t('nav.next')}
                 >
-                  ›
+                  <span className="text-2xl font-bold">›</span>
                 </button>
                 
                 {/* Carousel Dots */}
@@ -370,10 +371,14 @@ const ProductHero = () => {
                     <button
                       key={`thumb-${i}`}
                       onClick={() => setSelectedIndex(i)}
-                      className={`rounded-md border ${i === selectedIndex ? 'border-secondary' : 'border-white/30'} bg-white/10 p-1`}
+                      className={`rounded-lg border-2 transition-all duration-300 ${
+                        i === selectedIndex 
+                          ? 'border-secondary scale-110 shadow-glow' 
+                          : 'border-white/30 hover:border-white/50 hover:scale-105'
+                      } bg-white/10 p-1`}
                       aria-label={`thumbnail ${i + 1}`}
                     >
-                      <img src={thumb.src} alt={thumb.alt} className="w-12 h-12 object-cover rounded" />
+                      <img src={thumb.src} alt={thumb.alt} className="w-14 h-14 object-cover rounded" />
                     </button>
                   ))}
                 </div>
