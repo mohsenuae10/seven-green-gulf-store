@@ -186,6 +186,15 @@ export function OrdersManagement() {
   };
 
   const sendPaymentReminder = async (order: Order) => {
+    if (!order.customer_email) {
+      toast({
+        title: "خطأ",
+        description: "لا يوجد بريد إلكتروني لهذا العميل",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase.functions.invoke('send-payment-reminder', {
         body: {
@@ -431,10 +440,10 @@ export function OrdersManagement() {
                         </div>
 
                         {/* Payment Reminder Button - Only show for pending payments */}
-                        {order.payment_status === 'pending' && order.customer_email && (
+                        {order.payment_status === 'pending' && (
                           <Button 
                             variant="outline" 
-                            className="w-full"
+                            className="w-full bg-amber-50 hover:bg-amber-100 border-amber-200"
                             onClick={() => sendPaymentReminder(order)}
                           >
                             <Bell className="h-4 w-4 ml-2" />
