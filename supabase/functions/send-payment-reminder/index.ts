@@ -81,6 +81,14 @@ const handler = async (req: Request): Promise<Response> => {
                 <p style="margin: 5px 0 0 0;">يرجى إتمام عملية الدفع لضمان معالجة طلبك وشحنه في أسرع وقت ممكن.</p>
               </div>
               
+              <div style="text-align: center; margin: 30px 0; padding: 20px; background-color: #f9fafb; border-radius: 8px;">
+                <img src="https://sevensgreen.com/lovable-uploads/seven-green-product-email.png" 
+                     alt="Seven Green - صابونة الأعشاب الطبيعية" 
+                     style="max-width: 250px; height: auto; margin-bottom: 15px;" />
+                <h3 style="color: #10b981; margin: 10px 0;">Seven Green - صابونة الأعشاب الطبيعية</h3>
+                <p style="color: #6b7280; margin: 5px 0;">منتج عناية متقدم بالشعر من مكونات طبيعية 100%</p>
+              </div>
+
               <div class="order-details">
                 <h3>📦 تفاصيل الطلب:</h3>
                 <div class="detail-row">
