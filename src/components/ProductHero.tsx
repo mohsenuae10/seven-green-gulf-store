@@ -36,7 +36,6 @@ const ProductHero = () => {
   
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([]);
-  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
 
 
   const scrollTo = useCallback(
@@ -136,23 +135,8 @@ const ProductHero = () => {
       setScrollSnaps(emblaApi.scrollSnapList());
       setSelectedIndex(emblaApi.selectedScrollSnap());
     });
-    // Reset autoplay after reInit
-    // @ts-ignore - plugin instance exposes reset
-    autoplayRef.current?.reset?.();
     console.log('[ProductHero] Carousel reInit with images:', productImages.length);
   }, [emblaApi, productImages.length]);
-
-  // Auto-rotate images every 3 seconds
-  useEffect(() => {
-    if (productImages.length <= 1) return;
-    
-    const interval = setInterval(() => {
-      setSlideDirection('right');
-      setSelectedIndex((current) => (current + 1) % productImages.length);
-    }, 3000);
-    
-    return () => clearInterval(interval);
-  }, [productImages.length]);
   
   
   return (
@@ -328,86 +312,88 @@ const ProductHero = () => {
               
               {/* Product Images Carousel */}
               <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
-                <div className="overflow-visible rounded-2xl lg:rounded-3xl shadow-strong" style={{ perspective: '1000px' }}>
-                  <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 flex items-center justify-center relative">
-                    {productImages.length > 0 ? (
-                      <img
-                        key={selectedIndex}
-                        src={productImages[selectedIndex]?.src}
-                        alt={productImages[selectedIndex]?.alt || 'Product Image'}
-                        className={`max-w-full max-h-full object-contain p-4 ${
-                          slideDirection === 'right' 
-                            ? 'animate-[rotate-in-right_0.6s_ease-out]' 
-                            : 'animate-[rotate-in-left_0.6s_ease-out]'
-                        }`}
-                        style={{ transformStyle: 'preserve-3d' }}
-                        loading={selectedIndex === 0 ? 'eager' : 'lazy'}
-                      />
-                    ) : (
-                      <div className="aspect-square w-full bg-white/10 rounded-2xl lg:rounded-3xl flex items-center justify-center">
-                        <span className="text-white/50">لا توجد صور</span>
+                <div className="embla overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong" ref={emblaRef}>
+                  <div className="embla__container flex">
+                    {productImages.length > 0 ? productImages.map((image, index) => (
+                      <div key={index} className="embla__slide flex-[0_0_100%] min-w-0">
+                        <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 flex items-center justify-center">
+                          <img 
+                            src={image.src}
+                            alt={image.alt}
+                            className="max-w-full max-h-full object-contain p-4 transition-opacity duration-300"
+                            loading={index === 0 ? 'eager' : 'lazy'}
+                          />
+                        </div>
+                      </div>
+                    )) : (
+                      <div className="embla__slide flex-[0_0_100%] min-w-0">
+                        <div className="aspect-square w-full bg-white/10 rounded-2xl lg:rounded-3xl flex items-center justify-center">
+                          <span className="text-white/50">لا توجد صور</span>
+                        </div>
                       </div>
                     )}
                   </div>
                 </div>
                 
                 {/* Navigation Arrows */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSlideDirection('left');
-                    setSelectedIndex((i) => (i - 1 + productImages.length) % Math.max(productImages.length, 1));
-                  }}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary rounded-full w-10 h-10 flex items-center justify-center shadow-medium transition-all duration-300 hover:scale-110 z-20"
-                  aria-label={t('nav.prev')}
-                >
-                  <span className="text-2xl font-bold">‹</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSlideDirection('right');
-                    setSelectedIndex((i) => (i + 1) % Math.max(productImages.length, 1));
-                  }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary rounded-full w-10 h-10 flex items-center justify-center shadow-medium transition-all duration-300 hover:scale-110 z-20"
-                  aria-label={t('nav.next')}
-                >
-                  <span className="text-2xl font-bold">›</span>
-                </button>
+                {productImages.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => emblaApi?.scrollPrev()}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-primary rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 z-20"
+                      aria-label="Previous"
+                    >
+                      <span className="text-2xl font-bold">‹</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => emblaApi?.scrollNext()}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white text-primary rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition-all duration-300 hover:scale-110 z-20"
+                      aria-label="Next"
+                    >
+                      <span className="text-2xl font-bold">›</span>
+                    </button>
+                  </>
+                )}
                 
                 {/* Carousel Dots */}
-                <div className="flex justify-center gap-2 mt-6">
-                  {productImages.map((_, index) => (
-                    <button
-                      key={index}
-                      className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                        index === selectedIndex 
-                          ? 'bg-secondary scale-125 shadow-glow' 
-                          : 'bg-white/40 hover:bg-white/60'
-                      }`}
-                      onClick={() => setSelectedIndex(index)}
-                      aria-label={`${t('nav.image.alt')} ${index + 1}`}
-                    />
-                  ))}
-                </div>
+                {productImages.length > 1 && (
+                  <div className="flex justify-center gap-2 mt-6">
+                    {scrollSnaps.map((_, index) => (
+                      <button
+                        key={index}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                          index === selectedIndex 
+                            ? 'bg-secondary w-8 shadow-glow' 
+                            : 'bg-white/40 hover:bg-white/60'
+                        }`}
+                        onClick={() => emblaApi?.scrollTo(index)}
+                        aria-label={`Image ${index + 1}`}
+                      />
+                    ))}
+                  </div>
+                )}
                 
                 {/* Thumbnails */}
-                <div className="mt-4 flex justify-center gap-2 overflow-x-auto px-2">
-                  {productImages.map((thumb, i) => (
-                    <button
-                      key={`thumb-${i}`}
-                      onClick={() => setSelectedIndex(i)}
-                      className={`rounded-lg border-2 transition-all duration-300 ${
-                        i === selectedIndex 
-                          ? 'border-secondary scale-110 shadow-glow' 
-                          : 'border-white/30 hover:border-white/50 hover:scale-105'
-                      } bg-white/10 p-1`}
-                      aria-label={`thumbnail ${i + 1}`}
-                    >
-                      <img src={thumb.src} alt={thumb.alt} className="w-14 h-14 object-cover rounded" />
-                    </button>
-                  ))}
-                </div>
+                {productImages.length > 1 && (
+                  <div className="mt-4 flex justify-center gap-2 overflow-x-auto px-2">
+                    {productImages.map((thumb, i) => (
+                      <button
+                        key={`thumb-${i}`}
+                        onClick={() => emblaApi?.scrollTo(i)}
+                        className={`flex-shrink-0 rounded-lg border-2 transition-all duration-300 ${
+                          i === selectedIndex 
+                            ? 'border-secondary scale-110 shadow-glow' 
+                            : 'border-white/30 hover:border-white/50 hover:scale-105'
+                        } bg-white/10 p-1`}
+                        aria-label={`thumbnail ${i + 1}`}
+                      >
+                        <img src={thumb.src} alt={thumb.alt} className="w-14 h-14 object-cover rounded" />
+                      </button>
+                    ))}
+                  </div>
+                )}
                 
                 {/* Swipe indicator for mobile */}
                 <div className="flex items-center justify-center gap-2 mt-3 text-white/60 text-xs sm:hidden">
