@@ -104,23 +104,23 @@ export default {
 						height: '0'
 					}
 				},
-				'slide-in-from-right': {
+				'rotate-in-right': {
 					'0%': {
-						transform: 'translateX(100%)',
+						transform: 'perspective(1000px) rotateY(90deg) scale(0.8)',
 						opacity: '0'
 					},
 					'100%': {
-						transform: 'translateX(0)',
+						transform: 'perspective(1000px) rotateY(0deg) scale(1)',
 						opacity: '1'
 					}
 				},
-				'slide-in-from-left': {
+				'rotate-in-left': {
 					'0%': {
-						transform: 'translateX(-100%)',
+						transform: 'perspective(1000px) rotateY(-90deg) scale(0.8)',
 						opacity: '0'
 					},
 					'100%': {
-						transform: 'translateX(0)',
+						transform: 'perspective(1000px) rotateY(0deg) scale(1)',
 						opacity: '1'
 					}
 				}

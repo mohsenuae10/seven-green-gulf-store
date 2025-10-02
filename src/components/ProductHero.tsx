@@ -328,7 +328,7 @@ const ProductHero = () => {
               
               {/* Product Images Carousel */}
               <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
-                <div className="overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong">
+                <div className="overflow-visible rounded-2xl lg:rounded-3xl shadow-strong" style={{ perspective: '1000px' }}>
                   <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 flex items-center justify-center relative">
                     {productImages.length > 0 ? (
                       <img
@@ -337,9 +337,10 @@ const ProductHero = () => {
                         alt={productImages[selectedIndex]?.alt || 'Product Image'}
                         className={`max-w-full max-h-full object-contain p-4 ${
                           slideDirection === 'right' 
-                            ? 'animate-[slide-in-from-right_0.5s_ease-out]' 
-                            : 'animate-[slide-in-from-left_0.5s_ease-out]'
+                            ? 'animate-[rotate-in-right_0.6s_ease-out]' 
+                            : 'animate-[rotate-in-left_0.6s_ease-out]'
                         }`}
+                        style={{ transformStyle: 'preserve-3d' }}
                         loading={selectedIndex === 0 ? 'eager' : 'lazy'}
                       />
                     ) : (
