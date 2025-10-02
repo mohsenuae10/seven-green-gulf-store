@@ -9,7 +9,8 @@ import { useLanguage } from "@/hooks/useLanguage";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import useEmblaCarousel from 'embla-carousel-react';
-import { useCallback, useEffect, useState } from 'react';
+import Autoplay from 'embla-carousel-autoplay';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import OptimizedImage from "@/components/OptimizedImage";
 
@@ -19,13 +20,18 @@ const ProductHero = () => {
   const { language, t } = useLanguage();
   console.log('[ProductHero] currency:', selectedCurrency, 'price:', formatPrice(productPrice));
   
-  // Carousel configuration
+  // Carousel configuration with autoplay
+  const autoplayRef = useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: true })
+  );
+  
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { 
-      loop: false,
-      dragFree: true,
-      containScroll: 'trimSnaps'
-    }
+      loop: true,
+      dragFree: false,
+      align: 'start'
+    },
+    [autoplayRef.current]
   );
   
   const [selectedIndex, setSelectedIndex] = useState(0);
