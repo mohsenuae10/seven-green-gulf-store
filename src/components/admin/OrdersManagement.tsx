@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Eye, Package, User, MapPin, Phone, Mail, Calendar, CreditCard, Copy } from "lucide-react";
+import { Eye, Package, User, MapPin, Phone, Mail, Calendar, CreditCard, Copy, Bell } from "lucide-react";
 
 interface Order {
   id: string;
@@ -180,6 +180,34 @@ export function OrdersManagement() {
       toast({
         title: "خطأ",
         description: "حدث خطأ أثناء تحديث حالة الدفع",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const sendPaymentReminder = async (order: Order) => {
+    try {
+      const { error } = await supabase.functions.invoke('send-payment-reminder', {
+        body: {
+          orderId: order.id,
+          customerName: order.customer_name,
+          customerEmail: order.customer_email,
+          totalAmount: order.total_amount,
+          orderDate: order.created_at
+        }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "تم الإرسال",
+        description: "تم إرسال تذكير الدفع بنجاح",
+      });
+    } catch (error) {
+      console.error('Error sending payment reminder:', error);
+      toast({
+        title: "خطأ",
+        description: "فشل في إرسال تذكير الدفع",
         variant: "destructive",
       });
     }
@@ -363,42 +391,56 @@ export function OrdersManagement() {
                       </div>
 
                       {/* Status Controls */}
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <label className="text-sm font-medium">حالة الطلب</label>
-                          <Select
-                            value={order.status}
-                            onValueChange={(value) => updateOrderStatus(order.id, value)}
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="pending">في الانتظار</SelectItem>
-                              <SelectItem value="confirmed">مؤكد</SelectItem>
-                              <SelectItem value="shipped">تم الشحن</SelectItem>
-                              <SelectItem value="delivered">تم التسليم</SelectItem>
-                              <SelectItem value="cancelled">ملغي</SelectItem>
-                            </SelectContent>
-                          </Select>
+                      <div className="space-y-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">حالة الطلب</label>
+                            <Select
+                              value={order.status}
+                              onValueChange={(value) => updateOrderStatus(order.id, value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="pending">في الانتظار</SelectItem>
+                                <SelectItem value="confirmed">مؤكد</SelectItem>
+                                <SelectItem value="shipped">تم الشحن</SelectItem>
+                                <SelectItem value="delivered">تم التسليم</SelectItem>
+                                <SelectItem value="cancelled">ملغي</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium">حالة الدفع</label>
+                            <Select
+                              value={order.payment_status}
+                              onValueChange={(value) => updatePaymentStatus(order.id, value)}
+                            >
+                              <SelectTrigger>
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="pending">في الانتظار</SelectItem>
+                                <SelectItem value="paid">مدفوع</SelectItem>
+                                <SelectItem value="failed">فشل</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
-                        
-                        <div className="space-y-2">
-                          <label className="text-sm font-medium">حالة الدفع</label>
-                          <Select
-                            value={order.payment_status}
-                            onValueChange={(value) => updatePaymentStatus(order.id, value)}
+
+                        {/* Payment Reminder Button - Only show for pending payments */}
+                        {order.payment_status === 'pending' && order.customer_email && (
+                          <Button 
+                            variant="outline" 
+                            className="w-full"
+                            onClick={() => sendPaymentReminder(order)}
                           >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="pending">في الانتظار</SelectItem>
-                              <SelectItem value="paid">مدفوع</SelectItem>
-                              <SelectItem value="failed">فشل</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
+                            <Bell className="h-4 w-4 ml-2" />
+                            إرسال تذكير بالدفع
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </CardContent>

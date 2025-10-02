@@ -2,3 +2,6 @@ project_id = "dnvchztawygtkdddsiwn"
 
 [functions.send-shipping-notification]
 verify_jwt = false
+
+[functions.send-payment-reminder]
+verify_jwt = false
