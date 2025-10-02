@@ -336,6 +336,24 @@ const ProductHero = () => {
                   </div>
                 </div>
                 
+                {/* Navigation Arrows */}
+                <button
+                  type="button"
+                  onClick={() => emblaApi?.scrollPrev()}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary rounded-full w-8 h-8 flex items-center justify-center shadow-medium"
+                  aria-label={t('nav.prev')}
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  onClick={() => emblaApi?.scrollNext()}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-primary rounded-full w-8 h-8 flex items-center justify-center shadow-medium"
+                  aria-label={t('nav.next')}
+                >
+                  ›
+                </button>
+                
                 {/* Carousel Dots */}
                 <div className="flex justify-center gap-2 mt-6">
                   {scrollSnaps.map((_, index) => (
@@ -349,6 +367,20 @@ const ProductHero = () => {
                       onClick={() => scrollTo(index)}
                       aria-label={`${t('nav.image.alt')} ${index + 1}`}
                     />
+                  ))}
+                </div>
+                
+                {/* Thumbnails */}
+                <div className="mt-4 flex justify-center gap-2 overflow-x-auto px-2">
+                  {productImages.map((thumb, i) => (
+                    <button
+                      key={`thumb-${i}`}
+                      onClick={() => scrollTo(i)}
+                      className={`rounded-md border ${i === selectedIndex ? 'border-secondary' : 'border-white/30'} bg-white/10 p-1`}
+                      aria-label={`thumbnail ${i + 1}`}
+                    >
+                      <img src={thumb.src} alt={thumb.alt} className="w-12 h-12 object-cover rounded" />
+                    </button>
                   ))}
                 </div>
                 
