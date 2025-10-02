@@ -115,9 +115,10 @@ const ProductHero = () => {
             .select('image_url, alt_text, display_order')
             .eq('product_id', productId)
             .order('display_order');
-            if (imgs && imgs.length) {
-              setProductImages(imgs.map(i => ({ src: i.image_url, alt: i.alt_text || 'Product Image' })));
-            }
+          console.log('[ProductHero] Fetched images:', imgs?.length || 0);
+          if (imgs && imgs.length) {
+            setProductImages(imgs.map(i => ({ src: i.image_url, alt: i.alt_text || 'Product Image' })));
+          }
         }
       } catch {}
     };
@@ -300,21 +301,25 @@ const ProductHero = () => {
               <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
                 <div className="embla overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong" ref={emblaRef}>
                   <div className="embla__container flex">
-                    {productImages.map((image, index) => (
+                    {productImages.length > 0 ? productImages.map((image, index) => (
                       <div key={index} className="embla__slide flex-[0_0_100%] min-w-0">
-                        <div className="aspect-square overflow-hidden rounded-2xl lg:rounded-3xl">
+                        <div className="relative aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5">
                           <OptimizedImage 
                             src={image.src}
                             alt={image.alt}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                            className="absolute inset-0 w-full h-full object-contain p-4"
                             sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                             priority={index === 0}
-                            width={512}
-                            height={512}
                           />
                         </div>
                       </div>
-                    ))}
+                    )) : (
+                      <div className="embla__slide flex-[0_0_100%] min-w-0">
+                        <div className="aspect-square w-full bg-white/10 rounded-2xl lg:rounded-3xl flex items-center justify-center">
+                          <span className="text-white/50">لا توجد صور</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
                 
