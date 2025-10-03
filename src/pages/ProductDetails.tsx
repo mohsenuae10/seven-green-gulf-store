@@ -400,6 +400,164 @@ const ProductDetails = () => {
           </article>
         </section>
 
+        {/* Long Product Description */}
+        <section className="container mx-auto px-4 py-12" aria-labelledby="description-heading">
+          <article className="max-w-4xl mx-auto">
+            <Card className="border-primary/20">
+              <CardHeader>
+                <CardTitle id="description-heading" className="text-2xl text-center text-primary">
+                  {language === 'ar' ? 'عن منتج سفن جرين' : 'About Seven Green Product'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="prose prose-lg max-w-none dark:prose-invert">
+                <div className="space-y-6 text-foreground">
+                  {language === 'ar' ? (
+                    <>
+                      <p className="text-lg leading-relaxed">
+                        <strong className="text-primary">سفن جرين Seven Green</strong> هو منتج طبيعي 100% مبتكر يجمع بين أفضل المكونات الكورية الطبيعية لعلاج مشاكل الشعر المختلفة. تم تطوير هذا المنتج بعناية فائقة باستخدام أحدث التقنيات العلمية والأبحاث الطبية لضمان الحصول على نتائج فعالة وآمنة.
+                      </p>
+                      
+                      <h3 className="text-xl font-bold text-primary mt-6 mb-4">
+                        لماذا سفن جرين؟
+                      </h3>
+                      <p className="leading-relaxed">
+                        يعاني الكثير من الأشخاص من مشاكل تساقط الشعر وضعفه نتيجة العوامل البيئية، الإجهاد، واستخدام المنتجات الكيميائية القاسية. سفن جرين يقدم حلاً طبيعياً وفعالاً يعالج هذه المشاكل من الجذور، حيث يحتوي على مزيج فريد من المكونات الطبيعية التي تعمل بتناغم تام لتغذية فروة الرأس وتقوية بصيلات الشعر.
+                      </p>
+                      
+                      <h3 className="text-xl font-bold text-primary mt-6 mb-4">
+                        القوة الكورية الطبيعية
+                      </h3>
+                      <p className="leading-relaxed">
+                        يحتوي سفن جرين على <strong>زيت الأرغان الكوري</strong> النادر والمعروف بخصائصه المرطبة العميقة والمغذية للشعر. يتم استخلاص هذا الزيت بعناية فائقة من أجود أنواع شجر الأرغان الكوري، مما يضمن الحصول على أعلى تركيز من الفيتامينات والأحماض الدهنية الأساسية التي يحتاجها شعرك.
+                      </p>
+                      
+                      <p className="leading-relaxed">
+                        كما يحتوي على <strong>خلاصة الجينسنغ الكوري</strong> الأصلي، وهو مكون معروف منذ قرون في الطب التقليدي الكوري بقدرته الفائقة على تحفيز نمو الشعر وتنشيط الدورة الدموية في فروة الرأس. هذا المكون الثمين يعمل على إيقاظ بصيلات الشعر الخاملة وتحفيز نمو شعر جديد وصحي.
+                      </p>
+                      
+                      <h3 className="text-xl font-bold text-primary mt-6 mb-4">
+                        تركيبة علمية متطورة
+                      </h3>
+                      <p className="leading-relaxed">
+                        تم تطوير تركيبة سفن جرين في مختبرات متخصصة بالتعاون مع خبراء العناية بالشعر والأطباء المتخصصين. كل مكون تم اختياره بعناية فائقة ليعمل بتناغم مع المكونات الأخرى، مما يخلق تآزراً فريداً يضاعف من فعالية المنتج.
+                      </p>
+                      
+                      <p className="leading-relaxed">
+                        <strong>فيتامين E الطبيعي</strong> يعمل كمضاد أكسدة قوي يحمي الشعر من الجذور الحرة والعوامل البيئية الضارة مثل الأشعة فوق البنفسجية والتلوث. <strong>زيت جوز الهند البكر</strong> يوفر ترطيباً عميقاً ويمنع فقدان البروتين من الشعر، بينما <strong>الكيراتين النباتي</strong> يعيد بناء هيكل الشعر التالف ويقويه من الداخل.
+                      </p>
+                      
+                      <h3 className="text-xl font-bold text-primary mt-6 mb-4">
+                        آمن ومُختبر سريرياً
+                      </h3>
+                      <p className="leading-relaxed">
+                        خضع سفن جرين لاختبارات سريرية صارمة لضمان سلامته وفعاليته. المنتج خالٍ تماماً من المواد الكيميائية القاسية، البارابين، السلفات، والسيليكون. مناسب لجميع أنواع الشعر ويمكن استخدامه يومياً دون أي آثار جانبية.
+                      </p>
+                      
+                      <p className="leading-relaxed">
+                        حصل المنتج على موافقات من هيئات صحية عالمية وشهادات جودة دولية تؤكد جودته وفعاليته. آلاف العملاء حول العالم جربوا سفن جرين ولاحظوا نتائج مذهلة في تحسين صحة ومظهر شعرهم.
+                      </p>
+                      
+                      <div className="bg-primary/10 p-6 rounded-lg mt-6">
+                        <h4 className="font-bold text-primary mb-3 text-lg">
+                          النتائج المتوقعة
+                        </h4>
+                        <ul className="space-y-2 list-none">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>تقليل ملحوظ في تساقط الشعر خلال 2-3 أسابيع</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>زيادة في كثافة الشعر بعد 4-6 أسابيع من الاستخدام المنتظم</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>تحسن ملحوظ في لمعان ونعومة الشعر من الأسبوع الأول</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>فروة رأس صحية ومتوازنة خالية من القشرة والحكة</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-lg leading-relaxed">
+                        <strong className="text-primary">Seven Green</strong> is an innovative 100% natural product that combines the best Korean natural ingredients to treat various hair problems. This product has been carefully developed using the latest scientific techniques and medical research to ensure effective and safe results.
+                      </p>
+                      
+                      <h3 className="text-xl font-bold text-primary mt-6 mb-4">
+                        Why Seven Green?
+                      </h3>
+                      <p className="leading-relaxed">
+                        Many people suffer from hair loss and weakness due to environmental factors, stress, and the use of harsh chemical products. Seven Green offers a natural and effective solution that treats these problems from the roots, containing a unique blend of natural ingredients that work in perfect harmony to nourish the scalp and strengthen hair follicles.
+                      </p>
+                      
+                      <h3 className="text-xl font-bold text-primary mt-6 mb-4">
+                        Korean Natural Power
+                      </h3>
+                      <p className="leading-relaxed">
+                        Seven Green contains rare <strong>Korean Argan Oil</strong> known for its deep moisturizing and nourishing properties for hair. This oil is carefully extracted from the finest Korean argan trees, ensuring the highest concentration of vitamins and essential fatty acids that your hair needs.
+                      </p>
+                      
+                      <p className="leading-relaxed">
+                        It also contains <strong>authentic Korean Ginseng Extract</strong>, an ingredient known for centuries in traditional Korean medicine for its superior ability to stimulate hair growth and activate blood circulation in the scalp. This precious ingredient awakens dormant hair follicles and stimulates new, healthy hair growth.
+                      </p>
+                      
+                      <h3 className="text-xl font-bold text-primary mt-6 mb-4">
+                        Advanced Scientific Formula
+                      </h3>
+                      <p className="leading-relaxed">
+                        Seven Green formula was developed in specialized laboratories in collaboration with hair care experts and specialized doctors. Each ingredient was carefully selected to work in harmony with other ingredients, creating a unique synergy that multiplies the product's effectiveness.
+                      </p>
+                      
+                      <p className="leading-relaxed">
+                        <strong>Natural Vitamin E</strong> acts as a powerful antioxidant protecting hair from free radicals and harmful environmental factors such as UV rays and pollution. <strong>Virgin Coconut Oil</strong> provides deep moisturizing and prevents protein loss from hair, while <strong>Plant Keratin</strong> rebuilds damaged hair structure and strengthens it from within.
+                      </p>
+                      
+                      <h3 className="text-xl font-bold text-primary mt-6 mb-4">
+                        Safe and Clinically Tested
+                      </h3>
+                      <p className="leading-relaxed">
+                        Seven Green has undergone rigorous clinical testing to ensure its safety and effectiveness. The product is completely free from harsh chemicals, parabens, sulfates, and silicones. Suitable for all hair types and can be used daily without any side effects.
+                      </p>
+                      
+                      <p className="leading-relaxed">
+                        The product has received approvals from international health authorities and international quality certificates confirming its quality and effectiveness. Thousands of customers worldwide have tried Seven Green and noticed amazing results in improving the health and appearance of their hair.
+                      </p>
+                      
+                      <div className="bg-primary/10 p-6 rounded-lg mt-6">
+                        <h4 className="font-bold text-primary mb-3 text-lg">
+                          Expected Results
+                        </h4>
+                        <ul className="space-y-2 list-none">
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>Noticeable reduction in hair loss within 2-3 weeks</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>Increase in hair density after 4-6 weeks of regular use</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>Noticeable improvement in hair shine and softness from the first week</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span>Healthy and balanced scalp free from dandruff and itching</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </article>
+        </section>
+
         {/* Certifications */}
         <section className="container mx-auto px-4 py-8" aria-labelledby="certifications-heading">
           <h2 id="certifications-heading" className="sr-only">
