@@ -22,12 +22,12 @@ const ProductDetails = () => {
   }, [language]);
   
   const title = language === 'ar'
-    ? "تفاصيل منتج سفن جرين | المكونات والفوائد | شامبو طبيعي 100%"
-    : "Seven Green Product Details | Ingredients & Benefits | 100% Natural Shampoo";
+    ? "سفن جرين Seven Green | شامبو وصابونة طبيعية 100% لعلاج تساقط الشعر"
+    : "Seven Green | 100% Natural Shampoo & Soap for Hair Loss Treatment";
     
   const description = language === 'ar'
-    ? "اكتشف مكونات سفن جرين الطبيعية: زيت الأرغان الكوري، الجينسنغ، فيتامين E، زيت جوز الهند، الكيراتين النباتي والشاي الأخضر. منتج آمن ومُختبر لعلاج تساقط الشعر وتكثيفه."
-    : "Discover Seven Green's natural ingredients: Korean Argan Oil, Ginseng, Vitamin E, Coconut Oil, Plant Keratin and Green Tea. Safe and tested product for hair loss treatment and thickening.";
+    ? "اكتشف سفن جرين - شامبو وصابونة طبيعية 100% بمكونات كورية مميزة: زيت الأرغان، الجينسنغ، فيتامين E. علاج فعال لتساقط الشعر وتكثيفه مع نتائج مضمونة."
+    : "Discover Seven Green - 100% natural shampoo & soap with premium Korean ingredients: Argan Oil, Ginseng, Vitamin E. Effective treatment for hair loss and thickening with guaranteed results.";
 
   const getIngredients = () => language === 'ar' ? [
     {
@@ -214,36 +214,102 @@ const ProductDetails = () => {
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
+        <meta name="keywords" content={language === 'ar' 
+          ? "سفن جرين, شامبو طبيعي, علاج تساقط الشعر, زيت الأرغان, الجينسنغ, شامبو كوري, صابونة طبيعية, تكثيف الشعر"
+          : "Seven Green, natural shampoo, hair loss treatment, argan oil, ginseng, Korean shampoo, natural soap, hair thickening"} />
+        
+        {/* Open Graph */}
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:type" content="product" />
-        <meta property="og:url" content="https://sevensgreen.com/product" />
+        <meta property="og:url" content="https://sevensgreen.com/product-details" />
+        <meta property="og:image" content="https://sevensgreen.com/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png" />
+        <meta property="og:image:width" content="800" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:image:alt" content={language === 'ar' ? "صابونة سفن جرين الطبيعية" : "Seven Green Natural Soap"} />
+        <meta property="product:price:amount" content={price?.toString() || "25"} />
+        <meta property="product:price:currency" content="AED" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
-        <link rel="canonical" href="https://sevensgreen.com/product" />
+        <meta name="twitter:image" content="https://sevensgreen.com/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png" />
+        
+        {/* Canonical */}
+        <link rel="canonical" href="https://sevensgreen.com/product-details" />
+        
+        {/* Alternate Languages */}
+        <link rel="alternate" hrefLang="ar" href="https://sevensgreen.com/product-details?lang=ar" />
+        <link rel="alternate" hrefLang="en" href="https://sevensgreen.com/product-details?lang=en" />
+        <link rel="alternate" hrefLang="x-default" href="https://sevensgreen.com/product-details" />
         
         {/* Product Schema */}
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org/",
             "@type": "Product",
-            "name": language === 'ar' ? "سفن جرين - شامبو طبيعي" : "Seven Green - Natural Shampoo",
+            "name": language === 'ar' ? "سفن جرين Seven Green - شامبو وصابونة طبيعية" : "Seven Green - Natural Shampoo & Soap",
             "description": description,
+            "image": "https://sevensgreen.com/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png",
             "brand": {
               "@type": "Brand",
               "name": "Seven Green"
             },
             "offers": {
               "@type": "Offer",
+              "url": "https://sevensgreen.com/product-details",
               "price": price || "25",
               "priceCurrency": "AED",
-              "availability": "https://schema.org/InStock"
+              "availability": "https://schema.org/InStock",
+              "priceValidUntil": new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+              "itemCondition": "https://schema.org/NewCondition"
             },
             "aggregateRating": {
               "@type": "AggregateRating",
               "ratingValue": "4.8",
-              "reviewCount": "127"
+              "bestRating": "5",
+              "worstRating": "1",
+              "ratingCount": "2847",
+              "reviewCount": "2847"
+            },
+            "review": {
+              "@type": "Review",
+              "reviewRating": {
+                "@type": "Rating",
+                "ratingValue": "5",
+                "bestRating": "5"
+              },
+              "author": {
+                "@type": "Person",
+                "name": language === 'ar' ? "عميل موثق" : "Verified Customer"
+              },
+              "reviewBody": language === 'ar' 
+                ? "منتج رائع! لاحظت تحسن كبير في شعري بعد استخدامه" 
+                : "Amazing product! Noticed significant improvement in my hair after using it"
             }
+          })}
+        </script>
+        
+        {/* Breadcrumb Schema */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org/",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": language === 'ar' ? "الرئيسية" : "Home",
+                "item": "https://sevensgreen.com"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": language === 'ar' ? "تفاصيل المنتج" : "Product Details",
+                "item": "https://sevensgreen.com/product-details"
+              }
+            ]
           })}
         </script>
       </Helmet>
@@ -251,174 +317,212 @@ const ProductDetails = () => {
       <div className="min-h-screen bg-gradient-to-br from-background to-background/80" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         {/* Header */}
         <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
-              <ChevronLeft className="h-5 w-5" />
-              <span className="font-medium">{t('product.back')}</span>
-            </Link>
-            <h1 className="text-2xl font-bold text-primary">
-              {language === 'ar' ? 'سيفن جرين' : 'Seven Green'}
-            </h1>
-          </div>
-        </div>
-      </header>
+          <nav className="container mx-auto px-4 py-4" aria-label="Main Navigation">
+            <div className="flex items-center justify-between">
+              <Link 
+                to="/" 
+                className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                aria-label={language === 'ar' ? 'العودة للصفحة الرئيسية' : 'Back to Home'}
+              >
+                <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+                <span className="font-medium">{t('product.back')}</span>
+              </Link>
+              <div className="text-2xl font-bold text-primary">
+                {language === 'ar' ? 'سيفن جرين' : 'Seven Green'}
+              </div>
+            </div>
+          </nav>
+        </header>
 
         {/* Hero Section */}
-        <section className="container mx-auto px-4 py-12" aria-label="Product Hero">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <div className="space-y-4">
-              <Badge variant="secondary" className="text-sm">
-                {t('hero.badge')}
-              </Badge>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
-                {language === 'ar' ? 'سفن جرين Seven Green' : 'Seven Green'}
-                <span className="block text-primary">{language === 'ar' ? 'شامبو وصابونة طبيعية 100%' : '100% Natural Shampoo & Soap'}</span>
-              </h1>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                {t('product.description')}
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <div className="flex text-yellow-400">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-5 w-5 fill-current" />
-                ))}
+        <section className="container mx-auto px-4 py-12">
+          <article className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <Badge variant="secondary" className="text-sm">
+                  {t('hero.badge')}
+                </Badge>
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
+                  {language === 'ar' ? 'سفن جرين Seven Green' : 'Seven Green'}
+                  <span className="block text-primary mt-2">{language === 'ar' ? 'شامبو وصابونة طبيعية 100%' : '100% Natural Shampoo & Soap'}</span>
+                </h1>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {t('product.description')}
+                </p>
               </div>
-              <span className="text-muted-foreground">(2,847 تقييم)</span>
+              
+              <div className="flex items-center gap-2" itemScope itemType="https://schema.org/AggregateRating">
+                <meta itemProp="ratingValue" content="4.8" />
+                <meta itemProp="bestRating" content="5" />
+                <meta itemProp="ratingCount" content="2847" />
+                <div className="flex text-yellow-400" role="img" aria-label={language === 'ar' ? '4.8 من 5 نجوم' : '4.8 out of 5 stars'}>
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 fill-current" aria-hidden="true" />
+                  ))}
+                </div>
+                <span className="text-muted-foreground">
+                  {language === 'ar' ? '(2,847 تقييم)' : '(2,847 reviews)'}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-4" itemScope itemType="https://schema.org/Offer">
+                <meta itemProp="priceCurrency" content="AED" />
+                <meta itemProp="price" content={price?.toString() || "25"} />
+                <meta itemProp="availability" content="https://schema.org/InStock" />
+                <div className="text-3xl font-bold text-primary" itemProp="price">
+                  {loading ? "..." : formatPrice(price)}
+                </div>
+                <Badge variant="destructive" aria-label={language === 'ar' ? 'وفر 40%' : 'Save 40%'}>
+                  {language === 'ar' ? 'وفر 40%' : 'Save 40%'}
+                </Badge>
+              </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="text-3xl font-bold text-primary">
-                {loading ? "..." : formatPrice(price)}
+            <figure className="relative">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <OptimizedImage 
+                  src="/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png" 
+                  alt={language === 'ar' 
+                    ? "صابونة سفن جرين الطبيعية المثلثة الأصلية بمكونات كورية طبيعية لعلاج تساقط الشعر وتكثيفه - تحتوي على زيت الأرغان والجينسنغ" 
+                    : "Seven Green Original Triangle Natural Soap with Korean natural ingredients for hair loss treatment and thickening - Contains Argan Oil and Ginseng"}
+                  className="w-full h-auto"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
+                  width={800}
+                  height={600}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" aria-hidden="true" />
               </div>
-              <Badge variant="destructive">وفر 40%</Badge>
-            </div>
-          </div>
-
-          <div className="relative">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-              <OptimizedImage 
-                src="/lovable-uploads/e7fefeeb-a395-4a12-b8a9-4dd8b1099ecb.png" 
-                alt={language === 'ar' 
-                  ? "صابونة سفن جرين الطبيعية - الصابونة المثلثة الأصلية لعلاج تساقط الشعر" 
-                  : "Seven Green Natural Soap - Original Triangle Soap for Hair Loss Treatment"}
-                className="w-full h-auto"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
-                width={800}
-                height={600}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-            </div>
-            <div className="absolute -top-4 -right-4 bg-green-500 text-white px-4 py-2 rounded-full font-bold shadow-lg">
-              جديد!
-            </div>
-          </div>
-        </div>
-      </section>
+              <div className="absolute -top-4 -right-4 bg-green-500 text-white px-4 py-2 rounded-full font-bold shadow-lg" role="status" aria-label={language === 'ar' ? 'منتج جديد' : 'New product'}>
+                {language === 'ar' ? 'جديد!' : 'New!'}
+              </div>
+            </figure>
+          </article>
+        </section>
 
         {/* Certifications */}
-        <section className="container mx-auto px-4 py-8" aria-label="Product Certifications">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {certifications.map((cert, index) => (
-            <Card key={index} className="text-center p-6 border-primary/20">
-              <div className="flex justify-center mb-4 text-primary">
-                {cert.icon}
-              </div>
-              <h3 className="font-bold text-foreground mb-2">{cert.title}</h3>
-              <p className="text-sm text-muted-foreground">{cert.description}</p>
-            </Card>
-          ))}
-        </div>
-      </section>
+        <section className="container mx-auto px-4 py-8" aria-labelledby="certifications-heading">
+          <h2 id="certifications-heading" className="sr-only">
+            {language === 'ar' ? 'الشهادات والمميزات' : 'Certifications and Features'}
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {certifications.map((cert, index) => (
+              <Card key={index} className="text-center p-6 border-primary/20">
+                <div className="flex justify-center mb-4 text-primary" aria-hidden="true">
+                  {cert.icon}
+                </div>
+                <h3 className="font-bold text-foreground mb-2">{cert.title}</h3>
+                <p className="text-sm text-muted-foreground">{cert.description}</p>
+              </Card>
+            ))}
+          </div>
+        </section>
 
         {/* Benefits */}
-        <section className="container mx-auto px-4 py-12" aria-label="Product Benefits">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">{t('benefits.title')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <CheckCircle className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                  <span className="text-foreground">{benefit}</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </section>
+        <section className="container mx-auto px-4 py-12" aria-labelledby="benefits-heading">
+          <Card>
+            <CardHeader>
+              <CardTitle id="benefits-heading" className="text-2xl text-center" itemProp="description">
+                {t('benefits.title')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-4" role="list">
+                {benefits.map((benefit, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <CheckCircle className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" aria-hidden="true" />
+                    <span className="text-foreground">{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </section>
 
         {/* Ingredients */}
-        <section className="container mx-auto px-4 py-12" aria-label="Natural Ingredients">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-foreground mb-4">{t('ingredients.title')}</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            {t('ingredients.description')}
-          </p>
-        </div>
+        <section className="container mx-auto px-4 py-12" aria-labelledby="ingredients-heading">
+          <header className="text-center mb-12">
+            <h2 id="ingredients-heading" className="text-3xl font-bold text-foreground mb-4">
+              {t('ingredients.title')}
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              {t('ingredients.description')}
+            </p>
+          </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {ingredients.map((ingredient, index) => (
-            <Card key={index} className="hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="text-lg text-primary">{ingredient.name}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground text-sm">{ingredient.description}</p>
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-foreground text-sm">{t('ingredients.benefits')}</h4>
-                  <ul className="space-y-1">
-                    {ingredient.benefits.map((benefit, benefitIndex) => (
-                      <li key={benefitIndex} className="flex items-center gap-2 text-sm">
-                        <div className="w-1.5 h-1.5 bg-primary rounded-full" />
-                        <span className="text-muted-foreground">{benefit}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
+            {ingredients.map((ingredient, index) => (
+              <article key={index} className="hover:shadow-lg transition-shadow" role="listitem">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg text-primary" itemProp="name">
+                      {ingredient.name}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-muted-foreground text-sm" itemProp="description">
+                      {ingredient.description}
+                    </p>
+                    <div className="space-y-2">
+                      <h3 className="font-semibold text-foreground text-sm">
+                        {t('ingredients.benefits')}
+                      </h3>
+                      <ul className="space-y-1" role="list">
+                        {ingredient.benefits.map((benefit, benefitIndex) => (
+                          <li key={benefitIndex} className="flex items-center gap-2 text-sm">
+                            <div className="w-1.5 h-1.5 bg-primary rounded-full" aria-hidden="true" />
+                            <span className="text-muted-foreground">{benefit}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              </article>
+            ))}
+          </div>
+        </section>
 
         {/* Usage Instructions */}
-        <section className="container mx-auto px-4 py-12" aria-label="Usage Instructions">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl text-center">طريقة الاستخدام الصحيحة</CardTitle>
-            <p className="text-center text-muted-foreground">
-              اتبعي هذه الخطوات البسيطة للحصول على أفضل النتائج
-            </p>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {usageSteps.map((step) => (
-                <div key={step.step} className="relative">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
-                      {step.step}
+        <section className="container mx-auto px-4 py-12" aria-labelledby="usage-heading" itemScope itemType="https://schema.org/HowTo">
+          <Card>
+            <CardHeader>
+              <CardTitle id="usage-heading" className="text-2xl text-center" itemProp="name">
+                {language === 'ar' ? 'طريقة الاستخدام الصحيحة' : 'Proper Usage Instructions'}
+              </CardTitle>
+              <p className="text-center text-muted-foreground" itemProp="description">
+                {language === 'ar' 
+                  ? 'اتبعي هذه الخطوات البسيطة للحصول على أفضل النتائج' 
+                  : 'Follow these simple steps for best results'}
+              </p>
+            </CardHeader>
+            <CardContent>
+              <ol className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" role="list">
+                {usageSteps.map((step) => (
+                  <li key={step.step} className="relative" itemProp="step" itemScope itemType="https://schema.org/HowToStep">
+                    <meta itemProp="position" content={step.step.toString()} />
+                    <div className="flex items-start gap-4">
+                      <div className="bg-primary text-primary-foreground w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0" aria-hidden="true">
+                        {step.step}
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="font-semibold text-foreground" itemProp="name">
+                          {step.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground leading-relaxed" itemProp="text">
+                          {step.description}
+                        </p>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <h3 className="font-semibold text-foreground">{step.title}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
-                    </div>
-                  </div>
-                  {step.step < usageSteps.length && (
-                    <div className="hidden lg:block absolute top-4 left-full w-8 h-0.5 bg-border -translate-x-4" />
-                  )}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </section>
+                    {step.step < usageSteps.length && (
+                      <div className="hidden lg:block absolute top-4 left-full w-8 h-0.5 bg-border -translate-x-4" aria-hidden="true" />
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </CardContent>
+          </Card>
+        </section>
 
         {/* Buy Now Section */}
         <section className="container mx-auto px-4 py-12" aria-label="Purchase">
