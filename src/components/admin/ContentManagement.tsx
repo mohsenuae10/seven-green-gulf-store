@@ -19,6 +19,7 @@ interface SiteContent {
 
 const ContentManagement = () => {
   const [contents, setContents] = useState<SiteContent[]>([]);
+  const [editedContents, setEditedContents] = useState<SiteContent[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
   const { toast } = useToast();
@@ -36,6 +37,7 @@ const ContentManagement = () => {
 
       if (error) throw error;
       setContents(data || []);
+      setEditedContents(data || []);
     } catch (error) {
       console.error('Error fetching contents:', error);
       toast({
@@ -48,29 +50,38 @@ const ContentManagement = () => {
     }
   };
 
-  const updateContent = async (sectionId: string, field: string, value: any) => {
+  const updateLocalContent = (sectionId: string, field: string, value: any) => {
+    setEditedContents(prev => prev.map(c => {
+      if (c.id === sectionId) {
+        if (field === 'content') {
+          return { ...c, content: value };
+        } else {
+          return { ...c, [field]: value };
+        }
+      }
+      return c;
+    }));
+  };
+
+  const saveContent = async (sectionId: string) => {
     setSaving(sectionId);
     try {
-      const content = contents.find(c => c.id === sectionId);
+      const content = editedContents.find(c => c.id === sectionId);
       if (!content) return;
-
-      let updateData: any = {};
-      
-      if (field === 'content') {
-        updateData.content = value;
-      } else {
-        updateData[field] = value;
-      }
 
       const { error } = await supabase
         .from('site_content')
-        .update(updateData)
+        .update({
+          title: content.title,
+          description: content.description,
+          content: content.content
+        })
         .eq('id', sectionId);
 
       if (error) throw error;
 
       setContents(prev => prev.map(c => 
-        c.id === sectionId ? { ...c, ...updateData } : c
+        c.id === sectionId ? content : c
       ));
 
       toast({
@@ -89,8 +100,8 @@ const ContentManagement = () => {
     }
   };
 
-  const updateNestedContent = async (sectionId: string, path: string, value: any) => {
-    const content = contents.find(c => c.id === sectionId);
+  const updateNestedContent = (sectionId: string, path: string, value: any) => {
+    const content = editedContents.find(c => c.id === sectionId);
     if (!content) return;
 
     const updatedContent = { ...content.content };
@@ -103,11 +114,11 @@ const ContentManagement = () => {
     }
     
     current[keys[keys.length - 1]] = value;
-    await updateContent(sectionId, 'content', updatedContent);
+    updateLocalContent(sectionId, 'content', updatedContent);
   };
 
-  const updateArrayContent = async (sectionId: string, arrayPath: string, index: number, value: string) => {
-    const content = contents.find(c => c.id === sectionId);
+  const updateArrayContent = (sectionId: string, arrayPath: string, index: number, value: string) => {
+    const content = editedContents.find(c => c.id === sectionId);
     if (!content) return;
 
     const updatedContent = { ...content.content };
@@ -115,11 +126,11 @@ const ContentManagement = () => {
     array[index] = value;
     updatedContent[arrayPath] = array;
     
-    await updateContent(sectionId, 'content', updatedContent);
+    updateLocalContent(sectionId, 'content', updatedContent);
   };
 
-  const addArrayItem = async (sectionId: string, arrayPath: string) => {
-    const content = contents.find(c => c.id === sectionId);
+  const addArrayItem = (sectionId: string, arrayPath: string) => {
+    const content = editedContents.find(c => c.id === sectionId);
     if (!content) return;
 
     const updatedContent = { ...content.content };
@@ -127,11 +138,11 @@ const ContentManagement = () => {
     array.push('عنصر جديد');
     updatedContent[arrayPath] = array;
     
-    await updateContent(sectionId, 'content', updatedContent);
+    updateLocalContent(sectionId, 'content', updatedContent);
   };
 
-  const removeArrayItem = async (sectionId: string, arrayPath: string, index: number) => {
-    const content = contents.find(c => c.id === sectionId);
+  const removeArrayItem = (sectionId: string, arrayPath: string, index: number) => {
+    const content = editedContents.find(c => c.id === sectionId);
     if (!content) return;
 
     const updatedContent = { ...content.content };
@@ -139,7 +150,7 @@ const ContentManagement = () => {
     array.splice(index, 1);
     updatedContent[arrayPath] = array;
     
-    await updateContent(sectionId, 'content', updatedContent);
+    updateLocalContent(sectionId, 'content', updatedContent);
   };
 
   if (loading) {
@@ -166,7 +177,7 @@ const ContentManagement = () => {
           <TabsTrigger value="seo">تحسين SEO</TabsTrigger>
         </TabsList>
 
-        {contents.map((content) => (
+        {editedContents.map((content) => (
           <TabsContent key={content.id} value={content.section}>
             <Card>
               <CardHeader>
@@ -242,7 +253,7 @@ const ContentManagement = () => {
                       <Input
                         id={`title-${content.id}`}
                         value={content.title}
-                        onChange={(e) => updateContent(content.id, 'title', e.target.value)}
+                        onChange={(e) => updateLocalContent(content.id, 'title', e.target.value)}
                         className="mt-1"
                       />
                     </div>
@@ -251,7 +262,7 @@ const ContentManagement = () => {
                       <Input
                         id={`description-${content.id}`}
                         value={content.description}
-                        onChange={(e) => updateContent(content.id, 'description', e.target.value)}
+                        onChange={(e) => updateLocalContent(content.id, 'description', e.target.value)}
                         className="mt-1"
                       />
                     </div>
@@ -401,12 +412,7 @@ const ContentManagement = () => {
                 {/* Save Button */}
                 <div className="flex justify-center pt-6 mt-6 border-t border-border">
                   <Button
-                    onClick={() => {
-                      toast({
-                        title: '✅ تم الحفظ بنجاح',
-                        description: 'تم حفظ جميع التغييرات والتحسينات',
-                      });
-                    }}
+                    onClick={() => saveContent(content.id)}
                     disabled={saving === content.id}
                     className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-3"
                     size="lg"
