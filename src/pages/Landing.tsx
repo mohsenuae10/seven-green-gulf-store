@@ -21,6 +21,10 @@ import {
   ArrowRight,
   X
 } from 'lucide-react';
+import landingDetail1 from '@/assets/landing-detail-1.jpg';
+import landingDetail2 from '@/assets/landing-detail-2.jpg';
+import landingDetail3 from '@/assets/landing-detail-3.jpg';
+import landingDetail4 from '@/assets/landing-detail-4.jpg';
 
 const Landing = () => {
   const { language, t } = useLanguage();
@@ -392,6 +396,26 @@ const Landing = () => {
                 <CheckCircle className="w-4 h-4 text-primary" />
                 <span>{language === 'ar' ? 'دفع آمن ومضمون' : 'Secure & Guaranteed Payment'}</span>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Product Details Gallery */}
+        <section className="py-0 px-0 bg-background">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-col gap-0">
+              {[landingDetail1, landingDetail2, landingDetail3, landingDetail4].map((image, idx) => (
+                <div key={idx} className="w-full">
+                  <img 
+                    src={image} 
+                    alt={language === 'ar' 
+                      ? `تفاصيل منتج سفن جرين ${idx + 1}` 
+                      : `Seven Green product details ${idx + 1}`}
+                    className="w-full h-auto"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </section>
