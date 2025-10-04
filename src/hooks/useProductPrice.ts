@@ -6,8 +6,8 @@ interface UseProductPriceOptions {
 }
 
 export function useProductPrice(options: UseProductPriceOptions = {}) {
-  const { fallback = 299 } = options;
-  const [price, setPrice] = useState<number>(fallback);
+  const { fallback } = options;
+  const [price, setPrice] = useState<number | null>(fallback || null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,5 +71,5 @@ export function useProductPrice(options: UseProductPriceOptions = {}) {
     };
   }, []);
 
-  return { price, loading, error, refresh: fetchLatestPrice };
+  return { price: price || 0, loading, error, refresh: fetchLatestPrice };
 }

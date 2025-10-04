@@ -14,7 +14,7 @@ import OptimizedImage from "@/components/OptimizedImage";
 import sevenGreenLogo from "@/assets/seven-green-logo.png";
 
 const ProductHero = () => {
-  const { price: productPrice, loading: priceLoading } = useProductPrice({ fallback: 299 });
+  const { price: productPrice, loading: priceLoading } = useProductPrice();
   const { formatPrice, selectedCurrency } = useCurrency();
   const { language, t } = useLanguage();
   console.log('[ProductHero] currency:', selectedCurrency, 'price:', formatPrice(productPrice));

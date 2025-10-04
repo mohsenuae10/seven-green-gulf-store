@@ -15,7 +15,7 @@ const OrderSection = () => {
   const { language, t } = useLanguage();
   const { formatPrice } = useCurrency();
   const [quantity, setQuantity] = useState(1);
-  const { price } = useProductPrice({ fallback: 299 });
+  const { price } = useProductPrice();
   const shipping = 0; // Free shipping
   const total = price * quantity + shipping;
 

@@ -103,7 +103,7 @@ const Order = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { price: productPrice } = useProductPrice({ fallback: 299 });
+  const { price: productPrice } = useProductPrice();
   const { formatPrice } = useCurrency();
   const { toast } = useToast();
   const navigate = useNavigate();
