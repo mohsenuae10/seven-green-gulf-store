@@ -142,54 +142,80 @@ const Landing = () => {
               </p>
             </div>
 
-            {/* Product Section */}
-            <div className="mb-12">
-              <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-8">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl md:text-5xl font-bold text-primary" itemProp="offers" itemScope itemType="https://schema.org/Offer">
-                    <span itemProp="price">{formatPrice(price)}</span>
-                  </span>
-                  <span className="text-2xl text-muted-foreground line-through">
-                    {formatPrice(originalPrice)}
-                  </span>
-                </div>
-                <Badge variant="destructive" className="text-sm px-3 py-1">
-                  {language === 'ar' ? 'وفّر 50%' : 'Save 50%'}
-                </Badge>
-              </div>
+            {/* Product Card */}
+            <Card className="max-w-3xl mx-auto overflow-hidden border-2 border-primary/20 shadow-2xl bg-gradient-to-br from-background via-background to-primary/5">
+              <CardContent className="p-0">
+                <div className="grid md:grid-cols-2 gap-0">
+                  {/* Product Image */}
+                  <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-background p-8 flex items-center justify-center">
+                    <div className="absolute top-4 right-4 z-10">
+                      <Badge className="bg-gradient-to-r from-destructive to-destructive/80 text-white px-3 py-1.5 text-sm font-bold shadow-lg">
+                        -50%
+                      </Badge>
+                    </div>
+                    <img 
+                      src="/lovable-uploads/seven-green-product-email.png" 
+                      alt={language === 'ar' ? 'منتج سفن جرين' : 'Seven Green product'}
+                      className="w-full h-auto transform hover:scale-105 transition-transform duration-500"
+                      itemProp="image"
+                    />
+                  </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                <Button 
-                  size="lg" 
-                  className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all"
-                  onClick={handleOrderNow}
-                >
-                  {language === 'ar' ? 'اطلب الآن' : 'Order Now'}
-                  <ArrowRight className={language === 'ar' ? 'ml-2' : 'mr-2'} />
-                </Button>
-              </div>
+                  {/* Price & Details */}
+                  <div className="p-8 flex flex-col justify-center">
+                    <div className="mb-6">
+                      <div className="text-center mb-4">
+                        <span className="text-5xl font-bold text-primary block" itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                          <span itemProp="price">{formatPrice(price)}</span>
+                        </span>
+                        <span className="text-2xl text-muted-foreground line-through block mt-2">
+                          {formatPrice(originalPrice)}
+                        </span>
+                      </div>
+                      <div className="text-center">
+                        <Badge variant="outline" className="border-primary/50 text-primary px-4 py-1">
+                          {language === 'ar' ? 'وفّر ' + formatPrice(originalPrice - price) : 'Save ' + formatPrice(originalPrice - price)}
+                        </Badge>
+                      </div>
+                    </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground mb-12">
-                <div className="flex items-center gap-2">
-                  <Shield className="w-4 h-4 text-primary" />
-                  <span>{language === 'ar' ? 'دفع آمن 100%' : '100% Secure Payment'}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-primary" />
-                  <span>{language === 'ar' ? 'توصيل 2-4 أيام' : '2-4 Days Delivery'}</span>
-                </div>
-              </div>
-            </div>
+                    <div className="space-y-3 mb-6">
+                      {[
+                        { ar: 'منتج طبيعي 100%', en: '100% Natural Product' },
+                        { ar: 'معتمد طبياً', en: 'Medically Approved' },
+                        { ar: 'نتائج ملحوظة', en: 'Noticeable Results' },
+                        { ar: 'ضمان استرجاع المال', en: 'Money-Back Guarantee' }
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex items-center gap-2 text-sm">
+                          <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                          <span>{language === 'ar' ? item.ar : item.en}</span>
+                        </div>
+                      ))}
+                    </div>
 
-            {/* Product Image */}
-            <div className="relative max-w-2xl mx-auto">
-              <img 
-                src="/lovable-uploads/seven-green-product-email.png" 
-                alt={language === 'ar' ? 'منتج سفن جرين لإنبات الشعر' : 'Seven Green hair growth product'}
-                className="w-full h-auto rounded-2xl shadow-2xl"
-                itemProp="image"
-              />
-            </div>
+                    <Button 
+                      size="lg" 
+                      className="w-full text-lg py-6 shadow-lg hover:shadow-xl transition-all mb-4"
+                      onClick={handleOrderNow}
+                    >
+                      {language === 'ar' ? 'اطلب الآن' : 'Order Now'}
+                      <ArrowRight className={language === 'ar' ? 'ml-2' : 'mr-2'} />
+                    </Button>
+
+                    <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Shield className="w-4 h-4 text-primary" />
+                        <span>{language === 'ar' ? 'دفع آمن' : 'Secure'}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock className="w-4 h-4 text-primary" />
+                        <span>{language === 'ar' ? 'توصيل سريع' : 'Fast Delivery'}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Trust Indicators */}
             <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm">
