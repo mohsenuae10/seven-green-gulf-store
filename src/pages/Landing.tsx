@@ -241,26 +241,6 @@ const Landing = () => {
           </div>
         </section>
 
-        {/* Product Details Gallery */}
-        <section className="py-0 px-0 bg-background">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex flex-col gap-0">
-              {[landingDetail1, landingDetail2, landingDetail3, landingDetail4].map((image, idx) => (
-                <div key={idx} className="w-full">
-                  <img 
-                    src={image} 
-                    alt={language === 'ar' 
-                      ? `تفاصيل منتج سفن جرين ${idx + 1}` 
-                      : `Seven Green product details ${idx + 1}`}
-                    className="w-full h-auto"
-                    loading="lazy"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
         {/* Problem Section */}
         <section className="py-16 px-4 bg-muted/30">
           <div className="container mx-auto max-w-4xl text-center">
@@ -366,6 +346,26 @@ const Landing = () => {
                     </p>
                   </CardContent>
                 </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Product Details Gallery */}
+        <section className="py-0 px-0 bg-background">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-col gap-0">
+              {[landingDetail1, landingDetail2, landingDetail3, landingDetail4].map((image, idx) => (
+                <div key={idx} className="w-full">
+                  <img 
+                    src={image} 
+                    alt={language === 'ar' 
+                      ? `تفاصيل منتج سفن جرين ${idx + 1}` 
+                      : `Seven Green product details ${idx + 1}`}
+                    className="w-full h-auto"
+                    loading="lazy"
+                  />
+                </div>
               ))}
             </div>
           </div>
