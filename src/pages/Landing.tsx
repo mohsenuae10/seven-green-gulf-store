@@ -426,6 +426,20 @@ const Landing = () => {
             <p>© 2025 Seven Green. {language === 'ar' ? 'جميع الحقوق محفوظة' : 'All rights reserved'}</p>
           </div>
         </footer>
+
+        {/* Fixed Bottom CTA Button */}
+        <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-gradient-to-t from-background via-background to-transparent pointer-events-none">
+          <div className="container mx-auto max-w-4xl pointer-events-auto">
+            <Button 
+              size="lg" 
+              className="w-full text-lg py-6 shadow-2xl hover:shadow-3xl transition-all bg-primary hover:bg-primary/90"
+              onClick={handleOrderNow}
+            >
+              {language === 'ar' ? 'اطلب الآن' : 'Order Now'}
+              <ArrowRight className={language === 'ar' ? 'ml-2' : 'mr-2'} />
+            </Button>
+          </div>
+        </div>
       </div>
     </>
   );
