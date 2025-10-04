@@ -83,22 +83,72 @@ const Landing = () => {
             "description": language === 'ar' 
               ? "منتج طبيعي لإنبات الشعر وتكثيفه"
               : "Natural hair growth and density product",
-            "image": "/lovable-uploads/seven-green-product-email.png",
+            "image": "https://yourdomain.com/lovable-uploads/seven-green-product-email.png",
             "brand": {
               "@type": "Brand",
               "name": "Seven Green"
             },
             "offers": {
               "@type": "Offer",
-              "price": price,
+              "url": "https://yourdomain.com/landing",
+              "price": String(price),
               "priceCurrency": "SAR",
               "availability": "https://schema.org/InStock",
-              "priceValidUntil": "2025-12-31"
+              "priceValidUntil": "2025-12-31",
+              "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": {
+                  "@type": "MonetaryAmount",
+                  "value": "0",
+                  "currency": "SAR"
+                },
+                "shippingDestination": {
+                  "@type": "DefinedRegion",
+                  "addressCountry": "SA"
+                },
+                "deliveryTime": {
+                  "@type": "ShippingDeliveryTime",
+                  "businessDays": {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": [
+                      "https://schema.org/Monday",
+                      "https://schema.org/Tuesday",
+                      "https://schema.org/Wednesday",
+                      "https://schema.org/Thursday",
+                      "https://schema.org/Friday",
+                      "https://schema.org/Saturday",
+                      "https://schema.org/Sunday"
+                    ]
+                  },
+                  "cutoffTime": "23:59:59",
+                  "handlingTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 0,
+                    "maxValue": 1,
+                    "unitCode": "DAY"
+                  },
+                  "transitTime": {
+                    "@type": "QuantitativeValue",
+                    "minValue": 2,
+                    "maxValue": 5,
+                    "unitCode": "DAY"
+                  }
+                }
+              },
+              "hasMerchantReturnPolicy": {
+                "@type": "MerchantReturnPolicy",
+                "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                "merchantReturnDays": 30,
+                "returnMethod": "https://schema.org/ReturnByMail",
+                "returnFees": "https://schema.org/FreeReturn"
+              }
             },
             "aggregateRating": {
               "@type": "AggregateRating",
               "ratingValue": "4.9",
-              "reviewCount": "2847"
+              "reviewCount": "2847",
+              "bestRating": "5",
+              "worstRating": "1"
             }
           })}
         </script>
