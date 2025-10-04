@@ -217,9 +217,17 @@ const Landing = () => {
                       <div className="text-center mb-4" itemProp="offers" itemScope itemType="https://schema.org/Offer">
                         <meta itemProp="price" content={String(price)} />
                         <meta itemProp="priceCurrency" content="SAR" />
-                        <meta itemProp="availability" content="https://schema.org/InStock" />
+                        <link itemProp="availability" href="https://schema.org/InStock" />
                         <meta itemProp="priceValidUntil" content="2025-12-31" />
-                        <meta itemProp="url" content="https://yourdomain.com/landing" />
+                        <link itemProp="url" href="https://yourdomain.com/landing" />
+                        <div itemProp="shippingDetails" itemScope itemType="https://schema.org/OfferShippingDetails">
+                          <meta itemProp="shippingRate" content="0" />
+                          <meta itemProp="shippingDestination" content="SA" />
+                        </div>
+                        <div itemProp="hasMerchantReturnPolicy" itemScope itemType="https://schema.org/MerchantReturnPolicy">
+                          <link itemProp="returnPolicyCategory" href="https://schema.org/MerchantReturnFiniteReturnWindow" />
+                          <meta itemProp="merchantReturnDays" content="30" />
+                        </div>
                         <span className="text-5xl font-bold text-primary block">
                           {formatPrice(price)}
                         </span>
