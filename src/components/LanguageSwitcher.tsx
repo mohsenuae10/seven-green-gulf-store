@@ -5,15 +5,15 @@ const LanguageSwitcher = () => {
   const { language, setLanguage, t } = useLanguage();
 
   return (
-    <div className="flex items-center gap-1 bg-white/10 backdrop-blur-sm rounded-full p-1 border border-white/20">
+    <div className="flex items-center gap-1 bg-primary/10 backdrop-blur-sm rounded-full p-1 border border-primary/30">
       <Button
         size="sm"
         variant={language === 'ar' ? 'default' : 'ghost'}
         onClick={() => setLanguage('ar')}
         className={`rounded-full px-3 py-1 text-xs transition-all ${
           language === 'ar' 
-            ? 'bg-white text-primary shadow-sm' 
-            : 'text-white hover:bg-white/10'
+            ? 'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90' 
+            : 'text-foreground/70 hover:bg-primary/20 hover:text-foreground'
         }`}
       >
         ع
@@ -24,8 +24,8 @@ const LanguageSwitcher = () => {
         onClick={() => setLanguage('en')}
         className={`rounded-full px-3 py-1 text-xs transition-all ${
           language === 'en' 
-            ? 'bg-white text-primary shadow-sm' 
-            : 'text-white hover:bg-white/10'
+            ? 'bg-primary text-primary-foreground shadow-sm hover:bg-primary/90' 
+            : 'text-foreground/70 hover:bg-primary/20 hover:text-foreground'
         }`}
       >
         EN

@@ -19,7 +19,7 @@ const CurrencySwitcher = ({ className = "", variant = "header" }: CurrencySwitch
           value={selectedCurrency}
           onValueChange={(value: Currency) => changeCurrency(value)}
         >
-          <SelectTrigger className="w-[120px] bg-white/10 border-white/20 text-white hover:bg-white/20 transition-all duration-300">
+          <SelectTrigger className="w-[120px] bg-primary/10 border-primary/30 text-foreground hover:bg-primary/20 transition-all duration-300 backdrop-blur-sm">
             <SelectValue>
               <div className="flex items-center gap-2">
                 <span>{currentCurrency.flag}</span>
@@ -27,12 +27,12 @@ const CurrencySwitcher = ({ className = "", variant = "header" }: CurrencySwitch
               </div>
             </SelectValue>
           </SelectTrigger>
-          <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg z-50">
+          <SelectContent className="bg-background border border-border shadow-lg z-50">
             {currencies.map((currency) => (
               <SelectItem 
                 key={currency.code} 
                 value={currency.code}
-                className="hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="hover:bg-muted"
               >
                 <div className="flex items-center gap-2">
                   <span>{currency.flag}</span>
