@@ -214,9 +214,14 @@ const Landing = () => {
                   {/* Price & Details */}
                   <div className="p-8 flex flex-col justify-center">
                     <div className="mb-6">
-                      <div className="text-center mb-4">
-                        <span className="text-5xl font-bold text-primary block" itemProp="offers" itemScope itemType="https://schema.org/Offer">
-                          <span itemProp="price">{formatPrice(price)}</span>
+                      <div className="text-center mb-4" itemProp="offers" itemScope itemType="https://schema.org/Offer">
+                        <meta itemProp="price" content={String(price)} />
+                        <meta itemProp="priceCurrency" content="SAR" />
+                        <meta itemProp="availability" content="https://schema.org/InStock" />
+                        <meta itemProp="priceValidUntil" content="2025-12-31" />
+                        <meta itemProp="url" content="https://yourdomain.com/landing" />
+                        <span className="text-5xl font-bold text-primary block">
+                          {formatPrice(price)}
                         </span>
                         <span className="text-2xl text-muted-foreground line-through block mt-2">
                           {formatPrice(originalPrice)}
