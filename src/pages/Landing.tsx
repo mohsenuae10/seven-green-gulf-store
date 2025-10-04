@@ -107,7 +107,7 @@ const Landing = () => {
       <div className={`min-h-screen bg-gradient-to-b from-primary/5 via-background to-background ${language === 'ar' ? 'rtl' : 'ltr'}`}>
         
         {/* Header */}
-        <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b">
+        <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b shadow-sm">
           <div className="container mx-auto px-4 py-3 flex items-center justify-between">
             <img 
               src="/lovable-uploads/seven-green-icon.png" 
