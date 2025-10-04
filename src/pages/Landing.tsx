@@ -157,7 +157,7 @@ const Landing = () => {
                   className="text-lg px-8 py-6 shadow-lg hover:shadow-xl transition-all"
                   onClick={handleOrderNow}
                 >
-                  {language === 'ar' ? 'اطلب الآن - شحن مجاني' : 'Order Now - Free Shipping'}
+                  {language === 'ar' ? 'اطلب الآن' : 'Order Now'}
                   <ArrowRight className="mr-2" />
                 </Button>
               </div>
@@ -166,10 +166,6 @@ const Landing = () => {
                 <div className="flex items-center gap-2">
                   <Shield className="w-4 h-4 text-primary" />
                   <span>{language === 'ar' ? 'دفع آمن 100%' : '100% Secure Payment'}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Truck className="w-4 h-4 text-primary" />
-                  <span>{language === 'ar' ? 'شحن مجاني' : 'Free Shipping'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-primary" />
@@ -383,7 +379,7 @@ const Landing = () => {
               className="text-xl px-12 py-8 shadow-xl hover:shadow-2xl transition-all mb-6"
               onClick={handleOrderNow}
             >
-              {language === 'ar' ? 'اطلب الآن واحصل على شحن مجاني' : 'Order Now & Get Free Shipping'}
+              {language === 'ar' ? 'اطلب الآن' : 'Order Now'}
               <ArrowRight className="mr-2" />
             </Button>
 
@@ -394,11 +390,7 @@ const Landing = () => {
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-primary" />
-                <span>{language === 'ar' ? 'شحن مجاني لجميع الطلبات' : 'Free Shipping on All Orders'}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-primary" />
-                <span>{language === 'ar' ? 'دفع عند الاستلام متاح' : 'Cash on Delivery Available'}</span>
+                <span>{language === 'ar' ? 'دفع آمن ومضمون' : 'Secure & Guaranteed Payment'}</span>
               </div>
             </div>
           </div>
