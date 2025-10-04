@@ -131,14 +131,14 @@ const Landing = () => {
               
               <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-primary bg-clip-text text-transparent leading-tight" itemProp="name">
                 {language === 'ar' 
-                  ? 'احصل على شعر كثيف وصحي خلال 30 يوماً فقط!' 
-                  : 'Get Thick, Healthy Hair in Just 30 Days!'}
+                  ? 'سفن جرين - شعر كثيف وصحي وقوي' 
+                  : 'Seven Green - Thick, Healthy & Strong Hair'}
               </h1>
               
               <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto" itemProp="description">
                 {language === 'ar'
-                  ? 'الحل الطبيعي الوحيد المعتمد طبياً لإنبات الشعر ومنع التساقط - نتائج مضمونة أو استرجاع كامل للمبلغ'
-                  : 'The Only Medically Approved Natural Solution for Hair Growth & Loss Prevention - Results Guaranteed or Full Refund'}
+                  ? 'الحل الطبيعي المعتمد طبياً للعناية بالشعر - نتائج مضمونة أو استرجاع كامل للمبلغ'
+                  : 'The Medically Approved Natural Hair Care Solution - Results Guaranteed or Full Refund'}
               </p>
             </div>
 
@@ -190,7 +190,7 @@ const Landing = () => {
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
-                        <span>{language === 'ar' ? 'نتائج خلال 30 يوم' : 'Results in 30 Days'}</span>
+                        <span>{language === 'ar' ? 'نتائج ملحوظة' : 'Noticeable Results'}</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm">
                         <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
