@@ -87,21 +87,21 @@ const ProductHero = () => {
         <div className="mobile-container">
           <div className="flex items-center justify-between py-4 px-4 sm:px-0">
             {/* Logo Section */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 sm:gap-6">
               <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-secondary opacity-40 blur-2xl rounded-full group-hover:opacity-60 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-secondary opacity-50 blur-3xl rounded-full group-hover:opacity-80 transition-opacity duration-300 scale-125"></div>
                 <img 
                   src={sevenGreenLogo} 
                   alt="Seven Green Logo - سفن جرين" 
-                  className="relative w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain filter drop-shadow-[0_0_20px_rgba(139,195,74,0.6)] transition-transform hover:scale-110 duration-300 animate-fade-in"
+                  className="relative w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 object-contain filter drop-shadow-[0_0_30px_rgba(139,195,74,0.8)] transition-transform hover:scale-110 duration-300 animate-fade-in"
                   loading="eager"
                 />
               </div>
               <div className="text-left">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-wider font-english drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-wider font-english drop-shadow-[0_6px_12px_rgba(0,0,0,0.4)]">
                   SEVEN GREEN
                 </h1>
-                <p className="text-sm sm:text-base text-secondary font-bold drop-shadow-lg">سفن جرين</p>
+                <p className="text-lg sm:text-xl lg:text-2xl text-secondary font-bold drop-shadow-[0_4px_8px_rgba(139,195,74,0.6)]">سفن جرين</p>
               </div>
             </div>
 
