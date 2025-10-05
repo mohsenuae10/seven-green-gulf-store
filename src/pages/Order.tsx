@@ -175,7 +175,7 @@ const Order = () => {
           address: formData.address,
           quantity: formData.quantity,
           totalAmount,
-          currency: 'AED',
+          currency: 'SAR',
         }),
       });
 
