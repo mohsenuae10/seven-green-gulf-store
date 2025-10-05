@@ -337,34 +337,67 @@ const ProductHero = () => {
                   </div>
                   <span>{t('hero.swipe')}</span>
                 </div>
+                
+                {/* عرض السعر البارز - أسفل الصورة مباشرة */}
+                <Card className="mt-6 bg-gradient-to-br from-primary/10 via-white to-secondary/10 border-2 border-primary/30 shadow-[0_10px_40px_rgba(139,195,74,0.3)] overflow-hidden">
+                  <CardContent className="p-4 lg:p-6">
+                    {priceLoading ? (
+                      <Skeleton className="w-full h-24" />
+                    ) : (
+                      <div className="space-y-3">
+                        {/* العنوان */}
+                        <div className="flex items-center justify-center gap-2 text-primary">
+                          <span className="text-lg lg:text-xl font-bold">💰 {t('hero.special.price')}</span>
+                        </div>
+                        
+                        {/* السعر */}
+                        <div className="flex items-center justify-center gap-3 lg:gap-4">
+                          {/* السعر القديم */}
+                          <div className="text-muted-foreground">
+                            <div className="text-xs lg:text-sm">{t('hero.was')}</div>
+                            <div className="text-lg lg:text-xl line-through font-semibold">{formatPrice(115)}</div>
+                          </div>
+                          
+                          {/* السهم */}
+                          <div className="text-2xl lg:text-3xl text-primary animate-pulse">→</div>
+                          
+                          {/* السعر الجديد */}
+                          <div className="relative">
+                            <div className="text-xs lg:text-sm text-primary font-semibold">{t('hero.now')}</div>
+                            <div className="text-3xl lg:text-4xl font-extrabold bg-gradient-primary bg-clip-text text-transparent">
+                              {formatPrice(productPrice)}
+                            </div>
+                            
+                            {/* نسبة التوفير في دائرة */}
+                            <div className="absolute -top-2 -right-2 bg-gradient-to-br from-red-500 to-pink-600 text-white rounded-full w-12 h-12 lg:w-14 lg:h-14 flex items-center justify-center text-xs lg:text-sm font-bold shadow-lg animate-pulse">
+                              -{Math.round(((115 - productPrice) / 115) * 100)}%
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* عرض محدود */}
+                        <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-500/20 via-pink-500/20 to-red-500/20 rounded-full px-4 py-2 border border-red-500/30">
+                          <span className="text-xl animate-pulse">⏳</span>
+                          <span className="text-sm lg:text-base font-semibold text-red-700">{t('hero.limited.offer')}</span>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
               </div>
               
-              {/* Floating elements */}
-               {/* خصم/توفير */}
-               <div className="absolute -top-4 lg:-top-6 -left-4 lg:-left-6 bg-red-500 text-white rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center font-bold text-xs lg:text-sm shadow-medium animate-bounce-in z-30">
+              {/* Floating Badges - Improved Design */}
+               {/* علامة "وفر" - تصميم محسن */}
+               <div className="absolute -top-3 lg:-top-4 -left-3 lg:-left-4 bg-gradient-to-br from-red-500 via-red-600 to-pink-600 text-white rounded-full w-20 h-20 lg:w-24 lg:h-24 flex items-center justify-center font-bold text-sm lg:text-base shadow-[0_8px_30px_rgb(239,68,68,0.5)] animate-bounce-in z-30 border-4 border-white/30 hover:scale-110 transition-transform duration-300">
                  <div className="text-center">
-                   <div>وفر</div>
-                   <div>{Math.round(((115 - productPrice) / 115) * 100)}%</div>
+                   <div className="text-xs lg:text-sm">🔥 وفر</div>
+                   <div className="text-2xl lg:text-3xl font-extrabold">{Math.round(((115 - productPrice) / 115) * 100)}%</div>
                  </div>
                </div>
                
-               {/* جديد */}
-               <div className="absolute -top-4 lg:-top-6 -right-4 lg:-right-6 bg-secondary text-secondary-foreground rounded-full w-16 h-16 lg:w-20 lg:h-20 flex items-center justify-center font-bold text-sm lg:text-lg shadow-medium animate-bounce-in z-30">
-                 {t('hero.new')}
-               </div>
-               <div className="absolute -bottom-3 lg:-bottom-4 -left-3 lg:-left-4 bg-white/20 backdrop-blur-sm rounded-xl lg:rounded-2xl p-3 lg:p-4 shadow-medium z-30">
-                 <div className="text-white text-center">
-                   {priceLoading ? <Skeleton className="w-20 h-6 mx-auto" /> : (
-                     <div>
-                       <div className="text-sm text-white/70 line-through">{formatPrice(115)}</div>
-                       <div className="text-xl lg:text-2xl font-bold text-secondary">{formatPrice(productPrice)}</div>
-                       <div className="text-xs bg-red-500 text-white px-2 py-1 rounded-full mt-1">
-                         وفر {Math.round(((115 - productPrice) / 115) * 100)}%
-                       </div>
-                     </div>
-                   )}
-                   <div className="text-xs lg:text-sm mt-1">{t('hero.price')}</div>
-                 </div>
+               {/* علامة "جديد" - تصميم محسن */}
+               <div className="absolute -top-3 lg:-top-4 -right-3 lg:-right-4 bg-gradient-to-br from-yellow-400 via-yellow-500 to-amber-500 text-gray-900 rounded-full w-20 h-20 lg:w-24 lg:h-24 flex items-center justify-center font-bold text-base lg:text-lg shadow-[0_8px_30px_rgb(234,179,8,0.5)] animate-bounce-in z-30 border-4 border-white/30 hover:scale-110 transition-transform duration-300">
+                 ⭐ {t('hero.new')}
                </div>
             </div>
           </div>
