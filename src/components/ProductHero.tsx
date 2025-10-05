@@ -262,12 +262,13 @@ const ProductHero = () => {
                 <div className="relative overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong">
                   {productImages.length > 0 ? (
                     <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 backdrop-blur-sm flex items-center justify-center">
-                      <img 
+                      <OptimizedImage
                         key={selectedIndex}
                         src={productImages[selectedIndex].src}
                         alt={productImages[selectedIndex].alt}
-                        className="w-full h-full object-cover animate-fade-in"
-                        loading="eager"
+                        className="w-full h-full object-cover"
+                        priority={true}
+                        fill={true}
                       />
                     </div>
                   ) : (
@@ -330,11 +331,11 @@ const ProductHero = () => {
                             : 'border-white/30 hover:border-white/60 opacity-70 hover:opacity-100'
                         }`}
                       >
-                        <img 
+                        <OptimizedImage
                           src={thumb.src}
                           alt={thumb.alt}
                           className="w-full h-full object-cover"
-                          loading="lazy"
+                          priority={false}
                         />
                       </button>
                     ))}
