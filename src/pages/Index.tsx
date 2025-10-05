@@ -320,20 +320,6 @@ const Index = () => {
       <MobileOptimized className="min-h-screen">
         <MobileNav />
         
-        {/* Logo Header */}
-        <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 w-full border-b border-border/40">
-          <div className="container flex h-20 items-center justify-center">
-            <Link to="/" className="flex items-center space-x-2">
-              <img 
-                src="/images/seven-green-icon.png" 
-                alt="Seven Green Logo - سفن جرين" 
-                className="h-12 w-auto"
-                loading="eager"
-              />
-            </Link>
-          </div>
-        </header>
-        
         {/* Internal Navigation Links */}
         <nav className="container mx-auto px-4 py-4 flex gap-4 justify-center flex-wrap">
           <a href="#product" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
