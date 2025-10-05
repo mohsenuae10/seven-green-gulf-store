@@ -83,8 +83,11 @@ const ProductHero = () => {
   
   return (
     <section className="relative min-h-screen overflow-hidden">
-      {/* Beautiful Premium Header - Clean White with Blur */}
-      <header className="absolute top-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-b border-primary/10 shadow-soft">
+      {/* Beautiful Premium Header - Subtle Green Tint */}
+      <header 
+        className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-b from-primary/5 via-white/95 to-white/90 backdrop-blur-md border-b border-primary/20"
+        style={{ boxShadow: '0 4px 20px rgba(139, 195, 74, 0.08)' }}
+      >
         <div className="mobile-container">
           <div className="flex items-center justify-between py-2 sm:py-2.5 px-3 sm:px-4 lg:px-6">
             {/* Logo Section - Text Only */}
@@ -98,7 +101,7 @@ const ProductHero = () => {
             </div>
 
             {/* Language and Currency Switchers - Elegant */}
-            <div className="flex items-center gap-1.5 sm:gap-2 bg-primary/5 backdrop-blur-sm rounded-full px-2 py-1.5 border border-primary/20">
+            <div className="flex items-center gap-1.5 sm:gap-2 bg-primary/5 backdrop-blur-sm rounded-full px-2 py-1.5 border border-primary/25 hover:border-primary/35 transition-colors">
               <LanguageSwitcher />
               <div className="w-px h-4 sm:h-5 bg-primary/20"></div>
               <CurrencySwitcher variant="header" />
