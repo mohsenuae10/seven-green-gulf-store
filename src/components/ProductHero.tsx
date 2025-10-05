@@ -82,24 +82,24 @@ const ProductHero = () => {
   
   return (
     <section className="relative min-h-screen overflow-hidden">
-      {/* Compact Premium Header */}
-      <header className="absolute top-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-b-2 border-primary/20 shadow-medium">
+      {/* Beautiful Premium Header */}
+      <header className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-b from-black/30 via-black/10 to-transparent backdrop-blur-xl border-b border-white/20 shadow-lg">
         <div className="mobile-container">
-          <div className="flex items-center justify-between py-2 sm:py-3 px-4 sm:px-6 lg:px-8">
-            {/* Logo Section - Compact */}
-            <div className="flex flex-col justify-center gap-0">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-wide font-english leading-tight">
-                <span className="bg-gradient-primary bg-clip-text text-transparent drop-shadow-sm">
+          <div className="flex items-center justify-between py-4 sm:py-5 px-4 sm:px-6 lg:px-8">
+            {/* Logo Section - Text Only */}
+            <div className="flex flex-col justify-center gap-0.5">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-wider font-english leading-none">
+                <span className="bg-gradient-to-r from-white via-white to-secondary bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)]">
                   SEVEN GREEN
                 </span>
               </h1>
-              <p className="text-sm sm:text-base lg:text-lg text-primary font-bold">سفن جرين</p>
+              <p className="text-base sm:text-lg lg:text-xl text-secondary font-bold drop-shadow-[0_2px_8px_rgba(139,195,74,0.5)]">سفن جرين</p>
             </div>
 
-            {/* Language and Currency Switchers - Compact & Elegant */}
-            <div className="flex items-center gap-2 bg-primary/5 rounded-full px-3 py-1.5 border border-primary/20 hover:bg-primary/10 transition-all shadow-soft">
+            {/* Language and Currency Switchers - Elegant */}
+            <div className="flex items-center gap-2 sm:gap-3 bg-white/5 backdrop-blur-sm rounded-full px-3 py-2 border border-white/10">
               <LanguageSwitcher />
-              <div className="w-px h-5 bg-primary/30"></div>
+              <div className="w-px h-6 bg-white/20"></div>
               <CurrencySwitcher variant="header" />
             </div>
           </div>
