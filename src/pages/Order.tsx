@@ -1,6 +1,7 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -10,12 +11,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { AlertCircle, Loader2, Phone, Flag } from "lucide-react";
+import { AlertCircle, Loader2, Phone, Flag, ChevronRight, Shield, Truck, RotateCcw } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import MobileNav from "@/components/MobileNav";
 import MobileOptimized from "@/components/MobileOptimized";
 import PaymentMethods from "@/components/PaymentMethods";
 import OptimizedImage from "@/components/OptimizedImage";
+import TrustBadges from "@/components/TrustBadges";
+import { CONTACT_INFO } from "@/config/contact";
 
 // Country data with codes and flags
 const getCountries = (language: string) => [
@@ -226,9 +229,110 @@ const Order = () => {
 
   const totalAmount = productPrice * formData.quantity;
 
+  const title = language === 'ar' 
+    ? "اطلب سفن جرين الآن - توصيل مجاني لجميع دول الخليج"
+    : "Order Seven Green Now - Free Delivery to All GCC Countries";
+    
+  const description = language === 'ar'
+    ? "اطلب صابونة سفن جرين المثلثة الأصلية الآن. توصيل مجاني لجميع دول الخليج خلال 2-5 أيام. ضمان استرجاع المال 30 يوم. دفع آمن 100%."
+    : "Order the original Seven Green Triangle Soap now. Free delivery to all GCC countries in 2-5 days. 30-day money-back guarantee. 100% secure payment.";
+
+  const offerSchema = {
+    "@context": "https://schema.org",
+    "@type": "Offer",
+    "url": "https://sevensgreen.com/order",
+    "priceCurrency": "SAR",
+    "price": productPrice.toString(),
+    "availability": "https://schema.org/InStock",
+    "itemOffered": {
+      "@type": "Product",
+      "name": language === 'ar' ? "صابونة سفن جرين المثلثة" : "Seven Green Triangle Soap"
+    },
+    "seller": {
+      "@type": "Organization",
+      "name": "Seven Green"
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": "0",
+        "currency": "SAR"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 1,
+          "maxValue": 2,
+          "unitCode": "DAY"
+        },
+        "transitTime": {
+          "@type": "QuantitativeValue",
+          "minValue": 2,
+          "maxValue": 5,
+          "unitCode": "DAY"
+        }
+      }
+    }
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": language === 'ar' ? "الرئيسية" : "Home",
+        "item": "https://sevensgreen.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": language === 'ar' ? "اطلب الآن" : "Order Now",
+        "item": "https://sevensgreen.com/order"
+      }
+    ]
+  };
+
   return (
-    <MobileOptimized className="min-h-screen bg-gradient-to-br from-green-50 to-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      <MobileNav />
+    <>
+      <Helmet>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://sevensgreen.com/order" />
+        <link rel="canonical" href="https://sevensgreen.com/order" />
+        <script type="application/ld+json">
+          {JSON.stringify(offerSchema)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(breadcrumbSchema)}
+        </script>
+      </Helmet>
+      
+      <MobileOptimized className="min-h-screen bg-gradient-to-br from-green-50 to-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <MobileNav />
+        
+        {/* Breadcrumb */}
+        <nav className="container mx-auto px-4 py-4" aria-label="breadcrumb">
+          <ol className="flex items-center gap-2 text-sm">
+            <li>
+              <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+                {language === 'ar' ? 'الرئيسية' : 'Home'}
+              </Link>
+            </li>
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            <li>
+              <span className="text-foreground font-medium">
+                {language === 'ar' ? 'اطلب الآن' : 'Order Now'}
+              </span>
+            </li>
+          </ol>
+        </nav>
       <div className="mobile-container py-4 sm:py-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-6 lg:mb-8 px-4">
@@ -472,9 +576,42 @@ const Order = () => {
               </form>
             </CardContent>
           </Card>
+
+          {/* Trust Signals */}
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="p-4 text-center">
+              <Shield className="w-8 h-8 mx-auto mb-2 text-primary" />
+              <h3 className="font-semibold text-sm">{language === 'ar' ? 'دفع آمن 100%' : '100% Secure Payment'}</h3>
+            </Card>
+            <Card className="p-4 text-center">
+              <Truck className="w-8 h-8 mx-auto mb-2 text-primary" />
+              <h3 className="font-semibold text-sm">{language === 'ar' ? 'توصيل مجاني' : 'Free Delivery'}</h3>
+            </Card>
+            <Card className="p-4 text-center">
+              <RotateCcw className="w-8 h-8 mx-auto mb-2 text-primary" />
+              <h3 className="font-semibold text-sm">{language === 'ar' ? 'ضمان 30 يوم' : '30-Day Guarantee'}</h3>
+            </Card>
+          </div>
+
+          {/* SEO Content */}
+          <section className="mt-12 prose prose-lg dark:prose-invert mx-auto max-w-3xl px-4">
+            <h2 className="text-2xl font-bold mb-4">
+              {language === 'ar' ? 'لماذا تطلب من سفن جرين؟' : 'Why Order from Seven Green?'}
+            </h2>
+            <ul className="space-y-2">
+              <li>✅ {language === 'ar' ? 'توصيل مجاني لجميع دول الخليج' : 'Free delivery to all GCC countries'}</li>
+              <li>✅ {language === 'ar' ? 'ضمان استرجاع المال 30 يوم' : '30-day money-back guarantee'}</li>
+              <li>✅ {language === 'ar' ? 'منتج أصلي 100% معتمد من هيئة الغذاء والدواء' : '100% original product certified by FDA'}</li>
+              <li>✅ {language === 'ar' ? 'دعم عملاء على مدار الساعة' : '24/7 customer support'}</li>
+              <li>✅ {language === 'ar' ? 'دفع آمن ومشفر' : 'Secure encrypted payment'}</li>
+            </ul>
+          </section>
+
+          <TrustBadges />
         </div>
       </div>
     </MobileOptimized>
+    </>
   );
 };
 

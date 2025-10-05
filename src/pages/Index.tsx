@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 import ProductHero from "@/components/ProductHero";
 import ProductFeatures from "@/components/ProductFeatures";
 import ProductIngredients from "@/components/ProductIngredients";
@@ -9,6 +10,7 @@ import TrustBadges from "@/components/TrustBadges";
 import MobileNav from "@/components/MobileNav";
 import MobileOptimized from "@/components/MobileOptimized";
 import Footer from "@/components/Footer";
+import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { CONTACT_INFO } from "@/config/contact";
@@ -216,6 +218,60 @@ const Index = () => {
     ]
   };
 
+  const howToSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": language === 'ar' 
+      ? "طريقة استخدام صابونة سفن جرين المثلثة"
+      : "How to Use Seven Green Triangle Soap",
+    "description": language === 'ar'
+      ? "دليل خطوة بخطوة لاستخدام صابونة سفن جرين لأفضل النتائج في منع تساقط الشعر"
+      : "Step-by-step guide to using Seven Green soap for best results in preventing hair loss",
+    "totalTime": "PT10M",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "position": 1,
+        "name": language === 'ar' ? "ترطيب الشعر" : "Wet Hair",
+        "text": language === 'ar' 
+          ? "بلل شعرك بالماء الدافئ بشكل كامل"
+          : "Wet your hair completely with warm water"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 2,
+        "name": language === 'ar' ? "تطبيق الصابونة" : "Apply Soap",
+        "text": language === 'ar'
+          ? "افرك الصابونة المثلثة على فروة الرأس والشعر حتى تتكون رغوة غنية"
+          : "Rub the triangle soap on scalp and hair until rich lather forms"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 3,
+        "name": language === 'ar' ? "التدليك" : "Massage",
+        "text": language === 'ar'
+          ? "دلك فروة الرأس بحركات دائرية لطيفة لمدة 2-3 دقائق"
+          : "Massage scalp with gentle circular motions for 2-3 minutes"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 4,
+        "name": language === 'ar' ? "الانتظار" : "Wait",
+        "text": language === 'ar'
+          ? "اترك الصابونة على الشعر لمدة 5 دقائق للاستفادة القصوى"
+          : "Leave the soap on hair for 5 minutes for maximum benefit"
+      },
+      {
+        "@type": "HowToStep",
+        "position": 5,
+        "name": language === 'ar' ? "الشطف" : "Rinse",
+        "text": language === 'ar'
+          ? "اشطف الشعر جيداً بالماء الفاتر حتى إزالة كل الرغوة"
+          : "Rinse hair thoroughly with lukewarm water until all lather is removed"
+      }
+    ]
+  };
+
   return (
     <>
       <Helmet>
@@ -255,6 +311,9 @@ const Index = () => {
         </script>
         <script type="application/ld+json">
           {JSON.stringify(reviewSchema)}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify(howToSchema)}
         </script>
       </Helmet>
       
@@ -309,7 +368,7 @@ const Index = () => {
                 {language === 'ar' ? (
                   <>
                     <p>
-                      <strong>صابونة سفن جرين المثلثة</strong> هي منتج طبيعي سعودي 100% معتمد من هيئة الغذاء والدواء السعودية، مصممة خصيصاً لعلاج مشاكل تساقط الشعر وزيادة كثافته بطريقة آمنة وفعالة. تحتوي الصابونة على تركيبة فريدة من خلاصة السرو والأوسمان الطبيعية التي أثبتت فعاليتها في تقوية بصيلات الشعر ومنع التساقط.
+                      <strong><Link to="/order" className="text-primary hover:underline">صابونة سفن جرين المثلثة</Link></strong> هي منتج طبيعي سعودي 100% معتمد من هيئة الغذاء والدواء السعودية، مصممة خصيصاً لعلاج مشاكل تساقط الشعر وزيادة كثافته بطريقة آمنة وفعالة. تحتوي الصابونة على تركيبة فريدة من خلاصة السرو والأوسمان الطبيعية التي أثبتت فعاليتها في تقوية بصيلات الشعر ومنع التساقط.
                     </p>
                     
                     <h2 className="text-2xl font-semibold mt-8 mb-4">المكونات الطبيعية الفعالة</h2>
@@ -329,7 +388,7 @@ const Index = () => {
                     
                     <h3 className="text-xl font-semibold mt-8 mb-4">ضمان الجودة والأمان</h3>
                     <p>
-                      جميع منتجات سفن جرين معتمدة من هيئة الغذاء والدواء السعودية وتخضع لأعلى معايير الجودة. نحن نقدم ضمان استرجاع المال لمدة 30 يوماً إذا لم تكوني راضية عن النتائج. ثقتنا في منتجنا تأتي من آلاف التجارب الناجحة لعملائنا في جميع أنحاء المملكة العربية السعودية.
+                      جميع منتجات سفن جرين معتمدة من هيئة الغذاء والدواء السعودية وتخضع لأعلى معايير الجودة. نحن نقدم ضمان استرجاع المال لمدة 30 يوماً إذا لم تكوني راضية عن النتائج. ثقتنا في منتجنا تأتي من آلاف التجارب الناجحة لعملائنا في جميع أنحاء المملكة العربية السعودية. <Link to="/about" className="text-primary hover:underline font-semibold">اقرئي المزيد عن قصتنا</Link>.
                     </p>
                   </>
                 ) : (
@@ -361,6 +420,70 @@ const Index = () => {
                 )}
               </div>
             </article>
+          </section>
+
+          {/* Related Content Section */}
+          <section className="py-12 bg-accent/10">
+            <div className="container mx-auto px-4">
+              <h2 className="text-3xl font-bold text-center mb-8">
+                {language === 'ar' ? 'قد يهمك أيضاً' : 'You May Also Like'}
+              </h2>
+              <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <Link to="/about" className="group">
+                  <Card className="p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
+                    <div className="text-center">
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-3xl">📖</span>
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                        {language === 'ar' ? 'قصتنا' : 'Our Story'}
+                      </h3>
+                      <p className="text-muted-foreground">
+                        {language === 'ar' 
+                          ? 'تعرفي على رحلة سفن جرين ورؤيتنا'
+                          : 'Learn about Seven Green journey and vision'}
+                      </p>
+                    </div>
+                  </Card>
+                </Link>
+                
+                <Link to="/order" className="group">
+                  <Card className="p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full bg-gradient-primary/5">
+                    <div className="text-center">
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-3xl">🛒</span>
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                        {language === 'ar' ? 'اطلبي الآن' : 'Order Now'}
+                      </h3>
+                      <p className="text-muted-foreground">
+                        {language === 'ar' 
+                          ? 'احصلي على صابونة سفن جرين الأصلية'
+                          : 'Get the original Seven Green soap'}
+                      </p>
+                    </div>
+                  </Card>
+                </Link>
+                
+                <a href="#faq" className="group">
+                  <Card className="p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
+                    <div className="text-center">
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-3xl">❓</span>
+                      </div>
+                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+                        {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQs'}
+                      </h3>
+                      <p className="text-muted-foreground">
+                        {language === 'ar' 
+                          ? 'إجابات لأكثر الأسئلة شيوعاً'
+                          : 'Answers to most common questions'}
+                      </p>
+                    </div>
+                  </Card>
+                </a>
+              </div>
+            </div>
           </section>
         </main>
         
