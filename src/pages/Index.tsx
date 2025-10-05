@@ -87,8 +87,8 @@ const Index = () => {
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    "name": "Seven Green",
-    "alternateName": ["سفن جرين", "سفن قرين", "سيفن جرين"],
+    "name": "سفن جرين - Seven Green",
+    "alternateName": ["سفن جرين", "Seven Green", "سفن قرين", "سيفن جرين"],
     "url": "https://sevensgreen.com",
     "logo": "https://sevensgreen.com/images/seven-green-icon.png",
     "sameAs": [
@@ -106,8 +106,8 @@ const Index = () => {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Seven Green",
-    "alternateName": ["سفن جرين", "سفن قرين", "سيفن جرين"],
+    "name": "سفن جرين - Seven Green",
+    "alternateName": ["سفن جرين", "Seven Green", "سفن قرين", "سيفن جرين"],
     "url": "https://sevensgreen.com",
     "potentialAction": {
       "@type": "SearchAction",
@@ -141,7 +141,8 @@ const Index = () => {
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://sevensgreen.com/" />
         <meta property="og:image" content="https://sevensgreen.com/images/seven-green-icon.png" />
-        <meta property="og:site_name" content="Seven Green - سفن جرين" />
+        <meta property="og:site_name" content="سفن جرين - Seven Green" />
+        <meta name="application-name" content="سفن جرين" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
