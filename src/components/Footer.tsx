@@ -16,8 +16,8 @@ const Footer = () => {
             </h3>
             <p className="text-muted-foreground text-sm">
               {language === 'ar'
-                ? 'علامة تجارية سعودية رائدة في منتجات العناية بالشعر الطبيعية'
-                : 'Leading Saudi brand in natural hair care products'}
+                ? 'علامة تجارية كورية رائدة في منتجات العناية بالشعر الطبيعية'
+                : 'Leading Korean brand in natural hair care products'}
             </p>
           </div>
 
