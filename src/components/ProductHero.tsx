@@ -82,31 +82,31 @@ const ProductHero = () => {
   
   return (
     <section className="relative min-h-screen overflow-hidden">
-      {/* Transparent Header */}
-      <header className="absolute top-0 left-0 right-0 z-30 bg-white/5 backdrop-blur-md border-b border-white/10">
+      {/* Elegant Header */}
+      <header className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-b from-black/40 via-black/20 to-transparent backdrop-blur-lg border-b border-white/10">
         <div className="mobile-container">
-          <div className="flex items-center justify-between py-4 px-4 sm:px-0">
-            {/* Logo Section */}
-            <div className="flex items-center gap-4 sm:gap-6">
+          <div className="flex items-center justify-between py-3 sm:py-4 px-4 sm:px-6">
+            {/* Logo Section - Balanced & Elegant */}
+            <div className="flex items-center gap-3 sm:gap-5">
               <div className="relative group">
-                <div className="absolute inset-0 bg-gradient-secondary opacity-50 blur-3xl rounded-full group-hover:opacity-80 transition-opacity duration-300 scale-125"></div>
+                <div className="absolute inset-0 bg-secondary/30 blur-2xl rounded-full group-hover:blur-3xl group-hover:bg-secondary/40 transition-all duration-500"></div>
                 <img 
                   src={sevenGreenLogo} 
                   alt="Seven Green Logo - سفن جرين" 
-                  className="relative w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 object-contain filter drop-shadow-[0_0_30px_rgba(139,195,74,0.8)] transition-transform hover:scale-110 duration-300 animate-fade-in"
+                  className="relative w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain filter drop-shadow-[0_0_20px_rgba(139,195,74,0.6)] hover:drop-shadow-[0_0_30px_rgba(139,195,74,0.8)] transition-all duration-300 hover:scale-105"
                   loading="eager"
                 />
               </div>
-              <div className="text-left">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white tracking-wider font-english drop-shadow-[0_6px_12px_rgba(0,0,0,0.4)]">
+              <div className="flex flex-col justify-center">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white tracking-wide font-english drop-shadow-lg leading-tight">
                   SEVEN GREEN
                 </h1>
-                <p className="text-lg sm:text-xl lg:text-2xl text-secondary font-bold drop-shadow-[0_4px_8px_rgba(139,195,74,0.6)]">سفن جرين</p>
+                <p className="text-sm sm:text-base lg:text-lg text-secondary font-semibold drop-shadow-md">سفن جرين</p>
               </div>
             </div>
 
-            {/* Language and Currency Switchers */}
-            <div className="flex items-center gap-3">
+            {/* Language and Currency Switchers - Clean & Minimal */}
+            <div className="flex items-center gap-2 sm:gap-3">
               <LanguageSwitcher />
               <CurrencySwitcher variant="header" />
             </div>
