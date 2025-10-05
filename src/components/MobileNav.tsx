@@ -2,11 +2,16 @@ import { Link, useLocation } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useProductPrice } from "@/hooks/useProductPrice";
+import { useCurrency } from "@/hooks/useCurrency";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const MobileNav = () => {
   const location = useLocation();
   const isOrderPage = location.pathname === "/order";
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const { price: productPrice, loading: priceLoading } = useProductPrice({ fallback: 85 });
+  const { formatPrice } = useCurrency();
 
   if (isOrderPage) {
     return null;
@@ -20,10 +25,15 @@ const MobileNav = () => {
           <Link to="/order" className="block">
             <Button 
               size="lg" 
-              className="w-full bg-gradient-secondary hover:scale-105 transition-all duration-300 shadow-glow text-lg py-4 rounded-full touch-target"
+              className="w-full bg-gradient-primary hover:scale-105 transition-all duration-300 shadow-elegant hover:shadow-glow text-base py-5 rounded-full touch-target"
             >
-              <ShoppingCart className="w-6 h-6 ml-2" />
-              {t('hero.buy.now')}
+              <ShoppingCart className={`w-5 h-5 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
+              {t('hero.buy.now')} - {priceLoading ? <Skeleton className="inline w-16 h-4" /> : (
+                <span className="flex items-center gap-2">
+                  <span className="text-white/70 line-through text-sm">{formatPrice(115)}</span>
+                  <span className="text-white font-bold">{formatPrice(productPrice)}</span>
+                </span>
+              )}
             </Button>
           </Link>
         </div>
