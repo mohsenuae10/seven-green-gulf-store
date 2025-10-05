@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useState, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -8,7 +9,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { useLanguage } from "@/hooks/useLanguage";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { useCallback, useEffect, useState, useRef } from 'react';
+import logoImage from "@/assets/seven-green-logo-official.png";
 import { supabase } from "@/integrations/supabase/client";
 import OptimizedImage from "@/components/OptimizedImage";
 import sevenGreenLogo from "@/assets/seven-green-logo.png";
@@ -90,14 +91,13 @@ const ProductHero = () => {
       >
         <div className="mobile-container">
           <div className="flex items-center justify-between py-2 sm:py-2.5 px-3 sm:px-4 lg:px-6">
-            {/* Logo Section - Text Only */}
-            <div className="flex flex-col justify-center gap-0">
-              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold tracking-wider font-english leading-none">
-                <span className="bg-gradient-primary bg-clip-text text-transparent">
-                  SEVEN GREEN
-                </span>
-              </h1>
-              <p className="text-xs sm:text-sm lg:text-base text-primary font-bold">سفن جرين</p>
+            {/* Logo Section */}
+            <div className="flex items-center">
+              <img 
+                src={logoImage} 
+                alt="Seven Green Logo" 
+                className="h-10 sm:h-12 lg:h-14 w-auto object-contain"
+              />
             </div>
 
             {/* Language and Currency Switchers - Elegant */}
