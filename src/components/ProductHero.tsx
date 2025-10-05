@@ -91,7 +91,7 @@ const ProductHero = () => {
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-secondary opacity-40 blur-2xl rounded-full group-hover:opacity-60 transition-opacity duration-300"></div>
                 <img 
-                  src={sevenGreenLogo} 
+                  src="/images/seven-green-icon.png" 
                   alt="Seven Green Logo - سفن جرين" 
                   className="relative w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain filter drop-shadow-[0_0_20px_rgba(139,195,74,0.6)] transition-transform hover:scale-110 duration-300 animate-fade-in"
                   loading="eager"
