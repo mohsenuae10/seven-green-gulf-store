@@ -394,8 +394,8 @@ const ProductHero = () => {
         {/* Product Gallery Section */}
         <div className="py-12 sm:py-16 lg:py-20 space-y-8 lg:space-y-12">
           <div className="text-center space-y-3 lg:space-y-4 px-4">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">{t('hero.gallery.title')}</h2>
-            <p className="text-white/80 max-w-2xl mx-auto text-sm sm:text-base lg:text-lg">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">{t('hero.gallery.title')}</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base lg:text-lg">
               {t('hero.gallery.description')}
             </p>
           </div>
@@ -414,8 +414,8 @@ const ProductHero = () => {
                 height={371}
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">{t('gallery.certificates.title')}</h3>
-                <p className="text-white/70 text-sm">{t('gallery.certificates.desc')}</p>
+                <h3 className="text-foreground font-semibold mb-2">{t('gallery.certificates.title')}</h3>
+                <p className="text-muted-foreground text-sm">{t('gallery.certificates.desc')}</p>
               </CardContent>
             </Card>
 
@@ -430,8 +430,8 @@ const ProductHero = () => {
                 height={256}
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">{t('gallery.effectiveness.title')}</h3>
-                <p className="text-white/70 text-sm">{t('gallery.effectiveness.desc')}</p>
+                <h3 className="text-foreground font-semibold mb-2">{t('gallery.effectiveness.title')}</h3>
+                <p className="text-muted-foreground text-sm">{t('gallery.effectiveness.desc')}</p>
               </CardContent>
             </Card>
 
@@ -446,8 +446,8 @@ const ProductHero = () => {
                 height={256}
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">{t('gallery.hair.problems.title')}</h3>
-                <p className="text-white/70 text-sm">{t('gallery.hair.problems.desc')}</p>
+                <h3 className="text-foreground font-semibold mb-2">{t('gallery.hair.problems.title')}</h3>
+                <p className="text-muted-foreground text-sm">{t('gallery.hair.problems.desc')}</p>
               </CardContent>
             </Card>
 
@@ -462,8 +462,8 @@ const ProductHero = () => {
                 height={256}
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">{t('gallery.natural.ingredients.title')}</h3>
-                <p className="text-white/70 text-sm">{t('gallery.natural.ingredients.desc')}</p>
+                <h3 className="text-foreground font-semibold mb-2">{t('gallery.natural.ingredients.title')}</h3>
+                <p className="text-muted-foreground text-sm">{t('gallery.natural.ingredients.desc')}</p>
               </CardContent>
             </Card>
 
@@ -478,8 +478,8 @@ const ProductHero = () => {
                 height={256}
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">{t('gallery.comprehensive.benefits.title')}</h3>
-                <p className="text-white/70 text-sm">{t('gallery.comprehensive.benefits.desc')}</p>
+                <h3 className="text-foreground font-semibold mb-2">{t('gallery.comprehensive.benefits.title')}</h3>
+                <p className="text-muted-foreground text-sm">{t('gallery.comprehensive.benefits.desc')}</p>
               </CardContent>
             </Card>
 
@@ -494,8 +494,8 @@ const ProductHero = () => {
                 height={256}
               />
               <CardContent className="p-4 text-center">
-                <h3 className="text-white font-semibold mb-2">{t('gallery.natural.excellence.title')}</h3>
-                <p className="text-white/70 text-sm">{t('gallery.natural.excellence.desc')}</p>
+                <h3 className="text-foreground font-semibold mb-2">{t('gallery.natural.excellence.title')}</h3>
+                <p className="text-muted-foreground text-sm">{t('gallery.natural.excellence.desc')}</p>
               </CardContent>
             </Card>
           </div>
@@ -514,8 +514,8 @@ const ProductHero = () => {
                 height={320}
               />
               <CardContent className="p-6 text-center">
-                <h3 className="text-white font-semibold text-xl mb-3">{t('gallery.usage.instructions.title')}</h3>
-                <p className="text-white/70">{t('gallery.usage.instructions.desc')}</p>
+                <h3 className="text-foreground font-semibold text-xl mb-3">{t('gallery.usage.instructions.title')}</h3>
+                <p className="text-muted-foreground">{t('gallery.usage.instructions.desc')}</p>
               </CardContent>
             </Card>
 
@@ -530,8 +530,8 @@ const ProductHero = () => {
                 height={320}
               />
               <CardContent className="p-6 text-center">
-                <h3 className="text-white font-semibold text-xl mb-3">{t('gallery.special.offer.title')}</h3>
-                <p className="text-white/70">{t('gallery.special.offer.desc')}</p>
+                <h3 className="text-foreground font-semibold text-xl mb-3">{t('gallery.special.offer.title')}</h3>
+                <p className="text-muted-foreground">{t('gallery.special.offer.desc')}</p>
                 <Link to="/order">
                   <Button className="mt-4 bg-gradient-secondary hover:scale-105 transition-all">
                     {t('hero.buy.now')}
