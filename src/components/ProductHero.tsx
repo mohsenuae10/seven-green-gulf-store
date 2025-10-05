@@ -88,16 +88,20 @@ const ProductHero = () => {
           <div className="flex items-center justify-between py-4 px-4 sm:px-0">
             {/* Logo Section */}
             <div className="flex items-center gap-3">
-              <img 
-                src={sevenGreenLogo} 
-                alt="Seven Green Logo" 
-                className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
-              />
+              <div className="relative">
+                <div className="absolute inset-0 bg-secondary/30 blur-xl rounded-full"></div>
+                <img 
+                  src={sevenGreenLogo} 
+                  alt="Seven Green Logo - سفن جرين" 
+                  className="relative w-14 h-14 sm:w-16 sm:h-16 object-contain drop-shadow-glow transition-transform hover:scale-110 duration-300"
+                  loading="eager"
+                />
+              </div>
               <div className="text-left">
-                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-wider font-english">
+                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-wider font-english drop-shadow-lg">
                   SEVEN GREEN
                 </h1>
-                <p className="text-xs text-secondary font-medium">Seven Green</p>
+                <p className="text-xs text-secondary font-semibold">سفن جرين</p>
               </div>
             </div>
 
