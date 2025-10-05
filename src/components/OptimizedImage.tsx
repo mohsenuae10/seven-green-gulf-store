@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface OptimizedImageProps {
   src: string;
@@ -12,8 +12,9 @@ interface OptimizedImageProps {
 }
 
 /**
- * OptimizedImage component with WebP support and lazy loading
- * Automatically serves WebP format when supported by the browser
+ * OptimizedImage component
+ * - Lazy loading, async decoding
+ * - Optional WebP: only used when a valid WebP actually exists (pre-checked)
  */
 const OptimizedImage = ({ 
   src, 
@@ -27,45 +28,68 @@ const OptimizedImage = ({
 }: OptimizedImageProps) => {
   const [imageError, setImageError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [webpUrl, setWebpUrl] = useState<string | null>(null);
 
-  // Generate WebP version path
-  const getWebPPath = (originalSrc: string) => {
-    const ext = originalSrc.split('.').pop()?.toLowerCase();
-    if (ext === 'webp') return originalSrc;
-    return originalSrc.replace(/\.(jpg|jpeg|png)$/i, '.webp');
-  };
+  // Check if a corresponding .webp actually exists; otherwise, don't force it
+  useEffect(() => {
+    setWebpUrl(null);
+    const ext = src.split('.').pop()?.toLowerCase();
+    if (!ext || !/(jpg|jpeg|png|webp)$/.test(ext)) return;
 
-  const webpSrc = getWebPPath(src);
+    // If already webp, no need to probe
+    if (ext === 'webp') return;
+
+    const candidate = src.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+
+    let cancelled = false;
+    const testImg = new Image();
+    testImg.onload = () => {
+      if (!cancelled) setWebpUrl(candidate);
+    };
+    testImg.onerror = () => {
+      if (!cancelled) setWebpUrl(null);
+    };
+    testImg.src = candidate;
+
+    return () => {
+      cancelled = true;
+    };
+  }, [src]);
+
+  const ImgTag = (
+    <img
+      src={src}
+      alt={alt}
+      draggable={false}
+      className={`${className} transition-opacity duration-300 ${
+        isLoaded ? 'opacity-100' : 'opacity-0'
+      }`}
+      loading={priority ? 'eager' : 'lazy'}
+      decoding="async"
+      width={width}
+      height={height}
+      onLoad={() => setIsLoaded(true)}
+      onError={() => setImageError(true)}
+      sizes={sizes}
+      style={{
+        maxWidth: '100%',
+        height: fill ? '100%' : 'auto',
+        objectFit: fill ? 'cover' : undefined
+      }}
+    />
+  );
 
   return (
     <div className="relative">
-      <picture>
-        {/* WebP source for modern browsers */}
-        <source srcSet={webpSrc} type="image/webp" />
-        
-        {/* Fallback to original format */}
-        <img
-          src={src}
-          alt={alt}
-          draggable={false}
-          className={`${className} transition-opacity duration-300 ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          loading={priority ? 'eager' : 'lazy'}
-          decoding="async"
-          width={width}
-          height={height}
-          onLoad={() => setIsLoaded(true)}
-          onError={() => setImageError(true)}
-          sizes={sizes}
-          style={{
-            maxWidth: '100%',
-            height: fill ? '100%' : 'auto',
-            objectFit: fill ? 'cover' : undefined
-          }}
-        />
-      </picture>
-      
+      {webpUrl ? (
+        <picture>
+          <source srcSet={webpUrl} type="image/webp" />
+          {ImgTag}
+        </picture>
+      ) : (
+        ImgTag
+      )}
+
       {/* Loading skeleton */}
       {!isLoaded && !imageError && (
         <div className={`absolute inset-0 ${className} bg-muted animate-pulse pointer-events-none`} />
