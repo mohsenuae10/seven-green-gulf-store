@@ -12,37 +12,37 @@ const ProductFeatures = () => {
       icon: Droplets,
       title: t('features.deep.hydration'),
       description: t('features.deep.hydration.desc'),
-      gradient: "from-blue-500 to-cyan-500"
+      gradient: "from-primary/10 to-primary/5"
     },
     {
       icon: Heart,
       title: t('features.natural.ingredients'),
       description: t('features.natural.ingredients.desc'),
-      gradient: "from-green-500 to-emerald-500"
+      gradient: "from-primary/10 to-primary/5"
     },
     {
       icon: Sparkles,
       title: t('features.natural.shine'),
       description: t('features.natural.shine.desc'),
-      gradient: "from-yellow-500 to-amber-500"
+      gradient: "from-primary/10 to-primary/5"
     },
     {
       icon: Users,
       title: t('features.all.types'),
       description: t('features.all.types.desc'),
-      gradient: "from-purple-500 to-pink-500"
+      gradient: "from-primary/10 to-primary/5"
     },
     {
       icon: Clock,
       title: t('features.fast.results'),
       description: t('features.fast.results.desc'),
-      gradient: "from-orange-500 to-red-500"
+      gradient: "from-primary/10 to-primary/5"
     },
     {
       icon: Award,
       title: t('features.globally.certified'),
       description: t('features.globally.certified.desc'),
-      gradient: "from-indigo-500 to-purple-500"
+      gradient: "from-primary/10 to-primary/5"
     }
   ];
 

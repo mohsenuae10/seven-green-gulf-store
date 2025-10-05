@@ -11,28 +11,28 @@ const ProductIngredients = () => {
       name: "أوراق السرو الطبيعية",
       description: "غنية بمضادات الأكسدة، تساعد في تقوية جذور الشعر وتحسين الدورة الدموية في فروة الرأس",
       benefit: "يقلل التساقط بنسبة 85%",
-      gradient: "from-green-500 to-emerald-600"
+      gradient: "from-green-400 to-emerald-600"
     },
     {
       icon: Sparkles,
       name: "نبات الأوسمان",
       description: "يحتوي على زيوت أساسية طبيعية تغذي الشعر من الجذور وتعالج التقصف والجفاف",
       benefit: "يزيد اللمعان بنسبة 92%",
-      gradient: "from-amber-500 to-orange-600"
+      gradient: "from-green-500 to-green-700"
     },
     {
       icon: Droplets,
       name: "زيوت طبيعية مركزة",
       description: "مزيج من الزيوت الطبيعية المرطبة التي تحافظ على توازن الزيوت في فروة الرأس",
       benefit: "يتحكم في الزيوت الزائدة",
-      gradient: "from-blue-500 to-cyan-600"
+      gradient: "from-emerald-400 to-teal-600"
     },
     {
       icon: Shield,
       name: "مستخلصات عشبية صينية",
       description: "تركيبة قديمة من 7 أعشاب صينية تقليدية تحمي الشعر وتحافظ على صحته",
       benefit: "آمن ومختبر طبياً",
-      gradient: "from-purple-500 to-pink-600"
+      gradient: "from-teal-500 to-green-600"
     }
   ] : [
     {
@@ -40,28 +40,28 @@ const ProductIngredients = () => {
       name: "Natural Cypress Leaves",
       description: "Rich in antioxidants, helps strengthen hair roots and improve blood circulation in the scalp",
       benefit: "Reduces hair loss by 85%",
-      gradient: "from-green-500 to-emerald-600"
+      gradient: "from-green-400 to-emerald-600"
     },
     {
       icon: Sparkles,
       name: "Rosemary Plant",
       description: "Contains natural essential oils that nourish hair from the roots and treat split ends and dryness",
       benefit: "Increases shine by 92%",
-      gradient: "from-amber-500 to-orange-600"
+      gradient: "from-green-500 to-green-700"
     },
     {
       icon: Droplets,
       name: "Concentrated Natural Oils",
       description: "A blend of natural moisturizing oils that maintain oil balance in the scalp",
       benefit: "Controls excess oils",
-      gradient: "from-blue-500 to-cyan-600"
+      gradient: "from-emerald-400 to-teal-600"
     },
     {
       icon: Shield,
       name: "Chinese Herbal Extracts",
       description: "Ancient formula of 7 traditional Chinese herbs that protect and maintain hair health",
       benefit: "Safe and medically tested",
-      gradient: "from-purple-500 to-pink-600"
+      gradient: "from-teal-500 to-green-600"
     }
   ];
 
