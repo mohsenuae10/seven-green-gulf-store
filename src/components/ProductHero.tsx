@@ -14,6 +14,7 @@ import OptimizedImage from "@/components/OptimizedImage";
 import sevenGreenLogo from "@/assets/seven-green-logo.png";
 
 const ProductHero = () => {
+  const ORIGINAL_PRICE = 115; // السعر الأصلي
   const { price: productPrice, loading: priceLoading } = useProductPrice();
   const { formatPrice, selectedCurrency } = useCurrency();
   const { language, t } = useLanguage();
@@ -339,65 +340,67 @@ const ProductHero = () => {
                 </div>
                 
                 {/* عرض السعر البارز - أسفل الصورة مباشرة */}
-                <Card className="mt-6 bg-gradient-to-br from-primary/10 via-white to-secondary/10 border-2 border-primary/30 shadow-[0_10px_40px_rgba(139,195,74,0.3)] overflow-hidden">
-                  <CardContent className="p-4 lg:p-6">
+                <Card className="relative mt-6 bg-gradient-to-br from-primary/10 via-white to-secondary/10 border-2 border-primary/30 shadow-[0_10px_40px_rgba(139,195,74,0.3)] overflow-visible hover:shadow-[0_15px_50px_rgba(139,195,74,0.4)] transition-all duration-300">
+                  <CardContent className="p-3 sm:p-4 lg:p-6">
                     {priceLoading ? (
                       <Skeleton className="w-full h-24" />
                     ) : (
-                      <div className="space-y-3">
+                      <div className="space-y-2 lg:space-y-3">
                         {/* العنوان */}
                         <div className="flex items-center justify-center gap-2 text-primary">
-                          <span className="text-lg lg:text-xl font-bold">💰 {t('hero.special.price')}</span>
+                          <span className="text-base sm:text-lg lg:text-xl font-bold">💰 {t('hero.special.price')}</span>
                         </div>
                         
                         {/* السعر */}
-                        <div className="flex items-center justify-center gap-3 lg:gap-4">
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 lg:gap-4">
                           {/* السعر القديم */}
-                          <div className="text-muted-foreground">
+                          <div className="text-muted-foreground text-center sm:text-right">
                             <div className="text-xs lg:text-sm">{t('hero.was')}</div>
-                            <div className="text-lg lg:text-xl line-through font-semibold">{formatPrice(115)}</div>
+                            <div className="text-base sm:text-lg lg:text-xl line-through font-semibold">{formatPrice(ORIGINAL_PRICE)}</div>
                           </div>
                           
                           {/* السهم */}
-                          <div className="text-2xl lg:text-3xl text-primary animate-pulse">→</div>
+                          <div className="text-xl sm:text-2xl lg:text-3xl text-primary animate-pulse">
+                            {language === 'ar' ? '←' : '→'}
+                          </div>
                           
                           {/* السعر الجديد */}
-                          <div className="relative">
+                          <div className="text-center sm:text-left">
                             <div className="text-xs lg:text-sm text-primary font-semibold">{t('hero.now')}</div>
-                            <div className="text-3xl lg:text-4xl font-extrabold bg-gradient-primary bg-clip-text text-transparent">
+                            <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold bg-gradient-primary bg-clip-text text-transparent">
                               {formatPrice(productPrice)}
-                            </div>
-                            
-                            {/* نسبة التوفير في دائرة */}
-                            <div className="absolute -top-2 -right-2 bg-gradient-to-br from-red-500 to-pink-600 text-white rounded-full w-12 h-12 lg:w-14 lg:h-14 flex items-center justify-center text-xs lg:text-sm font-bold shadow-lg animate-pulse">
-                              -{Math.round(((115 - productPrice) / 115) * 100)}%
                             </div>
                           </div>
                         </div>
                         
                         {/* عرض محدود */}
-                        <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-500/20 via-pink-500/20 to-red-500/20 rounded-full px-4 py-2 border border-red-500/30">
-                          <span className="text-xl animate-pulse">⏳</span>
-                          <span className="text-sm lg:text-base font-semibold text-red-700">{t('hero.limited.offer')}</span>
+                        <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-500/20 via-pink-500/20 to-red-500/20 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 border border-red-500/30">
+                          <span className="text-lg sm:text-xl animate-pulse">⏳</span>
+                          <span className="text-xs sm:text-sm lg:text-base font-semibold text-red-700">{t('hero.limited.offer')}</span>
                         </div>
                       </div>
                     )}
                   </CardContent>
+                  
+                  {/* نسبة التوفير في دائرة - موضع محسن */}
+                  <div className={`absolute -top-4 ${language === 'ar' ? '-right-4' : '-left-4'} bg-gradient-to-br from-red-500 to-pink-600 text-white rounded-full w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 flex items-center justify-center text-sm sm:text-base lg:text-lg font-bold shadow-[0_8px_30px_rgb(239,68,68,0.6)] z-10 border-3 border-white/40 animate-pulse`}>
+                    -{Math.round(((ORIGINAL_PRICE - productPrice) / ORIGINAL_PRICE) * 100)}%
+                  </div>
                 </Card>
               </div>
               
-              {/* Floating Badges - Improved Design */}
-               {/* علامة "وفر" - تصميم محسن */}
-               <div className="absolute -top-3 lg:-top-4 -left-3 lg:-left-4 bg-gradient-to-br from-red-500 via-red-600 to-pink-600 text-white rounded-full w-20 h-20 lg:w-24 lg:h-24 flex items-center justify-center font-bold text-sm lg:text-base shadow-[0_8px_30px_rgb(239,68,68,0.5)] animate-bounce-in z-30 border-4 border-white/30 hover:scale-110 transition-transform duration-300">
-                 <div className="text-center">
-                   <div className="text-xs lg:text-sm">🔥 وفر</div>
-                   <div className="text-2xl lg:text-3xl font-extrabold">{Math.round(((115 - productPrice) / 115) * 100)}%</div>
-                 </div>
-               </div>
-               
-               {/* علامة "جديد" - تصميم محسن */}
-               <div className="absolute -top-3 lg:-top-4 -right-3 lg:-right-4 bg-gradient-to-br from-yellow-400 via-yellow-500 to-amber-500 text-gray-900 rounded-full w-20 h-20 lg:w-24 lg:h-24 flex items-center justify-center font-bold text-base lg:text-lg shadow-[0_8px_30px_rgb(234,179,8,0.5)] animate-bounce-in z-30 border-4 border-white/30 hover:scale-110 transition-transform duration-300">
-                 ⭐ {t('hero.new')}
+               {/* Floating Badges - Improved Design */}
+                {/* علامة "وفر" - تصميم محسن */}
+                <div className={`absolute -top-3 lg:-top-4 ${language === 'ar' ? '-left-3 lg:-left-4' : '-right-3 lg:-right-4'} bg-gradient-to-br from-red-500 via-red-600 to-pink-600 text-white rounded-full w-18 h-18 sm:w-20 sm:h-20 lg:w-24 lg:h-24 flex items-center justify-center font-bold text-sm lg:text-base shadow-[0_8px_30px_rgb(239,68,68,0.5)] animate-bounce-in z-30 border-4 border-white/30 hover:scale-110 transition-transform duration-300`}>
+                  <div className="text-center">
+                    <div className="text-xs lg:text-sm">🔥 وفر</div>
+                    <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold">{Math.round(((ORIGINAL_PRICE - productPrice) / ORIGINAL_PRICE) * 100)}%</div>
+                  </div>
+                </div>
+                
+                {/* علامة "جديد" - تصميم محسن */}
+                <div className={`absolute -top-3 lg:-top-4 ${language === 'ar' ? '-right-3 lg:-right-4' : '-left-3 lg:-left-4'} bg-gradient-to-br from-yellow-400 via-yellow-500 to-amber-500 text-gray-900 rounded-full w-18 h-18 sm:w-20 sm:h-20 lg:w-24 lg:h-24 flex items-center justify-center font-bold text-sm sm:text-base lg:text-lg shadow-[0_8px_30px_rgb(234,179,8,0.5)] animate-bounce-in z-30 border-4 border-white/30 hover:scale-110 transition-transform duration-300`}>
+                  ⭐ {t('hero.new')}
                </div>
             </div>
           </div>
