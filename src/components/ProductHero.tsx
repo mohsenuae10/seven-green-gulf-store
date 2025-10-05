@@ -339,54 +339,39 @@ const ProductHero = () => {
                   <span>{t('hero.swipe')}</span>
                 </div>
                 
-                {/* عرض السعر البارز - أسفل الصورة مباشرة */}
-                <Card className="relative mt-6 bg-gradient-to-br from-primary/10 via-white to-secondary/10 border-2 border-primary/30 shadow-[0_10px_40px_rgba(139,195,74,0.3)] overflow-visible hover:shadow-[0_15px_50px_rgba(139,195,74,0.4)] transition-all duration-300">
-                  <CardContent className="p-3 sm:p-4 lg:p-6">
-                    {priceLoading ? (
-                      <Skeleton className="w-full h-24" />
-                    ) : (
-                      <div className="space-y-2 lg:space-y-3">
-                        {/* العنوان */}
-                        <div className="flex items-center justify-center gap-2 text-primary">
-                          <span className="text-base sm:text-lg lg:text-xl font-bold">💰 {t('hero.special.price')}</span>
-                        </div>
-                        
-                        {/* السعر */}
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 lg:gap-4">
-                          {/* السعر القديم */}
-                          <div className="text-muted-foreground text-center sm:text-right">
-                            <div className="text-xs lg:text-sm">{t('hero.was')}</div>
-                            <div className="text-base sm:text-lg lg:text-xl line-through font-semibold">{formatPrice(ORIGINAL_PRICE)}</div>
-                          </div>
-                          
-                          {/* السهم */}
-                          <div className="text-xl sm:text-2xl lg:text-3xl text-primary animate-pulse">
-                            {language === 'ar' ? '←' : '→'}
-                          </div>
-                          
-                          {/* السعر الجديد */}
-                          <div className="text-center sm:text-left">
-                            <div className="text-xs lg:text-sm text-primary font-semibold">{t('hero.now')}</div>
-                            <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold bg-gradient-primary bg-clip-text text-transparent">
-                              {formatPrice(productPrice)}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* عرض محدود */}
-                        <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-red-500/20 via-pink-500/20 to-red-500/20 rounded-full px-3 sm:px-4 py-1.5 sm:py-2 border border-red-500/30">
-                          <span className="text-lg sm:text-xl animate-pulse">⏳</span>
-                          <span className="text-xs sm:text-sm lg:text-base font-semibold text-red-700">{t('hero.limited.offer')}</span>
-                        </div>
+                {/* Price Badge - أنيق وبسيط */}
+                <div className="mt-6 flex justify-center">
+                  {priceLoading ? (
+                    <Skeleton className="w-64 h-20" />
+                  ) : (
+                    <div className="relative inline-flex items-center gap-3 bg-gradient-to-r from-primary/20 via-white to-secondary/20 backdrop-blur-sm rounded-2xl px-6 py-4 border-2 border-primary/40 shadow-[0_8px_30px_rgba(139,195,74,0.25)] hover:shadow-[0_10px_40px_rgba(139,195,74,0.35)] transition-all duration-300 group">
+                      {/* السعر القديم */}
+                      <div className="flex flex-col items-end">
+                        <span className="text-xs text-muted-foreground">{t('hero.was')}</span>
+                        <span className="text-lg line-through text-muted-foreground font-semibold">{formatPrice(ORIGINAL_PRICE)}</span>
                       </div>
-                    )}
-                  </CardContent>
-                  
-                  {/* نسبة التوفير في دائرة - موضع محسن */}
-                  <div className={`absolute -top-4 ${language === 'ar' ? '-right-4' : '-left-4'} bg-gradient-to-br from-red-500 to-pink-600 text-white rounded-full w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 flex items-center justify-center text-sm sm:text-base lg:text-lg font-bold shadow-[0_8px_30px_rgb(239,68,68,0.6)] z-10 border-3 border-white/40 animate-pulse`}>
-                    -{Math.round(((ORIGINAL_PRICE - productPrice) / ORIGINAL_PRICE) * 100)}%
-                  </div>
-                </Card>
+                      
+                      {/* فاصل */}
+                      <div className="w-px h-12 bg-gradient-to-b from-transparent via-primary/50 to-transparent"></div>
+                      
+                      {/* السعر الجديد */}
+                      <div className="flex flex-col items-start">
+                        <span className="text-xs text-primary font-semibold">{t('hero.now')}</span>
+                        <span className="text-3xl font-extrabold bg-gradient-primary bg-clip-text text-transparent">
+                          {formatPrice(productPrice)}
+                        </span>
+                      </div>
+                      
+                      {/* دائرة التوفير - صغيرة وأنيقة */}
+                      <div className="absolute -top-3 -right-3 bg-gradient-to-br from-red-500 to-pink-600 text-white rounded-full w-14 h-14 flex items-center justify-center text-sm font-bold shadow-lg animate-pulse border-2 border-white">
+                        -{Math.round(((ORIGINAL_PRICE - productPrice) / ORIGINAL_PRICE) * 100)}%
+                      </div>
+                      
+                      {/* Glow effect on hover */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
+                    </div>
+                  )}
+                </div>
               </div>
               
                {/* Floating Badges - Improved Design */}
