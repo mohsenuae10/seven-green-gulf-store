@@ -71,12 +71,12 @@ const ProductHero = () => {
     load();
   }, []);
 
-  // Auto-advance carousel
+  // Auto-advance carousel - بطيء جداً
   useEffect(() => {
     if (productImages.length <= 1) return;
     const interval = setInterval(() => {
       setSelectedIndex((prev) => (prev + 1) % productImages.length);
-    }, 3000);
+    }, 6000); // 6 ثواني بدلاً من 3
     return () => clearInterval(interval);
   }, [productImages.length]);
   
@@ -374,19 +374,34 @@ const ProductHero = () => {
                 </div>
               </div>
               
-               {/* Floating Badges - Improved Design */}
-                {/* علامة "وفر" - تصميم محسن */}
-                <div className={`absolute -top-3 lg:-top-4 ${language === 'ar' ? '-left-3 lg:-left-4' : '-right-3 lg:-right-4'} bg-gradient-to-br from-red-500 via-red-600 to-pink-600 text-white rounded-full w-18 h-18 sm:w-20 sm:h-20 lg:w-24 lg:h-24 flex items-center justify-center font-bold text-sm lg:text-base shadow-[0_8px_30px_rgb(239,68,68,0.5)] animate-bounce-in z-30 border-4 border-white/30 hover:scale-110 transition-transform duration-300`}>
-                  <div className="text-center">
-                    <div className="text-xs lg:text-sm">🔥 وفر</div>
-                    <div className="text-xl sm:text-2xl lg:text-3xl font-extrabold">{Math.round(((ORIGINAL_PRICE - productPrice) / ORIGINAL_PRICE) * 100)}%</div>
+               {/* Floating Badges - تصميم محسّن */}
+                {/* علامة "وفر" - أنيقة ومتحركة */}
+                <div className={`absolute -top-4 lg:-top-5 ${language === 'ar' ? '-left-4 lg:-left-5' : '-right-4 lg:-right-5'} z-30`}>
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-500 to-pink-600 rounded-full blur-lg opacity-75 group-hover:opacity-100 animate-pulse"></div>
+                    <div className="relative bg-gradient-to-br from-red-500 via-red-600 to-pink-600 text-white rounded-full w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 flex items-center justify-center border-4 border-white/40 shadow-[0_10px_40px_rgba(239,68,68,0.6)] hover:scale-110 transition-all duration-300">
+                      <div className="text-center">
+                        <div className="text-xs sm:text-sm lg:text-base font-bold">🔥 وفر</div>
+                        <div className="text-2xl sm:text-3xl lg:text-4xl font-extrabold leading-none mt-1">
+                          {Math.round(((ORIGINAL_PRICE - productPrice) / ORIGINAL_PRICE) * 100)}%
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 
-                {/* علامة "جديد" - تصميم محسن */}
-                <div className={`absolute -top-3 lg:-top-4 ${language === 'ar' ? '-right-3 lg:-right-4' : '-left-3 lg:-left-4'} bg-gradient-to-br from-yellow-400 via-yellow-500 to-amber-500 text-gray-900 rounded-full w-18 h-18 sm:w-20 sm:h-20 lg:w-24 lg:h-24 flex items-center justify-center font-bold text-sm sm:text-base lg:text-lg shadow-[0_8px_30px_rgb(234,179,8,0.5)] animate-bounce-in z-30 border-4 border-white/30 hover:scale-110 transition-transform duration-300`}>
-                  ⭐ {t('hero.new')}
-               </div>
+                {/* علامة "جديد" - أنيقة ومتحركة */}
+                <div className={`absolute -top-4 lg:-top-5 ${language === 'ar' ? '-right-4 lg:-right-5' : '-left-4 lg:-left-5'} z-30`}>
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full blur-lg opacity-75 group-hover:opacity-100 animate-pulse"></div>
+                    <div className="relative bg-gradient-to-br from-yellow-400 via-yellow-500 to-amber-500 text-gray-900 rounded-full w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 flex items-center justify-center border-4 border-white/40 shadow-[0_10px_40px_rgba(234,179,8,0.6)] hover:scale-110 transition-all duration-300">
+                      <div className="text-center font-bold">
+                        <div className="text-2xl sm:text-3xl lg:text-4xl">⭐</div>
+                        <div className="text-sm sm:text-base lg:text-lg leading-none">{t('hero.new')}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
             </div>
           </div>
         </div>
