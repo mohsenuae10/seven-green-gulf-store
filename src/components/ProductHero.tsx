@@ -86,26 +86,14 @@ const ProductHero = () => {
       <header className="absolute top-0 left-0 right-0 z-30 bg-gradient-to-b from-black/30 via-black/10 to-transparent backdrop-blur-xl border-b border-white/20 shadow-lg">
         <div className="mobile-container">
           <div className="flex items-center justify-between py-4 sm:py-5 px-4 sm:px-6 lg:px-8">
-            {/* Logo Section - Premium & Balanced */}
-            <div className="flex items-center gap-4 sm:gap-6">
-              <div className="relative group">
-                {/* Beautiful glow effect */}
-                <div className="absolute -inset-2 bg-gradient-to-r from-secondary/40 via-secondary/30 to-secondary/40 blur-2xl rounded-full opacity-75 group-hover:opacity-100 group-hover:blur-3xl transition-all duration-500 animate-pulse"></div>
-                <img 
-                  src={sevenGreenLogo} 
-                  alt="Seven Green Logo - سفن جرين" 
-                  className="relative w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 object-contain filter drop-shadow-[0_0_25px_rgba(139,195,74,0.7)] hover:drop-shadow-[0_0_35px_rgba(139,195,74,0.9)] transition-all duration-500 hover:scale-110 hover:rotate-3"
-                  loading="eager"
-                />
-              </div>
-              <div className="flex flex-col justify-center gap-0.5">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-wider font-english leading-none">
-                  <span className="bg-gradient-to-r from-white via-white to-secondary bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)]">
-                    SEVEN GREEN
-                  </span>
-                </h1>
-                <p className="text-base sm:text-lg lg:text-xl text-secondary font-bold drop-shadow-[0_2px_8px_rgba(139,195,74,0.5)]">سفن جرين</p>
-              </div>
+            {/* Logo Section - Text Only */}
+            <div className="flex flex-col justify-center gap-0.5">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-wider font-english leading-none">
+                <span className="bg-gradient-to-r from-white via-white to-secondary bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)]">
+                  SEVEN GREEN
+                </span>
+              </h1>
+              <p className="text-base sm:text-lg lg:text-xl text-secondary font-bold drop-shadow-[0_2px_8px_rgba(139,195,74,0.5)]">سفن جرين</p>
             </div>
 
             {/* Language and Currency Switchers - Elegant */}
