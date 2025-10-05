@@ -110,8 +110,8 @@ const ProductHero = () => {
       {/* Admin Link - Hidden on mobile, shown on desktop */}
       {/* Removed as it's now in the header */}
 
-      {/* Background with elegant neutral gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100"></div>
+      {/* Background - Pure White */}
+      <div className="absolute inset-0 bg-white"></div>
       
       {/* Decorative elements */}
       <div className="absolute top-20 left-10 opacity-10">
@@ -240,15 +240,15 @@ const ProductHero = () => {
           {/* Product Carousel - Left side for RTL */}
           <div className="order-1 lg:order-2 relative animate-fade-in">
             <div className="relative">
-              {/* Glowing effect behind carousel */}
-              <div className="absolute inset-0 bg-gradient-secondary opacity-30 blur-3xl rounded-full transform rotate-12"></div>
+              {/* Subtle neutral glow behind carousel */}
+              <div className="absolute inset-0 bg-white/70 blur-2xl rounded-full"></div>
               
               {/* Product Images Carousel */}
               <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
                 {/* Main Image Display */}
                 <div className="relative overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong">
                   {productImages.length > 0 ? (
-                    <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white/5 backdrop-blur-sm flex items-center justify-center">
+                    <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white border border-primary/10 shadow-soft flex items-center justify-center">
                       <OptimizedImage
                         key={selectedIndex}
                         src={productImages[selectedIndex].src}
@@ -295,8 +295,8 @@ const ProductHero = () => {
                         key={index}
                         className={`w-3 h-3 rounded-full transition-all duration-300 ${
                           index === selectedIndex 
-                            ? 'bg-secondary w-8 shadow-glow' 
-                            : 'bg-white/40 hover:bg-white/60'
+                            ? 'bg-primary w-8 shadow-glow' 
+                            : 'bg-gray-300 hover:bg-gray-400'
                         }`}
                         onClick={() => setSelectedIndex(index)}
                         aria-label={`Image ${index + 1}`}
@@ -312,10 +312,10 @@ const ProductHero = () => {
                       <button
                         key={`thumb-${i}`}
                         onClick={() => setSelectedIndex(i)}
-                        className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                        className={`flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border-2 bg-white transition-all duration-300 ${
                           i === selectedIndex 
-                            ? 'border-secondary shadow-glow scale-110' 
-                            : 'border-white/30 hover:border-white/60 opacity-70 hover:opacity-100'
+                            ? 'border-primary shadow-glow scale-110' 
+                            : 'border-gray-200 hover:border-gray-300 opacity-70 hover:opacity-100'
                         }`}
                       >
                         <OptimizedImage
