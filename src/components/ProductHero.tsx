@@ -87,21 +87,21 @@ const ProductHero = () => {
         <div className="mobile-container">
           <div className="flex items-center justify-between py-4 px-4 sm:px-0">
             {/* Logo Section */}
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="absolute inset-0 bg-secondary/30 blur-xl rounded-full"></div>
+            <div className="flex items-center gap-4">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-secondary opacity-40 blur-2xl rounded-full group-hover:opacity-60 transition-opacity duration-300"></div>
                 <img 
                   src={sevenGreenLogo} 
                   alt="Seven Green Logo - سفن جرين" 
-                  className="relative w-14 h-14 sm:w-16 sm:h-16 object-contain drop-shadow-glow transition-transform hover:scale-110 duration-300"
+                  className="relative w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain filter drop-shadow-[0_0_20px_rgba(139,195,74,0.6)] transition-transform hover:scale-110 duration-300 animate-fade-in"
                   loading="eager"
                 />
               </div>
               <div className="text-left">
-                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-wider font-english drop-shadow-lg">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-wider font-english drop-shadow-[0_4px_8px_rgba(0,0,0,0.3)]">
                   SEVEN GREEN
                 </h1>
-                <p className="text-xs text-secondary font-semibold">سفن جرين</p>
+                <p className="text-sm sm:text-base text-secondary font-bold drop-shadow-lg">سفن جرين</p>
               </div>
             </div>
 
