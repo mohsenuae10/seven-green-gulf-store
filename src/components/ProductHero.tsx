@@ -109,14 +109,14 @@ const ProductHero = () => {
       {/* Admin Link - Hidden on mobile, shown on desktop */}
       {/* Removed as it's now in the header */}
 
-      {/* Background with gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-hero opacity-90"></div>
+      {/* Background with elegant neutral gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-50 via-white to-gray-100"></div>
       
       {/* Decorative elements */}
-      <div className="absolute top-20 left-10 opacity-20">
-        <Leaf className="w-32 h-32 text-secondary animate-pulse" />
+      <div className="absolute top-20 left-10 opacity-10">
+        <Leaf className="w-32 h-32 text-primary animate-pulse" />
       </div>
-      <div className="absolute bottom-20 right-10 opacity-20">
+      <div className="absolute bottom-20 right-10 opacity-10">
         <Crown className="w-24 h-24 text-secondary animate-pulse" />
       </div>
 
@@ -136,11 +136,11 @@ const ProductHero = () => {
 
             {/* Main Heading */}
             <div className="space-y-3 lg:space-y-4">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-7xl font-bold text-white leading-tight">
-                <span className="block text-secondary font-semibold">صابونة</span>
-                {heroTitle}
-                <span className="block text-secondary font-semibold">المثلثة</span>
-                <span className="block text-lg sm:text-xl lg:text-2xl xl:text-3xl text-secondary font-semibold mt-1 font-english">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-7xl font-bold text-foreground leading-tight">
+                <span className="block text-primary font-semibold">صابونة</span>
+                <span className="bg-gradient-primary bg-clip-text text-transparent">{heroTitle}</span>
+                <span className="block text-primary font-semibold">المثلثة</span>
+                <span className="block text-lg sm:text-xl lg:text-2xl xl:text-3xl text-primary font-semibold mt-1 font-english">
                   {heroSubtitle}
                 </span>
                 <span className="block text-xl sm:text-2xl lg:text-3xl xl:text-4xl text-secondary font-light mt-2">
@@ -148,7 +148,7 @@ const ProductHero = () => {
                 </span>
               </h1>
               
-              <p className="text-base sm:text-lg lg:text-xl text-white/90 max-w-2xl leading-relaxed mx-auto lg:mx-0">
+              <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl leading-relaxed mx-auto lg:mx-0">
                 {t('hero.description')}
               </p>
             </div>
@@ -160,10 +160,10 @@ const ProductHero = () => {
                 { icon: Shield, title: t('hero.feature.safe'), desc: t('hero.feature.safe.desc') },
                 { icon: Crown, title: t('hero.feature.luxury'), desc: t('hero.feature.luxury.desc') }
               ]).map((feature, index) => (
-                <Card key={index} className="bg-white/10 backdrop-blur-sm border-white/20 p-3 lg:p-4 text-center animate-bounce-in" style={{animationDelay: `${index * 0.2}s`}}>
-                  <feature.icon className="w-6 h-6 lg:w-8 lg:h-8 text-secondary mx-auto mb-2" />
-                  <h3 className="font-semibold text-white text-sm lg:text-base">{feature.title}</h3>
-                  {feature.desc && <p className="text-xs lg:text-sm text-white/70">{feature.desc}</p>}
+                <Card key={index} className="bg-white border-primary/20 shadow-soft p-3 lg:p-4 text-center animate-bounce-in hover:shadow-medium transition-all" style={{animationDelay: `${index * 0.2}s`}}>
+                  <feature.icon className="w-6 h-6 lg:w-8 lg:h-8 text-primary mx-auto mb-2" />
+                  <h3 className="font-semibold text-foreground text-sm lg:text-base">{feature.title}</h3>
+                  {feature.desc && <p className="text-xs lg:text-sm text-muted-foreground">{feature.desc}</p>}
                 </Card>
               ))}
             </div>
@@ -175,32 +175,32 @@ const ProductHero = () => {
                   <Star key={star} className="w-5 h-5 fill-secondary text-secondary" />
                 ))}
               </div>
-              <span className="text-white font-medium">4.9</span>
-              <span className="text-white/70">(2,847 {t('hero.reviews')})</span>
+              <span className="text-foreground font-medium">4.9</span>
+              <span className="text-muted-foreground">(2,847 {t('hero.reviews')})</span>
             </div>
 
             {/* Success Stories */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl lg:rounded-2xl p-4 lg:p-6 border border-white/20">
+            <div className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 border border-primary/20 shadow-soft">
               <div className="flex items-center gap-3 mb-4">
-                <CheckCircle className="w-5 h-5 lg:w-6 lg:h-6 text-green-400" />
-                <span className="text-white font-semibold text-sm lg:text-base">{t('hero.success.title')}</span>
+                <CheckCircle className="w-5 h-5 lg:w-6 lg:h-6 text-primary" />
+                <span className="text-foreground font-semibold text-sm lg:text-base">{t('hero.success.title')}</span>
               </div>
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 text-center">
                 <div>
-                  <div className="text-xl lg:text-2xl font-bold text-secondary">97%</div>
-                  <div className="text-xs lg:text-sm text-white/70">{t('hero.stat.density')}</div>
+                  <div className="text-xl lg:text-2xl font-bold text-primary">97%</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">{t('hero.stat.density')}</div>
                 </div>
                 <div>
-                  <div className="text-xl lg:text-2xl font-bold text-secondary">85%</div>
-                  <div className="text-xs lg:text-sm text-white/70">{t('hero.stat.reduction')}</div>
+                  <div className="text-xl lg:text-2xl font-bold text-primary">85%</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">{t('hero.stat.reduction')}</div>
                 </div>
                 <div>
-                  <div className="text-xl lg:text-2xl font-bold text-secondary">92%</div>
-                  <div className="text-xs lg:text-sm text-white/70">{t('hero.stat.shine')}</div>
+                  <div className="text-xl lg:text-2xl font-bold text-primary">92%</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">{t('hero.stat.shine')}</div>
                 </div>
                 <div>
-                  <div className="text-xl lg:text-2xl font-bold text-secondary">4 {t('hero.stat.weeks')}</div>
-                  <div className="text-xs lg:text-sm text-white/70">{t('hero.stat.weeks.desc')}</div>
+                  <div className="text-xl lg:text-2xl font-bold text-primary">4 {t('hero.stat.weeks')}</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">{t('hero.stat.weeks.desc')}</div>
                 </div>
               </div>
             </div>
@@ -224,13 +224,13 @@ const ProductHero = () => {
             </div>
 
             {/* Trust Badges */}
-            <div className={`flex flex-wrap items-center gap-4 lg:gap-6 text-white/60 text-xs lg:text-sm ${language === 'ar' ? 'justify-center lg:justify-end' : 'justify-center lg:justify-start'}`}>
+            <div className={`flex flex-wrap items-center gap-4 lg:gap-6 text-muted-foreground text-xs lg:text-sm ${language === 'ar' ? 'justify-center lg:justify-end' : 'justify-center lg:justify-start'}`}>
               <div className="flex items-center gap-2">
-                <Shield className="w-3 h-3 lg:w-4 lg:h-4" />
+                <Shield className="w-3 h-3 lg:w-4 lg:h-4 text-primary" />
                 <span>{t('hero.guarantee')}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Crown className="w-3 h-3 lg:w-4 lg:h-4" />
+                <Crown className="w-3 h-3 lg:w-4 lg:h-4 text-secondary" />
                 <span>{t('hero.exclusive')}</span>
               </div>
             </div>
@@ -257,9 +257,9 @@ const ProductHero = () => {
                         fill={true}
                       />
                     </div>
-                  ) : (
-                    <div className="aspect-square w-full bg-white/10 rounded-2xl lg:rounded-3xl flex items-center justify-center">
-                      <span className="text-white/50">لا توجد صور</span>
+                   ) : (
+                    <div className="aspect-square w-full bg-muted rounded-2xl lg:rounded-3xl flex items-center justify-center border border-border">
+                      <span className="text-muted-foreground">لا توجد صور</span>
                     </div>
                   )}
                   
@@ -329,11 +329,11 @@ const ProductHero = () => {
                 )}
                 
                 {/* Swipe indicator for mobile */}
-                <div className="flex items-center justify-center gap-2 mt-3 text-white/60 text-xs sm:hidden">
+                <div className="flex items-center justify-center gap-2 mt-3 text-muted-foreground text-xs sm:hidden">
                   <div className="flex gap-1">
-                    <div className="w-1 h-1 bg-white/40 rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
-                    <div className="w-1 h-1 bg-white/40 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                    <div className="w-1 h-1 bg-white/40 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
+                    <div className="w-1 h-1 bg-primary/40 rounded-full animate-bounce" style={{animationDelay: '0s'}}></div>
+                    <div className="w-1 h-1 bg-primary/40 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    <div className="w-1 h-1 bg-primary/40 rounded-full animate-bounce" style={{animationDelay: '0.4s'}}></div>
                   </div>
                   <span>{t('hero.swipe')}</span>
                 </div>
