@@ -404,7 +404,7 @@ const ProductHero = () => {
           <div className="mobile-grid px-4">
             
             {/* Certificates */}
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
+            <Card className="bg-gradient-to-br from-primary/10 via-white to-secondary/10 border-2 border-primary/40 overflow-hidden hover:scale-105 hover:shadow-[0_10px_40px_rgba(139,195,74,0.35)] transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/34e3ec2a-fc02-4dc5-832e-8e3c95d538bc.png" 
                 alt="Seven Green Safety and Quality Certificates"
@@ -413,14 +413,15 @@ const ProductHero = () => {
                 width={371}
                 height={371}
               />
-              <CardContent className="p-4 text-center">
+              <CardContent className="p-4 text-center relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
                 <h3 className="text-foreground font-semibold mb-2">{t('gallery.certificates.title')}</h3>
                 <p className="text-muted-foreground text-sm">{t('gallery.certificates.desc')}</p>
               </CardContent>
             </Card>
 
             {/* Product Stats */}
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
+            <Card className="bg-gradient-to-br from-primary/10 via-white to-secondary/10 border-2 border-primary/40 overflow-hidden hover:scale-105 hover:shadow-[0_10px_40px_rgba(139,195,74,0.35)] transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/0c009587-187a-4c47-8318-01d391fab457.png" 
                 alt="إحصائيات فعالية سيفن جرين"
@@ -429,14 +430,15 @@ const ProductHero = () => {
                 width={371}
                 height={256}
               />
-              <CardContent className="p-4 text-center">
+              <CardContent className="p-4 text-center relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
                 <h3 className="text-foreground font-semibold mb-2">{t('gallery.effectiveness.title')}</h3>
                 <p className="text-muted-foreground text-sm">{t('gallery.effectiveness.desc')}</p>
               </CardContent>
             </Card>
 
             {/* Hair Problems */}
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
+            <Card className="bg-gradient-to-br from-primary/10 via-white to-secondary/10 border-2 border-primary/40 overflow-hidden hover:scale-105 hover:shadow-[0_10px_40px_rgba(139,195,74,0.35)] transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/3c289658-bf58-4017-b4dd-1233f018534f.png" 
                 alt="مشاكل الشعر التي يعالجها سيفن جرين"
@@ -445,14 +447,15 @@ const ProductHero = () => {
                 width={371}
                 height={256}
               />
-              <CardContent className="p-4 text-center">
+              <CardContent className="p-4 text-center relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
                 <h3 className="text-foreground font-semibold mb-2">{t('gallery.hair.problems.title')}</h3>
                 <p className="text-muted-foreground text-sm">{t('gallery.hair.problems.desc')}</p>
               </CardContent>
             </Card>
 
             {/* Natural Ingredients */}
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
+            <Card className="bg-gradient-to-br from-primary/10 via-white to-secondary/10 border-2 border-primary/40 overflow-hidden hover:scale-105 hover:shadow-[0_10px_40px_rgba(139,195,74,0.35)] transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/e811e78f-3694-4fda-bc61-637c435f2623.png" 
                 alt="المكونات الطبيعية في سيفن جرين"
@@ -461,14 +464,15 @@ const ProductHero = () => {
                 width={371}
                 height={256}
               />
-              <CardContent className="p-4 text-center">
+              <CardContent className="p-4 text-center relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
                 <h3 className="text-foreground font-semibold mb-2">{t('gallery.natural.ingredients.title')}</h3>
                 <p className="text-muted-foreground text-sm">{t('gallery.natural.ingredients.desc')}</p>
               </CardContent>
             </Card>
 
             {/* Hair Care Benefits */}
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
+            <Card className="bg-gradient-to-br from-primary/10 via-white to-secondary/10 border-2 border-primary/40 overflow-hidden hover:scale-105 hover:shadow-[0_10px_40px_rgba(139,195,74,0.35)] transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/04d3f7fc-1557-4bb3-801f-dcb481c7e7c4.png" 
                 alt="فوائد العناية بالشعر من سيفن جرين"
@@ -477,14 +481,15 @@ const ProductHero = () => {
                 width={371}
                 height={256}
               />
-              <CardContent className="p-4 text-center">
+              <CardContent className="p-4 text-center relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
                 <h3 className="text-foreground font-semibold mb-2">{t('gallery.comprehensive.benefits.title')}</h3>
                 <p className="text-muted-foreground text-sm">{t('gallery.comprehensive.benefits.desc')}</p>
               </CardContent>
             </Card>
 
             {/* Product Comparison */}
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden hover:scale-105 transition-transform duration-300">
+            <Card className="bg-gradient-to-br from-primary/10 via-white to-secondary/10 border-2 border-primary/40 overflow-hidden hover:scale-105 hover:shadow-[0_10px_40px_rgba(139,195,74,0.35)] transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/6bf5c396-1aac-4f59-a75e-36012a8524d9.png" 
                 alt="مقارنة سيفن جرين مع المنتجات الأخرى"
@@ -493,7 +498,8 @@ const ProductHero = () => {
                 width={371}
                 height={256}
               />
-              <CardContent className="p-4 text-center">
+              <CardContent className="p-4 text-center relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
                 <h3 className="text-foreground font-semibold mb-2">{t('gallery.natural.excellence.title')}</h3>
                 <p className="text-muted-foreground text-sm">{t('gallery.natural.excellence.desc')}</p>
               </CardContent>
@@ -504,7 +510,7 @@ const ProductHero = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mt-8 lg:mt-12 px-4">
             
             {/* Usage Instructions */}
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden">
+            <Card className="bg-gradient-to-br from-primary/10 via-white to-secondary/10 border-2 border-primary/40 overflow-hidden hover:shadow-[0_10px_40px_rgba(139,195,74,0.35)] transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/6e004fdb-9c1b-47d6-80df-179d406e3a27.png" 
                 alt="طريقة استخدام سيفن جرين"
@@ -513,14 +519,15 @@ const ProductHero = () => {
                 width={574}
                 height={320}
               />
-              <CardContent className="p-6 text-center">
+              <CardContent className="p-6 text-center relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
                 <h3 className="text-foreground font-semibold text-xl mb-3">{t('gallery.usage.instructions.title')}</h3>
                 <p className="text-muted-foreground">{t('gallery.usage.instructions.desc')}</p>
               </CardContent>
             </Card>
 
             {/* Special Offer */}
-            <Card className="bg-white/10 backdrop-blur-sm border-white/20 overflow-hidden">
+            <Card className="bg-gradient-to-br from-primary/10 via-white to-secondary/10 border-2 border-primary/40 overflow-hidden hover:shadow-[0_10px_40px_rgba(139,195,74,0.35)] transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/8eb13276-b714-49ad-b518-70389a31bb9e.png" 
                 alt="عرض خاص على سيفن جرين"
@@ -529,7 +536,8 @@ const ProductHero = () => {
                 width={574}
                 height={320}
               />
-              <CardContent className="p-6 text-center">
+              <CardContent className="p-6 text-center relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-b-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
                 <h3 className="text-foreground font-semibold text-xl mb-3">{t('gallery.special.offer.title')}</h3>
                 <p className="text-muted-foreground">{t('gallery.special.offer.desc')}</p>
                 <Link to="/order">
