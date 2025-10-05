@@ -18,6 +18,16 @@
     </image:image>
   </url>
 
+  <!-- About Page -->
+  <url>
+    <loc>https://sevensgreen.com/about</loc>
+    <lastmod>2025-01-20</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/about" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/about" />
+  </url>
+
   <!-- Product Details -->
   <url>
     <loc>https://sevensgreen.com/product-details</loc>

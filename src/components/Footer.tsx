@@ -1,0 +1,87 @@
+import { Link } from "react-router-dom";
+import { useLanguage } from "@/hooks/useLanguage";
+
+const Footer = () => {
+  const { language } = useLanguage();
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="bg-card border-t border-border py-12 mt-16">
+      <div className="container mx-auto px-4">
+        <div className="grid md:grid-cols-3 gap-8 mb-8">
+          {/* About */}
+          <div>
+            <h3 className="font-bold text-lg mb-4">
+              {language === 'ar' ? 'سفن جرين' : 'Seven Green'}
+            </h3>
+            <p className="text-muted-foreground text-sm">
+              {language === 'ar'
+                ? 'علامة تجارية سعودية رائدة في منتجات العناية بالشعر الطبيعية'
+                : 'Leading Saudi brand in natural hair care products'}
+            </p>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="font-bold text-lg mb-4">
+              {language === 'ar' ? 'روابط سريعة' : 'Quick Links'}
+            </h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+                  {language === 'ar' ? 'الرئيسية' : 'Home'}
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">
+                  {language === 'ar' ? 'من نحن' : 'About Us'}
+                </Link>
+              </li>
+              <li>
+                <Link to="/product-details" className="text-muted-foreground hover:text-foreground transition-colors">
+                  {language === 'ar' ? 'تفاصيل المنتج' : 'Product Details'}
+                </Link>
+              </li>
+              <li>
+                <Link to="/order" className="text-muted-foreground hover:text-foreground transition-colors">
+                  {language === 'ar' ? 'اطلب الآن' : 'Order Now'}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h3 className="font-bold text-lg mb-4">
+              {language === 'ar' ? 'تواصل معنا' : 'Contact Us'}
+            </h3>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>{language === 'ar' ? 'المملكة العربية السعودية' : 'Saudi Arabia'}</li>
+              <li>
+                <a 
+                  href="https://www.snapchat.com/add/sevengreen" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground transition-colors"
+                >
+                  {language === 'ar' ? 'سناب شات: sevengreen' : 'Snapchat: sevengreen'}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
+          <p>
+            {language === 'ar' 
+              ? `© ${currentYear} سفن جرين. جميع الحقوق محفوظة.`
+              : `© ${currentYear} Seven Green. All rights reserved.`}
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

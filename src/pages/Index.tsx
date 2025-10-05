@@ -8,6 +8,7 @@ import FAQ from "@/components/FAQ";
 import TrustBadges from "@/components/TrustBadges";
 import MobileNav from "@/components/MobileNav";
 import MobileOptimized from "@/components/MobileOptimized";
+import Footer from "@/components/Footer";
 import { useLanguage } from "@/hooks/useLanguage";
 
 const Index = () => {
@@ -100,6 +101,40 @@ const Index = () => {
       "contactType": "Customer Service",
       "areaServed": ["SA", "AE", "KW", "BH", "OM", "QA", "YE"],
       "availableLanguage": ["ar", "en"]
+    }
+  };
+
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "سفن جرين - Seven Green",
+    "alternateName": ["سفن جرين", "Seven Green"],
+    "image": "https://sevensgreen.com/images/seven-green-icon.png",
+    "url": "https://sevensgreen.com",
+    "telephone": "+966-XX-XXX-XXXX",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "SA",
+      "addressRegion": language === 'ar' ? "المملكة العربية السعودية" : "Saudi Arabia"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "24.7136",
+      "longitude": "46.6753"
+    },
+    "priceRange": "$$",
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Saturday"
+      ],
+      "opens": "09:00",
+      "closes": "18:00"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "2847"
     }
   };
 
@@ -202,6 +237,9 @@ const Index = () => {
           {JSON.stringify(organizationSchema)}
         </script>
         <script type="application/ld+json">
+          {JSON.stringify(localBusinessSchema)}
+        </script>
+        <script type="application/ld+json">
           {JSON.stringify(websiteSchema)}
         </script>
         <script type="application/ld+json">
@@ -214,14 +252,43 @@ const Index = () => {
       
       <MobileOptimized className="min-h-screen">
         <MobileNav />
+        
+        {/* Internal Navigation Links */}
+        <nav className="container mx-auto px-4 py-4 flex gap-4 justify-center flex-wrap">
+          <a href="#product" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            {language === 'ar' ? 'المنتج' : 'Product'}
+          </a>
+          <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            {language === 'ar' ? 'المميزات' : 'Features'}
+          </a>
+          <a href="#ingredients" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            {language === 'ar' ? 'المكونات' : 'Ingredients'}
+          </a>
+          <a href="#reviews" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            {language === 'ar' ? 'التقييمات' : 'Reviews'}
+          </a>
+          <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}
+          </a>
+        </nav>
 
         <main>
-          <ProductHero />
+          <div id="product">
+            <ProductHero />
+          </div>
           <TrustBadges />
-          <ProductIngredients />
-          <ProductFeatures />
-          <CustomerReviews />
-          <FAQ />
+          <div id="ingredients">
+            <ProductIngredients />
+          </div>
+          <div id="features">
+            <ProductFeatures />
+          </div>
+          <div id="reviews">
+            <CustomerReviews />
+          </div>
+          <div id="faq">
+            <FAQ />
+          </div>
           
           {/* Rich SEO Content Section - Visible and Crawlable */}
           <section className="container mx-auto px-4 py-16 max-w-4xl">
@@ -288,6 +355,8 @@ const Index = () => {
             </article>
           </section>
         </main>
+        
+        <Footer />
       </MobileOptimized>
     </>
   );
