@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
+import { Facebook, Twitter, Video, Camera } from "lucide-react";
 
 const Footer = () => {
   const { language } = useLanguage();
@@ -53,51 +54,46 @@ const Footer = () => {
           {/* Contact & Social Media */}
           <div>
             <h3 className="font-bold text-lg mb-4">
-              {language === 'ar' ? 'تواصل معنا' : 'Contact Us'}
+              {language === 'ar' ? 'تواصل معنا' : 'Follow Us'}
             </h3>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>{language === 'ar' ? 'المملكة العربية السعودية' : 'Saudi Arabia'}</li>
-              <li>
-                <a 
-                  href="https://www.snapchat.com/add/sevensgreen" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground transition-colors"
-                >
-                  {language === 'ar' ? 'سناب شات: sevensgreen' : 'Snapchat: sevensgreen'}
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="https://www.tiktok.com/@sevensgreen" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground transition-colors"
-                >
-                  {language === 'ar' ? 'تيك توك: @sevensgreen' : 'TikTok: @sevensgreen'}
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="https://twitter.com/sevensgreen" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground transition-colors"
-                >
-                  {language === 'ar' ? 'تويتر: @sevensgreen' : 'Twitter/X: @sevensgreen'}
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="https://www.facebook.com/sevensgreen" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="hover:text-foreground transition-colors"
-                >
-                  {language === 'ar' ? 'فيسبوك: sevensgreen' : 'Facebook: sevensgreen'}
-                </a>
-              </li>
-            </ul>
+            <div className="flex gap-4">
+              <a 
+                href="https://www.snapchat.com/add/sevensgreen" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Snapchat"
+              >
+                <Camera className="w-6 h-6" />
+              </a>
+              <a 
+                href="https://www.tiktok.com/@sevensgreen" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="TikTok"
+              >
+                <Video className="w-6 h-6" />
+              </a>
+              <a 
+                href="https://twitter.com/sevensgreen" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Twitter/X"
+              >
+                <Twitter className="w-6 h-6" />
+              </a>
+              <a 
+                href="https://www.facebook.com/sevensgreen" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Facebook"
+              >
+                <Facebook className="w-6 h-6" />
+              </a>
+            </div>
           </div>
         </div>
 
