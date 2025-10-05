@@ -10,8 +10,6 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
-import ProductDetails from "./pages/ProductDetails";
-import Landing from "./pages/Landing";
 import About from "./pages/About";
 
 const queryClient = new QueryClient();
@@ -26,8 +24,6 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
-            <Route path="/landing" element={<Landing />} />
-            <Route path="/product-details" element={<ProductDetails />} />
             <Route path="/order" element={<Order />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/auth" element={<Auth />} />

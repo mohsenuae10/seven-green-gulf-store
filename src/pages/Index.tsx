@@ -10,9 +10,12 @@ import MobileNav from "@/components/MobileNav";
 import MobileOptimized from "@/components/MobileOptimized";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useProductPrice } from "@/hooks/useProductPrice";
+import { CONTACT_INFO } from "@/config/contact";
 
 const Index = () => {
   const { language } = useLanguage();
+  const { price } = useProductPrice({ fallback: 71 });
   
   useEffect(() => {
     // Update document language
@@ -60,9 +63,9 @@ const Index = () => {
       "@type": "Offer",
       "url": "https://sevensgreen.com/",
       "priceCurrency": "SAR",
-      "price": "71",
+      "price": price.toString(),
       "availability": "https://schema.org/InStock",
-      "priceValidUntil": "2025-12-31",
+      "priceValidUntil": "2026-12-31",
       "shippingDetails": {
         "@type": "OfferShippingDetails",
         "shippingRate": {
@@ -97,8 +100,9 @@ const Index = () => {
     ],
     "contactPoint": {
       "@type": "ContactPoint",
-      "telephone": "+966-XX-XXX-XXXX",
+      "telephone": CONTACT_INFO.phone,
       "contactType": "Customer Service",
+      "email": CONTACT_INFO.email,
       "areaServed": ["SA", "AE", "KW", "BH", "OM", "QA", "YE"],
       "availableLanguage": ["ar", "en"]
     }
@@ -111,11 +115,12 @@ const Index = () => {
     "alternateName": ["سفن جرين", "Seven Green"],
     "image": "https://sevensgreen.com/images/seven-green-icon.png",
     "url": "https://sevensgreen.com",
-    "telephone": "+966-XX-XXX-XXXX",
+    "telephone": CONTACT_INFO.phone,
+    "email": CONTACT_INFO.email,
     "address": {
       "@type": "PostalAddress",
-      "addressCountry": "SA",
-      "addressRegion": language === 'ar' ? "المملكة العربية السعودية" : "Saudi Arabia"
+      "addressCountry": CONTACT_INFO.country,
+      "addressRegion": language === 'ar' ? CONTACT_INFO.countryName.ar : CONTACT_INFO.countryName.en
     },
     "geo": {
       "@type": "GeoCoordinates",
@@ -224,6 +229,9 @@ const Index = () => {
         <meta property="og:url" content="https://sevensgreen.com/" />
         <meta property="og:image" content="https://sevensgreen.com/images/seven-green-icon.png" />
         <meta property="og:site_name" content="سفن جرين - Seven Green" />
+        <link rel="alternate" hrefLang="ar" href="https://sevensgreen.com/?lang=ar" />
+        <link rel="alternate" hrefLang="en" href="https://sevensgreen.com/?lang=en" />
+        <link rel="alternate" hrefLang="x-default" href="https://sevensgreen.com/" />
         <meta name="application-name" content="سفن جرين" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />

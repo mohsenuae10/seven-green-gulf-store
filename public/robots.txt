@@ -25,20 +25,11 @@ User-agent: *
 Allow: /
 Crawl-delay: 2
 
-# Sitemaps
-Sitemap: https://sevensgreen.com/sitemap.xml
-
-# Disallow admin sections
+# Disallow admin and private sections
 Disallow: /admin
 Disallow: /auth
+Disallow: /payment-success
 Disallow: /*.json$
-Disallow: /api/
 
-# Allow important pages
-Allow: /
-Allow: /product-details
-Allow: /order
-Allow: /payment-success
-
-# Cache directives
-# Host: sevensgreen.com
+# Sitemaps
+Sitemap: https://sevensgreen.com/sitemap.xml
