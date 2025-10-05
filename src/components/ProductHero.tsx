@@ -225,16 +225,6 @@ const ProductHero = () => {
                   )}
                 </Button>
               </Link>
-              
-              <Link to="/product-details">
-                <Button 
-                  variant="outline"
-                  size="lg"
-                  className="w-full sm:w-auto border-white/30 text-primary bg-white/90 hover:bg-white hover:text-primary/80 transition-all duration-300 text-base lg:text-lg px-8 lg:px-12 py-3 lg:py-4 rounded-full"
-                >
-                  {t('hero.product.details')}
-                </Button>
-              </Link>
             </div>
 
             {/* Trust Badges */}
