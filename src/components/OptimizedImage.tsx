@@ -11,6 +11,10 @@ interface OptimizedImageProps {
   fill?: boolean;
 }
 
+/**
+ * OptimizedImage component with WebP support and lazy loading
+ * Automatically serves WebP format when supported by the browser
+ */
 const OptimizedImage = ({ 
   src, 
   alt, 
@@ -24,30 +28,43 @@ const OptimizedImage = ({
   const [imageError, setImageError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Supabase Storage doesn't support URL transformation parameters by default
-  // Use the original URL directly for better compatibility
-  const imageUrl = src;
+  // Generate WebP version path
+  const getWebPPath = (originalSrc: string) => {
+    const ext = originalSrc.split('.').pop()?.toLowerCase();
+    if (ext === 'webp') return originalSrc;
+    return originalSrc.replace(/\.(jpg|jpeg|png)$/i, '.webp');
+  };
+
+  const webpSrc = getWebPPath(src);
 
   return (
     <div className="relative">
-      <img
-        src={imageUrl}
-        alt={alt}
-        draggable={false}
-        className={`${className} transition-opacity duration-300 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
-        loading={priority ? 'eager' : 'lazy'}
-        decoding="async"
-        width={width}
-        height={height}
-        onLoad={() => setIsLoaded(true)}
-        onError={() => setImageError(true)}
-        style={{
-          maxWidth: '100%',
-          height: fill ? '100%' : 'auto'
-        }}
-      />
+      <picture>
+        {/* WebP source for modern browsers */}
+        <source srcSet={webpSrc} type="image/webp" />
+        
+        {/* Fallback to original format */}
+        <img
+          src={src}
+          alt={alt}
+          draggable={false}
+          className={`${className} transition-opacity duration-300 ${
+            isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
+          loading={priority ? 'eager' : 'lazy'}
+          decoding="async"
+          width={width}
+          height={height}
+          onLoad={() => setIsLoaded(true)}
+          onError={() => setImageError(true)}
+          sizes={sizes}
+          style={{
+            maxWidth: '100%',
+            height: fill ? '100%' : 'auto',
+            objectFit: fill ? 'cover' : undefined
+          }}
+        />
+      </picture>
       
       {/* Loading skeleton */}
       {!isLoaded && !imageError && (
@@ -57,7 +74,7 @@ const OptimizedImage = ({
       {/* Error fallback */}
       {imageError && (
         <div className={`absolute inset-0 ${className} bg-muted flex items-center justify-center text-muted-foreground`}>
-          <span className="text-sm">Image unavailable</span>
+          <span className="text-sm">{alt || 'Image unavailable'}</span>
         </div>
       )}
     </div>
