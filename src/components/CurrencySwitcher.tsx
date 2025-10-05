@@ -19,11 +19,11 @@ const CurrencySwitcher = ({ className = "", variant = "header" }: CurrencySwitch
           value={selectedCurrency}
           onValueChange={(value: Currency) => changeCurrency(value)}
         >
-          <SelectTrigger className="w-[140px] bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 text-foreground hover:bg-primary/15 hover:border-primary/30 transition-all duration-300 backdrop-blur-sm shadow-soft rounded-full font-semibold">
+          <SelectTrigger className="w-[100px] h-8 bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20 text-foreground hover:bg-primary/15 hover:border-primary/30 transition-all duration-300 backdrop-blur-sm shadow-soft rounded-full font-semibold text-xs">
             <SelectValue>
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{currentCurrency.flag}</span>
-                <span className="font-bold text-sm">{currentCurrency.code}</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm">{currentCurrency.flag}</span>
+                <span className="font-bold">{currentCurrency.code}</span>
               </div>
             </SelectValue>
           </SelectTrigger>
@@ -32,13 +32,13 @@ const CurrencySwitcher = ({ className = "", variant = "header" }: CurrencySwitch
               <SelectItem 
                 key={currency.code} 
                 value={currency.code}
-                className="hover:bg-primary/10 focus:bg-primary/10 cursor-pointer transition-all duration-200 rounded-lg mx-1 my-0.5"
+                className="hover:bg-primary/10 focus:bg-primary/10 cursor-pointer transition-all duration-200 rounded-lg mx-1 my-0.5 text-xs"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">{currency.flag}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-base">{currency.flag}</span>
                   <div className="flex flex-col">
-                    <span className="font-bold text-sm">{currency.code}</span>
-                    <span className="text-xs text-muted-foreground">{currency.name}</span>
+                    <span className="font-bold">{currency.code}</span>
+                    <span className="text-[10px] text-muted-foreground">{currency.name}</span>
                   </div>
                 </div>
               </SelectItem>

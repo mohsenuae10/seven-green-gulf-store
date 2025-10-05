@@ -10,7 +10,7 @@ const LanguageSwitcher = () => {
         size="sm"
         variant="ghost"
         onClick={() => setLanguage('ar')}
-        className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-all duration-300 ${
+        className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-all duration-300 ${
           language === 'ar' 
             ? 'bg-gradient-primary text-white shadow-elegant scale-105' 
             : 'text-muted-foreground hover:bg-primary/10 hover:text-primary hover:scale-105'
@@ -22,7 +22,7 @@ const LanguageSwitcher = () => {
         size="sm"
         variant="ghost"
         onClick={() => setLanguage('en')}
-        className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-all duration-300 ${
+        className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-all duration-300 ${
           language === 'en' 
             ? 'bg-gradient-primary text-white shadow-elegant scale-105' 
             : 'text-muted-foreground hover:bg-primary/10 hover:text-primary hover:scale-105'
