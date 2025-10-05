@@ -50,7 +50,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Contact & Social Media */}
           <div>
             <h3 className="font-bold text-lg mb-4">
               {language === 'ar' ? 'تواصل معنا' : 'Contact Us'}
@@ -59,12 +59,42 @@ const Footer = () => {
               <li>{language === 'ar' ? 'المملكة العربية السعودية' : 'Saudi Arabia'}</li>
               <li>
                 <a 
-                  href="https://www.snapchat.com/add/sevengreen" 
+                  href="https://www.snapchat.com/add/sevensgreen" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="hover:text-foreground transition-colors"
                 >
-                  {language === 'ar' ? 'سناب شات: sevengreen' : 'Snapchat: sevengreen'}
+                  {language === 'ar' ? 'سناب شات: sevensgreen' : 'Snapchat: sevensgreen'}
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://www.tiktok.com/@sevensgreen" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground transition-colors"
+                >
+                  {language === 'ar' ? 'تيك توك: @sevensgreen' : 'TikTok: @sevensgreen'}
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://twitter.com/sevensgreen" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground transition-colors"
+                >
+                  {language === 'ar' ? 'تويتر: @sevensgreen' : 'Twitter/X: @sevensgreen'}
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://www.facebook.com/sevensgreen" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:text-foreground transition-colors"
+                >
+                  {language === 'ar' ? 'فيسبوك: sevensgreen' : 'Facebook: sevensgreen'}
                 </a>
               </li>
             </ul>
