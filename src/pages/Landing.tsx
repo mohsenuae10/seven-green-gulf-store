@@ -66,13 +66,13 @@ const Landing = () => {
         <meta property="og:description" content={language === 'ar'
           ? 'شعر كثيف وصحي خلال 30 يوماً. منتج طبيعي معتمد طبياً'
           : 'Thick, healthy hair in 30 days. Medically approved natural product'} />
-        <meta property="og:image" content="/lovable-uploads/seven-green-product-email.png" />
-        <meta property="og:url" content="https://yourdomain.com/landing" />
+        <meta property="og:image" content="https://sevensgreen.com/lovable-uploads/seven-green-product-email.png" />
+        <meta property="og:url" content="https://sevensgreen.com/landing" />
         
         {/* Canonical & Alternate */}
-        <link rel="canonical" href="https://yourdomain.com/landing" />
-        <link rel="alternate" hrefLang="ar" href="https://yourdomain.com/landing?lang=ar" />
-        <link rel="alternate" hrefLang="en" href="https://yourdomain.com/landing?lang=en" />
+        <link rel="canonical" href="https://sevensgreen.com/landing" />
+        <link rel="alternate" hrefLang="ar" href="https://sevensgreen.com/landing?lang=ar" />
+        <link rel="alternate" hrefLang="en" href="https://sevensgreen.com/landing?lang=en" />
         
         {/* JSON-LD Structured Data */}
         <script type="application/ld+json">
@@ -80,17 +80,27 @@ const Landing = () => {
             "@context": "https://schema.org",
             "@type": "Product",
             "name": productName,
+            "alternateName": [
+              "سفن جرين",
+              "Seven Green",
+              "صابونة سفن جرين",
+              "شامبو سفن جرين",
+              "سفن قرين",
+              "سيفن جرين",
+              "الصابونة المثلثة"
+            ],
             "description": language === 'ar' 
               ? "منتج طبيعي لإنبات الشعر وتكثيفه"
               : "Natural hair growth and density product",
-            "image": "https://yourdomain.com/lovable-uploads/seven-green-product-email.png",
+            "image": "https://sevensgreen.com/lovable-uploads/seven-green-product-email.png",
             "brand": {
               "@type": "Brand",
-              "name": "Seven Green"
+              "name": "Seven Green",
+              "alternateName": ["سفن جرين", "سفن قرين", "سيفن جرين"]
             },
             "offers": {
               "@type": "Offer",
-              "url": "https://yourdomain.com/landing",
+              "url": "https://sevensgreen.com/landing",
               "price": String(price),
               "priceCurrency": "SAR",
               "availability": "https://schema.org/InStock",
@@ -219,7 +229,7 @@ const Landing = () => {
                         <meta itemProp="priceCurrency" content="SAR" />
                         <link itemProp="availability" href="https://schema.org/InStock" />
                         <meta itemProp="priceValidUntil" content="2025-12-31" />
-                        <link itemProp="url" href="https://yourdomain.com/landing" />
+                        <link itemProp="url" href="https://sevensgreen.com/landing" />
                         <div itemProp="shippingDetails" itemScope itemType="https://schema.org/OfferShippingDetails">
                           <meta itemProp="shippingRate" content="0" />
                           <meta itemProp="shippingDestination" content="SA" />
