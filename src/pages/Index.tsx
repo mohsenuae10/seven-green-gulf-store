@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import ProductHero from "@/components/ProductHero";
 import ProductFeatures from "@/components/ProductFeatures";
 import ProductIngredients from "@/components/ProductIngredients";
+import ProductDetails from "@/components/ProductDetails";
 import CustomerReviews from "@/components/CustomerReviews";
 import FAQ from "@/components/FAQ";
 import TrustBadges from "@/components/TrustBadges";
@@ -344,6 +345,7 @@ const Index = () => {
             <ProductHero />
           </div>
           <TrustBadges />
+          <ProductDetails />
           <div id="ingredients">
             <ProductIngredients />
           </div>
