@@ -19,6 +19,7 @@ import PaymentMethods from "@/components/PaymentMethods";
 import OptimizedImage from "@/components/OptimizedImage";
 import TrustBadges from "@/components/TrustBadges";
 import { CONTACT_INFO } from "@/config/contact";
+import { PriceDisplay } from "@/components/PriceDisplay";
 
 // Country data with codes and flags
 const getCountries = (language: string) => [
@@ -107,7 +108,7 @@ const Order = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { price: productPrice } = useProductPrice();
-  const { formatPrice } = useCurrency();
+  const { getPriceData, selectedCurrency } = useCurrency();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -366,7 +367,7 @@ const Order = () => {
                     </span>
                   </span>
                   <span className="text-left">
-                    <span className="text-xl font-bold text-primary">{formatPrice(productPrice)}</span>
+                    <span className="text-xl font-bold text-primary"><PriceDisplay {...getPriceData(productPrice)} /></span>
                   </span>
                 </span>
               </CardDescription>
@@ -552,8 +553,8 @@ const Order = () => {
 
                 <div className="border-t pt-4 bg-accent/30 -mx-4 px-4 py-4 lg:-mx-6 lg:px-6 rounded-lg">
                   <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-lg lg:text-xl font-semibold">
-                    <span className="text-primary">{t('order.total')}: {formatPrice(totalAmount)}</span>
-                    <span className="text-muted-foreground text-sm lg:text-base">({formatPrice(productPrice)} × {formData.quantity})</span>
+                    <span className="text-primary">{t('order.total')}: <PriceDisplay {...getPriceData(totalAmount)} /></span>
+                    <span className="text-muted-foreground text-sm lg:text-base">(<PriceDisplay {...getPriceData(productPrice)} /> × {formData.quantity})</span>
                   </div>
                 </div>
 

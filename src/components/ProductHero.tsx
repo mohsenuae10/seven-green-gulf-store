@@ -12,13 +12,14 @@ import { useCallback, useEffect, useState, useRef } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import OptimizedImage from "@/components/OptimizedImage";
 import sevenGreenLogo from "@/assets/seven-green-logo.png";
+import { PriceDisplay } from "@/components/PriceDisplay";
 
 const ProductHero = () => {
   const ORIGINAL_PRICE = 115; // السعر الأصلي
   const { price: productPrice, loading: priceLoading } = useProductPrice();
-  const { formatPrice, selectedCurrency } = useCurrency();
+  const { getPriceData, selectedCurrency } = useCurrency();
   const { language, t } = useLanguage();
-  console.log('[ProductHero] currency:', selectedCurrency, 'price:', formatPrice(productPrice));
+  console.log('[ProductHero] currency:', selectedCurrency, 'price:', productPrice);
   
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [productImages, setProductImages] = useState<{ src: string; alt: string }[]>([]);
@@ -441,11 +442,13 @@ const ProductHero = () => {
                         {/* Main Price Display */}
                         <div className="flex items-center gap-3">
                           {/* السعر القديم */}
-                          <span className="text-xl line-through text-muted-foreground">{formatPrice(ORIGINAL_PRICE)}</span>
+                          <span className="text-xl line-through text-muted-foreground">
+                            <PriceDisplay {...getPriceData(ORIGINAL_PRICE)} />
+                          </span>
                           
                           {/* السعر الجديد */}
                           <span className="text-4xl font-extrabold bg-gradient-primary bg-clip-text text-transparent">
-                            {formatPrice(productPrice)}
+                            <PriceDisplay {...getPriceData(productPrice)} />
                           </span>
                           
                           {/* نسبة الخصم */}
