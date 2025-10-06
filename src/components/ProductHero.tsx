@@ -501,8 +501,8 @@ const ProductHero = () => {
                     <CheckCircle className="w-5 h-5 text-green-600" />
                     <span className="text-sm font-semibold text-green-600">
                       {language === 'ar' 
-                        ? `${stockQuantity.toLocaleString('ar-SA')} قطعة متوفرة`
-                        : `${stockQuantity.toLocaleString()} pieces available`
+                        ? `2000+ مباع`
+                        : `2000+ Sold`
                       }
                     </span>
                   </div>
