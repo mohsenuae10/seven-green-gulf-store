@@ -31,7 +31,7 @@ const MobileNav = () => {
               <ShoppingCart className={`w-5 h-5 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
               {t('hero.buy.now')} - {priceLoading ? <Skeleton className="inline w-16 h-4" /> : (
                 <span className="flex items-center gap-2">
-                  <PriceDisplay {...getPriceData(115)} className="text-white/70 text-sm" showStrikethrough />
+                  <span className="text-white/90">{language === 'ar' ? 'السعر:' : 'Price:'}</span>
                   <PriceDisplay {...getPriceData(productPrice)} className="text-white font-bold" />
                 </span>
               )}

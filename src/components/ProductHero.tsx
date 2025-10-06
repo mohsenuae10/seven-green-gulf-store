@@ -15,7 +15,6 @@ import sevenGreenLogo from "@/assets/seven-green-logo.png";
 import { PriceDisplay } from "@/components/PriceDisplay";
 
 const ProductHero = () => {
-  const ORIGINAL_PRICE = 115; // السعر الأصلي
   const { price: productPrice, loading: priceLoading } = useProductPrice();
   const { getPriceData, selectedCurrency } = useCurrency();
   const { language, t } = useLanguage();
@@ -441,19 +440,14 @@ const ProductHero = () => {
                       <>
                         {/* Main Price Display */}
                         <div className="flex items-center gap-3">
-                          {/* السعر القديم */}
-                          <span className="text-xl line-through text-muted-foreground">
-                            <PriceDisplay {...getPriceData(ORIGINAL_PRICE)} />
+                          {/* كلمة السعر */}
+                          <span className="text-2xl font-medium text-muted-foreground">
+                            {language === 'ar' ? 'السعر:' : 'Price:'}
                           </span>
                           
-                          {/* السعر الجديد */}
+                          {/* السعر */}
                           <span className="text-4xl font-extrabold bg-gradient-primary bg-clip-text text-transparent">
                             <PriceDisplay {...getPriceData(productPrice)} />
-                          </span>
-                          
-                          {/* نسبة الخصم */}
-                          <span className="bg-gradient-to-br from-red-500 to-pink-600 text-white rounded-full px-3 py-1 text-sm font-bold">
-                            -{Math.round(((ORIGINAL_PRICE - productPrice) / ORIGINAL_PRICE) * 100)}%
                           </span>
                         </div>
                         

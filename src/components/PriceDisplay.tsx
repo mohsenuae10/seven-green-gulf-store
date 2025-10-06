@@ -4,15 +4,13 @@ interface PriceDisplayProps {
   amount: number;
   currency: Currency;
   className?: string;
-  showStrikethrough?: boolean;
 }
 
-export const PriceDisplay = ({ amount, currency, className = "", showStrikethrough = false }: PriceDisplayProps) => {
-  const baseClass = showStrikethrough ? "line-through" : "";
+export const PriceDisplay = ({ amount, currency, className = "" }: PriceDisplayProps) => {
   
   if (currency === 'SAR') {
     return (
-      <span className={`inline-flex items-center gap-1 ${baseClass} ${className}`}>
+      <span className={`inline-flex items-center gap-1 ${className}`}>
         <span>{amount}</span>
         <img 
           src="/images/sar-symbol.svg" 
@@ -25,9 +23,9 @@ export const PriceDisplay = ({ amount, currency, className = "", showStrikethrou
   }
   
   if (currency === 'USD') {
-    return <span className={`${baseClass} ${className}`}>${amount}</span>;
+    return <span className={className}>${amount}</span>;
   }
   
   // AED
-  return <span className={`${baseClass} ${className}`}>{amount} د.إ</span>;
+  return <span className={className}>{amount} د.إ</span>;
 };
