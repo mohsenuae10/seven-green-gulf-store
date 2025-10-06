@@ -165,6 +165,46 @@ const ProductHero = () => {
               <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl leading-relaxed mx-auto lg:mx-0">
                 {t('hero.description')}
               </p>
+
+              {/* Rating, Price & Buy Button - في الأعلى */}
+              <div className={`flex flex-col sm:flex-row items-center gap-4 p-4 bg-white/80 backdrop-blur-sm rounded-2xl border border-primary/20 shadow-soft ${language === 'ar' ? 'justify-center lg:justify-end' : 'justify-center lg:justify-start'}`}>
+                {/* Rating */}
+                <div className="flex items-center gap-2">
+                  <div className="flex gap-1">
+                    {[1,2,3,4,5].map((star) => (
+                      <Star key={star} className="w-5 h-5 fill-secondary text-secondary" />
+                    ))}
+                  </div>
+                  <span className="text-foreground font-medium">4.9</span>
+                  <span className="text-muted-foreground">(2,847)</span>
+                </div>
+
+                {/* Separator */}
+                <div className="hidden sm:block w-px h-8 bg-border"></div>
+
+                {/* Price */}
+                <div className="text-center sm:text-left">
+                  {priceLoading ? (
+                    <Skeleton className="h-8 w-24" />
+                  ) : (
+                    <PriceDisplay amount={productPrice} currency={selectedCurrency} className="text-2xl font-bold text-primary" />
+                  )}
+                </div>
+
+                {/* Separator */}
+                <div className="hidden sm:block w-px h-8 bg-border"></div>
+
+                {/* Buy Now Button */}
+                <Link to="/order">
+                  <Button 
+                    size="lg" 
+                    className="bg-gradient-primary hover:scale-105 transition-all duration-300 shadow-elegant px-6 py-3 rounded-full hover:shadow-glow"
+                  >
+                    <ShoppingCart className={`w-5 h-5 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
+                    {t('hero.buy.now')}
+                  </Button>
+                </Link>
+              </div>
             </div>
 
             {/* Quick Overview - نظرة سريعة */}
@@ -246,42 +286,6 @@ const ProductHero = () => {
               ))}
             </div>
 
-            {/* Rating, Price & Buy Button */}
-            <div className={`flex flex-col sm:flex-row items-center gap-4 ${language === 'ar' ? 'justify-center lg:justify-end' : 'justify-center lg:justify-start'}`}>
-              {/* Rating */}
-              <div className="flex items-center gap-2">
-                <div className="flex gap-1">
-                  {[1,2,3,4,5].map((star) => (
-                    <Star key={star} className="w-5 h-5 fill-secondary text-secondary" />
-                  ))}
-                </div>
-                <span className="text-foreground font-medium">4.9</span>
-                <span className="text-muted-foreground">(2,847 {t('hero.reviews')})</span>
-              </div>
-
-              {/* Separator */}
-              <div className="hidden sm:block w-px h-8 bg-border"></div>
-
-              {/* Price */}
-              <div className="text-center sm:text-left">
-                {priceLoading ? (
-                  <Skeleton className="h-8 w-24" />
-                ) : (
-                  <PriceDisplay amount={productPrice} currency={selectedCurrency} className="text-2xl font-bold text-primary" />
-                )}
-              </div>
-
-              {/* Buy Now Button */}
-              <Link to="/order">
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-primary hover:scale-105 transition-all duration-300 shadow-elegant px-6 py-3 rounded-full hover:shadow-glow"
-                >
-                  <ShoppingCart className={`w-5 h-5 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
-                  {t('hero.buy.now')}
-                </Button>
-              </Link>
-            </div>
 
             {/* Success Stories */}
             <div className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 border border-primary/20 shadow-soft">
