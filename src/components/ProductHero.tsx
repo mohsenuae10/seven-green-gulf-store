@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, ShoppingCart, Leaf, Crown, Shield, Play, CheckCircle, Triangle } from "lucide-react";
+import { Star, ShoppingCart, Leaf, Crown, Shield, Play, CheckCircle, Triangle, Sparkles, Clock, DollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -165,6 +165,70 @@ const ProductHero = () => {
               <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl leading-relaxed mx-auto lg:mx-0">
                 {t('hero.description')}
               </p>
+            </div>
+
+            {/* Quick Overview - نظرة سريعة */}
+            <div className="bg-gradient-to-br from-primary/10 via-white to-secondary/10 rounded-2xl p-6 border-2 border-primary/30 shadow-lg">
+              <h3 className="text-center text-lg font-bold text-foreground mb-4">
+                {language === 'ar' ? 'نظرة سريعة' : 'Quick Overview'}
+              </h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {/* 7 أعشاب طبيعية */}
+                <div className="bg-white rounded-xl p-3 border border-primary/20 hover:border-primary/50 hover:shadow-md transition-all duration-300 hover:scale-105">
+                  <div className="flex flex-col items-center gap-2 text-center">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Leaf className="w-6 h-6 text-primary" />
+                    </div>
+                    <span className="text-2xl font-bold text-primary">7</span>
+                    <span className="text-xs font-medium text-foreground leading-tight">
+                      {language === 'ar' ? 'أعشاب طبيعية' : 'Natural Herbs'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* تركيبة خاصة */}
+                <div className="bg-white rounded-xl p-3 border border-secondary/20 hover:border-secondary/50 hover:shadow-md transition-all duration-300 hover:scale-105">
+                  <div className="flex flex-col items-center gap-2 text-center">
+                    <div className="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center">
+                      <Sparkles className="w-6 h-6 text-secondary" />
+                    </div>
+                    <span className="text-xs font-bold text-secondary mt-1">
+                      {language === 'ar' ? 'السرو والوسمة' : 'Cypress & Woad'}
+                    </span>
+                    <span className="text-xs font-medium text-foreground leading-tight">
+                      {language === 'ar' ? 'تركيبة خاصة' : 'Special Formula'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* نتائج في 4 أسابيع */}
+                <div className="bg-white rounded-xl p-3 border border-primary/20 hover:border-primary/50 hover:shadow-md transition-all duration-300 hover:scale-105">
+                  <div className="flex flex-col items-center gap-2 text-center">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Clock className="w-6 h-6 text-primary" />
+                    </div>
+                    <span className="text-2xl font-bold text-primary">4</span>
+                    <span className="text-xs font-medium text-foreground leading-tight">
+                      {language === 'ar' ? 'أسابيع للنتائج' : 'Weeks Results'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* سعر تنافسي */}
+                <div className="bg-white rounded-xl p-3 border border-green-500/20 hover:border-green-500/50 hover:shadow-md transition-all duration-300 hover:scale-105">
+                  <div className="flex flex-col items-center gap-2 text-center">
+                    <div className="w-12 h-12 bg-green-500/10 rounded-full flex items-center justify-center">
+                      <DollarSign className="w-6 h-6 text-green-600" />
+                    </div>
+                    <span className="text-xs font-bold text-green-600 mt-1">
+                      {language === 'ar' ? '38% خصم' : '38% OFF'}
+                    </span>
+                    <span className="text-xs font-medium text-foreground leading-tight">
+                      {language === 'ar' ? 'سعر تنافسي' : 'Competitive'}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Features Grid */}
