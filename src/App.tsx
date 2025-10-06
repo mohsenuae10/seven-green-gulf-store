@@ -11,6 +11,12 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import About from "./pages/About";
+import Benefits from "./pages/Benefits";
+import Ingredients from "./pages/Ingredients";
+import HowToUse from "./pages/HowToUse";
+import Reviews from "./pages/Reviews";
+import FAQPage from "./pages/FAQPage";
+import Compare from "./pages/Compare";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +30,12 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
+            <Route path="/benefits" element={<Benefits />} />
+            <Route path="/ingredients" element={<Ingredients />} />
+            <Route path="/how-to-use" element={<HowToUse />} />
+            <Route path="/reviews" element={<Reviews />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/compare" element={<Compare />} />
             <Route path="/order" element={<Order />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/auth" element={<Auth />} />
