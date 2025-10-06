@@ -411,49 +411,59 @@ const ProductHero = () => {
                   <span>{t('hero.swipe')}</span>
                 </div>
                 
-                {/* Price Badge - Enhanced with Availability */}
-                <div className="mt-6 flex flex-col items-center gap-3">
-                  {/* Availability Badge - Prominent */}
-                  <div className="inline-flex items-center gap-2 bg-green-50 border-2 border-green-500 rounded-full px-4 py-2 shadow-md">
-                    <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-green-700 font-bold text-sm">
-                      {language === 'ar' ? 'متوفر • شحن فوري' : 'Available • Instant Shipping'}
-                    </span>
+                {/* Product Name, Rating & Price - Under Images */}
+                <div className="mt-8 space-y-4 text-center">
+                  {/* Product Name */}
+                  <div>
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
+                      <span className="bg-gradient-primary bg-clip-text text-transparent">سفن جرين</span>
+                    </h2>
+                    <p className="text-base sm:text-lg font-english font-semibold text-primary mt-1">SEVEN GREEN</p>
                   </div>
-                  
-                  {priceLoading ? (
-                    <Skeleton className="w-72 h-24" />
-                  ) : (
-                    <div className="relative inline-flex items-center gap-4 bg-gradient-to-r from-primary/20 via-white to-secondary/20 backdrop-blur-sm rounded-2xl px-8 py-5 border-2 border-primary/40 shadow-[0_8px_30px_rgba(139,195,74,0.25)] hover:shadow-[0_10px_40px_rgba(139,195,74,0.35)] transition-all duration-300 group">
-                      {/* السعر القديم */}
-                      <div className="flex flex-col items-end">
-                        <span className="text-xs text-muted-foreground">{t('hero.was')}</span>
-                        <span className="text-xl line-through text-muted-foreground font-semibold">{formatPrice(ORIGINAL_PRICE)}</span>
-                      </div>
-                      
-                      {/* فاصل */}
-                      <div className="w-px h-14 bg-gradient-to-b from-transparent via-primary/50 to-transparent"></div>
-                      
-                      {/* السعر الجديد - أكبر وأبرز */}
-                      <div className="flex flex-col items-start">
-                        <span className="text-sm text-primary font-bold">{t('hero.now')}</span>
-                        <span className="text-4xl font-extrabold bg-gradient-primary bg-clip-text text-transparent">
-                          {formatPrice(productPrice)}
-                        </span>
-                        <span className="text-xs text-green-600 font-medium mt-1">
-                          {language === 'ar' ? 'سعر تنافسي' : 'Competitive Price'}
-                        </span>
-                      </div>
-                      
-                      {/* دائرة التوفير - أكبر قليلاً */}
-                      <div className="absolute -top-4 -right-4 bg-gradient-to-br from-red-500 to-pink-600 text-white rounded-full w-16 h-16 flex items-center justify-center text-base font-bold shadow-lg animate-pulse border-2 border-white">
-                        -{Math.round(((ORIGINAL_PRICE - productPrice) / ORIGINAL_PRICE) * 100)}%
-                      </div>
-                      
-                      {/* Glow effect on hover */}
-                      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl"></div>
+
+                  {/* Rating */}
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="flex gap-1">
+                      {[1,2,3,4,5].map((star) => (
+                        <Star key={star} className="w-5 h-5 fill-secondary text-secondary" />
+                      ))}
                     </div>
-                  )}
+                    <span className="text-foreground font-medium">4.9</span>
+                    <span className="text-muted-foreground text-sm">(2,847)</span>
+                  </div>
+
+                  {/* Price Section */}
+                  <div className="flex flex-col items-center gap-3">
+                    {priceLoading ? (
+                      <Skeleton className="w-64 h-20" />
+                    ) : (
+                      <>
+                        {/* Main Price Display */}
+                        <div className="flex items-center gap-3">
+                          {/* السعر القديم */}
+                          <span className="text-xl line-through text-muted-foreground">{formatPrice(ORIGINAL_PRICE)}</span>
+                          
+                          {/* السعر الجديد */}
+                          <span className="text-4xl font-extrabold bg-gradient-primary bg-clip-text text-transparent">
+                            {formatPrice(productPrice)}
+                          </span>
+                          
+                          {/* نسبة الخصم */}
+                          <span className="bg-gradient-to-br from-red-500 to-pink-600 text-white rounded-full px-3 py-1 text-sm font-bold">
+                            -{Math.round(((ORIGINAL_PRICE - productPrice) / ORIGINAL_PRICE) * 100)}%
+                          </span>
+                        </div>
+                        
+                        {/* Availability Badge */}
+                        <div className="inline-flex items-center gap-2 bg-green-50 border border-green-500 rounded-full px-4 py-1.5">
+                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                          <span className="text-green-700 font-semibold text-sm">
+                            {language === 'ar' ? 'متوفر • شحن فوري' : 'Available • Instant Shipping'}
+                          </span>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
