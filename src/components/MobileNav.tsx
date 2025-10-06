@@ -11,6 +11,7 @@ import { useState } from "react";
 const MobileNav = () => {
   const location = useLocation();
   const isOrderPage = location.pathname === "/order";
+  const isHomePage = location.pathname === "/";
   const { t, language } = useLanguage();
   const { price: productPrice, loading: priceLoading } = useProductPrice({ fallback: 85 });
   const { getPriceData, selectedCurrency } = useCurrency();
@@ -20,7 +21,8 @@ const MobileNav = () => {
   const handleDecrement = () => setQuantity(prev => Math.max(1, prev - 1));
   const totalPrice = productPrice * quantity;
 
-  if (isOrderPage) {
+  // Don't show on order page or home page
+  if (isOrderPage || isHomePage) {
     return null;
   }
 
