@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, ShoppingCart, Leaf, Crown, Shield, Play, CheckCircle, Triangle, Sparkles, Clock, DollarSign } from "lucide-react";
+import { Star, ShoppingCart, Leaf, Crown, Shield, Play, CheckCircle, Triangle, Sparkles, Clock, DollarSign, Plus, Minus } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -22,6 +22,11 @@ const ProductHero = () => {
   
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [productImages, setProductImages] = useState<{ src: string; alt: string }[]>([]);
+  const [quantity, setQuantity] = useState(1);
+
+  const handleIncrement = () => setQuantity(prev => prev + 1);
+  const handleDecrement = () => setQuantity(prev => Math.max(1, prev - 1));
+
 
   const [heroTitle, setHeroTitle] = useState<string>('Seven Green');
   const [heroSubtitle, setHeroSubtitle] = useState<string>('SEVEN GREEN');
@@ -187,8 +192,34 @@ const ProductHero = () => {
                   {priceLoading ? (
                     <Skeleton className="h-8 w-24" />
                   ) : (
-                    <PriceDisplay amount={productPrice} currency={selectedCurrency} className="text-2xl font-bold text-primary" />
+                    <PriceDisplay amount={productPrice * quantity} currency={selectedCurrency} className="text-2xl font-bold text-primary" />
                   )}
+                </div>
+
+                {/* Separator */}
+                <div className="hidden sm:block w-px h-8 bg-border"></div>
+
+                {/* Quantity Selector */}
+                <div className="flex items-center gap-3 bg-white rounded-full border border-primary/30 px-4 py-2">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleDecrement}
+                    className="h-8 w-8 rounded-full hover:bg-primary/10"
+                  >
+                    <Minus className="h-4 w-4 text-primary" />
+                  </Button>
+                  <span className="text-lg font-semibold text-foreground min-w-[2rem] text-center">
+                    {quantity}
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={handleIncrement}
+                    className="h-8 w-8 rounded-full hover:bg-primary/10"
+                  >
+                    <Plus className="h-4 w-4 text-primary" />
+                  </Button>
                 </div>
 
                 {/* Separator */}
