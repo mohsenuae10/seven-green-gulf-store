@@ -5,13 +5,14 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useCurrency } from "@/hooks/useCurrency";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PriceDisplay } from "@/components/PriceDisplay";
 
 const MobileNav = () => {
   const location = useLocation();
   const isOrderPage = location.pathname === "/order";
   const { t, language } = useLanguage();
   const { price: productPrice, loading: priceLoading } = useProductPrice({ fallback: 85 });
-  const { formatPrice } = useCurrency();
+  const { getPriceData, selectedCurrency } = useCurrency();
 
   if (isOrderPage) {
     return null;
@@ -30,8 +31,8 @@ const MobileNav = () => {
               <ShoppingCart className={`w-5 h-5 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
               {t('hero.buy.now')} - {priceLoading ? <Skeleton className="inline w-16 h-4" /> : (
                 <span className="flex items-center gap-2">
-                  <span className="text-white/70 line-through text-sm">{formatPrice(115)}</span>
-                  <span className="text-white font-bold">{formatPrice(productPrice)}</span>
+                  <PriceDisplay {...getPriceData(115)} className="text-white/70 text-sm" showStrikethrough />
+                  <PriceDisplay {...getPriceData(productPrice)} className="text-white font-bold" />
                 </span>
               )}
             </Button>

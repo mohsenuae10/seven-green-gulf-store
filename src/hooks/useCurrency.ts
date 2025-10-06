@@ -61,6 +61,13 @@ export function useCurrency() {
     return `${convertedPrice} ${currency.symbol}`;
   };
 
+  const getPriceData = (priceInSAR: number) => {
+    return {
+      amount: convertPrice(priceInSAR),
+      currency: selectedCurrency,
+    };
+  };
+
   const getCurrencyData = (currency: Currency) => currencies[currency];
   const getCurrentCurrency = () => currencies[selectedCurrency];
   const getAllCurrencies = () => Object.values(currencies);
@@ -77,6 +84,7 @@ export function useCurrency() {
     changeCurrency,
     convertPrice,
     formatPrice,
+    getPriceData,
     getCurrencyData,
     getCurrentCurrency,
     getAllCurrencies,
