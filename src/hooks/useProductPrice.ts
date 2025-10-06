@@ -8,6 +8,7 @@ interface UseProductPriceOptions {
 export function useProductPrice(options: UseProductPriceOptions = {}) {
   const { fallback } = options;
   const [price, setPrice] = useState<number | null>(fallback || null);
+  const [stockQuantity, setStockQuantity] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,7 +16,7 @@ export function useProductPrice(options: UseProductPriceOptions = {}) {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select('price, updated_at')
+        .select('price, stock_quantity, updated_at')
         .eq('is_active', true)
         .order('updated_at', { ascending: false })
         .limit(1)
@@ -30,6 +31,7 @@ export function useProductPrice(options: UseProductPriceOptions = {}) {
 
       if (data?.price != null) {
         setPrice(Number(data.price));
+        setStockQuantity(Number(data.stock_quantity ?? 0));
       }
     } catch (e: any) {
       console.error('Unexpected error fetching price:', e);
@@ -71,5 +73,5 @@ export function useProductPrice(options: UseProductPriceOptions = {}) {
     };
   }, []);
 
-  return { price: price || 0, loading, error, refresh: fetchLatestPrice };
+  return { price: price || 0, stockQuantity: stockQuantity || 0, loading, error, refresh: fetchLatestPrice };
 }

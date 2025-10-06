@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ShoppingCart, MapPin, Phone, User, CreditCard, Truck, Shield, Crown } from "lucide-react";
+import { ShoppingCart, MapPin, Phone, User, CreditCard, Truck, Shield, Crown, Plus, Minus, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { PriceDisplay } from "@/components/PriceDisplay";
 
@@ -16,9 +16,22 @@ const OrderSection = () => {
   const { language, t } = useLanguage();
   const { getPriceData, selectedCurrency } = useCurrency();
   const [quantity, setQuantity] = useState(1);
-  const { price } = useProductPrice();
+  const [cardQuantity, setCardQuantity] = useState(1);
+  const { price, stockQuantity } = useProductPrice();
   const shipping = 0; // Free shipping
   const total = price * quantity + shipping;
+
+  const handleCardIncrement = () => {
+    if (cardQuantity < stockQuantity) {
+      setCardQuantity(cardQuantity + 1);
+    }
+  };
+
+  const handleCardDecrement = () => {
+    if (cardQuantity > 1) {
+      setCardQuantity(cardQuantity - 1);
+    }
+  };
 
   return (
     <section className="py-20 bg-gradient-to-b from-background to-primary/5" dir={language === 'ar' ? 'rtl' : 'ltr'} id="order">
@@ -179,6 +192,60 @@ const OrderSection = () => {
                       <span className="text-xs text-muted-foreground mr-2">4.9 (2,847)</span>
                     </div>
                   </div>
+                </div>
+
+                {/* Price Display */}
+                <div className="text-center mb-4">
+                  <div className="text-3xl font-bold text-primary">
+                    <PriceDisplay {...getPriceData(price)} />
+                  </div>
+                </div>
+
+                {/* Quantity Selector + Buy Button */}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center gap-2 bg-background/50 rounded-full border border-border/50 px-3 py-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleCardDecrement}
+                      className="h-8 w-8 rounded-full hover:bg-primary/10"
+                      disabled={cardQuantity <= 1}
+                    >
+                      <Minus className="h-4 w-4 text-primary" />
+                    </Button>
+                    <span className="text-lg font-semibold text-foreground min-w-[2.5rem] text-center">
+                      {cardQuantity}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleCardIncrement}
+                      className="h-8 w-8 rounded-full hover:bg-primary/10"
+                      disabled={cardQuantity >= stockQuantity}
+                    >
+                      <Plus className="h-4 w-4 text-primary" />
+                    </Button>
+                  </div>
+                  <Link to="/order" className="flex-1">
+                    <Button 
+                      size="lg" 
+                      className="w-full bg-gradient-primary hover:scale-105 transition-all duration-300 shadow-elegant rounded-full"
+                    >
+                      <ShoppingCart className={`w-5 h-5 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
+                      {t('hero.buy.now')}
+                    </Button>
+                  </Link>
+                </div>
+
+                {/* Stock Availability */}
+                <div className="flex items-center justify-center gap-2 mb-4">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span className="text-sm font-semibold text-green-600">
+                    {language === 'ar' 
+                      ? `${stockQuantity.toLocaleString('ar-SA')} قطعة متوفرة`
+                      : `${stockQuantity.toLocaleString()} pieces available`
+                    }
+                  </span>
                 </div>
 
                 {/* Price Breakdown */}
