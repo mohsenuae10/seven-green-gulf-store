@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Star, ShoppingCart, Leaf, Crown, Shield, Play, CheckCircle, Triangle, Sparkles, Clock, DollarSign, Plus, Minus } from "lucide-react";
+import { Star, ShoppingCart, Leaf, Crown, Shield, Play, CheckCircle, Triangle, Sparkles, Clock, DollarSign } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useCurrency } from "@/hooks/useCurrency";
@@ -27,7 +27,6 @@ const ProductHero = () => {
   const [heroSubtitle, setHeroSubtitle] = useState<string>('SEVEN GREEN');
   const [heroDescription, setHeroDescription] = useState<string>('Advanced natural formula from cypress leaves and rosemary plant, designed to prevent hair loss and control oils');
   const [heroFeatures, setHeroFeatures] = useState<string[]>([]);
-  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     const load = async () => {
@@ -247,71 +246,49 @@ const ProductHero = () => {
               ))}
             </div>
 
-            {/* Rating + Price + Quantity + Buy Button - All in One Section */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border-2 border-primary/20 shadow-lg space-y-4">
-              {/* Rating */}
-              <div className={`flex items-center gap-2 ${language === 'ar' ? 'justify-center lg:justify-end' : 'justify-center lg:justify-start'}`}>
-                <div className="flex gap-1">
-                  {[1,2,3,4,5].map((star) => (
-                    <Star key={star} className="w-5 h-5 fill-secondary text-secondary" />
-                  ))}
-                </div>
-                <span className="text-foreground font-medium">4.9</span>
-                <span className="text-muted-foreground">(2,847 {t('hero.reviews')})</span>
+            {/* Rating */}
+            <div className={`flex items-center gap-2 ${language === 'ar' ? 'justify-center lg:justify-end' : 'justify-center lg:justify-start'}`}>
+              <div className="flex gap-1">
+                {[1,2,3,4,5].map((star) => (
+                  <Star key={star} className="w-5 h-5 fill-secondary text-secondary" />
+                ))}
               </div>
+              <span className="text-foreground font-medium">4.9</span>
+              <span className="text-muted-foreground">(2,847 {t('hero.reviews')})</span>
+            </div>
 
-              {/* Price Display */}
-              <div className="text-center">
-                <div className="text-sm text-muted-foreground mb-1">
-                  {language === 'ar' ? 'السعر' : 'Price'}
-                </div>
-                {priceLoading ? (
-                  <Skeleton className="h-10 w-32 mx-auto" />
-                ) : (
-                  <div className="flex items-center justify-center gap-3">
-                    <PriceDisplay 
-                      {...getPriceData(productPrice * quantity)} 
-                      className="text-3xl font-bold text-primary"
-                    />
-                    {quantity > 1 && (
-                      <span className="text-sm text-muted-foreground">
-                        ({quantity} {language === 'ar' ? 'قطع' : 'items'})
-                      </span>
-                    )}
-                  </div>
-                )}
+            {/* Success Stories */}
+            <div className="bg-white rounded-xl lg:rounded-2xl p-4 lg:p-6 border border-primary/20 shadow-soft">
+              <div className="flex items-center gap-3 mb-4">
+                <CheckCircle className="w-5 h-5 lg:w-6 lg:h-6 text-primary" />
+                <span className="text-foreground font-semibold text-sm lg:text-base">{t('hero.success.title')}</span>
               </div>
-
-              {/* Quantity Selector */}
-              <div className="flex items-center justify-center gap-4">
-                <Button
-                  onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
-                  variant="outline"
-                  size="sm"
-                  className="h-10 w-10 rounded-full p-0"
-                  disabled={quantity === 1}
-                >
-                  <Minus className="w-4 h-4" />
-                </Button>
-                <div className="flex flex-col items-center min-w-[70px]">
-                  <span className="text-xs text-muted-foreground">{language === 'ar' ? 'الكمية' : 'Quantity'}</span>
-                  <span className="text-2xl font-bold text-foreground">{quantity}</span>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 text-center">
+                <div>
+                  <div className="text-xl lg:text-2xl font-bold text-primary">97%</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">{t('hero.stat.density')}</div>
                 </div>
-                <Button
-                  onClick={() => setQuantity(prev => prev + 1)}
-                  variant="outline"
-                  size="sm"
-                  className="h-10 w-10 rounded-full p-0"
-                >
-                  <Plus className="w-4 h-4" />
-                </Button>
+                <div>
+                  <div className="text-xl lg:text-2xl font-bold text-primary">85%</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">{t('hero.stat.reduction')}</div>
+                </div>
+                <div>
+                  <div className="text-xl lg:text-2xl font-bold text-primary">92%</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">{t('hero.stat.shine')}</div>
+                </div>
+                <div>
+                  <div className="text-xl lg:text-2xl font-bold text-primary">4 {t('hero.stat.weeks')}</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">{t('hero.stat.weeks.desc')}</div>
+                </div>
               </div>
+            </div>
 
-              {/* Buy Now Button */}
-              <Link to="/order" className="block">
+            {/* CTA Buttons */}
+            <div className={`flex flex-col items-center gap-4 ${language === 'ar' ? 'lg:items-end' : 'lg:items-start'}`}>
+              <Link to="/order">
                 <Button 
                   size="lg" 
-                  className="w-full bg-gradient-primary hover:scale-105 transition-all duration-300 shadow-elegant text-base lg:text-lg py-6 rounded-full hover:shadow-glow"
+                  className="w-full sm:w-auto bg-gradient-primary hover:scale-105 transition-all duration-300 shadow-elegant text-base lg:text-lg px-8 lg:px-12 py-4 lg:py-6 rounded-full hover:shadow-glow"
                 >
                   <ShoppingCart className={`w-5 h-5 lg:w-6 lg:h-6 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
                   {t('hero.buy.now')}
