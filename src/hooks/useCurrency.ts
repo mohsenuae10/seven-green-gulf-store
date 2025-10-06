@@ -11,7 +11,7 @@ interface CurrencyData {
 }
 
 const currencies: Record<Currency, CurrencyData> = {
-  SAR: { code: 'SAR', symbol: 'ر.س', name: 'ريال سعودي', flag: '🇸🇦', rate: 1 }, // Base currency
+  SAR: { code: 'SAR', symbol: '﷼', name: 'ريال سعودي', flag: '🇸🇦', rate: 1 }, // Base currency
   AED: { code: 'AED', symbol: 'د.إ', name: 'درهم إماراتي', flag: '🇦🇪', rate: 0.98 }, // 1 SAR = ~0.98 AED
   USD: { code: 'USD', symbol: '$', name: 'دولار أمريكي', flag: '🇺🇸', rate: 0.27 }, // 1 SAR = ~0.27 USD
 };
