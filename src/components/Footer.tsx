@@ -39,8 +39,28 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/product-details" className="text-muted-foreground hover:text-foreground transition-colors">
-                  {language === 'ar' ? 'تفاصيل المنتج' : 'Product Details'}
+                <Link to="/benefits" className="text-muted-foreground hover:text-foreground transition-colors">
+                  {language === 'ar' ? 'الفوائد' : 'Benefits'}
+                </Link>
+              </li>
+              <li>
+                <Link to="/ingredients" className="text-muted-foreground hover:text-foreground transition-colors">
+                  {language === 'ar' ? 'المكونات' : 'Ingredients'}
+                </Link>
+              </li>
+              <li>
+                <Link to="/how-to-use" className="text-muted-foreground hover:text-foreground transition-colors">
+                  {language === 'ar' ? 'طريقة الاستخدام' : 'How to Use'}
+                </Link>
+              </li>
+              <li>
+                <Link to="/reviews" className="text-muted-foreground hover:text-foreground transition-colors">
+                  {language === 'ar' ? 'التقييمات' : 'Reviews'}
+                </Link>
+              </li>
+              <li>
+                <Link to="/faq" className="text-muted-foreground hover:text-foreground transition-colors">
+                  {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}
                 </Link>
               </li>
               <li>

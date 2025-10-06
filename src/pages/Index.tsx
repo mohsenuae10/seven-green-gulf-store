@@ -323,21 +323,24 @@ const Index = () => {
         
         {/* Internal Navigation Links */}
         <nav className="container mx-auto px-4 py-4 flex gap-4 justify-center flex-wrap">
-          <a href="#product" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            {language === 'ar' ? 'المنتج' : 'Product'}
-          </a>
-          <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            {language === 'ar' ? 'المميزات' : 'Features'}
-          </a>
-          <a href="#ingredients" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          <Link to="/benefits" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            {language === 'ar' ? 'الفوائد' : 'Benefits'}
+          </Link>
+          <Link to="/ingredients" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             {language === 'ar' ? 'المكونات' : 'Ingredients'}
-          </a>
-          <a href="#reviews" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          </Link>
+          <Link to="/how-to-use" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            {language === 'ar' ? 'طريقة الاستخدام' : 'How to Use'}
+          </Link>
+          <Link to="/reviews" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             {language === 'ar' ? 'التقييمات' : 'Reviews'}
-          </a>
-          <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+          </Link>
+          <Link to="/faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}
-          </a>
+          </Link>
+          <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            {language === 'ar' ? 'من نحن' : 'About'}
+          </Link>
         </nav>
 
         <main>

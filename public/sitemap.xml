@@ -41,4 +41,70 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/order" />
   </url>
 
+  <!-- Benefits Page -->
+  <url>
+    <loc>https://sevensgreen.com/benefits</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/benefits?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/benefits?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/benefits" />
+  </url>
+
+  <!-- Ingredients Page -->
+  <url>
+    <loc>https://sevensgreen.com/ingredients</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/ingredients?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/ingredients?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/ingredients" />
+  </url>
+
+  <!-- How to Use Page -->
+  <url>
+    <loc>https://sevensgreen.com/how-to-use</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/how-to-use?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/how-to-use?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/how-to-use" />
+  </url>
+
+  <!-- Reviews Page -->
+  <url>
+    <loc>https://sevensgreen.com/reviews</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/reviews?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/reviews?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/reviews" />
+  </url>
+
+  <!-- FAQ Page -->
+  <url>
+    <loc>https://sevensgreen.com/faq</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/faq?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/faq?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/faq" />
+  </url>
+
+  <!-- Compare Page -->
+  <url>
+    <loc>https://sevensgreen.com/compare</loc>
+    <lastmod>2025-01-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/compare?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/compare?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/compare" />
+  </url>
+
 </urlset>
