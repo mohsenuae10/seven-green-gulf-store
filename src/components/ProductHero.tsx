@@ -152,6 +152,16 @@ const ProductHero = () => {
                 </span>
               </h1>
               
+              {/* Short Product Description - Competitive */}
+              <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 max-w-2xl mx-auto lg:mx-0">
+                <p className="text-sm sm:text-base lg:text-lg text-foreground leading-relaxed">
+                  {language === 'ar' 
+                    ? 'صابون عشبي للشعر من SEVEN GREEN بتركيبة أوراق السرو والوسمة المثلثة - لمحة طبيعية غنية بخلاصة 7 أعشاب لتقوية الجذور ومنع التساقط وتحفيز النمو'
+                    : 'Herbal hair soap from SEVEN GREEN with cypress and woad leaf formula - a natural overview rich in 7 herbs to strengthen roots, prevent hair loss, and stimulate growth'
+                  }
+                </p>
+              </div>
+              
               <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl leading-relaxed mx-auto lg:mx-0">
                 {t('hero.description')}
               </p>
@@ -337,31 +347,42 @@ const ProductHero = () => {
                   <span>{t('hero.swipe')}</span>
                 </div>
                 
-                {/* Price Badge - أنيق وبسيط */}
-                <div className="mt-6 flex justify-center">
+                {/* Price Badge - Enhanced with Availability */}
+                <div className="mt-6 flex flex-col items-center gap-3">
+                  {/* Availability Badge - Prominent */}
+                  <div className="inline-flex items-center gap-2 bg-green-50 border-2 border-green-500 rounded-full px-4 py-2 shadow-md">
+                    <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-green-700 font-bold text-sm">
+                      {language === 'ar' ? 'متوفر • شحن فوري' : 'Available • Instant Shipping'}
+                    </span>
+                  </div>
+                  
                   {priceLoading ? (
-                    <Skeleton className="w-64 h-20" />
+                    <Skeleton className="w-72 h-24" />
                   ) : (
-                    <div className="relative inline-flex items-center gap-3 bg-gradient-to-r from-primary/20 via-white to-secondary/20 backdrop-blur-sm rounded-2xl px-6 py-4 border-2 border-primary/40 shadow-[0_8px_30px_rgba(139,195,74,0.25)] hover:shadow-[0_10px_40px_rgba(139,195,74,0.35)] transition-all duration-300 group">
+                    <div className="relative inline-flex items-center gap-4 bg-gradient-to-r from-primary/20 via-white to-secondary/20 backdrop-blur-sm rounded-2xl px-8 py-5 border-2 border-primary/40 shadow-[0_8px_30px_rgba(139,195,74,0.25)] hover:shadow-[0_10px_40px_rgba(139,195,74,0.35)] transition-all duration-300 group">
                       {/* السعر القديم */}
                       <div className="flex flex-col items-end">
                         <span className="text-xs text-muted-foreground">{t('hero.was')}</span>
-                        <span className="text-lg line-through text-muted-foreground font-semibold">{formatPrice(ORIGINAL_PRICE)}</span>
+                        <span className="text-xl line-through text-muted-foreground font-semibold">{formatPrice(ORIGINAL_PRICE)}</span>
                       </div>
                       
                       {/* فاصل */}
-                      <div className="w-px h-12 bg-gradient-to-b from-transparent via-primary/50 to-transparent"></div>
+                      <div className="w-px h-14 bg-gradient-to-b from-transparent via-primary/50 to-transparent"></div>
                       
-                      {/* السعر الجديد */}
+                      {/* السعر الجديد - أكبر وأبرز */}
                       <div className="flex flex-col items-start">
-                        <span className="text-xs text-primary font-semibold">{t('hero.now')}</span>
-                        <span className="text-3xl font-extrabold bg-gradient-primary bg-clip-text text-transparent">
+                        <span className="text-sm text-primary font-bold">{t('hero.now')}</span>
+                        <span className="text-4xl font-extrabold bg-gradient-primary bg-clip-text text-transparent">
                           {formatPrice(productPrice)}
+                        </span>
+                        <span className="text-xs text-green-600 font-medium mt-1">
+                          {language === 'ar' ? 'سعر تنافسي' : 'Competitive Price'}
                         </span>
                       </div>
                       
-                      {/* دائرة التوفير - صغيرة وأنيقة */}
-                      <div className="absolute -top-3 -right-3 bg-gradient-to-br from-red-500 to-pink-600 text-white rounded-full w-14 h-14 flex items-center justify-center text-sm font-bold shadow-lg animate-pulse border-2 border-white">
+                      {/* دائرة التوفير - أكبر قليلاً */}
+                      <div className="absolute -top-4 -right-4 bg-gradient-to-br from-red-500 to-pink-600 text-white rounded-full w-16 h-16 flex items-center justify-center text-base font-bold shadow-lg animate-pulse border-2 border-white">
                         -{Math.round(((ORIGINAL_PRICE - productPrice) / ORIGINAL_PRICE) * 100)}%
                       </div>
                       
