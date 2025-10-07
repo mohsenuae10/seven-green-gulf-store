@@ -14,7 +14,11 @@ import OptimizedImage from "@/components/OptimizedImage";
 import sevenGreenLogo from "@/assets/seven-green-logo.png";
 import { PriceDisplay } from "@/components/PriceDisplay";
 
-const ProductHero = () => {
+interface ProductHeroProps {
+  onImagesLoaded?: () => void;
+}
+
+const ProductHero = ({ onImagesLoaded }: ProductHeroProps) => {
   const { price: productPrice, stockQuantity, loading: priceLoading } = useProductPrice();
   const { getPriceData, selectedCurrency } = useCurrency();
   const { language, t } = useLanguage();
@@ -74,10 +78,15 @@ const ProductHero = () => {
         }
       } catch {}
       setLoadingImages(false);
+      
+      // Notify parent that images are loaded
+      if (onImagesLoaded) {
+        onImagesLoaded();
+      }
     };
 
     load();
-  }, []);
+  }, [onImagesLoaded]);
 
   // Auto-advance carousel - بطيء جداً
   useEffect(() => {

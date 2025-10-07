@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
@@ -12,6 +12,7 @@ import TrustBadges from "@/components/TrustBadges";
 import MobileNav from "@/components/MobileNav";
 import MobileOptimized from "@/components/MobileOptimized";
 import Footer from "@/components/Footer";
+import PageLoader from "@/components/PageLoader";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useProductPrice } from "@/hooks/useProductPrice";
@@ -19,13 +20,47 @@ import { CONTACT_INFO } from "@/config/contact";
 
 const Index = () => {
   const { language } = useLanguage();
-  const { price } = useProductPrice({ fallback: 71 });
+  const { price, loading: priceLoading } = useProductPrice({ fallback: 71 });
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const [startTime] = useState(Date.now());
+  const [showLoader, setShowLoader] = useState(false);
   
+  // Handle initial loading
   useEffect(() => {
     // Update document language
     document.documentElement.lang = language === 'ar' ? 'ar' : 'en';
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-  }, [language]);
+
+    // Show loader after 100ms (to avoid flash for fast loads)
+    const showLoaderTimeout = setTimeout(() => {
+      if (isInitialLoad) {
+        setShowLoader(true);
+      }
+    }, 100);
+
+    return () => clearTimeout(showLoaderTimeout);
+  }, [language, isInitialLoad]);
+
+  // Check if loading is complete
+  useEffect(() => {
+    if (!priceLoading && imagesLoaded && isInitialLoad) {
+      const elapsed = Date.now() - startTime;
+      const minDisplayTime = 800; // minimum 800ms display time
+      
+      // Ensure loader shows for minimum time
+      const remainingTime = Math.max(0, minDisplayTime - elapsed);
+      
+      setTimeout(() => {
+        setIsInitialLoad(false);
+        setShowLoader(false);
+      }, remainingTime);
+    }
+  }, [priceLoading, imagesLoaded, isInitialLoad, startTime]);
+
+  const handleImagesLoaded = () => {
+    setImagesLoaded(true);
+  };
 
   const title = language === 'ar' 
     ? "سفن جرين | صابونة وشامبو طبيعي لعلاج تساقط الشعر"
@@ -276,6 +311,15 @@ const Index = () => {
 
   return (
     <>
+      {showLoader && (
+        <PageLoader 
+          onLoadComplete={() => {
+            setIsInitialLoad(false);
+            setShowLoader(false);
+          }} 
+        />
+      )}
+      
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -325,7 +369,7 @@ const Index = () => {
 
         <main>
           <div id="product">
-            <ProductHero />
+            <ProductHero onImagesLoaded={handleImagesLoaded} />
           </div>
           <TrustBadges />
           <ProductDetails />
