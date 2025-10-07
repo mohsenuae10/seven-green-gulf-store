@@ -28,11 +28,11 @@ export default {
 			}
 		},
 		extend: {
-			fontFamily: {
-				'arabic': ['Tajawal', 'sans-serif'],
-				'english': ['Inter', 'sans-serif'],
-				'sans': ['Tajawal', 'Inter', 'sans-serif'],
-			},
+		fontFamily: {
+			'arabic': ['Cairo', 'sans-serif'],
+			'english': ['Inter', 'sans-serif'],
+			'sans': ['Cairo', 'Inter', 'sans-serif'],
+		},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

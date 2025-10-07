@@ -1,124 +1,128 @@
 import { Link } from "react-router-dom";
+import { Facebook, Twitter, Mail, Phone, MapPin, Instagram, Leaf } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
-import { Facebook, Twitter, Video, Camera } from "lucide-react";
 
 const Footer = () => {
   const { language } = useLanguage();
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-card border-t border-border py-12 mt-16">
-      <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-3 gap-8 mb-8">
-          {/* About */}
-          <div>
-            <h3 className="font-bold text-lg mb-4">
-              {language === 'ar' ? 'سفن جرين' : 'Seven Green'}
-            </h3>
-            <p className="text-muted-foreground text-sm">
-              {language === 'ar'
-                ? 'علامة تجارية كورية رائدة في منتجات العناية بالشعر الطبيعية'
-                : 'Leading Korean brand in natural hair care products'}
+    <footer className="bg-secondary border-t border-border mt-20">
+      <div className="container mx-auto px-4 py-12 lg:py-16">
+        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+          
+          {/* Logo & About Section */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Leaf className="w-6 h-6 text-primary" />
+              <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent font-english">
+                Seven Green
+              </span>
+            </div>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              {language === 'ar' 
+                ? 'صابونة طبيعية 100% من أوراق السرو ونبات الأوسمان. الحل الطبيعي الأمثل لعلاج تساقط الشعر وتعزيز نموه.'
+                : '100% natural soap from cypress leaves and rosemary plant. The perfect natural solution for treating hair loss and promoting growth.'}
             </p>
           </div>
 
           {/* Quick Links */}
-          <div>
-            <h3 className="font-bold text-lg mb-4">
-              {language === 'ar' ? 'روابط سريعة' : 'Quick Links'}
-            </h3>
-            <ul className="space-y-2 text-sm">
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-foreground">{language === 'ar' ? 'روابط سريعة' : 'Quick Links'}</h3>
+            <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/" className="text-muted-foreground hover:text-primary transition-all duration-300 text-sm relative group">
                   {language === 'ar' ? 'الرئيسية' : 'Home'}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-muted-foreground hover:text-foreground transition-colors">
-                  {language === 'ar' ? 'من نحن' : 'About Us'}
-                </Link>
-              </li>
-              <li>
-                <Link to="/benefits" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/benefits" className="text-muted-foreground hover:text-primary transition-all duration-300 text-sm relative group">
                   {language === 'ar' ? 'الفوائد' : 'Benefits'}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               </li>
               <li>
-                <Link to="/ingredients" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/ingredients" className="text-muted-foreground hover:text-primary transition-all duration-300 text-sm relative group">
                   {language === 'ar' ? 'المكونات' : 'Ingredients'}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               </li>
               <li>
-                <Link to="/how-to-use" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/how-to-use" className="text-muted-foreground hover:text-primary transition-all duration-300 text-sm relative group">
                   {language === 'ar' ? 'طريقة الاستخدام' : 'How to Use'}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               </li>
               <li>
-                <Link to="/reviews" className="text-muted-foreground hover:text-foreground transition-colors">
-                  {language === 'ar' ? 'التقييمات' : 'Reviews'}
-                </Link>
-              </li>
-              <li>
-                <Link to="/faq" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link to="/faq" className="text-muted-foreground hover:text-primary transition-all duration-300 text-sm relative group">
                   {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}
-                </Link>
-              </li>
-              <li>
-                <Link to="/order" className="text-muted-foreground hover:text-foreground transition-colors">
-                  {language === 'ar' ? 'اطلب الآن' : 'Order Now'}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Contact & Social Media */}
-          <div>
-            <h3 className="font-bold text-lg mb-4">
-              {language === 'ar' ? 'تواصل معنا' : 'Follow Us'}
-            </h3>
+          {/* Customer Service */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-foreground">{language === 'ar' ? 'خدمة العملاء' : 'Customer Service'}</h3>
+            <ul className="space-y-3">
+              <li className="flex items-center gap-2 text-muted-foreground text-sm">
+                <Phone className="w-4 h-4 text-primary flex-shrink-0" />
+                <a href="tel:+971508824227" className="hover:text-primary transition-colors duration-300">
+                  +971 50 882 4227
+                </a>
+              </li>
+              <li className="flex items-center gap-2 text-muted-foreground text-sm">
+                <Mail className="w-4 h-4 text-primary flex-shrink-0" />
+                <a href="mailto:info@sevengreen.com" className="hover:text-primary transition-colors duration-300">
+                  info@sevengreen.com
+                </a>
+              </li>
+              <li className="flex items-start gap-2 text-muted-foreground text-sm">
+                <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                <span>{language === 'ar' ? 'الإمارات العربية المتحدة' : 'United Arab Emirates'}</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Social Media */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-bold text-foreground">{language === 'ar' ? 'تابعنا' : 'Follow Us'}</h3>
             <div className="flex gap-4">
               <a 
-                href="https://www.snapchat.com/add/sevensgreen" 
+                href="https://www.instagram.com/sevengreen" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Snapchat"
+                className="text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-110"
+                aria-label="Instagram"
               >
-                <Camera className="w-6 h-6" />
+                <Instagram className="w-6 h-6" />
               </a>
               <a 
-                href="https://www.tiktok.com/@sevensgreen" 
+                href="https://www.facebook.com/sevengreen" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="TikTok"
-              >
-                <Video className="w-6 h-6" />
-              </a>
-              <a 
-                href="https://twitter.com/sevensgreen" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
-                aria-label="Twitter/X"
-              >
-                <Twitter className="w-6 h-6" />
-              </a>
-              <a 
-                href="https://www.facebook.com/sevensgreen" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-110"
                 aria-label="Facebook"
               >
                 <Facebook className="w-6 h-6" />
+              </a>
+              <a 
+                href="https://twitter.com/sevengreen" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-110"
+                aria-label="Twitter"
+              >
+                <Twitter className="w-6 h-6" />
               </a>
             </div>
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground">
+        <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground mt-8">
           <p>
             {language === 'ar' 
               ? `© ${currentYear} سفن جرين. جميع الحقوق محفوظة.`

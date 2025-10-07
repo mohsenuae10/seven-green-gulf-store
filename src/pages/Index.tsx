@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
+import Header from "@/components/Header";
 import ProductHero from "@/components/ProductHero";
 import ProductFeatures from "@/components/ProductFeatures";
 import ProductIngredients from "@/components/ProductIngredients";
@@ -319,29 +320,8 @@ const Index = () => {
       </Helmet>
       
       <MobileOptimized className="min-h-screen">
+        <Header />
         <MobileNav />
-        
-        {/* Internal Navigation Links */}
-        <nav className="container mx-auto px-4 py-4 flex gap-4 justify-center flex-wrap">
-          <Link to="/benefits" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            {language === 'ar' ? 'الفوائد' : 'Benefits'}
-          </Link>
-          <Link to="/ingredients" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            {language === 'ar' ? 'المكونات' : 'Ingredients'}
-          </Link>
-          <Link to="/how-to-use" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            {language === 'ar' ? 'طريقة الاستخدام' : 'How to Use'}
-          </Link>
-          <Link to="/reviews" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            {language === 'ar' ? 'التقييمات' : 'Reviews'}
-          </Link>
-          <Link to="/faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}
-          </Link>
-          <Link to="/about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-            {language === 'ar' ? 'من نحن' : 'About'}
-          </Link>
-        </nav>
 
         <main>
           <div id="product">

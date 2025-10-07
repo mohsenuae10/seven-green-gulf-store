@@ -6,60 +6,61 @@
 
 @layer base {
   :root {
-    --background: 50 20% 98%;
-    --foreground: 140 25% 15%;
+    --background: 0 0% 100%;
+    --foreground: 145 30% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 140 25% 15%;
+    --card-foreground: 145 30% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 140 25% 15%;
+    --popover-foreground: 145 30% 20%;
 
-    /* Rich green primary inspired by natural hair care */
-    --primary: 140 60% 25%;
-    --primary-foreground: 0 0% 98%;
-    --primary-light: 140 45% 35%;
-    --primary-dark: 140 70% 20%;
+    /* Natural olive-green primary inspired by Seven Green */
+    --primary: 100 28% 36%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 100 35% 55%;
+    --primary-dark: 100 28% 25%;
 
-    /* Elegant gold secondary for premium feel */
-    --secondary: 45 85% 60%;
-    --secondary-foreground: 45 100% 15%;
-    --secondary-light: 45 75% 70%;
-    --secondary-dark: 45 95% 45%;
+    /* Soft beige secondary for elegant feel */
+    --secondary: 40 20% 95%;
+    --secondary-foreground: 145 30% 20%;
+    --secondary-light: 40 25% 97%;
+    --secondary-dark: 40 15% 90%;
 
-    --muted: 140 15% 95%;
-    --muted-foreground: 140 20% 45%;
+    --muted: 100 15% 95%;
+    --muted-foreground: 145 15% 45%;
 
-    --accent: 120 40% 92%;
-    --accent-foreground: 140 60% 25%;
+    --accent: 100 25% 92%;
+    --accent-foreground: 100 28% 36%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 140 20% 88%;
-    --input: 140 15% 94%;
-    --ring: 140 60% 25%;
+    --border: 100 20% 85%;
+    --input: 100 15% 94%;
+    --ring: 100 28% 36%;
 
-    /* Beautiful gradients for premium feel */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-light)));
-    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--secondary-light)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary-dark)), hsl(var(--primary)), hsl(var(--secondary-dark)));
-    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(var(--accent)));
+    /* Beautiful gradients for natural feel */
+    --gradient-primary: linear-gradient(135deg, hsl(100, 28%, 36%), hsl(100, 35%, 55%));
+    --gradient-secondary: linear-gradient(135deg, hsl(40, 20%, 95%), hsl(40, 25%, 97%));
+    --gradient-hero: linear-gradient(180deg, hsl(100, 40%, 97%), hsl(0, 0%, 100%));
+    --gradient-card: linear-gradient(145deg, hsl(0, 0%, 100%), hsl(100, 25%, 92%));
     
     /* Elegant shadows with green tint */
-    --shadow-soft: 0 2px 10px hsl(var(--primary) / 0.1);
-    --shadow-medium: 0 8px 25px hsl(var(--primary) / 0.15);
-    --shadow-strong: 0 15px 35px hsl(var(--primary) / 0.2);
-    --shadow-glow: 0 0 30px hsl(var(--secondary) / 0.3);
+    --shadow-soft: 0 4px 20px -4px hsl(100 28% 36% / 0.15);
+    --shadow-card: 0 8px 30px -6px hsl(100 28% 36% / 0.2);
+    --shadow-medium: 0 8px 25px hsl(100 28% 36% / 0.15);
+    --shadow-strong: 0 15px 35px hsl(100 28% 36% / 0.2);
+    --shadow-glow: 0 0 30px hsl(100 35% 55% / 0.3);
 
     /* Smooth transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
     /* Arabic Font */
-    --font-arabic: 'Tajawal', sans-serif;
+    --font-arabic: 'Cairo', sans-serif;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
