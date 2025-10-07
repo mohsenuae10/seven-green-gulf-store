@@ -562,7 +562,9 @@ const Order = () => {
 
                 <Button
                   type="submit"
-                  className="w-full bg-gradient-secondary hover:bg-gradient-primary text-white mobile-button touch-target rounded-full shadow-glow hover:scale-105 transition-all duration-300"
+                  variant="hero"
+                  size="lg"
+                  className="w-full mobile-button touch-target"
                   disabled={isLoading}
                 >
                   {isLoading ? (
