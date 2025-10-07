@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Leaf } from "lucide-react";
+import { Leaf, ShoppingCart } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
@@ -50,16 +50,23 @@ const Header = () => {
 
           {/* Right Section */}
           <div className="flex items-center gap-4">
-            {/* Language & Currency - Always visible */}
-            <div className="flex items-center gap-2 bg-accent/50 backdrop-blur-sm rounded-full px-3 py-1.5 border border-border">
+            {/* Language & Currency */}
+            <div className="hidden md:flex items-center gap-2 bg-accent/50 backdrop-blur-sm rounded-full px-3 py-1.5 border border-border">
               <LanguageSwitcher />
               <div className="w-px h-4 bg-border"></div>
               <CurrencySwitcher variant="header" />
             </div>
 
+            {/* Shopping Cart */}
+            <Link to="/order">
+              <Button variant="outline" size="icon" className="relative">
+                <ShoppingCart className="w-5 h-5" />
+              </Button>
+            </Link>
+
             {/* CTA Button */}
             <Link to="/order" className="hidden sm:block">
-              <Button variant="default" className="shadow-soft">
+              <Button variant="hero" className="shadow-soft">
                 {language === 'ar' ? 'اطلب الآن' : 'Order Now'}
               </Button>
             </Link>

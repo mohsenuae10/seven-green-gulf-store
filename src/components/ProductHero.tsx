@@ -253,7 +253,7 @@ const ProductHero = () => {
               <Link to="/order">
                 <Button 
                   size="lg" 
-                  className="w-full sm:w-auto hover:scale-105 transition-all duration-300 shadow-soft text-base lg:text-lg px-8 lg:px-12 py-4 lg:py-6 rounded-xl"
+                  className="w-full sm:w-auto bg-gradient-primary hover:scale-105 transition-all duration-300 shadow-elegant text-base lg:text-lg px-8 lg:px-12 py-4 lg:py-6 rounded-full hover:shadow-glow"
                 >
                   <ShoppingCart className={`w-5 h-5 lg:w-6 lg:h-6 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
                   {t('hero.buy.now')}
@@ -458,7 +458,7 @@ const ProductHero = () => {
                     <Link to="/order" className="w-full sm:w-auto">
                       <Button 
                         size="lg" 
-                        className="w-full sm:w-auto hover:scale-105 transition-all duration-300 shadow-soft px-8 py-3 rounded-xl"
+                        className="w-full sm:w-auto bg-gradient-primary hover:scale-105 transition-all duration-300 shadow-elegant px-8 py-3 rounded-full hover:shadow-glow"
                       >
                         <ShoppingCart className={`w-5 h-5 ${language === 'ar' ? 'ml-2' : 'mr-2'}`} />
                         {t('hero.buy.now')}
