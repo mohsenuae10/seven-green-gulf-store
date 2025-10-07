@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Facebook, Twitter, Mail, Phone, MapPin, Instagram, Leaf } from "lucide-react";
+import { Facebook, Twitter, Mail, Instagram, Leaf } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 
 const Footer = () => {
@@ -68,20 +68,10 @@ const Footer = () => {
             <h3 className="text-lg font-bold text-foreground">{language === 'ar' ? 'خدمة العملاء' : 'Customer Service'}</h3>
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-muted-foreground text-sm">
-                <Phone className="w-4 h-4 text-primary flex-shrink-0" />
-                <a href="tel:+971508824227" className="hover:text-primary transition-colors duration-300">
-                  +971 50 882 4227
-                </a>
-              </li>
-              <li className="flex items-center gap-2 text-muted-foreground text-sm">
                 <Mail className="w-4 h-4 text-primary flex-shrink-0" />
                 <a href="mailto:info@sevengreen.com" className="hover:text-primary transition-colors duration-300">
                   info@sevengreen.com
                 </a>
-              </li>
-              <li className="flex items-start gap-2 text-muted-foreground text-sm">
-                <MapPin className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
-                <span>{language === 'ar' ? 'الإمارات العربية المتحدة' : 'United Arab Emirates'}</span>
               </li>
             </ul>
           </div>
