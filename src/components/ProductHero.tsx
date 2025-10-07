@@ -23,6 +23,7 @@ const ProductHero = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [productImages, setProductImages] = useState<{ src: string; alt: string }[]>([]);
   const [quantity, setQuantity] = useState(1);
+  const [loadingImages, setLoadingImages] = useState(true);
 
   const handleIncrement = () => setQuantity(prev => prev + 1);
   const handleDecrement = () => setQuantity(prev => Math.max(1, prev - 1));
@@ -35,6 +36,7 @@ const ProductHero = () => {
 
   useEffect(() => {
     const load = async () => {
+      setLoadingImages(true);
       try {
         const { data: site } = await supabase
           .from('site_content')
@@ -71,6 +73,7 @@ const ProductHero = () => {
           }
         }
       } catch {}
+      setLoadingImages(false);
     };
 
     load();
@@ -284,7 +287,9 @@ const ProductHero = () => {
               <div className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg mx-auto">
                 {/* Main Image Display */}
                 <div className="relative overflow-hidden rounded-2xl lg:rounded-3xl shadow-strong">
-                  {productImages.length > 0 ? (
+                  {loadingImages ? (
+                    <div className="aspect-square w-full bg-muted rounded-2xl lg:rounded-3xl animate-pulse" />
+                  ) : productImages.length > 0 ? (
                     <div className="aspect-square w-full overflow-hidden rounded-2xl lg:rounded-3xl bg-white border border-primary/10 shadow-soft flex items-center justify-center">
                       <OptimizedImage
                         key={selectedIndex}

@@ -61,10 +61,11 @@ const OptimizedImage = ({
       src={src}
       alt={alt}
       draggable={false}
-      className={`${className} transition-opacity duration-300 ${
+      className={`${className} transition-opacity duration-200 ${
         isLoaded ? 'opacity-100' : 'opacity-0'
       }`}
       loading={priority ? 'eager' : 'lazy'}
+      fetchPriority={priority ? 'high' : 'auto'}
       decoding="async"
       width={width}
       height={height}
