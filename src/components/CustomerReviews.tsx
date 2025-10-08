@@ -124,10 +124,10 @@ const CustomerReviews = () => {
           <div className="flex items-center justify-center gap-2 mb-4">
             <div className="flex gap-1">
               {[1,2,3,4,5].map((star) => (
-                <Star key={star} className="w-6 h-6 fill-secondary text-secondary" />
+                <Star key={star} className="w-6 h-6 fill-[hsl(var(--gold))] text-[hsl(var(--gold))]" />
               ))}
             </div>
-            <span className="text-2xl font-bold text-secondary">4.9</span>
+            <span className="text-2xl font-bold text-[hsl(var(--gold))]">4.9</span>
             <span className="text-muted-foreground">(2,847 {t('reviews.badge')})</span>
           </div>
           

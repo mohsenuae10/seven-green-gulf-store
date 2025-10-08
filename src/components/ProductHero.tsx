@@ -395,7 +395,7 @@ const ProductHero = () => {
                   <div className="flex items-center justify-center gap-2">
                     <div className="flex gap-1">
                       {[1,2,3,4,5].map((star) => (
-                        <Star key={star} className="w-5 h-5 fill-secondary text-secondary" />
+                        <Star key={star} className="w-5 h-5 fill-[hsl(var(--gold))] text-[hsl(var(--gold))]" />
                       ))}
                     </div>
                     <span className="text-foreground font-medium">4.9</span>

@@ -27,6 +27,10 @@
     --secondary-light: 40 25% 97%;
     --secondary-dark: 40 15% 90%;
 
+    /* Gold color for rating stars */
+    --gold: 45 93% 58%;
+    --gold-foreground: 45 90% 15%;
+
     --muted: 100 15% 95%;
     --muted-foreground: 145 15% 45%;
 
@@ -98,6 +102,9 @@
     --secondary-foreground: 45 90% 15%;
     --secondary-light: 45 65% 80%;
     --secondary-dark: 45 85% 55%;
+
+    --gold: 45 93% 58%;
+    --gold-foreground: 45 90% 15%;
 
     --muted: 140 15% 15%;
     --muted-foreground: 140 15% 65%;
