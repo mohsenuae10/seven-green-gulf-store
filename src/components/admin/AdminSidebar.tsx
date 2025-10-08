@@ -7,7 +7,8 @@ import {
   BarChart3,
   Image,
   FileText,
-  Truck
+  Truck,
+  UserPlus
 } from "lucide-react";
 import {
   Sidebar,
@@ -38,6 +39,7 @@ const menuItems = [
   { id: "products", title: "إدارة المنتجات", icon: Package },
   { id: "images", title: "إدارة الصور", icon: Image },
   { id: "content", title: "إدارة المحتوى", icon: FileText },
+  { id: "admin-requests", title: "طلبات المسؤولين", icon: UserPlus },
 ];
 
 export function AdminSidebar({ activeSection, setActiveSection, user, onSignOut }: AdminSidebarProps) {

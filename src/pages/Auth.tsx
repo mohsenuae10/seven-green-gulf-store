@@ -90,7 +90,7 @@ const Auth = () => {
     try {
       const redirectUrl = `${window.location.origin}/`;
       
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -115,7 +115,7 @@ const Auth = () => {
       } else {
         toast({
           title: "تم إنشاء الحساب",
-          description: "تم إنشاء حسابك بنجاح. يرجى تسجيل الدخول.",
+          description: "تم إنشاء حسابك بنجاح. يمكنك الآن تسجيل الدخول أو طلب صلاحيات المسؤول.",
           variant: "default",
         });
       }
@@ -123,6 +123,81 @@ const Auth = () => {
       toast({
         title: "خطأ",
         description: "حدث خطأ غير متوقع",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRequestAdmin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      // First sign in to get the user
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) throw signInError;
+
+      if (!signInData.user) {
+        throw new Error("لم يتم العثور على المستخدم");
+      }
+
+      // Check if request already exists
+      const { data: existingRequest } = await supabase
+        .from('admin_requests')
+        .select('*')
+        .eq('user_id', signInData.user.id)
+        .single();
+
+      if (existingRequest) {
+        if (existingRequest.status === 'pending') {
+          toast({
+            title: "طلب قيد المراجعة",
+            description: "لديك طلب قيد المراجعة بالفعل. يرجى الانتظار حتى تتم مراجعته.",
+          });
+        } else if (existingRequest.status === 'approved') {
+          toast({
+            title: "تم الموافقة",
+            description: "لديك بالفعل صلاحيات المسؤول!",
+          });
+        } else {
+          toast({
+            title: "طلب مرفوض سابقاً",
+            description: "تم رفض طلبك السابق. يرجى التواصل مع الإدارة.",
+            variant: "destructive",
+          });
+        }
+        setLoading(false);
+        return;
+      }
+
+      // Create new admin request
+      const { error: requestError } = await supabase
+        .from('admin_requests')
+        .insert({
+          user_id: signInData.user.id,
+          email: signInData.user.email,
+          status: 'pending',
+        });
+
+      if (requestError) throw requestError;
+
+      toast({
+        title: "تم إرسال الطلب",
+        description: "تم إرسال طلبك للحصول على صلاحيات المسؤول. سيتم مراجعته قريباً.",
+      });
+
+      // Sign out after requesting
+      await supabase.auth.signOut();
+    } catch (error: any) {
+      toast({
+        title: "خطأ",
+        description: error.message,
         variant: "destructive",
       });
     } finally {
@@ -141,9 +216,10 @@ const Auth = () => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="signin">تسجيل الدخول</TabsTrigger>
               <TabsTrigger value="signup">إنشاء حساب</TabsTrigger>
+              <TabsTrigger value="request">طلب صلاحيات</TabsTrigger>
             </TabsList>
             
             <TabsContent value="signin">
@@ -203,6 +279,39 @@ const Auth = () => {
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "جاري إنشاء الحساب..." : "إنشاء حساب"}
+                </Button>
+              </form>
+            </TabsContent>
+
+            <TabsContent value="request">
+              <form onSubmit={handleRequestAdmin} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="request-email">البريد الإلكتروني</Label>
+                  <Input
+                    id="request-email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    placeholder="admin@example.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="request-password">كلمة المرور</Label>
+                  <Input
+                    id="request-password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    placeholder="••••••••"
+                  />
+                </div>
+                <div className="text-sm text-muted-foreground bg-muted p-3 rounded">
+                  سيتم إرسال طلبك للحصول على صلاحيات المسؤول. سيقوم أحد المسؤولين الحاليين بمراجعة طلبك.
+                </div>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "جاري إرسال الطلب..." : "طلب صلاحيات المسؤول"}
                 </Button>
               </form>
             </TabsContent>

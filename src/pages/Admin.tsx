@@ -13,6 +13,7 @@ import ProductImageManagement from "@/components/admin/ProductImageManagement";
 import ContentManagement from "@/components/admin/ContentManagement";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { ShippingManagement } from "@/components/admin/ShippingManagement";
+import { AdminRequestsManagement } from "@/components/admin/AdminRequestsManagement";
 
 const Admin = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -170,6 +171,8 @@ const Admin = () => {
         return <ProductImageManagement />;
       case "content":
         return <ContentManagement />;
+      case "admin-requests":
+        return <AdminRequestsManagement />;
       case "dashboard":
       default:
         return <AnalyticsDashboard />;
