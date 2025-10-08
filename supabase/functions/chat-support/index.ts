@@ -62,10 +62,33 @@ serve(async (req) => {
 
 معلومات الشحن والتوصيل:
 - شحن مجاني لجميع مناطق السعودية
-- التوصيل خلال 2-5 أيام عمل
-- شحن لدول الخليج متوفر
+- التوصيل خلال 2-5 أيام عمل داخل السعودية
 - تتبع الشحنة عبر رقم التتبع
-- التوصيل عبر شركات الشحن المعتمدة
+- التوصيل عبر شركات الشحن المعتمدة (سمسا، أرامكس، DHL)
+
+الدول التي نشحن إليها:
+📍 دول مجلس التعاون الخليجي (شحن مجاني):
+  - السعودية (جميع المناطق)
+  - الإمارات العربية المتحدة
+  - الكويت
+  - قطر
+  - البحرين
+  - سلطنة عمان
+
+📍 دول الشرق الأوسط (رسوم شحن إضافية):
+  - الأردن
+  - لبنان
+  - مصر
+  - العراق
+
+مدة التوصيل حسب الدولة:
+- السعودية: 2-5 أيام عمل
+- الإمارات: 3-6 أيام عمل
+- الكويت: 3-6 أيام عمل
+- قطر: 3-6 أيام عمل
+- البحرين: 3-6 أيام عمل
+- سلطنة عمان: 4-7 أيام عمل
+- باقي الدول: 7-14 يوم عمل
 
 طرق الدفع المتاحة:
 - الدفع عند الاستلام (متوفر داخل السعودية)
@@ -160,10 +183,33 @@ How to Use:
 
 Shipping Information:
 - Free shipping to all Saudi regions
-- Delivery within 2-5 business days
-- Gulf countries shipping available
+- Delivery within 2-5 business days in Saudi Arabia
 - Track your shipment via tracking number
-- Delivery through approved shipping companies
+- Delivery through approved shipping companies (SMSA, Aramex, DHL)
+
+Countries We Ship To:
+📍 GCC Countries (Free Shipping):
+  - Saudi Arabia (all regions)
+  - United Arab Emirates
+  - Kuwait
+  - Qatar
+  - Bahrain
+  - Oman
+
+📍 Middle East Countries (Additional shipping fees):
+  - Jordan
+  - Lebanon
+  - Egypt
+  - Iraq
+
+Delivery Time by Country:
+- Saudi Arabia: 2-5 business days
+- UAE: 3-6 business days
+- Kuwait: 3-6 business days
+- Qatar: 3-6 business days
+- Bahrain: 3-6 business days
+- Oman: 4-7 business days
+- Other countries: 7-14 business days
 
 Payment Methods:
 - Cash on Delivery (available in KSA)
