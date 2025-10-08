@@ -60,6 +60,24 @@ const Footer = () => {
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               </li>
+              <li>
+                <Link to="/about" className="text-muted-foreground hover:text-primary transition-all duration-300 text-sm relative group">
+                  {language === 'ar' ? 'من نحن' : 'About'}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/reviews" className="text-muted-foreground hover:text-primary transition-all duration-300 text-sm relative group">
+                  {language === 'ar' ? 'آراء العملاء' : 'Reviews'}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              </li>
+              <li>
+                <Link to="/compare" className="text-muted-foreground hover:text-primary transition-all duration-300 text-sm relative group">
+                  {language === 'ar' ? 'المقارنة' : 'Compare'}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+                </Link>
+              </li>
             </ul>
           </div>
 
