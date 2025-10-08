@@ -129,14 +129,14 @@ const PaymentSuccess = () => {
                     العودة للمتجر
                   </Button>
                 </Link>
-                <Button 
-                  variant="outline" 
-                  size="lg"
-                  onClick={() => window.open("https://wa.me/966503093939", "_blank")}
-                >
-                  <Phone className="w-5 h-5 ml-2" />
-                  تواصل معنا
-                </Button>
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={() => window.open("https://wa.me/971508824227", "_blank")}
+            >
+              <Phone className="w-5 h-5 ml-2" />
+              تواصل معنا
+            </Button>
               </div>
             </Card>
           </div>

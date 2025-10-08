@@ -148,7 +148,7 @@ const Admin = () => {
             </Button>
             <Button 
               variant="outline" 
-              onClick={() => window.open("https://wa.me/966503093939", "_blank")}
+              onClick={() => window.open("https://wa.me/971508824227", "_blank")}
               className="w-full"
             >
               تواصل مع الإدارة
