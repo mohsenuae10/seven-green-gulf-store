@@ -24,7 +24,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Edit2, Plus, Trash2 } from "lucide-react";
+import { Edit2, Plus, Trash2, Sparkles } from "lucide-react";
 
 interface Product {
   id: string;
@@ -52,6 +52,8 @@ export function ProductsManagement() {
     is_active: true,
     image_url: "",
   });
+  const [aiKeywords, setAiKeywords] = useState("");
+  const [generatingDescription, setGeneratingDescription] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -98,7 +100,58 @@ export function ProductsManagement() {
       is_active: true,
       image_url: "",
     });
+    setAiKeywords("");
     setEditingProduct(null);
+  };
+
+  const generateAIDescription = async () => {
+    if (!formData.name.trim()) {
+      toast({
+        title: "تنبيه",
+        description: "يرجى إدخال اسم المنتج أولاً",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setGeneratingDescription(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-product-description', {
+        body: { 
+          productName: formData.name,
+          keywords: aiKeywords,
+          language: 'ar'
+        }
+      });
+
+      if (error) {
+        console.error('Error generating description:', error);
+        toast({
+          title: "خطأ",
+          description: "فشل في توليد الوصف. يرجى المحاولة مرة أخرى.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (data?.description) {
+        setFormData({ ...formData, description: data.description });
+        toast({
+          title: "✨ تم التوليد",
+          description: "تم توليد الوصف بنجاح باستخدام الذكاء الاصطناعي",
+        });
+      }
+    } catch (error) {
+      console.error('Error generating description:', error);
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ أثناء توليد الوصف",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingDescription(false);
+    }
   };
 
   const openEditDialog = (product: Product) => {
@@ -316,13 +369,36 @@ export function ProductsManagement() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">الوصف</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    rows={3}
-                  />
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="description">الوصف</Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={generateAIDescription}
+                      disabled={generatingDescription}
+                      className="gap-2"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      {generatingDescription ? "جاري التوليد..." : "توليد بالذكاء الاصطناعي"}
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Input
+                      placeholder="كلمات مفتاحية (اختياري): مثل طبيعي، مرطب، للبشرة الجافة"
+                      value={aiKeywords}
+                      onChange={(e) => setAiKeywords(e.target.value)}
+                      className="text-sm"
+                    />
+                    <Textarea
+                      id="description"
+                      value={formData.description}
+                      onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      rows={4}
+                      placeholder="يمكنك كتابة الوصف يدوياً أو استخدام الذكاء الاصطناعي لتوليده"
+                    />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
