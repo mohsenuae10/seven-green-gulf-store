@@ -216,7 +216,7 @@ const PaymentSuccess = () => {
               <div className="text-center p-4 bg-background/30 rounded-lg">
                 <Truck className="w-8 h-8 text-primary mx-auto mb-2" />
                 <h3 className="font-semibold text-foreground mb-1">الشحن</h3>
-                <p className="text-sm text-muted-foreground">شحن مجاني لجميع دول الخليج</p>
+                <p className="text-sm text-muted-foreground">توصيل سريع لجميع دول الخليج</p>
               </div>
               
               <div className="text-center p-4 bg-background/30 rounded-lg">
@@ -237,7 +237,7 @@ const PaymentSuccess = () => {
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-secondary mt-0.5 flex-shrink-0" />
-                <p className="text-muted-foreground">الشحن مجاني لجميع دول الخليج</p>
+                <p className="text-muted-foreground">التوصيل سريع لجميع دول الخليج</p>
               </div>
               <div className="flex items-start gap-3">
                 <CheckCircle className="w-5 h-5 text-secondary mt-0.5 flex-shrink-0" />

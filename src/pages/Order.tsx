@@ -237,12 +237,12 @@ const Order = () => {
   const totalAmount = productPrice * formData.quantity;
 
   const title = language === 'ar' 
-    ? "اطلب سفن جرين الآن - توصيل مجاني لجميع دول الخليج"
-    : "Order Seven Green Now - Free Delivery to All GCC Countries";
+    ? "اطلب سفن جرين الآن - توصيل سريع لجميع دول الخليج"
+    : "Order Seven Green Now - Fast Delivery to All GCC Countries";
     
   const description = language === 'ar'
-    ? "اطلب صابونة سفن جرين المثلثة الأصلية الآن. توصيل مجاني لجميع دول الخليج خلال 2-5 أيام. ضمان استرجاع المال 30 يوم. دفع آمن 100%."
-    : "Order the original Seven Green Triangle Soap now. Free delivery to all GCC countries in 2-5 days. 30-day money-back guarantee. 100% secure payment.";
+    ? "اطلب صابونة سفن جرين المثلثة الأصلية الآن. توصيل سريع لجميع دول الخليج خلال 2-5 أيام. ضمان استرجاع المال 30 يوم. دفع آمن 100%."
+    : "Order the original Seven Green Triangle Soap now. Fast delivery to all GCC countries in 2-5 days. 30-day money-back guarantee. 100% secure payment.";
 
   const offerSchema = {
     "@context": "https://schema.org",

@@ -18,7 +18,7 @@ const OrderSection = () => {
   const [quantity, setQuantity] = useState(1);
   const [cardQuantity, setCardQuantity] = useState(1);
   const { price, stockQuantity } = useProductPrice();
-  const shipping = 0; // Free shipping
+  const shipping = 0; // Fast shipping
   const total = price * quantity + shipping;
 
   const handleCardIncrement = () => {

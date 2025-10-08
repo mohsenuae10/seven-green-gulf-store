@@ -32,8 +32,8 @@ const Index = () => {
     : "Seven Green | Natural Hair Loss Treatment Soap & Shampoo";
     
   const description = language === 'ar'
-    ? "سفن جرين صابونة وشامبو طبيعي 100% لعلاج تساقط الشعر وتكثيفه. الصابونة المثلثة الأصلية. نتائج مضمونة خلال 4 أسابيع. توصيل مجاني."
-    : "Seven Green 100% natural soap & shampoo for hair loss treatment. Original triangle soap. Guaranteed results in 4 weeks. Free delivery.";
+    ? "سفن جرين صابونة وشامبو طبيعي 100% لعلاج تساقط الشعر وتكثيفه. الصابونة المثلثة الأصلية. نتائج مضمونة خلال 4 أسابيع. توصيل سريع."
+    : "Seven Green 100% natural soap & shampoo for hair loss treatment. Original triangle soap. Guaranteed results in 4 weeks. Fast delivery.";
 
   const keywords = language === 'ar'
     ? "سفن جرين, Seven Green, صابونة سفن جرين, شامبو سفن جرين, سفن قرين, سيفن جرين, الصابونة المثلثة, علاج تساقط الشعر, تكثيف الشعر, صابون طبيعي, شامبو طبيعي, السرو والأوسمان, منتج سفن جرين, سفن جرين الأصلي"

@@ -38,7 +38,7 @@ const translations = {
     "hero.buy.now": "اشتر الآن",
     "hero.product.details": "تفاصيل المنتج",
     "hero.guarantee": "ضمان الجودة",
-    "hero.free.shipping": "شحن مجاني",
+    "hero.free.shipping": "توصيل سريع",
     "hero.exclusive": "منتج حصري",
     "hero.was": "كان",
     "hero.now": "الآن",
@@ -177,7 +177,7 @@ const translations = {
     
     // Order Section
     "order.section.title": "احصل على سيفن جرين اليوم",
-    "order.section.desc": "اطلب الآن واستمتع بالشحن المجاني لجميع دول الخليج مع ضمان الجودة",
+    "order.section.desc": "اطلب الآن واستمتع بالتوصيل السريع لجميع دول الخليج مع ضمان الجودة",
     "order.section.badge": "اطلب الآن",
     "order.info": "معلومات الطلب",
     "order.shipping": "معلومات الشحن",
@@ -231,7 +231,7 @@ const translations = {
     "hero.buy.now": "Buy Now",
     "hero.product.details": "Product Details",
     "hero.guarantee": "Quality Guarantee",
-    "hero.free.shipping": "Free Shipping",
+    "hero.free.shipping": "Fast Delivery",
     "hero.exclusive": "Exclusive Product",
     "hero.gallery.title": "Product Gallery",
     "hero.gallery.description": "Discover the beauty and effectiveness of Seven Green through this distinctive collection of images",
