@@ -594,7 +594,7 @@ const Order = () => {
             </Card>
             <Card className="p-4 text-center">
               <Truck className="w-8 h-8 mx-auto mb-2 text-primary" />
-              <h3 className="font-semibold text-sm">{language === 'ar' ? 'توصيل مجاني' : 'Free Delivery'}</h3>
+              <h3 className="font-semibold text-sm">{language === 'ar' ? 'توصيل سريع' : 'Fast Delivery'}</h3>
             </Card>
             <Card className="p-4 text-center">
               <RotateCcw className="w-8 h-8 mx-auto mb-2 text-primary" />
@@ -608,7 +608,7 @@ const Order = () => {
               {language === 'ar' ? 'لماذا تطلب من سفن جرين؟' : 'Why Order from Seven Green?'}
             </h2>
             <ul className="space-y-2">
-              <li>✅ {language === 'ar' ? 'توصيل مجاني لجميع دول الخليج' : 'Free delivery to all GCC countries'}</li>
+              <li>✅ {language === 'ar' ? 'توصيل سريع لجميع دول الخليج' : 'Fast delivery to all GCC countries'}</li>
               <li>✅ {language === 'ar' ? 'ضمان استرجاع المال 30 يوم' : '30-day money-back guarantee'}</li>
               <li>✅ {language === 'ar' ? 'منتج أصلي 100% معتمد من هيئة الغذاء والدواء' : '100% original product certified by FDA'}</li>
               <li>✅ {language === 'ar' ? 'دعم عملاء على مدار الساعة' : '24/7 customer support'}</li>
