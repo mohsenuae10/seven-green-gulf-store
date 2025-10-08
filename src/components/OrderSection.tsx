@@ -117,6 +117,7 @@ const OrderSection = () => {
                             <SelectItem value="qa">{language === 'ar' ? 'قطر' : 'Qatar'}</SelectItem>
                             <SelectItem value="bh">{language === 'ar' ? 'البحرين' : 'Bahrain'}</SelectItem>
                             <SelectItem value="om">{language === 'ar' ? 'عُمان' : 'Oman'}</SelectItem>
+                            <SelectItem value="ye">{language === 'ar' ? 'اليمن' : 'Yemen'}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>

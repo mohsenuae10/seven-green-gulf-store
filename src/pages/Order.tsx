@@ -89,6 +89,12 @@ const getCountries = (language: string) => [
     flag: "🇴🇲", 
     phoneCode: "+968" 
   },
+  { 
+    code: "YE", 
+    name: language === 'ar' ? "اليمن" : "Yemen", 
+    flag: "🇾🇪", 
+    phoneCode: "+967" 
+  },
 ];
 
 const Order = () => {
