@@ -137,13 +137,24 @@ const Admin = () => {
       <div className="min-h-screen flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader>
-            <CardTitle>غير مصرح</CardTitle>
+            <CardTitle>غير مصرح بالدخول</CardTitle>
             <CardDescription>
-              ليس لديك صلاحيات للوصول إلى هذه الصفحة. يرجى التواصل مع المدير لمنحك صلاحيات الوصول.
+              الحساب الحالي ({user?.email}) لا يملك صلاحيات الوصول لصفحة الإدارة.
+              يرجى تسجيل الخروج والدخول بحساب مسؤول، أو التواصل مع الإدارة للحصول على الصلاحيات.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button onClick={() => navigate("/")} className="w-full">
+            <Button 
+              onClick={handleSignOut} 
+              className="w-full"
+            >
+              تسجيل الخروج والعودة لتسجيل الدخول
+            </Button>
+            <Button 
+              variant="outline"
+              onClick={() => navigate("/")} 
+              className="w-full"
+            >
               العودة للصفحة الرئيسية
             </Button>
             <Button 
@@ -151,7 +162,7 @@ const Admin = () => {
               onClick={() => window.open("https://wa.me/971508824227", "_blank")}
               className="w-full"
             >
-              تواصل مع الإدارة
+              تواصل مع الإدارة للحصول على صلاحيات
             </Button>
           </CardContent>
         </Card>
