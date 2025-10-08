@@ -36,6 +36,12 @@ const getCountries = (language: string) => [
     phoneCode: "+966" 
   },
   { 
+    code: "YE", 
+    name: language === 'ar' ? "اليمن" : "Yemen", 
+    flag: "🇾🇪", 
+    phoneCode: "+967" 
+  },
+  { 
     code: "EG", 
     name: language === 'ar' ? "مصر" : "Egypt", 
     flag: "🇪🇬", 
@@ -88,12 +94,6 @@ const getCountries = (language: string) => [
     name: language === 'ar' ? "عمان" : "Oman", 
     flag: "🇴🇲", 
     phoneCode: "+968" 
-  },
-  { 
-    code: "YE", 
-    name: language === 'ar' ? "اليمن" : "Yemen", 
-    flag: "🇾🇪", 
-    phoneCode: "+967" 
   },
 ];
 

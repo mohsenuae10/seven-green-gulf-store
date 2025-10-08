@@ -111,13 +111,13 @@ const OrderSection = () => {
                           </SelectTrigger>
                           <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg z-50">
                             <SelectItem value="sa">{language === 'ar' ? 'السعودية' : 'Saudi Arabia'}</SelectItem>
+                            <SelectItem value="ye">{language === 'ar' ? 'اليمن' : 'Yemen'}</SelectItem>
                             <SelectItem value="ae">{language === 'ar' ? 'الإمارات' : 'UAE'}</SelectItem>
                             <SelectItem value="us">{language === 'ar' ? 'الولايات المتحدة' : 'United States'}</SelectItem>
                             <SelectItem value="kw">{language === 'ar' ? 'الكويت' : 'Kuwait'}</SelectItem>
                             <SelectItem value="qa">{language === 'ar' ? 'قطر' : 'Qatar'}</SelectItem>
                             <SelectItem value="bh">{language === 'ar' ? 'البحرين' : 'Bahrain'}</SelectItem>
                             <SelectItem value="om">{language === 'ar' ? 'عُمان' : 'Oman'}</SelectItem>
-                            <SelectItem value="ye">{language === 'ar' ? 'اليمن' : 'Yemen'}</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
