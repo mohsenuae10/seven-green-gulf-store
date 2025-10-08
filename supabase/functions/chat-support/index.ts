@@ -80,6 +80,7 @@ serve(async (req) => {
   - لبنان
   - مصر
   - العراق
+  - اليمن
 
 مدة التوصيل حسب الدولة:
 - السعودية: 2-5 أيام عمل
@@ -88,6 +89,7 @@ serve(async (req) => {
 - قطر: 3-6 أيام عمل
 - البحرين: 3-6 أيام عمل
 - سلطنة عمان: 4-7 أيام عمل
+- اليمن: 7-14 يوم عمل
 - باقي الدول: 7-14 يوم عمل
 
 طرق الدفع المتاحة:
@@ -201,6 +203,7 @@ Countries We Ship To:
   - Lebanon
   - Egypt
   - Iraq
+  - Yemen
 
 Delivery Time by Country:
 - Saudi Arabia: 2-5 business days
@@ -209,6 +212,7 @@ Delivery Time by Country:
 - Qatar: 3-6 business days
 - Bahrain: 3-6 business days
 - Oman: 4-7 business days
+- Yemen: 7-14 business days
 - Other countries: 7-14 business days
 
 Payment Methods:
