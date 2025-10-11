@@ -389,23 +389,26 @@ const Order = () => {
                 </Alert>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
+                {/* الاسم */}
                 <div className="space-y-2">
-                  <Label htmlFor="name" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.name')} *</Label>
+                  <Label htmlFor="name" className={`mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+                    {t('order.name')} *
+                  </Label>
                   <Input
                     id="name"
                     type="text"
                     placeholder={t('order.name.placeholder')}
                     value={formData.customerName}
                     onChange={(e) => handleInputChange("customerName", e.target.value)}
-                    className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                    className={`mobile-input touch-target h-12 ${language === 'ar' ? 'text-right' : 'text-left'}`}
                     required
                   />
                 </div>
 
+                {/* رقم الهاتف */}
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className={`block mobile-text font-medium flex items-center gap-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-                    <Phone className="w-4 h-4" />
+                  <Label htmlFor="phone" className={`mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                     {t('order.phone')} *
                   </Label>
                   <div className="flex gap-2">
@@ -413,28 +416,26 @@ const Order = () => {
                       value={formData.countryCode}
                       onValueChange={(value) => {
                         handleInputChange("countryCode", value);
-                        // Also set the country based on phone code
                         const country = countries.find(c => c.phoneCode === value);
                         if (country) {
                           handleInputChange("country", country.code);
                         }
                       }}
                     >
-                      <SelectTrigger className="w-[140px] text-right touch-target">
+                      <SelectTrigger className="w-[120px] h-12 touch-target">
                         <SelectValue>
-                          <div className="flex items-center gap-2">
-                            <span>{countries.find(c => c.phoneCode === formData.countryCode)?.flag}</span>
-                            <span>{formData.countryCode}</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-base">{countries.find(c => c.phoneCode === formData.countryCode)?.flag}</span>
+                            <span className="text-sm">{formData.countryCode}</span>
                           </div>
                         </SelectValue>
                       </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg z-50">
+                      <SelectContent className="bg-background border shadow-lg z-50 max-h-[300px]">
                         {countries.map((country) => (
-                          <SelectItem key={country.code} value={country.phoneCode} className="hover:bg-gray-100 dark:hover:bg-gray-700">
+                          <SelectItem key={country.code} value={country.phoneCode}>
                             <div className="flex items-center gap-2">
                               <span>{country.flag}</span>
-                              <span>{country.phoneCode}</span>
-                              <span className="text-sm text-muted-foreground">{country.name}</span>
+                              <span className="text-sm">{country.phoneCode}</span>
                             </div>
                           </SelectItem>
                         ))}
@@ -446,90 +447,43 @@ const Order = () => {
                       placeholder={t('order.phone.placeholder')}
                       value={formData.customerPhone}
                       onChange={(e) => handleInputChange("customerPhone", e.target.value)}
-                      className={`mobile-input touch-target flex-1 ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                      className={`mobile-input touch-target h-12 flex-1 ${language === 'ar' ? 'text-right' : 'text-left'}`}
                       required
                     />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="email" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.email')}</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder={t('order.email.placeholder')}
-                    value={formData.customerEmail}
-                    onChange={(e) => handleInputChange("customerEmail", e.target.value)}
-                    className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {/* المدينة والعنوان */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="country" className={`block mobile-text font-medium flex items-center gap-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-                      <Flag className="w-4 h-4" />
-                      {t('order.country')} *
+                    <Label htmlFor="city" className={`mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+                      {t('order.city')} *
                     </Label>
-                    <Select
-                      value={formData.country}
-                      onValueChange={(value) => {
-                        handleInputChange("country", value);
-                        // Update country code based on selected country
-                        const country = countries.find(c => c.code === value);
-                        if (country) {
-                          handleInputChange("countryCode", country.phoneCode);
-                        }
-                      }}
-                      required
-                    >
-                      <SelectTrigger className={`touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-                        <SelectValue placeholder={t('order.country.placeholder')}>
-                          {formData.country && (
-                            <div className="flex items-center gap-2">
-                              <span>{countries.find(c => c.code === formData.country)?.flag}</span>
-                              <span>{countries.find(c => c.code === formData.country)?.name}</span>
-                            </div>
-                          )}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg z-50">
-                        {countries.map((country) => (
-                          <SelectItem key={country.code} value={country.code} className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <div className="flex items-center gap-2">
-                              <span>{country.flag}</span>
-                              <span>{country.name}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="city" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.city')} *</Label>
                     <Input
                       id="city"
                       type="text"
                       placeholder={t('order.city.placeholder')}
                       value={formData.city}
                       onChange={(e) => handleInputChange("city", e.target.value)}
-                      className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                      className={`mobile-input touch-target h-12 ${language === 'ar' ? 'text-right' : 'text-left'}`}
                       required
                     />
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="address" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.address')} *</Label>
-                  <Input
-                    id="address"
-                    type="text"
-                    placeholder={t('order.address.placeholder')}
-                    value={formData.address}
-                    onChange={(e) => handleInputChange("address", e.target.value)}
-                    className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
-                    required
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="address" className={`mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+                      {t('order.address')} *
+                    </Label>
+                    <Input
+                      id="address"
+                      type="text"
+                      placeholder={t('order.address.placeholder')}
+                      value={formData.address}
+                      onChange={(e) => handleInputChange("address", e.target.value)}
+                      className={`mobile-input touch-target h-12 ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                      required
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
