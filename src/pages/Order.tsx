@@ -368,8 +368,8 @@ const Order = () => {
                     <span className="block font-semibold text-primary text-sm">SEVEN GREEN</span>
                     <span className="block text-muted-foreground text-sm">{language === 'ar' ? 'منتج العناية بالشعر الطبيعي' : 'Natural Hair Care Product'}</span>
                     <span className="flex items-center gap-1 mt-1">
-                      <span className="text-secondary text-sm">★★★★★</span>
-                      <span className="text-xs text-muted-foreground">(4.9)</span>
+                      <span className="text-muted-foreground text-sm">☆☆☆☆☆</span>
+                      <span className="text-xs text-muted-foreground">(0)</span>
                     </span>
                   </span>
                   <span className="text-left">
