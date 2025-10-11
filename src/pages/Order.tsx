@@ -354,30 +354,29 @@ const Order = () => {
             <CardHeader className="pb-4">
               <CardTitle className={`mobile-subheading ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.form.title')}</CardTitle>
               <CardDescription className={`${language === 'ar' ? 'text-right' : 'text-left'} mobile-text`}>
-                <div className="flex flex-col sm:flex-row items-center gap-4 mt-3 p-4 bg-accent/20 rounded-xl">
+                <span className="flex items-center gap-3 mt-3 p-3 bg-accent/20 rounded-lg">
                   <OptimizedImage 
                     src="/lovable-uploads/8d004a44-148f-471d-949f-6cc6b414bd1d.png" 
                     alt="سيفن جرين - منتج العناية بالشعر" 
-                    className="w-32 h-32 object-cover rounded-xl shadow-lg"
-                    width={128}
-                    height={128}
+                    className="w-16 h-16 object-cover rounded-lg shadow-sm"
+                    width={64}
+                    height={64}
                     priority
                   />
-                  <div className="flex-1 text-center sm:text-right">
-                    <h3 className="font-bold text-foreground text-xl mb-1">{language === 'ar' ? 'صابونة سيفن جرين المثلثة' : 'Seven Green Triangle Soap'}</h3>
-                    <p className="font-semibold text-primary text-base mb-2">SEVEN GREEN</p>
-                    <p className="text-muted-foreground text-sm mb-2">{language === 'ar' ? 'منتج العناية بالشعر الطبيعي 100%' : '100% Natural Hair Care Product'}</p>
-                    <div className="flex items-center justify-center sm:justify-start gap-2 mb-3">
-                      <span className="text-yellow-500 text-base">★★★★★</span>
-                      <span className="text-sm text-muted-foreground">(5.0)</span>
-                      <span className="text-xs text-muted-foreground">• 1000+ {language === 'ar' ? 'تقييم' : 'reviews'}</span>
-                    </div>
-                    <div className="inline-block bg-primary/10 px-4 py-2 rounded-lg">
-                      <span className="block text-sm text-muted-foreground mb-1">{language === 'ar' ? 'السعر' : 'Price'}</span>
-                      <span className="text-2xl font-bold text-primary"><PriceDisplay {...getPriceData(productPrice)} /></span>
-                    </div>
-                  </div>
-                </div>
+                  <span className="flex-1">
+                    <span className="block font-bold text-foreground text-lg">{language === 'ar' ? 'سيفن جرين' : 'Seven Green'}</span>
+                    <span className="block font-semibold text-primary text-sm">SEVEN GREEN</span>
+                    <span className="block text-muted-foreground text-sm">{language === 'ar' ? 'منتج العناية بالشعر الطبيعي' : 'Natural Hair Care Product'}</span>
+                    <span className="flex items-center gap-1 mt-1">
+                      <span className="text-yellow-500 text-sm">★★★★★</span>
+                      <span className="text-xs text-muted-foreground">(5.0)</span>
+                    </span>
+                  </span>
+                  <span className="text-left">
+                    <span className="block text-xs text-muted-foreground mb-1">{language === 'ar' ? 'السعر' : 'Price'}</span>
+                    <span className="text-xl font-bold text-primary"><PriceDisplay {...getPriceData(productPrice)} /></span>
+                  </span>
+                </span>
               </CardDescription>
             </CardHeader>
             <CardContent className="p-4 sm:p-6">
@@ -410,10 +409,7 @@ const Order = () => {
                 {/* رقم الهاتف */}
                 <div className="space-y-2">
                   <Label htmlFor="phone" className={`mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-                    <span className="flex items-center gap-2">
-                      <Phone className="w-4 h-4" />
-                      {t('order.phone')} *
-                    </span>
+                    {t('order.phone')} *
                   </Label>
                   <div className="flex gap-2">
                     <Select
@@ -426,20 +422,20 @@ const Order = () => {
                         }
                       }}
                     >
-                      <SelectTrigger className="w-[120px] touch-target h-12">
+                      <SelectTrigger className="w-[120px] h-12 touch-target">
                         <SelectValue>
-                          <div className="flex items-center gap-1">
-                            <span>{countries.find(c => c.phoneCode === formData.countryCode)?.flag}</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-base">{countries.find(c => c.phoneCode === formData.countryCode)?.flag}</span>
                             <span className="text-sm">{formData.countryCode}</span>
                           </div>
                         </SelectValue>
                       </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border shadow-lg z-50">
+                      <SelectContent className="bg-background border shadow-lg z-50 max-h-[300px]">
                         {countries.map((country) => (
                           <SelectItem key={country.code} value={country.phoneCode}>
                             <div className="flex items-center gap-2">
                               <span>{country.flag}</span>
-                              <span>{country.phoneCode}</span>
+                              <span className="text-sm">{country.phoneCode}</span>
                             </div>
                           </SelectItem>
                         ))}
@@ -451,7 +447,7 @@ const Order = () => {
                       placeholder={t('order.phone.placeholder')}
                       value={formData.customerPhone}
                       onChange={(e) => handleInputChange("customerPhone", e.target.value)}
-                      className={`mobile-input touch-target flex-1 h-12 ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                      className={`mobile-input touch-target h-12 flex-1 ${language === 'ar' ? 'text-right' : 'text-left'}`}
                       required
                     />
                   </div>
