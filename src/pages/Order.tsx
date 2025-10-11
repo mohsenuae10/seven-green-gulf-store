@@ -373,6 +373,7 @@ const Order = () => {
                     </span>
                   </span>
                   <span className="text-left">
+                    <span className="block text-xs text-muted-foreground mb-1">{language === 'ar' ? 'السعر' : 'Price'}</span>
                     <span className="text-xl font-bold text-primary"><PriceDisplay {...getPriceData(productPrice)} /></span>
                   </span>
                 </span>
