@@ -42,7 +42,6 @@ export const ProductTabs = () => {
     { label: language === 'ar' ? 'الشكل' : 'Shape', value: language === 'ar' ? 'مثلث فريد' : 'Unique Triangle' },
     { label: language === 'ar' ? 'عدد الاستخدامات' : 'Uses', value: language === 'ar' ? '40-50 مرة' : '40-50 times' },
     { label: language === 'ar' ? 'الصلاحية' : 'Shelf Life', value: language === 'ar' ? '3 سنوات' : '3 years' },
-    { label: language === 'ar' ? 'بلد المنشأ' : 'Origin', value: language === 'ar' ? 'تركيا' : 'Turkey' },
     { label: language === 'ar' ? 'الرائحة' : 'Scent', value: language === 'ar' ? 'عشبية طبيعية' : 'Natural Herbal' },
     { label: language === 'ar' ? 'مناسب لـ' : 'Suitable For', value: language === 'ar' ? 'جميع أنواع الشعر' : 'All Hair Types' },
     { label: language === 'ar' ? 'الشهادات' : 'Certifications', value: 'ISO 9001, GMP, Halal' },
