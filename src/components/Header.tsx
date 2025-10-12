@@ -10,6 +10,7 @@ const Header = () => {
 
   const navLinks = [
     { name: language === 'ar' ? 'الرئيسية' : 'Home', path: '/' },
+    { name: language === 'ar' ? 'المنتج' : 'Product', path: '/product' },
     { name: language === 'ar' ? 'المتجر' : 'Shop', path: '/order' },
     { name: language === 'ar' ? 'عن سفن جرين' : 'About Seven Green', path: '/about' },
     { name: language === 'ar' ? 'اتصل بنا' : 'Contact Us', path: '/contact' },

@@ -7,6 +7,7 @@ import LanguageProvider from "./providers/LanguageProvider";
 import { ChatBot } from "@/components/ChatBot";
 import Index from "./pages/Index";
 import Order from "./pages/Order";
+import Product from "./pages/Product";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
@@ -37,6 +38,7 @@ const App = () => (
             <Route path="/reviews" element={<Reviews />} />
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/compare" element={<Compare />} />
+            <Route path="/product" element={<Product />} />
             <Route path="/order" element={<Order />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/auth" element={<Auth />} />
