@@ -6,6 +6,14 @@ import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
+// TypeScript declaration for gtag
+declare global {
+  interface Window {
+    dataLayer: any[];
+    gtag: (...args: any[]) => void;
+  }
+}
+
 interface OrderData {
   id: string;
   customer_name: string;
@@ -79,6 +87,22 @@ const PaymentSuccess = () => {
               payment_status: 'paid',
               status: 'confirmed'
             });
+
+            // Google Ads Purchase Conversion Event
+            // NOTE: يحتاج Conversion ID منفصل للـ Purchase - استبدل 'XXXXXX' بالـ ID من Google Ads
+            if (typeof window.gtag !== 'undefined') {
+              window.gtag('event', 'conversion', {
+                'send_to': 'AW-17646380077/XXXXXX', // ⚠️ Replace with your Purchase Conversion ID
+                'value': order.total_amount,
+                'currency': 'SAR',
+                'transaction_id': orderId
+              });
+              console.log('Google Ads Purchase Conversion tracked:', {
+                value: order.total_amount,
+                currency: 'SAR',
+                transaction_id: orderId
+              });
+            }
           }
         } else {
           throw new Error("الطلب غير موجود");

@@ -1,7 +1,15 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
+
+// TypeScript declaration for gtag
+declare global {
+  interface Window {
+    dataLayer: any[];
+    gtag: (...args: any[]) => void;
+  }
+}
 import { useProductPrice } from "@/hooks/useProductPrice";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -117,6 +125,17 @@ const Order = () => {
   const { getPriceData, selectedCurrency } = useCurrency();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Google Ads Begin Checkout Conversion Event
+  // NOTE: يحتاج Conversion ID منفصل للـ Begin Checkout - استبدل 'YYYYYY' بالـ ID من Google Ads
+  useEffect(() => {
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'conversion', {
+        'send_to': 'AW-17646380077/YYYYYY' // ⚠️ Replace with your Begin Checkout Conversion ID
+      });
+      console.log('Google Ads Begin Checkout tracked');
+    }
+  }, []);
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));

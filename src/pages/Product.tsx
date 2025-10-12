@@ -16,6 +16,14 @@ import { useProductPrice } from '@/hooks/useProductPrice';
 import { supabase } from '@/integrations/supabase/client';
 import OptimizedImage from '@/components/OptimizedImage';
 
+// TypeScript declaration for gtag
+declare global {
+  interface Window {
+    dataLayer: any[];
+    gtag: (...args: any[]) => void;
+  }
+}
+
 interface ProductImage {
   id: string;
   image_url: string;
@@ -33,6 +41,16 @@ const Product = () => {
   const productName = language === 'ar' 
     ? 'صابونة سفن جرين المثلثة'
     : 'Seven Green Triangle Soap';
+
+  // Google Ads Conversion Tracking - Page View Event
+  useEffect(() => {
+    if (typeof window.gtag !== 'undefined') {
+      window.gtag('event', 'conversion', {
+        'send_to': 'AW-17646380077/v4KRCNSP6KsbEK3Iud5B'
+      });
+      console.log('Google Ads Product Page View tracked');
+    }
+  }, []);
 
   useEffect(() => {
     const fetchProductImages = async () => {
