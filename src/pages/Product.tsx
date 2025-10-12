@@ -592,15 +592,6 @@ const Product = () => {
         </main>
 
         <Footer />
-
-        {/* Sticky Mobile CTA */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-background border-t shadow-lg z-50">
-          <Link to="/order" className="block">
-            <button className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-bold text-lg hover:opacity-90 transition-opacity">
-              {language === 'ar' ? '🛒 اشترِ الآن' : '🛒 Buy Now'}
-            </button>
-          </Link>
-        </div>
       </div>
     </>
   );

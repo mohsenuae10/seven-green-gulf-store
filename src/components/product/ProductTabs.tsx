@@ -82,21 +82,26 @@ export const ProductTabs = () => {
 
   return (
     <Tabs defaultValue="description" className="w-full" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      <TabsList className="grid w-full grid-cols-5">
-        <TabsTrigger value="description">
-          {language === 'ar' ? 'الوصف' : 'Description'}
+      <TabsList className="grid w-full grid-cols-3 lg:grid-cols-5 gap-2">
+        <TabsTrigger value="description" className="flex items-center gap-2">
+          <Book className="w-4 h-4" />
+          <span>{language === 'ar' ? 'الوصف' : 'Description'}</span>
         </TabsTrigger>
-        <TabsTrigger value="ingredients">
-          {language === 'ar' ? 'المكونات' : 'Ingredients'}
+        <TabsTrigger value="ingredients" className="flex items-center gap-2">
+          <Leaf className="w-4 h-4" />
+          <span>{language === 'ar' ? 'المكونات' : 'Ingredients'}</span>
         </TabsTrigger>
-        <TabsTrigger value="specifications">
-          {language === 'ar' ? 'المواصفات' : 'Specifications'}
+        <TabsTrigger value="specifications" className="flex items-center gap-2">
+          <Package className="w-4 h-4" />
+          <span>{language === 'ar' ? 'المواصفات' : 'Specifications'}</span>
         </TabsTrigger>
-        <TabsTrigger value="reviews">
-          {language === 'ar' ? 'التقييمات' : 'Reviews'}
+        <TabsTrigger value="reviews" className="flex items-center gap-2">
+          <Star className="w-4 h-4" />
+          <span>{language === 'ar' ? 'التقييمات' : 'Reviews'}</span>
         </TabsTrigger>
-        <TabsTrigger value="howto">
-          {language === 'ar' ? 'الاستخدام' : 'How to Use'}
+        <TabsTrigger value="howto" className="flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4" />
+          <span>{language === 'ar' ? 'الاستخدام' : 'How to Use'}</span>
         </TabsTrigger>
       </TabsList>
 
