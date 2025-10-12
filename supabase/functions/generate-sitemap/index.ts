@@ -17,6 +17,10 @@ interface Product {
   updated_at: string;
 }
 
+// Product captions for image sitemap
+const PRODUCT_CAPTION_AR = 'صابون سفن جرين الطبيعي من السرو والأوسمان لعلاج تساقط الشعر وتعزيز نموه';
+const PRODUCT_CAPTION_EN = 'Seven Green Natural Soap from Cypress and Thuja to treat hair loss and promote growth';
+
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
