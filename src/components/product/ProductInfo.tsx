@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Star, Shield, Truck, Lock, RefreshCw, MessageCircle } from 'lucide-react';
+import { Star, Shield, Truck, Lock, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -25,14 +25,6 @@ export const ProductInfo = ({ productName, sku = 'SG-TRIANGLE-001' }: ProductInf
 
   const handleBuyNow = () => {
     navigate(`/order?qty=${quantity}`);
-  };
-
-  const handleWhatsApp = () => {
-    const phone = '+966508585006';
-    const message = language === 'ar' 
-      ? `مرحباً، أريد الاستفسار عن ${productName}`
-      : `Hello, I want to inquire about ${productName}`;
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   const priceData = getPriceData(price);
@@ -141,16 +133,6 @@ export const ProductInfo = ({ productName, sku = 'SG-TRIANGLE-001' }: ProductInf
           disabled={stockQuantity === 0}
         >
           {language === 'ar' ? '🛒 اشترِ الآن' : '🛒 Buy Now'}
-        </Button>
-        
-        <Button
-          onClick={handleWhatsApp}
-          variant="outline"
-          size="lg"
-          className="w-full"
-        >
-          <MessageCircle className="w-5 h-5 mr-2" />
-          {language === 'ar' ? 'واتساب للاستفسار' : 'WhatsApp Inquiry'}
         </Button>
       </div>
 
