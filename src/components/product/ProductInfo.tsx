@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Star, Shield, Truck, Lock, RefreshCw } from 'lucide-react';
+import { Star, Shield, Lock, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -92,10 +92,6 @@ export const ProductInfo = ({ productName, sku = 'SG-TRIANGLE-001' }: ProductInf
           <span>{language === 'ar' ? 'طبيعي 100%' : '100% Natural'}</span>
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <Truck className="w-4 h-4 text-primary" />
-          <span>{language === 'ar' ? 'شحن مجاني' : 'Free Shipping'}</span>
-        </div>
-        <div className="flex items-center gap-2 text-sm">
           <RefreshCw className="w-4 h-4 text-primary" />
           <span>{language === 'ar' ? 'ضمان 30 يوم' : '30-Day Guarantee'}</span>
         </div>
@@ -134,19 +130,6 @@ export const ProductInfo = ({ productName, sku = 'SG-TRIANGLE-001' }: ProductInf
         >
           {language === 'ar' ? '🛒 اشترِ الآن' : '🛒 Buy Now'}
         </Button>
-      </div>
-
-      {/* Shipping Info */}
-      <div className="border-t pt-4 space-y-2">
-        <div className="flex items-center gap-2 text-sm">
-          <Truck className="w-4 h-4 text-primary" />
-          <span className="font-semibold">
-            {language === 'ar' ? '🚚 شحن مجاني للسعودية' : '🚚 Free Shipping to Saudi Arabia'}
-          </span>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          {language === 'ar' ? 'التوصيل خلال 2-5 أيام عمل' : 'Delivery within 2-5 business days'}
-        </p>
       </div>
 
       {/* Payment Methods */}
