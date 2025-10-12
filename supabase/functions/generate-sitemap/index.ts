@@ -111,8 +111,8 @@ Deno.serve(async (req) => {
           if (productImage) {
             xml += '    <image:image>\n';
             xml += `      <image:loc>${productImage.url}</image:loc>\n`;
-            xml += `      <image:title>${productImage.alt}</image:title>\n';
-            xml += `      <image:caption>صابون سفن جرين الطبيعي 100% من السرو والأوسمان لعلاج تساقط الشعر وتعزيز نموه</image:caption>\n`;
+            xml += `      <image:title>${productImage.alt}</image:title>\n`;
+            xml += `      <image:caption>${PRODUCT_CAPTION_AR}</image:caption>\n`;
             xml += '    </image:image>\n';
           }
         }
