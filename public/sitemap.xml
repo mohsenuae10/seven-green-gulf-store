@@ -63,15 +63,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/ingredients" />
   </url>
 
-  <!-- How to Use Page -->
+  <!-- Product Page -->
   <url>
-    <loc>https://sevensgreen.com/how-to-use</loc>
+    <loc>https://sevensgreen.com/product</loc>
     <lastmod>2025-01-30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/how-to-use?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/how-to-use?lang=en" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/how-to-use" />
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/product?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/product?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/product" />
+    <image:image>
+      <image:loc>https://sevensgreen.com/lovable-uploads/seven-green-icon.png</image:loc>
+      <image:title>صابونة سفن جرين المثلثة الطبيعية - منتج أصلي</image:title>
+      <image:caption>صابون سفن جرين الطبيعي 100% من السرو والأوسمان لعلاج تساقط الشعر وتعزيز نموه</image:caption>
+    </image:image>
   </url>
 
   <!-- Reviews Page -->

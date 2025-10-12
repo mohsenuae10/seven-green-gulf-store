@@ -47,7 +47,8 @@ export const ProductImageGallery = ({ images, productName }: ProductImageGallery
       >
         <OptimizedImage
           src={currentImage.image_url}
-          alt={currentImage.alt_text || productName}
+          alt={currentImage.alt_text || `${productName} - صابونة طبيعية لعلاج تساقط الشعر`}
+          title={currentImage.alt_text || `${productName} - صورة المنتج الرئيسية`}
           className="w-full h-full object-contain transition-transform group-hover:scale-105"
         />
         
@@ -99,7 +100,8 @@ export const ProductImageGallery = ({ images, productName }: ProductImageGallery
             >
               <OptimizedImage
                 src={image.image_url}
-                alt={image.alt_text || `${productName} ${index + 1}`}
+                alt={image.alt_text || `${productName} - منظر ${index + 1}`}
+                title={image.alt_text || `${productName} - صورة ${index + 1}`}
                 className="w-full h-full object-cover"
               />
             </button>
@@ -113,7 +115,8 @@ export const ProductImageGallery = ({ images, productName }: ProductImageGallery
           <div className="relative bg-black">
             <OptimizedImage
               src={currentImage.image_url}
-              alt={currentImage.alt_text || productName}
+              alt={currentImage.alt_text || `${productName} - عرض مكبر`}
+              title={currentImage.alt_text || `${productName} - صورة بالحجم الكامل`}
               className="w-full h-auto"
             />
             

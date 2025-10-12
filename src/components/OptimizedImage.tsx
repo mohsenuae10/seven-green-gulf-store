@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 interface OptimizedImageProps {
   src: string;
   alt: string;
+  title?: string;
   className?: string;
   sizes?: string;
   priority?: boolean;
@@ -18,7 +19,8 @@ interface OptimizedImageProps {
  */
 const OptimizedImage = ({ 
   src, 
-  alt, 
+  alt,
+  title,
   className = "", 
   sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
   priority = false,
@@ -60,6 +62,7 @@ const OptimizedImage = ({
     <img
       src={src}
       alt={alt}
+      title={title}
       draggable={false}
       className={`${className} transition-opacity duration-200 ${
         isLoaded ? 'opacity-100' : 'opacity-0'
