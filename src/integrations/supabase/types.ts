@@ -158,6 +158,33 @@ export type Database = {
         }
         Relationships: []
       }
+      page_updates: {
+        Row: {
+          change_frequency: string
+          created_at: string
+          last_modified: string
+          page_slug: string
+          priority: number
+          updated_at: string
+        }
+        Insert: {
+          change_frequency?: string
+          created_at?: string
+          last_modified?: string
+          page_slug: string
+          priority?: number
+          updated_at?: string
+        }
+        Update: {
+          change_frequency?: string
+          created_at?: string
+          last_modified?: string
+          page_slug?: string
+          priority?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       product_images: {
         Row: {
           alt_text: string | null
@@ -321,6 +348,10 @@ export type Database = {
       }
       update_order_payment_status: {
         Args: { order_id_param: string }
+        Returns: undefined
+      }
+      update_page_modification: {
+        Args: { slug: string }
         Returns: undefined
       }
     }

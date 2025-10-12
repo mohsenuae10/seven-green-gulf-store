@@ -32,4 +32,4 @@ Disallow: /payment-success
 Disallow: /*.json$
 
 # Sitemaps
-Sitemap: https://sevensgreen.com/sitemap.xml
+Sitemap: https://dnvchztawygtkdddsiwn.supabase.co/functions/v1/generate-sitemap
