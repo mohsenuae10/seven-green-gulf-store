@@ -100,14 +100,15 @@ Deno.serve(async (req) => {
           xml += `    <xhtml:link rel="alternate" hreflang="${hreflang}" href="${url}" />\n`;
         });
 
-        // Add main product image for homepage
-        if (page.page_slug === '/' && products && products.length > 0) {
+        // Add product images for main pages
+        if ((page.page_slug === '/' || page.page_slug === '/product') && products && products.length > 0) {
           const mainProduct = products[0];
           const productImage = imageMap.get(mainProduct.id);
           if (productImage) {
             xml += '    <image:image>\n';
             xml += `      <image:loc>${productImage.url}</image:loc>\n`;
-            xml += `      <image:title>${productImage.alt}</image:title>\n`;
+            xml += `      <image:title>${productImage.alt}</image:title>\n';
+            xml += `      <image:caption>صابون سفن جرين الطبيعي 100% من السرو والأوسمان لعلاج تساقط الشعر وتعزيز نموه</image:caption>\n`;
             xml += '    </image:image>\n';
           }
         }
