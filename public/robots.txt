@@ -1,35 +1,5 @@
-User-agent: Googlebot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 1
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
-User-agent: LinkedInBot
-Allow: /
-
-User-agent: WhatsApp
-Allow: /
-
-User-agent: TelegramBot
-Allow: /
-
 User-agent: *
 Allow: /
-Crawl-delay: 2
-
-# Disallow admin and private sections
 Disallow: /admin
-Disallow: /auth
-Disallow: /payment-success
-Disallow: /*.json$
-
-# Sitemaps
+Disallow: /cart-success-debug
 Sitemap: https://sevensgreen.com/sitemap.xml
