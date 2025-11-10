@@ -133,11 +133,12 @@ serve(async (req) => {
     }
     
     // Create Stripe checkout session
+    // Product ID: prod_TNzrXCCe2pLn0z
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       line_items: [
         {
-          price: "price_1SRDwu9IHXjyx3CsAKCOrs5m", // Stripe price ID for 109 SAR
+          price: "price_1SRDsE9IHXjyx3CsRuhbRdnn", // Stripe price ID
           quantity: quantity,
         },
       ],
