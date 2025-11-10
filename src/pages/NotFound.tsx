@@ -54,7 +54,7 @@ const NotFound = () => {
               </Button>
               
               <Button asChild variant="outline" size="lg" className="gap-2">
-                <Link to="/product-details">
+                <Link to="/product">
                   <Search className="w-5 h-5" />
                   {language === 'ar' ? 'تصفح المنتجات' : 'Browse Products'}
                 </Link>
@@ -73,7 +73,7 @@ const NotFound = () => {
                 <Link to="/about" className="text-primary hover:underline">
                   {language === 'ar' ? 'من نحن' : 'About Us'}
                 </Link>
-                <Link to="/product-details" className="text-primary hover:underline">
+                <Link to="/product" className="text-primary hover:underline">
                   {language === 'ar' ? 'المنتجات' : 'Products'}
                 </Link>
                 <Link to="/order" className="text-primary hover:underline">
