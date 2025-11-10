@@ -34,6 +34,7 @@ const Benefits = () => {
         <link rel="canonical" href="https://sevensgreen.com/benefits" />
         <link rel="alternate" hrefLang="ar" href="https://sevensgreen.com/benefits?lang=ar" />
         <link rel="alternate" hrefLang="en" href="https://sevensgreen.com/benefits?lang=en" />
+        <link rel="alternate" hrefLang="x-default" href="https://sevensgreen.com/benefits" />
       </Helmet>
 
       <div className="min-h-screen bg-background">

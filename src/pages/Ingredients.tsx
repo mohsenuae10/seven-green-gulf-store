@@ -206,6 +206,7 @@ const Ingredients = () => {
         <link rel="canonical" href="https://sevensgreen.com/ingredients" />
         <link rel="alternate" hrefLang="ar" href="https://sevensgreen.com/ingredients?lang=ar" />
         <link rel="alternate" hrefLang="en" href="https://sevensgreen.com/ingredients?lang=en" />
+        <link rel="alternate" hrefLang="x-default" href="https://sevensgreen.com/ingredients" />
       </Helmet>
 
       <div className="min-h-screen bg-background">
