@@ -176,7 +176,7 @@ const Product = () => {
           "@type": "Person",
           "name": language === 'ar' ? "فاطمة أحمد" : "Fatima Ahmed"
         },
-        "datePublished": "2024-12-15",
+        "datePublished": "2025-10-15",
         "reviewBody": language === 'ar' 
           ? "منتج رائع! لاحظت تحسن كبير في كثافة شعري خلال أسبوعين فقط. التساقط قل بشكل ملحوظ والشعر أصبح أقوى وأكثر لمعاناً."
           : "Amazing product! I noticed significant improvement in hair density within just two weeks. Hair fall reduced noticeably and hair became stronger and shinier."
@@ -192,7 +192,7 @@ const Product = () => {
           "@type": "Person",
           "name": language === 'ar' ? "محمد الخالدي" : "Mohammed Al-Khalidi"
         },
-        "datePublished": "2024-12-10",
+        "datePublished": "2025-10-10",
         "reviewBody": language === 'ar'
           ? "صابون طبيعي ممتاز، قلل تساقط الشعر بشكل كبير. استخدمته لمدة شهر والنتائج واضحة جداً. أنصح به بشدة!"
           : "Excellent natural soap, significantly reduced hair loss. Used it for a month and results are very clear. Highly recommend!"
@@ -208,7 +208,7 @@ const Product = () => {
           "@type": "Person",
           "name": language === 'ar' ? "نورة السعيد" : "Noura Al-Saeed"
         },
-        "datePublished": "2024-12-05",
+        "datePublished": "2025-10-05",
         "reviewBody": language === 'ar'
           ? "منتج جيد جداً، لكن يحتاج وقت للنتائج. بعد 3 أسابيع بدأت ألاحظ فرق واضح في صحة شعري."
           : "Very good product, but needs time for results. After 3 weeks I started noticing clear difference in my hair health."
@@ -286,8 +286,16 @@ const Product = () => {
         <meta property="og:title" content={productName} />
         <meta property="og:description" content={language === 'ar' ? "علاج فعّال لتساقط الشعر بمكونات طبيعية 100%" : "Effective hair loss treatment with 100% natural ingredients"} />
         <meta property="og:url" content="https://sevensgreen.com/product" />
+        <meta property="og:image" content="https://sevensgreen.com/lovable-uploads/seven-green-icon.png" />
+        <meta property="og:image:alt" content={productName} />
         <meta property="product:price:amount" content={price.toString()} />
         <meta property="product:price:currency" content="SAR" />
+        
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={productName} />
+        <meta name="twitter:description" content={language === 'ar' ? "علاج فعّال لتساقط الشعر بمكونات طبيعية 100%" : "Effective hair loss treatment with 100% natural ingredients"} />
+        <meta name="twitter:image" content="https://sevensgreen.com/lovable-uploads/seven-green-icon.png" />
         
         {/* Schema.org JSON-LD */}
         <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
