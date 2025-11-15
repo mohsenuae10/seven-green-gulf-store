@@ -77,7 +77,19 @@ const FAQPage = () => {
         <meta name="description" content={language === 'ar' 
           ? "الأسئلة الشائعة حول سفن جرين - كل ما تريد معرفته عن الصابونة الطبيعية لعلاج تساقط الشعر | فوائد، استخدام، سعر، ضمان"
           : "Frequently Asked Questions about Seven Green - Everything you need to know about the natural soap for hair loss treatment | Benefits, usage, price, guarantee"} />
+        <meta property="og:title" content={language === 'ar' ? 'الأسئلة الشائعة | سفن جرين' : 'FAQ | Seven Green'} />
+        <meta property="og:description" content={language === 'ar' 
+          ? "الأسئلة الشائعة حول سفن جرين - كل ما تريد معرفته عن الصابونة الطبيعية لعلاج تساقط الشعر"
+          : "Frequently Asked Questions about Seven Green - Everything you need to know about the natural soap for hair loss treatment"} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={language === 'ar' ? 'الأسئلة الشائعة | سفن جرين' : 'FAQ | Seven Green'} />
+        <meta name="twitter:description" content={language === 'ar' 
+          ? "الأسئلة الشائعة حول سفن جرين - كل ما تريد معرفته عن الصابونة الطبيعية لعلاج تساقط الشعر"
+          : "Frequently Asked Questions about Seven Green - Everything you need to know about the natural soap for hair loss treatment"} />
         <link rel="canonical" href="https://sevensgreen.com/faq" />
+        <link rel="alternate" hrefLang="ar" href="https://sevensgreen.com/faq?lang=ar" />
+        <link rel="alternate" hrefLang="en" href="https://sevensgreen.com/faq?lang=en" />
         <script type="application/ld+json">
           {JSON.stringify(faqPageSchema)}
         </script>

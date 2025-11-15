@@ -203,6 +203,10 @@ const Ingredients = () => {
         <meta name="description" content={description} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
         <link rel="canonical" href="https://sevensgreen.com/ingredients" />
         <link rel="alternate" hrefLang="ar" href="https://sevensgreen.com/ingredients?lang=ar" />
         <link rel="alternate" hrefLang="en" href="https://sevensgreen.com/ingredients?lang=en" />
