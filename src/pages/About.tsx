@@ -52,7 +52,7 @@ const About = () => {
     "description": language === 'ar'
       ? "سفن جرين هي علامة تجارية كورية رائدة متخصصة في منتجات العناية بالشعر الطبيعية. نقدم حلولاً فعالة لعلاج تساقط الشعر وتكثيفه باستخدام مكونات طبيعية 100%."
       : "Seven Green is a leading Korean brand specializing in natural hair care products. We provide effective solutions for hair loss treatment and thickening using 100% natural ingredients.",
-    "foundingDate": "2020",
+    "foundingDate": "2024",
     "foundingLocation": {
       "@type": "Place",
       "address": {
@@ -106,7 +106,12 @@ const About = () => {
         <meta property="og:description" content={description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://sevensgreen.com/about" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
         <link rel="canonical" href="https://sevensgreen.com/about" />
+        <link rel="alternate" hrefLang="ar" href="https://sevensgreen.com/about?lang=ar" />
+        <link rel="alternate" hrefLang="en" href="https://sevensgreen.com/about?lang=en" />
         <script type="application/ld+json">
           {JSON.stringify(breadcrumbSchema)}
         </script>

@@ -14,11 +14,28 @@ const Compare = () => {
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
   }, [language]);
 
+  const title = language === 'ar' 
+    ? 'مقارنة المنتجات | سفن جرين مقابل المنتجات الأخرى'
+    : 'Product Comparison | Seven Green vs Other Products';
+    
+  const description = language === 'ar'
+    ? 'قارن صابونة سفن جرين الطبيعية مع المنتجات الأخرى. اكتشف لماذا سفن جرين الخيار الأفضل لعلاج تساقط الشعر بمكونات طبيعية 100%.'
+    : 'Compare Seven Green natural soap with other products. Discover why Seven Green is the best choice for hair loss treatment with 100% natural ingredients.';
+
   return (
     <>
       <Helmet>
-        <title>{language === 'ar' ? 'مقارنة المنتجات | سفن جرين' : 'Product Comparison | Seven Green'}</title>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
         <link rel="canonical" href="https://sevensgreen.com/compare" />
+        <link rel="alternate" hrefLang="ar" href="https://sevensgreen.com/compare?lang=ar" />
+        <link rel="alternate" hrefLang="en" href="https://sevensgreen.com/compare?lang=en" />
       </Helmet>
 
       <div className="min-h-screen bg-background">

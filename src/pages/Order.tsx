@@ -331,7 +331,12 @@ const Order = () => {
         <meta property="og:description" content={description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://sevensgreen.com/order" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
         <link rel="canonical" href="https://sevensgreen.com/order" />
+        <link rel="alternate" hrefLang="ar" href="https://sevensgreen.com/order?lang=ar" />
+        <link rel="alternate" hrefLang="en" href="https://sevensgreen.com/order?lang=en" />
         <script type="application/ld+json">
           {JSON.stringify(offerSchema)}
         </script>
