@@ -1,0 +1,22 @@
+/* TEAM */
+Brand: سفن جرين Seven Green
+Site: https://sevensgreen.com
+Location: الخليج العربي - Gulf Region
+Languages: العربية، English
+
+/* SITE */
+Last update: 2025/11/17
+Standards: HTML5, CSS3, JavaScript, React
+Components: Vite, TypeScript, Tailwind CSS, Supabase
+Software: Visual Studio Code
+
+/* PRODUCT */
+Name: سفن جرين - صابونة وشامبو طبيعي
+Type: منتج طبيعي للعناية بالشعر - Natural Hair Care
+Ingredients: أوراق السرو، نبات الأوسمان - Cypress leaves, Rosemary
+Origin: اليمن - Yemen
+Available: السعودية، الإمارات، الكويت، قطر، البحرين، عمان، اليمن
+
+/* KEYWORDS */
+Arabic: سفن جرين، صابونة سفن جرين، شامبو سفن جرين، علاج تساقط الشعر، تكثيف الشعر، الصابونة المثلثة
+English: Seven Green, Natural Soap, Hair Loss Treatment, Hair Thickening, Triangle Soap
