@@ -1,8 +1,29 @@
-# Welcome to your Lovable project
+# سفن جرين Seven Green Store
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/f66e204a-cfae-4759-8032-22dfeb8989db
+**Live Site**: https://sevensgreen.com
+
+## 🌿 About the Project
+
+This is the official e-commerce website for Seven Green (سفن جرين), a natural hair care product made from cypress leaves and Osman plant. The site is optimized for Arabic-speaking customers across the Gulf region.
+
+## 🚀 Recent Updates (November 2025)
+
+### Arabic SEO Optimization
+The site has been comprehensively optimized for Arabic search visibility:
+- ✅ FAQ Schema with 8 common questions in Arabic
+- ✅ HowTo Schema for featured snippets
+- ✅ Enhanced keywords with Arabic spelling variations
+- ✅ Updated sitemap for better crawling
+- ✅ Comprehensive structured data in Arabic
+
+**📚 Documentation:**
+- [Quick Start Guide](QUICK_START_GUIDE_AR.md) - Quick reference for setup
+- [November 2025 SEO Update](SEO_UPDATE_NOVEMBER_2025.md) - Detailed technical documentation
+- [SEO Improvements](SEO_IMPROVEMENTS_AR.md) - Previous SEO work
+- [SEO Summary](SEO_SUMMARY_AR.md) - Summary of all SEO features
 
 ## How can I edit this code?
 
