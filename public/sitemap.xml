@@ -3,24 +3,31 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   
-  <!-- Main Page -->
+  <!-- الصفحة الرئيسية - Main Page - صابونة سفن جرين / شامبو سفن جرين -->
   <url>
     <loc>https://sevensgreen.com/</loc>
-    <lastmod>2025-11-20</lastmod>
+    <lastmod>2025-12-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/" />
+    <xhtml:link rel="alternate" hreflang="ar-SA" href="https://sevensgreen.com/?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="ar-AE" href="https://sevensgreen.com/?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="ar-YE" href="https://sevensgreen.com/?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="ar-KW" href="https://sevensgreen.com/?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="ar-QA" href="https://sevensgreen.com/?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="ar-BH" href="https://sevensgreen.com/?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="ar-OM" href="https://sevensgreen.com/?lang=ar" />
     <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/" />
     <image:image>
       <image:loc>https://sevensgreen.com/lovable-uploads/seven-green-icon.png</image:loc>
-      <image:title>صابونة سفن جرين المثلثة الطبيعية</image:title>
-      <image:caption>صابون طبيعي من السرو والأوسمان لمنع تساقط الشعر والتحكم في الزيوت</image:caption>
+      <image:title>صابونة سفن جرين العشبية - شامبو سفن جرين ضد التساقط</image:title>
+      <image:caption>سفن جرين - صابونة وشامبو طبيعي 100% من السرو والأوسمان لعلاج تساقط الشعر وتكثيفه. شامبو عشبي لتقوية الشعر.</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://sevensgreen.com/og-image.png</image:loc>
-      <image:title>سفن جرين Seven Green - منتج طبيعي أصلي</image:title>
-      <image:caption>صابونة وشامبو سفن جرين الطبيعي 100% لعلاج تساقط الشعر</image:caption>
+      <image:title>شامبو سفن جرين - صابونة سفن جرين الأصلية</image:title>
+      <image:caption>سفن جرين الأصلي - شامبو تساقط الشعر العشبي - صابونة سفن جرين المثلثة الخضراء. منتج طبيعي 100%.</image:caption>
     </image:image>
   </url>
 
@@ -68,24 +75,28 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/ingredients" />
   </url>
 
-  <!-- Product Page -->
+  <!-- صفحة المنتج - Product Page - سفن جرين / شامبو سفن جرين / صابونة سفن جرين -->
   <url>
     <loc>https://sevensgreen.com/product</loc>
-    <lastmod>2025-11-20</lastmod>
+    <lastmod>2025-12-01</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/product?lang=ar" />
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/product" />
+    <xhtml:link rel="alternate" hreflang="ar-SA" href="https://sevensgreen.com/product?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="ar-AE" href="https://sevensgreen.com/product?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="ar-YE" href="https://sevensgreen.com/product?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="ar-KW" href="https://sevensgreen.com/product?lang=ar" />
     <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/product?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/product" />
     <image:image>
       <image:loc>https://sevensgreen.com/lovable-uploads/seven-green-icon.png</image:loc>
-      <image:title>صابونة سفن جرين المثلثة الطبيعية - منتج أصلي</image:title>
-      <image:caption>صابون سفن جرين الطبيعي 100% من السرو والأوسمان لعلاج تساقط الشعر وتعزيز نموه</image:caption>
+      <image:title>صابونة سفن جرين العشبية - شامبو سفن جرين ضد التساقط</image:title>
+      <image:caption>سفن جرين - صابونة وشامبو سفن جرين الطبيعي 100% من السرو والأوسمان لعلاج تساقط الشعر. شامبو تساقط الشعر العشبي.</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://sevensgreen.com/og-image.png</image:loc>
-      <image:title>سفن جرين Seven Green</image:title>
-      <image:caption>الصابونة المثلثة الطبيعية لعلاج تساقط الشعر - متوفر في السعودية والخليج واليمن</image:caption>
+      <image:title>شامبو سفن جرين - صابونة سفن جرين الأصلية المثلثة</image:title>
+      <image:caption>شامبو عشبي سفن جرين - الصابونة المثلثة الطبيعية لعلاج تساقط الشعر - متوفر في السعودية والخليج واليمن</image:caption>
     </image:image>
   </url>
 

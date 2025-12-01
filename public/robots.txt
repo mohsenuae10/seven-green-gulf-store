@@ -1,4 +1,7 @@
 # Seven Green Store - Robots.txt
+# متجر سفن جرين - ملف robots.txt
+# صابونة سفن جرين | شامبو سفن جرين | Seven Green
+
 User-agent: *
 Allow: /
 Allow: /*.js
@@ -9,6 +12,19 @@ Allow: /*.jpeg
 Allow: /*.gif
 Allow: /*.svg
 Allow: /*.webp
+Allow: /product
+Allow: /order
+Allow: /about
+Allow: /benefits
+Allow: /ingredients
+Allow: /reviews
+Allow: /faq
+Allow: /how-to-use
+Allow: /compare
+Allow: /?lang=ar
+Allow: /?lang=en
+Allow: /product?lang=ar
+Allow: /product?lang=en
 Disallow: /admin
 Disallow: /auth
 Disallow: /payment-success
@@ -17,19 +33,25 @@ Disallow: /*.json$
 # Crawl-delay for respectful crawling
 Crawl-delay: 1
 
-# Sitemap
+# Sitemap - خريطة الموقع
 Sitemap: https://sevensgreen.com/sitemap.xml
 
-# Allow all major search engines
+# Allow all major search engines - السماح لجميع محركات البحث الرئيسية
 User-agent: Googlebot
 Allow: /
+Allow: /?lang=ar
+Allow: /product?lang=ar
 Crawl-delay: 0
 
 User-agent: Googlebot-Image
 Allow: /
+Allow: /lovable-uploads/
+Allow: /images/
 
 User-agent: Bingbot
 Allow: /
+Allow: /?lang=ar
+Allow: /product?lang=ar
 
 User-agent: Slurp
 Allow: /
