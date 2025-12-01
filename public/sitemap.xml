@@ -10,13 +10,6 @@
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/" />
-    <xhtml:link rel="alternate" hreflang="ar-SA" href="https://sevensgreen.com/?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="ar-AE" href="https://sevensgreen.com/?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="ar-YE" href="https://sevensgreen.com/?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="ar-KW" href="https://sevensgreen.com/?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="ar-QA" href="https://sevensgreen.com/?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="ar-BH" href="https://sevensgreen.com/?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="ar-OM" href="https://sevensgreen.com/?lang=ar" />
     <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/" />
     <image:image>
@@ -82,10 +75,6 @@
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/product" />
-    <xhtml:link rel="alternate" hreflang="ar-SA" href="https://sevensgreen.com/product?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="ar-AE" href="https://sevensgreen.com/product?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="ar-YE" href="https://sevensgreen.com/product?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="ar-KW" href="https://sevensgreen.com/product?lang=ar" />
     <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/product?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/product" />
     <image:image>
