@@ -503,7 +503,8 @@ const ProductHero = () => {
             <Card className="bg-white border-2 border-primary/20 overflow-hidden hover:scale-105 hover:shadow-[0_10px_40px_rgba(139,195,74,0.4)] hover:border-primary/60 transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/34e3ec2a-fc02-4dc5-832e-8e3c95d538bc.png" 
-                alt="Seven Green Safety and Quality Certificates"
+                alt="صابونة سفن جرين العشبية - شهادات الجودة والأمان"
+                title="شهادات جودة صابونة سفن جرين الأصلية"
                 className="w-full h-64 object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 width={371}
@@ -519,7 +520,8 @@ const ProductHero = () => {
             <Card className="bg-white border-2 border-primary/20 overflow-hidden hover:scale-105 hover:shadow-[0_10px_40px_rgba(139,195,74,0.4)] hover:border-primary/60 transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/0c009587-187a-4c47-8318-01d391fab457.png" 
-                alt="إحصائيات فعالية سيفن جرين"
+                alt="شامبو سفن جرين ضد التساقط - إحصائيات الفعالية والنتائج"
+                title="نتائج شامبو سفن جرين لعلاج تساقط الشعر"
                 className="w-full h-64 object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 width={371}
@@ -535,7 +537,8 @@ const ProductHero = () => {
             <Card className="bg-white border-2 border-primary/20 overflow-hidden hover:scale-105 hover:shadow-[0_10px_40px_rgba(139,195,74,0.4)] hover:border-primary/60 transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/3c289658-bf58-4017-b4dd-1233f018534f.png" 
-                alt="مشاكل الشعر التي يعالجها سيفن جرين"
+                alt="صابونة سفن جرين العشبية - علاج مشاكل الشعر وتساقطه"
+                title="صابونة سفن جرين لعلاج جميع مشاكل الشعر"
                 className="w-full h-64 object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 width={371}
@@ -551,7 +554,8 @@ const ProductHero = () => {
             <Card className="bg-white border-2 border-primary/20 overflow-hidden hover:scale-105 hover:shadow-[0_10px_40px_rgba(139,195,74,0.4)] hover:border-primary/60 transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/e811e78f-3694-4fda-bc61-637c435f2623.png" 
-                alt="المكونات الطبيعية في سيفن جرين"
+                alt="شامبو عشبي سفن جرين - المكونات الطبيعية من السرو والأوسمان"
+                title="مكونات شامبو سفن جرين العشبي الطبيعية"
                 className="w-full h-64 object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 width={371}
@@ -567,7 +571,8 @@ const ProductHero = () => {
             <Card className="bg-white border-2 border-primary/20 overflow-hidden hover:scale-105 hover:shadow-[0_10px_40px_rgba(139,195,74,0.4)] hover:border-primary/60 transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/04d3f7fc-1557-4bb3-801f-dcb481c7e7c4.png" 
-                alt="فوائد العناية بالشعر من سيفن جرين"
+                alt="شامبو سفن جرين ضد التساقط - فوائد العناية بالشعر"
+                title="فوائد شامبو سفن جرين للعناية بالشعر"
                 className="w-full h-64 object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 width={371}
@@ -583,7 +588,8 @@ const ProductHero = () => {
             <Card className="bg-white border-2 border-primary/20 overflow-hidden hover:scale-105 hover:shadow-[0_10px_40px_rgba(139,195,74,0.4)] hover:border-primary/60 transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/6bf5c396-1aac-4f59-a75e-36012a8524d9.png" 
-                alt="مقارنة سيفن جرين مع المنتجات الأخرى"
+                alt="صابونة سفن جرين العشبية - مقارنة مع المنتجات الأخرى"
+                title="مقارنة صابونة سفن جرين مع منتجات الشعر الأخرى"
                 className="w-full h-64 object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 width={371}
@@ -603,7 +609,8 @@ const ProductHero = () => {
             <Card className="bg-white border-2 border-primary/20 overflow-hidden hover:shadow-[0_10px_40px_rgba(139,195,74,0.4)] hover:border-primary/60 transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/6e004fdb-9c1b-47d6-80df-179d406e3a27.png" 
-                alt="طريقة استخدام سيفن جرين"
+                alt="صابونة سفن جرين العشبية - طريقة الاستخدام الصحيحة"
+                title="كيفية استخدام صابونة سفن جرين لعلاج تساقط الشعر"
                 className="w-full h-80 object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 width={574}
@@ -619,7 +626,8 @@ const ProductHero = () => {
             <Card className="bg-white border-2 border-primary/20 overflow-hidden hover:shadow-[0_10px_40px_rgba(139,195,74,0.4)] hover:border-primary/60 transition-all duration-300 group">
               <OptimizedImage 
                 src="/lovable-uploads/8eb13276-b714-49ad-b518-70389a31bb9e.png" 
-                alt="عرض خاص على سيفن جرين"
+                alt="شامبو سفن جرين ضد التساقط - عرض خاص وشحن مجاني"
+                title="عرض خاص على شامبو سفن جرين مع شحن مجاني"
                 className="w-full h-80 object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 width={574}

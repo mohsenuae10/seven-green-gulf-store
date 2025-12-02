@@ -346,60 +346,70 @@ const Index = () => {
           <section className="container mx-auto px-4 py-16 max-w-4xl">
             <article className="prose prose-lg dark:prose-invert mx-auto">
               <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">
-                {language === 'ar' ? 'لماذا تختار صابونة سفن جرين المثلثة؟' : 'Why Choose Seven Green Triangle Soap?'}
+                {language === 'ar' ? 'سفن جرين - شامبو سفن جرين وصابونة سفن جرين الأصلية' : 'Seven Green - Original Seven Green Shampoo and Soap'}
               </h1>
               
               <div className="space-y-6 text-foreground/90 leading-relaxed">
                 {language === 'ar' ? (
                   <>
                     <p>
-                      <strong><Link to="/order" className="text-primary hover:underline">صابونة سفن جرين المثلثة</Link></strong> هي منتج طبيعي سعودي 100% معتمد من هيئة الغذاء والدواء السعودية، مصممة خصيصاً لعلاج مشاكل تساقط الشعر وزيادة كثافته بطريقة آمنة وفعالة. تحتوي الصابونة على تركيبة فريدة من خلاصة السرو والأوسمان الطبيعية التي أثبتت فعاليتها في تقوية بصيلات الشعر ومنع التساقط.
+                      <strong><Link to="/order" className="text-primary hover:underline">صابونة سفن جرين</Link></strong> و<strong>شامبو سفن جرين</strong> هما منتج طبيعي واحد 100% معتمد من هيئة الغذاء والدواء، مصمم خصيصاً لعلاج مشاكل تساقط الشعر وزيادة كثافته بطريقة آمنة وفعالة. تحتوي الصابونة على تركيبة فريدة من خلاصة السرو والأوسمان الطبيعية التي أثبتت فعاليتها في تقوية بصيلات الشعر ومنع التساقط.
                     </p>
                     
-                    <h2 className="text-2xl font-semibold mt-8 mb-4">المكونات الطبيعية الفعالة</h2>
+                    <h2 className="text-2xl font-semibold mt-8 mb-4">شامبو سفن جرين - شامبو تساقط الشعر العشبي</h2>
                     <p>
-                      تتميز صابونة سفن جرين بمكوناتها الطبيعية 100% التي تشمل خلاصة السرو المعروفة بخصائصها في تقوية الشعر، وخلاصة الأوسمان التي تساعد على تنظيم إفراز الزيوت في فروة الرأس. هذه المكونات الطبيعية تعمل معاً لتوفير علاج شامل لمشاكل الشعر دون أي مواد كيميائية ضارة.
+                      يُعد <strong>شامبو سفن جرين</strong> الحل الأمثل لمن يعانون من تساقط الشعر. هذا الشامبو العشبي المميز يجمع بين فوائد 7 أعشاب طبيعية لتقوية جذور الشعر ومنع التساقط. <strong>شامبو تساقط الشعر</strong> من سفن جرين يتميز بتركيبته الخالية من المواد الكيميائية الضارة.
                     </p>
                     
-                    <h2 className="text-2xl font-semibold mt-8 mb-4">نتائج مثبتة علمياً</h2>
+                    <h2 className="text-2xl font-semibold mt-8 mb-4">صابونة سفن جرين العشبية - المكونات الطبيعية</h2>
                     <p>
-                      أثبتت الدراسات السريرية أن استخدام صابونة سفن جرين بانتظام لمدة شهر واحد يمكن أن يقلل من تساقط الشعر بنسبة تصل إلى 85%. أكثر من 2847 عميلة سعودية حققن نتائج ملحوظة في تحسين كثافة الشعر وتقليل التساقط، مع تقييم عام يبلغ 4.8 من 5 نجوم.
+                      تتميز <strong>صابونة سفن جرين العشبية</strong> بمكوناتها الطبيعية 100% التي تشمل خلاصة السرو المعروفة بخصائصها في تقوية الشعر، وخلاصة الأوسمان التي تساعد على تنظيم إفراز الزيوت في فروة الرأس. هذا <strong>الشامبو العشبي</strong> يعمل على توفير علاج شامل لمشاكل الشعر.
                     </p>
                     
-                    <h3 className="text-xl font-semibold mt-8 mb-4">طريقة الاستخدام الصحيحة</h3>
+                    <h2 className="text-2xl font-semibold mt-8 mb-4">نتائج مثبتة علمياً - شامبو سفن جرين ضد التساقط</h2>
                     <p>
-                      للحصول على أفضل النتائج، يُنصح باستخدام صابونة سفن جرين 2-3 مرات أسبوعياً. قومي بترطيب الشعر جيداً، ثم دلكي فروة الرأس بالصابونة بحركات دائرية لطيفة لمدة 2-3 دقائق، واتركيها لمدة 5 دقائق قبل الشطف بالماء الفاتر. الاستخدام المنتظم يضمن نتائج مذهلة خلال أسابيع قليلة.
+                      أثبتت الدراسات السريرية أن استخدام <strong>شامبو سفن جرين ضد التساقط</strong> بانتظام لمدة شهر واحد يمكن أن يقلل من تساقط الشعر بنسبة تصل إلى 85%. أكثر من 2847 عميل حققوا نتائج ملحوظة في تحسين كثافة الشعر وتقليل التساقط، مع تقييم عام يبلغ 4.8 من 5 نجوم.
                     </p>
                     
-                    <h3 className="text-xl font-semibold mt-8 mb-4">ضمان الجودة والأمان</h3>
+                    <h3 className="text-xl font-semibold mt-8 mb-4">طريقة استخدام شامبو سفن جرين</h3>
                     <p>
-                      جميع منتجات سفن جرين معتمدة من هيئة الغذاء والدواء السعودية وتخضع لأعلى معايير الجودة. نحن نقدم ضمان استرجاع المال لمدة 30 يوماً إذا لم تكوني راضية عن النتائج. ثقتنا في منتجنا تأتي من آلاف التجارب الناجحة لعملائنا في جميع أنحاء المملكة العربية السعودية. <Link to="/about" className="text-primary hover:underline font-semibold">اقرئي المزيد عن قصتنا</Link>.
+                      للحصول على أفضل النتائج، يُنصح باستخدام <strong>صابونة سفن جرين</strong> 2-3 مرات أسبوعياً. بلل الشعر جيداً، ثم دلك فروة الرأس بالصابونة بحركات دائرية لطيفة لمدة 2-3 دقائق، واتركها لمدة 5 دقائق قبل الشطف بالماء الفاتر.
+                    </p>
+                    
+                    <h3 className="text-xl font-semibold mt-8 mb-4">ضمان الجودة - سفن جرين الأصلي</h3>
+                    <p>
+                      جميع منتجات <strong>سفن جرين</strong> معتمدة وتخضع لأعلى معايير الجودة. نحن نقدم ضمان استرجاع المال لمدة 30 يوماً في حال عدم الرضا عن النتائج. ثقتنا في منتجنا تأتي من آلاف التجارب الناجحة لعملائنا. <Link to="/about" className="text-primary hover:underline font-semibold">اقرأ المزيد عن قصتنا</Link>.
                     </p>
                   </>
                 ) : (
                   <>
                     <p>
-                      <strong>Seven Green Triangle Soap</strong> is a 100% natural Saudi product certified by the Saudi Food and Drug Authority, specifically designed to treat hair loss problems and increase hair density safely and effectively. The soap contains a unique formula of natural cypress and ottoman extracts that have proven effective in strengthening hair follicles and preventing hair loss.
+                      <strong>Seven Green Soap</strong> and <strong>Seven Green Shampoo</strong> are a single 100% natural product certified by the Food and Drug Authority, specifically designed to treat hair loss problems and increase hair density safely and effectively. The soap contains a unique formula of natural cypress and osman extracts that have proven effective in strengthening hair follicles and preventing hair loss.
                     </p>
                     
-                    <h2 className="text-2xl font-semibold mt-8 mb-4">Effective Natural Ingredients</h2>
+                    <h2 className="text-2xl font-semibold mt-8 mb-4">Seven Green Shampoo - Herbal Hair Loss Treatment</h2>
                     <p>
-                      Seven Green soap is distinguished by its 100% natural ingredients, including cypress extract known for its hair-strengthening properties, and ottoman extract that helps regulate oil secretion in the scalp. These natural ingredients work together to provide comprehensive treatment for hair problems without any harmful chemicals.
+                      <strong>Seven Green Shampoo</strong> is the perfect solution for those suffering from hair loss. This distinctive herbal shampoo combines the benefits of 7 natural herbs to strengthen hair roots and prevent hair loss. Seven Green hair loss shampoo features a formula free from harmful chemicals.
                     </p>
                     
-                    <h2 className="text-2xl font-semibold mt-8 mb-4">Scientifically Proven Results</h2>
+                    <h2 className="text-2xl font-semibold mt-8 mb-4">Seven Green Herbal Soap - Natural Ingredients</h2>
                     <p>
-                      Clinical studies have proven that regular use of Seven Green soap for one month can reduce hair loss by up to 85%. More than 2,847 Saudi customers have achieved noticeable results in improving hair density and reducing hair loss, with an overall rating of 4.8 out of 5 stars.
+                      <strong>Seven Green Herbal Soap</strong> is distinguished by its 100% natural ingredients, including cypress extract known for its hair-strengthening properties, and osman extract that helps regulate oil secretion in the scalp. This herbal shampoo provides comprehensive treatment for hair problems.
                     </p>
                     
-                    <h3 className="text-xl font-semibold mt-8 mb-4">Proper Usage Method</h3>
+                    <h2 className="text-2xl font-semibold mt-8 mb-4">Scientifically Proven Results - Anti Hair Fall Shampoo</h2>
                     <p>
-                      For best results, it is recommended to use Seven Green soap 2-3 times weekly. Wet your hair thoroughly, then massage the scalp with the soap in gentle circular motions for 2-3 minutes, and leave it for 5 minutes before rinsing with lukewarm water. Regular use ensures amazing results within a few weeks.
+                      Clinical studies have proven that regular use of <strong>Seven Green Anti-Hair Fall Shampoo</strong> for one month can reduce hair loss by up to 85%. More than 2,847 customers have achieved noticeable results in improving hair density and reducing hair loss, with an overall rating of 4.8 out of 5 stars.
                     </p>
                     
-                    <h3 className="text-xl font-semibold mt-8 mb-4">Quality and Safety Guarantee</h3>
+                    <h3 className="text-xl font-semibold mt-8 mb-4">How to Use Seven Green Shampoo</h3>
                     <p>
-                      All Seven Green products are certified by the Saudi Food and Drug Authority and subject to the highest quality standards. We offer a 30-day money-back guarantee if you are not satisfied with the results. Our confidence in our product comes from thousands of successful experiences of our customers throughout the Kingdom of Saudi Arabia.
+                      For best results, it is recommended to use <strong>Seven Green Soap</strong> 2-3 times weekly. Wet your hair thoroughly, then massage the scalp with the soap in gentle circular motions for 2-3 minutes, and leave it for 5 minutes before rinsing with lukewarm water.
+                    </p>
+                    
+                    <h3 className="text-xl font-semibold mt-8 mb-4">Quality Guarantee - Original Seven Green</h3>
+                    <p>
+                      All <strong>Seven Green</strong> products are certified and subject to the highest quality standards. We offer a 30-day money-back guarantee if you are not satisfied with the results. Our confidence in our product comes from thousands of successful experiences of our customers.
                     </p>
                   </>
                 )}

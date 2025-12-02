@@ -30,6 +30,18 @@ export const ProductImageGallery = ({ images, productName }: ProductImageGallery
 
   const currentImage = images[selectedIndex];
 
+  // Arabic-focused alt text for better SEO
+  const getAltText = (image: ProductImage, index: number) => {
+    if (image.alt_text) return image.alt_text;
+    const arabicAlts = [
+      'صابونة سفن جرين العشبية - المنتج الأصلي',
+      'شامبو سفن جرين ضد التساقط - منظر جانبي',
+      'صابونة سفن جرين العشبية - مكونات طبيعية',
+      'شامبو سفن جرين ضد التساقط - الصابونة المثلثة'
+    ];
+    return arabicAlts[index % arabicAlts.length] || `${productName} - صابونة وشامبو سفن جرين`;
+  };
+
   const handlePrevious = () => {
     setSelectedIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
@@ -47,8 +59,8 @@ export const ProductImageGallery = ({ images, productName }: ProductImageGallery
       >
         <OptimizedImage
           src={currentImage.image_url}
-          alt={currentImage.alt_text || `${productName} - صابونة طبيعية لعلاج تساقط الشعر`}
-          title={currentImage.alt_text || `${productName} - صورة المنتج الرئيسية`}
+          alt={getAltText(currentImage, selectedIndex)}
+          title={getAltText(currentImage, selectedIndex)}
           className="w-full h-full object-contain transition-transform group-hover:scale-105"
         />
         
@@ -100,8 +112,8 @@ export const ProductImageGallery = ({ images, productName }: ProductImageGallery
             >
               <OptimizedImage
                 src={image.image_url}
-                alt={image.alt_text || `${productName} - منظر ${index + 1}`}
-                title={image.alt_text || `${productName} - صورة ${index + 1}`}
+                alt={getAltText(image, index)}
+                title={getAltText(image, index)}
                 className="w-full h-full object-cover"
               />
             </button>
@@ -115,8 +127,8 @@ export const ProductImageGallery = ({ images, productName }: ProductImageGallery
           <div className="relative bg-black">
             <OptimizedImage
               src={currentImage.image_url}
-              alt={currentImage.alt_text || `${productName} - عرض مكبر`}
-              title={currentImage.alt_text || `${productName} - صورة بالحجم الكامل`}
+              alt={getAltText(currentImage, selectedIndex)}
+              title={getAltText(currentImage, selectedIndex)}
               className="w-full h-auto"
             />
             
