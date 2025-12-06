@@ -1,7 +1,8 @@
 # Seven Green Store - Robots.txt
 # متجر سفن جرين - ملف robots.txt
-# صابونة سفن جرين | شامبو سفن جرين | Seven Green
+# صابونة سفن جرين | شامبو سفن جرين | الصابونة المثلثة | علاج تساقط الشعر | منتجات طبيعية للشعر
 
+# Default rules for all robots
 User-agent: *
 Allow: /
 Allow: /*.js
@@ -12,6 +13,9 @@ Allow: /*.jpeg
 Allow: /*.gif
 Allow: /*.svg
 Allow: /*.webp
+Allow: /*.woff
+Allow: /*.woff2
+Allow: /*.ttf
 Allow: /product
 Allow: /order
 Allow: /about
@@ -25,10 +29,19 @@ Allow: /?lang=ar
 Allow: /?lang=en
 Allow: /product?lang=ar
 Allow: /product?lang=en
+Allow: /order?lang=ar
+Allow: /benefits?lang=ar
+Allow: /ingredients?lang=ar
+Allow: /reviews?lang=ar
+Allow: /faq?lang=ar
+Allow: /how-to-use?lang=ar
+
+# Disallow admin and sensitive pages
 Disallow: /admin
 Disallow: /auth
 Disallow: /payment-success
 Disallow: /*.json$
+Disallow: /api/
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1
@@ -36,31 +49,80 @@ Crawl-delay: 1
 # Sitemap - خريطة الموقع
 Sitemap: https://sevensgreen.com/sitemap.xml
 
-# Allow all major search engines - السماح لجميع محركات البحث الرئيسية
+# Googlebot - محرك بحث جوجل (الأولوية القصوى)
 User-agent: Googlebot
 Allow: /
 Allow: /?lang=ar
+Allow: /product
 Allow: /product?lang=ar
+Allow: /order
+Allow: /benefits
+Allow: /ingredients
+Allow: /reviews
+Allow: /faq
+Allow: /how-to-use
 Crawl-delay: 0
 
+# Googlebot for Images - جوجل للصور
 User-agent: Googlebot-Image
 Allow: /
 Allow: /lovable-uploads/
 Allow: /images/
+Allow: /*.png
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.webp
+Allow: /*.svg
 
+# Googlebot for Mobile - جوجل للجوال
+User-agent: Googlebot-Mobile
+Allow: /
+Crawl-delay: 0
+
+# Bingbot - محرك بحث بينج
 User-agent: Bingbot
 Allow: /
 Allow: /?lang=ar
 Allow: /product?lang=ar
+Crawl-delay: 1
 
+# Yahoo Slurp - ياهو
 User-agent: Slurp
 Allow: /
+Crawl-delay: 1
 
+# DuckDuckBot - داك داك جو
 User-agent: DuckDuckBot
 Allow: /
+Crawl-delay: 1
 
+# Baiduspider - بايدو (الصين)
 User-agent: Baiduspider
 Allow: /
+Crawl-delay: 1
 
+# YandexBot - ياندكس (روسيا)
 User-agent: YandexBot
+Allow: /
+Crawl-delay: 1
+
+# AhrefsBot - Ahrefs SEO
+User-agent: AhrefsBot
+Crawl-delay: 2
+
+# SEMrushBot - SEMrush SEO
+User-agent: SemrushBot
+Crawl-delay: 2
+
+# Allow social media crawlers
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
 Allow: /

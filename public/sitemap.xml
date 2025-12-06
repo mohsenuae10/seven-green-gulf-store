@@ -6,7 +6,7 @@
   <!-- الصفحة الرئيسية - Main Page - صابونة سفن جرين / شامبو سفن جرين -->
   <url>
     <loc>https://sevensgreen.com/</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/" />
@@ -14,64 +14,20 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/" />
     <image:image>
       <image:loc>https://sevensgreen.com/lovable-uploads/seven-green-icon.png</image:loc>
-      <image:title>صابونة سفن جرين العشبية - شامبو سفن جرين ضد التساقط</image:title>
-      <image:caption>سفن جرين - صابونة وشامبو طبيعي 100% من السرو والأوسمان لعلاج تساقط الشعر وتكثيفه. شامبو عشبي لتقوية الشعر.</image:caption>
+      <image:title>صابونة سفن جرين العشبية - شامبو سفن جرين ضد التساقط - الصابونة المثلثة</image:title>
+      <image:caption>سفن جرين - صابونة وشامبو طبيعي 100% من السرو والأوسمان لعلاج تساقط الشعر وتكثيفه. شامبو عشبي لتقوية الشعر. منتجات طبيعية للشعر.</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://sevensgreen.com/og-image.png</image:loc>
-      <image:title>شامبو سفن جرين - صابونة سفن جرين الأصلية</image:title>
-      <image:caption>سفن جرين الأصلي - شامبو تساقط الشعر العشبي - صابونة سفن جرين المثلثة الخضراء. منتج طبيعي 100%.</image:caption>
+      <image:title>شامبو سفن جرين - صابونة سفن جرين الأصلية - الصابونة المثلثة</image:title>
+      <image:caption>سفن جرين الأصلي - شامبو تساقط الشعر العشبي - صابونة سفن جرين المثلثة الخضراء. منتجات طبيعية للشعر 100%.</image:caption>
     </image:image>
-  </url>
-
-  <!-- About Page -->
-  <url>
-    <loc>https://sevensgreen.com/about</loc>
-    <lastmod>2025-11-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/about?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/about?lang=en" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/about" />
-  </url>
-
-  <!-- Order Page -->
-  <url>
-    <loc>https://sevensgreen.com/order</loc>
-    <lastmod>2025-11-20</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/order?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/order?lang=en" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/order" />
-  </url>
-
-  <!-- Benefits Page -->
-  <url>
-    <loc>https://sevensgreen.com/benefits</loc>
-    <lastmod>2025-11-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/benefits?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/benefits?lang=en" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/benefits" />
-  </url>
-
-  <!-- Ingredients Page -->
-  <url>
-    <loc>https://sevensgreen.com/ingredients</loc>
-    <lastmod>2025-11-20</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/ingredients?lang=ar" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/ingredients?lang=en" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/ingredients" />
   </url>
 
   <!-- صفحة المنتج - Product Page - سفن جرين / شامبو سفن جرين / صابونة سفن جرين -->
   <url>
     <loc>https://sevensgreen.com/product</loc>
-    <lastmod>2025-12-01</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/product" />
@@ -79,55 +35,99 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/product" />
     <image:image>
       <image:loc>https://sevensgreen.com/lovable-uploads/seven-green-icon.png</image:loc>
-      <image:title>صابونة سفن جرين العشبية - شامبو سفن جرين ضد التساقط</image:title>
-      <image:caption>سفن جرين - صابونة وشامبو سفن جرين الطبيعي 100% من السرو والأوسمان لعلاج تساقط الشعر. شامبو تساقط الشعر العشبي.</image:caption>
+      <image:title>صابونة سفن جرين العشبية - شامبو سفن جرين ضد التساقط - الصابونة المثلثة</image:title>
+      <image:caption>سفن جرين - صابونة وشامبو سفن جرين الطبيعي 100% من السرو والأوسمان لعلاج تساقط الشعر. شامبو تساقط الشعر العشبي. منتجات طبيعية للشعر.</image:caption>
     </image:image>
     <image:image>
       <image:loc>https://sevensgreen.com/og-image.png</image:loc>
-      <image:title>شامبو سفن جرين - صابونة سفن جرين الأصلية المثلثة</image:title>
-      <image:caption>شامبو عشبي سفن جرين - الصابونة المثلثة الطبيعية لعلاج تساقط الشعر - متوفر في السعودية والخليج واليمن</image:caption>
+      <image:title>شامبو سفن جرين - صابونة سفن جرين الأصلية - الصابونة المثلثة الطبيعية</image:title>
+      <image:caption>شامبو عشبي سفن جرين - الصابونة المثلثة الطبيعية لعلاج تساقط الشعر - متوفر في السعودية والخليج واليمن - منتجات طبيعية للشعر</image:caption>
     </image:image>
   </url>
 
-  <!-- Reviews Page -->
+  <!-- Order Page - صفحة الطلب -->
+  <url>
+    <loc>https://sevensgreen.com/order</loc>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/order?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/order?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/order" />
+  </url>
+
+  <!-- Benefits Page - صفحة الفوائد -->
+  <url>
+    <loc>https://sevensgreen.com/benefits</loc>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/benefits?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/benefits?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/benefits" />
+  </url>
+
+  <!-- Ingredients Page - صفحة المكونات -->
+  <url>
+    <loc>https://sevensgreen.com/ingredients</loc>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/ingredients?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/ingredients?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/ingredients" />
+  </url>
+
+  <!-- Reviews Page - صفحة التقييمات -->
   <url>
     <loc>https://sevensgreen.com/reviews</loc>
-    <lastmod>2025-11-20</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/reviews?lang=ar" />
     <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/reviews?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/reviews" />
   </url>
 
-  <!-- FAQ Page -->
+  <!-- FAQ Page - صفحة الأسئلة الشائعة -->
   <url>
     <loc>https://sevensgreen.com/faq</loc>
-    <lastmod>2025-11-20</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.80</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/faq?lang=ar" />
     <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/faq?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/faq" />
   </url>
 
-  <!-- How To Use Page -->
+  <!-- How To Use Page - صفحة طريقة الاستخدام -->
   <url>
     <loc>https://sevensgreen.com/how-to-use</loc>
-    <lastmod>2025-11-20</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/how-to-use?lang=ar" />
     <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/how-to-use?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/how-to-use" />
   </url>
 
-  <!-- Compare Page -->
+  <!-- About Page - صفحة من نحن -->
+  <url>
+    <loc>https://sevensgreen.com/about</loc>
+    <lastmod>2025-12-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/about?lang=ar" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/about?lang=en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/about" />
+  </url>
+
+  <!-- Compare Page - صفحة المقارنة -->
   <url>
     <loc>https://sevensgreen.com/compare</loc>
-    <lastmod>2025-11-20</lastmod>
+    <lastmod>2025-12-06</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/compare?lang=ar" />
     <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/compare?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/compare" />
