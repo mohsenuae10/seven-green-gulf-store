@@ -1,1 +1,5 @@
-{}
+تحديث روابط 3{
+	"rewrites": [
+		{ "source": "/(.*)", "destination": "/index.html" }
+	]
+}
