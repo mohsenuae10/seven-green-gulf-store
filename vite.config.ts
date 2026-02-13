@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    historyApiFallback: true, // يسمح بإرجاع index.html لأي مسار (SPA fallback)
   },
   plugins: [
     react(),
