@@ -139,7 +139,7 @@ serve(async (req) => {
         {
           // Updated Stripe price ID and product reference
           // Product: prod_TNzrXCCe2pLn0z
-          price: "price_1SRDsE9IHXjyx3CsRuhbRdnn", // New Stripe price ID
+          price: "price: "price_1Tc8kn9IHXjyx3Cshd4tgUUH", // New Stripe price ID
           quantity: quantity,
         },
       ],
