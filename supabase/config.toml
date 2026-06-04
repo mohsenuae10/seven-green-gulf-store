@@ -14,3 +14,8 @@ verify_jwt = false
 
 [functions.generate-sitemap]
 verify_jwt = false
+
+# Stripe calls this endpoint directly; authenticity is enforced via the
+# Stripe signature inside the function, not a Supabase JWT.
+[functions.stripe-webhook]
+verify_jwt = false

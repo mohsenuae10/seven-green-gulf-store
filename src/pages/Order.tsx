@@ -28,6 +28,8 @@ import OptimizedImage from "@/components/OptimizedImage";
 import TrustBadges from "@/components/TrustBadges";
 import { CONTACT_INFO } from "@/config/contact";
 import { PriceDisplay } from "@/components/PriceDisplay";
+import { supabase } from "@/integrations/supabase/client";
+import StripePaymentForm from "@/components/checkout/StripePaymentForm";
 
 // Country data with codes and flags
 const getCountries = (language: string) => [
@@ -121,6 +123,10 @@ const Order = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Two-step checkout: collect shipping details, then pay inline (no redirect).
+  const [step, setStep] = useState<"form" | "payment">("form");
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [orderId, setOrderId] = useState<string | null>(null);
   const { price: productPrice } = useProductPrice();
   const { getPriceData, selectedCurrency } = useCurrency();
   const { toast } = useToast();
@@ -182,17 +188,9 @@ const Order = () => {
     setError(null);
 
     try {
-      const totalAmount = productPrice * formData.quantity;
-      
-      console.log("Submitting order with data:", { ...formData, totalAmount });
-      
-      const response = await fetch('https://dnvchztawygtkdddsiwn.supabase.co/functions/v1/create-stripe-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRudmNoenRhd3lndGtkZGRzaXduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY1NjI4MjIsImV4cCI6MjA3MjEzODgyMn0.7Q3xdzggqnYmQicpp6wjfmLlyp40f0sCnr0G6NWQNfM',
-        },
-        body: JSON.stringify({
+      // The server computes the authoritative amount from the DB product price.
+      const { data, error: fnError } = await supabase.functions.invoke('create-payment-intent', {
+        body: {
           customerName: formData.customerName,
           customerEmail: formData.customerEmail,
           customerPhone: `${formData.countryCode}${formData.customerPhone}`,
@@ -200,44 +198,21 @@ const Order = () => {
           city: formData.city,
           address: formData.address,
           quantity: formData.quantity,
-          totalAmount,
-          currency: 'SAR',
-        }),
+        },
       });
 
-      console.log("Response status:", response.status);
-
-      // Check if response is ok
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Error response:", errorText);
-        throw new Error(language === 'ar' ? `خطأ في الخادم: ${response.status}` : `Server error: ${response.status}`);
+      if (fnError) {
+        throw new Error(fnError.message || (language === 'ar' ? "تعذّر الاتصال بالخادم" : "Could not reach the server"));
       }
 
-      // Try to parse JSON response
-      let result;
-      try {
-        const responseText = await response.text();
-        console.log("Raw response:", responseText);
-        result = JSON.parse(responseText);
-      } catch (parseError) {
-        console.error("Failed to parse JSON:", parseError);
-        throw new Error(language === 'ar' ? "استجابة غير صحيحة من الخادم" : "Invalid server response");
+      if (!data?.success || !data?.clientSecret) {
+        throw new Error(data?.error || (language === 'ar' ? "فشل في تجهيز الدفع" : "Failed to prepare payment"));
       }
 
-      console.log("Payment response:", result);
-
-      if (!result.success) {
-        throw new Error(result.error || (language === 'ar' ? "فشل في معالجة الطلب" : "Failed to process order"));
-      }
-
-      if (result.payment_url) {
-        console.log("Redirecting to Stripe checkout:", result.payment_url);
-        window.location.href = result.payment_url;
-      } else {
-        throw new Error(language === 'ar' ? "لم يتم إنشاء رابط الدفع" : "Payment link was not created");
-      }
-
+      // Show the inline Stripe payment form (no redirect to Stripe).
+      setClientSecret(data.clientSecret);
+      setOrderId(data.order_id);
+      setStep("payment");
     } catch (error) {
       console.error("Order submission error:", error);
       const errorMessage = error instanceof Error ? error.message : (language === 'ar' ? "حدث خطأ غير متوقع" : "An unexpected error occurred");
@@ -413,6 +388,26 @@ const Order = () => {
                 </Alert>
               )}
 
+              {step === "payment" && clientSecret && orderId ? (
+                <div className="space-y-4">
+                  <div className="border-t pt-4 bg-accent/30 -mx-4 px-4 py-4 lg:-mx-6 lg:px-6 rounded-lg">
+                    <div className="flex justify-between items-center text-lg font-semibold">
+                      <span className="text-primary">{t('order.total')}:</span>
+                      <PriceDisplay {...getPriceData(totalAmount)} />
+                    </div>
+                  </div>
+                  <StripePaymentForm
+                    clientSecret={clientSecret}
+                    orderId={orderId}
+                    onBack={() => {
+                      setStep("form");
+                      setClientSecret(null);
+                      setOrderId(null);
+                      setError(null);
+                    }}
+                  />
+                </div>
+              ) : (
               <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="name" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.name')} *</Label>
@@ -604,10 +599,11 @@ const Order = () => {
                       {t('order.processing')}
                     </>
                   ) : (
-                    "تأكيد الطلب والدفع"
+                    language === 'ar' ? "متابعة للدفع" : "Continue to payment"
                   )}
                 </Button>
               </form>
+              )}
             </CardContent>
           </Card>
 
