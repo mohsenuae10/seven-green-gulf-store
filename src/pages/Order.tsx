@@ -34,17 +34,18 @@ import { countries } from "@/data/countries";
 
 const Order = () => {
   const { language, t } = useLanguage();
-  
+
   const [formData, setFormData] = useState({
     customerName: "",
     customerPhone: "",
     customerEmail: "",
     country: "",
-    countryCode: "+971", // Default to UAE
+    countryCode: "",
     city: "",
     address: "",
     quantity: 1,
   });
+  const [detectingCountry, setDetectingCountry] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // Two-step checkout: collect shipping details, then pay inline (no redirect).
@@ -55,6 +56,31 @@ const Order = () => {
   const { getPriceData, selectedCurrency } = useCurrency();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Auto-detect user country via IP geolocation
+  useEffect(() => {
+    const detect = async () => {
+      try {
+        const res = await fetch("https://ipwho.is/", { signal: AbortSignal.timeout(4000) });
+        const data = await res.json();
+        if (data?.success && data.country_code) {
+          const matched = countries.find(c => c.code === data.country_code);
+          if (matched) {
+            setFormData(prev => ({
+              ...prev,
+              country: matched.code,
+              countryCode: matched.phoneCode,
+            }));
+          }
+        }
+      } catch {
+        // silent — user can pick manually
+      } finally {
+        setDetectingCountry(false);
+      }
+    };
+    detect();
+  }, []);
 
   // Google Ads Begin Checkout Conversion Event
   // NOTE: يحتاج Conversion ID منفصل للـ Begin Checkout - استبدل 'YYYYYY' بالـ ID من Google Ads
@@ -351,14 +377,14 @@ const Order = () => {
                     {t('order.phone')} *
                   </Label>
                   <div className="flex gap-2">
-                    <div className="w-[150px] shrink-0">
+                    <div className="w-[130px] shrink-0">
                       <CountrySelect
                         value={formData.country}
                         onChange={(country) => {
                           handleInputChange("country", country.code);
                           handleInputChange("countryCode", country.phoneCode);
                         }}
-                        placeholder={formData.countryCode || "+???"}
+                        phoneCodeOnly
                       />
                     </div>
                     <Input
@@ -390,6 +416,12 @@ const Order = () => {
                     <Label className={`block mobile-text font-medium flex items-center gap-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                       <Flag className="w-4 h-4" />
                       {t('order.country')} *
+                      {detectingCountry && (
+                        <span className="text-xs text-muted-foreground font-normal flex items-center gap-1">
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                          {language === 'ar' ? 'جاري الاكتشاف...' : 'Detecting...'}
+                        </span>
+                      )}
                     </Label>
                     <CountrySelect
                       value={formData.country}
@@ -397,7 +429,11 @@ const Order = () => {
                         handleInputChange("country", country.code);
                         handleInputChange("countryCode", country.phoneCode);
                       }}
-                      placeholder={t('order.country.placeholder')}
+                      placeholder={
+                        detectingCountry
+                          ? (language === 'ar' ? 'جاري اكتشاف دولتك...' : 'Detecting your country...')
+                          : t('order.country.placeholder')
+                      }
                     />
                   </div>
 

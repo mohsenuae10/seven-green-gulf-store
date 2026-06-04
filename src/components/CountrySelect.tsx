@@ -8,9 +8,10 @@ interface CountrySelectProps {
   onChange: (country: Country) => void;
   placeholder?: string;
   className?: string;
+  phoneCodeOnly?: boolean;
 }
 
-const CountrySelect = ({ value, onChange, placeholder, className = "" }: CountrySelectProps) => {
+const CountrySelect = ({ value, onChange, placeholder, className = "", phoneCodeOnly = false }: CountrySelectProps) => {
   const { language } = useLanguage();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
@@ -65,12 +66,19 @@ const CountrySelect = ({ value, onChange, placeholder, className = "" }: Country
         `}
       >
         {selected ? (
-          <>
-            <span className="text-lg leading-none">{selected.flag}</span>
-            <span className="flex-1 truncate">
-              {language === 'ar' ? selected.nameAr : selected.nameEn}
-            </span>
-          </>
+          phoneCodeOnly ? (
+            <>
+              <span className="text-lg leading-none">{selected.flag}</span>
+              <span className="flex-1 truncate font-mono">{selected.phoneCode}</span>
+            </>
+          ) : (
+            <>
+              <span className="text-lg leading-none">{selected.flag}</span>
+              <span className="flex-1 truncate">
+                {language === 'ar' ? selected.nameAr : selected.nameEn}
+              </span>
+            </>
+          )
         ) : (
           <span className="flex-1 text-muted-foreground truncate">
             {placeholder ?? (language === 'ar' ? 'اختر الدولة' : 'Select country')}
