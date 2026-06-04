@@ -36,6 +36,8 @@ Allow: /reviews?lang=ar
 Allow: /faq?lang=ar
 Allow: /how-to-use?lang=ar
 
+Allow: /privacy
+
 # Disallow admin and sensitive pages
 Disallow: /admin
 Disallow: /auth

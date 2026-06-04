@@ -6,7 +6,7 @@
   <!-- الصفحة الرئيسية - Main Page - صابونة سفن جرين / شامبو سفن جرين -->
   <url>
     <loc>https://sevensgreen.com/</loc>
-    <lastmod>2025-12-06</lastmod>
+    <lastmod>2026-06-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/" />
@@ -27,7 +27,7 @@
   <!-- صفحة المنتج - Product Page - سفن جرين / شامبو سفن جرين / صابونة سفن جرين -->
   <url>
     <loc>https://sevensgreen.com/product</loc>
-    <lastmod>2025-12-06</lastmod>
+    <lastmod>2026-06-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/product" />
@@ -48,7 +48,7 @@
   <!-- Order Page - صفحة الطلب -->
   <url>
     <loc>https://sevensgreen.com/order</loc>
-    <lastmod>2025-12-06</lastmod>
+    <lastmod>2026-06-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/order?lang=ar" />
@@ -59,7 +59,7 @@
   <!-- Benefits Page - صفحة الفوائد -->
   <url>
     <loc>https://sevensgreen.com/benefits</loc>
-    <lastmod>2025-12-06</lastmod>
+    <lastmod>2026-06-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/benefits?lang=ar" />
@@ -70,7 +70,7 @@
   <!-- Ingredients Page - صفحة المكونات -->
   <url>
     <loc>https://sevensgreen.com/ingredients</loc>
-    <lastmod>2025-12-06</lastmod>
+    <lastmod>2026-06-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/ingredients?lang=ar" />
@@ -81,7 +81,7 @@
   <!-- Reviews Page - صفحة التقييمات -->
   <url>
     <loc>https://sevensgreen.com/reviews</loc>
-    <lastmod>2025-12-06</lastmod>
+    <lastmod>2026-06-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/reviews?lang=ar" />
@@ -92,7 +92,7 @@
   <!-- FAQ Page - صفحة الأسئلة الشائعة -->
   <url>
     <loc>https://sevensgreen.com/faq</loc>
-    <lastmod>2025-12-06</lastmod>
+    <lastmod>2026-06-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/faq?lang=ar" />
@@ -103,7 +103,7 @@
   <!-- How To Use Page - صفحة طريقة الاستخدام -->
   <url>
     <loc>https://sevensgreen.com/how-to-use</loc>
-    <lastmod>2025-12-06</lastmod>
+    <lastmod>2026-06-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/how-to-use?lang=ar" />
@@ -114,7 +114,7 @@
   <!-- About Page - صفحة من نحن -->
   <url>
     <loc>https://sevensgreen.com/about</loc>
-    <lastmod>2025-12-06</lastmod>
+    <lastmod>2026-06-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/about?lang=ar" />
@@ -125,12 +125,20 @@
   <!-- Compare Page - صفحة المقارنة -->
   <url>
     <loc>https://sevensgreen.com/compare</loc>
-    <lastmod>2025-12-06</lastmod>
+    <lastmod>2026-06-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
     <xhtml:link rel="alternate" hreflang="ar" href="https://sevensgreen.com/compare?lang=ar" />
     <xhtml:link rel="alternate" hreflang="en" href="https://sevensgreen.com/compare?lang=en" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://sevensgreen.com/compare" />
+  </url>
+
+  <!-- Privacy Policy - سياسة الخصوصية -->
+  <url>
+    <loc>https://sevensgreen.com/privacy</loc>
+    <lastmod>2026-06-04</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 
 </urlset>

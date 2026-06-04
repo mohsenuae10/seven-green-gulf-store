@@ -57,7 +57,7 @@ const Index = () => {
     "description": language === 'ar' 
       ? "صابونة وشامبو سفن جرين الطبيعي 100% من السرو والأوسمان لعلاج تساقط الشعر وتكثيفه"
       : "Seven Green 100% natural soap and shampoo made from cypress and osman for hair loss treatment and thickening",
-    "image": "https://sevensgreen.com/images/seven-green-icon.png",
+    "image": "https://sevensgreen.com/lovable-uploads/seven-green-icon.png",
     "brand": {
       "@type": "Brand",
       "name": "Seven Green",
@@ -98,7 +98,7 @@ const Index = () => {
     "name": "سفن جرين - Seven Green",
     "alternateName": ["سفن جرين", "Seven Green", "سفن قرين", "سيفن جرين"],
     "url": "https://sevensgreen.com",
-    "logo": "https://sevensgreen.com/images/seven-green-icon.png",
+    "logo": "https://sevensgreen.com/lovable-uploads/seven-green-icon.png",
     "sameAs": [
       "https://www.snapchat.com/add/sevengreen"
     ],
@@ -117,7 +117,7 @@ const Index = () => {
     "@type": "LocalBusiness",
     "name": "سفن جرين - Seven Green",
     "alternateName": ["سفن جرين", "Seven Green"],
-    "image": "https://sevensgreen.com/images/seven-green-icon.png",
+    "image": "https://sevensgreen.com/lovable-uploads/seven-green-icon.png",
     "url": "https://sevensgreen.com",
     "telephone": CONTACT_INFO.phone,
     "email": CONTACT_INFO.email,
@@ -285,7 +285,7 @@ const Index = () => {
         <meta property="og:description" content={description} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://sevensgreen.com/" />
-        <meta property="og:image" content="https://sevensgreen.com/images/seven-green-icon.png" />
+        <meta property="og:image" content="https://sevensgreen.com/lovable-uploads/seven-green-icon.png" />
         <meta property="og:site_name" content="سفن جرين - Seven Green" />
         <link rel="alternate" hrefLang="ar" href="https://sevensgreen.com/?lang=ar" />
         <link rel="alternate" hrefLang="en" href="https://sevensgreen.com/?lang=en" />
@@ -294,7 +294,7 @@ const Index = () => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content="https://sevensgreen.com/images/seven-green-icon.png" />
+        <meta name="twitter:image" content="https://sevensgreen.com/lovable-uploads/seven-green-icon.png" />
         <link rel="canonical" href="https://sevensgreen.com/" />
         <script type="application/ld+json">
           {JSON.stringify(productSchema)}

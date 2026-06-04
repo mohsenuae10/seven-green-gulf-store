@@ -93,8 +93,8 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-muted-foreground text-sm">
                 <Mail className="w-4 h-4 text-primary flex-shrink-0" />
-                <a href="mailto:info@sevengreen.com" className="hover:text-primary transition-colors duration-300">
-                  info@sevengreen.com
+                <a href="mailto:support@sevensgreen.com" className="hover:text-primary transition-colors duration-300">
+                  support@sevensgreen.com
                 </a>
               </li>
             </ul>
@@ -138,9 +138,14 @@ const Footer = () => {
         {/* Copyright */}
         <div className="pt-8 border-t border-border text-center text-sm text-muted-foreground mt-8">
           <p>
-            {language === 'ar' 
+            {language === 'ar'
               ? `© ${currentYear} سفن جرين. جميع الحقوق محفوظة.`
               : `© ${currentYear} Seven Green. All rights reserved.`}
+          </p>
+          <p className="mt-2">
+            <Link to="/privacy" className="hover:text-primary transition-colors duration-300">
+              {language === 'ar' ? 'سياسة الخصوصية' : 'Privacy Policy'}
+            </Link>
           </p>
         </div>
       </div>

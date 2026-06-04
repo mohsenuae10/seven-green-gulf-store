@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LanguageProvider from "./providers/LanguageProvider";
 import { ChatBot } from "@/components/ChatBot";
+import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Order from "./pages/Order";
 import Product from "./pages/Product";
@@ -19,6 +20,7 @@ import HowToUse from "./pages/HowToUse";
 import Reviews from "./pages/Reviews";
 import FAQPage from "./pages/FAQPage";
 import Compare from "./pages/Compare";
+import Privacy from "./pages/Privacy";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +31,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
@@ -41,6 +44,7 @@ const App = () => (
             <Route path="/product" element={<Product />} />
             <Route path="/order" element={<Order />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
+            <Route path="/privacy" element={<Privacy />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -18,7 +18,6 @@ const ProductHero = () => {
   const { price: productPrice, stockQuantity, loading: priceLoading } = useProductPrice();
   const { getPriceData, selectedCurrency } = useCurrency();
   const { language, t } = useLanguage();
-  console.log('[ProductHero] currency:', selectedCurrency, 'price:', productPrice);
   
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [productImages, setProductImages] = useState<{ src: string; alt: string }[]>([]);
@@ -67,7 +66,6 @@ const ProductHero = () => {
             .select('image_url, alt_text, display_order')
             .eq('product_id', productId)
             .order('display_order');
-          console.log('[ProductHero] Fetched images:', imgs?.length || 0);
           if (imgs && imgs.length) {
             setProductImages(imgs.map(i => ({ src: i.image_url, alt: i.alt_text || 'Product Image' })));
           }

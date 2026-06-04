@@ -139,7 +139,6 @@ const Order = () => {
       window.gtag('event', 'conversion', {
         'send_to': 'AW-17646380077/YYYYYY' // ⚠️ Replace with your Begin Checkout Conversion ID
       });
-      console.log('Google Ads Begin Checkout tracked');
     }
   }, []);
 

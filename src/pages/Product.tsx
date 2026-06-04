@@ -48,7 +48,6 @@ const Product = () => {
       window.gtag('event', 'conversion', {
         'send_to': 'AW-17646380077/v4KRCNSP6KsbEK3Iud5B'
       });
-      console.log('Google Ads Product Page View tracked');
     }
   }, []);
 

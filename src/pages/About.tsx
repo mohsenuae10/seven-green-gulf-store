@@ -20,8 +20,8 @@ const About = () => {
     : "About Us | Seven Green - Our Story & Vision";
     
   const description = language === 'ar'
-    ? "تعرف على قصة سفن جرين، علامة تجارية كورية رائدة في منتجات العناية بالشعر الطبيعية. رؤيتنا، قيمنا، والتزامنا بالجودة."
-    : "Learn about Seven Green, a leading Korean brand in natural hair care products. Our vision, values, and commitment to quality.";
+    ? "تعرف على قصة سفن جرين، علامة تجارية يمنية رائدة في منتجات العناية بالشعر الطبيعية. رؤيتنا، قيمنا، والتزامنا بالجودة."
+    : "Learn about Seven Green, a leading Yemeni brand in natural hair care products. Our vision, values, and commitment to quality.";
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -48,17 +48,17 @@ const About = () => {
     "name": "سفن جرين - Seven Green",
     "alternateName": ["سفن جرين", "Seven Green", "سفن قرين", "سيفن جرين"],
     "url": "https://sevensgreen.com",
-    "logo": "https://sevensgreen.com/images/seven-green-icon.png",
+    "logo": "https://sevensgreen.com/lovable-uploads/seven-green-icon.png",
     "description": language === 'ar'
-      ? "سفن جرين هي علامة تجارية كورية رائدة متخصصة في منتجات العناية بالشعر الطبيعية. نقدم حلولاً فعالة لعلاج تساقط الشعر وتكثيفه باستخدام مكونات طبيعية 100%."
-      : "Seven Green is a leading Korean brand specializing in natural hair care products. We provide effective solutions for hair loss treatment and thickening using 100% natural ingredients.",
+      ? "سفن جرين هي علامة تجارية يمنية رائدة متخصصة في منتجات العناية بالشعر الطبيعية. نقدم حلولاً فعالة لعلاج تساقط الشعر وتكثيفه باستخدام مكونات طبيعية 100%."
+      : "Seven Green is a leading Yemeni brand specializing in natural hair care products. We provide effective solutions for hair loss treatment and thickening using 100% natural ingredients.",
     "foundingDate": "2024",
     "foundingLocation": {
       "@type": "Place",
       "address": {
         "@type": "PostalAddress",
-        "addressCountry": "KR",
-        "addressRegion": language === 'ar' ? "كوريا الجنوبية" : "South Korea"
+        "addressCountry": "YE",
+        "addressRegion": language === 'ar' ? "اليمن - حضرموت" : "Yemen - Hadhramaut"
       }
     },
     "sameAs": [
@@ -146,8 +146,8 @@ const About = () => {
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               {language === 'ar'
-                ? 'سفن جرين هي علامة تجارية كورية رائدة متخصصة في منتجات العناية بالشعر الطبيعية، تأسست برؤية واضحة: توفير حلول فعالة وآمنة لمشاكل الشعر باستخدام مكونات طبيعية 100%.'
-                : 'Seven Green is a leading Korean brand specializing in natural hair care products, founded with a clear vision: providing effective and safe solutions for hair problems using 100% natural ingredients.'}
+                ? 'سفن جرين هي علامة تجارية يمنية رائدة متخصصة في منتجات العناية بالشعر الطبيعية، تأسست برؤية واضحة: توفير حلول فعالة وآمنة لمشاكل الشعر باستخدام مكونات طبيعية 100%.'
+                : 'Seven Green is a leading Yemeni brand specializing in natural hair care products, founded with a clear vision: providing effective and safe solutions for hair problems using 100% natural ingredients.'}
             </p>
           </div>
 
@@ -160,7 +160,7 @@ const About = () => {
               {language === 'ar' ? (
                 <>
                    <p className="mb-4 leading-relaxed">
-                    بدأت رحلة سفن جرين في عام 2020 من قلب كوريا الجنوبية، عندما لاحظنا حاجة ملحة لمنتجات عناية بالشعر طبيعية وفعالة في السوق. كانت معظم المنتجات المتوفرة إما محملة بمواد كيميائية ضارة أو غير فعالة في معالجة مشاكل تساقط الشعر. يمكنك الآن <Link to="/order" className="text-primary hover:underline font-semibold">طلب المنتج الأصلي</Link> بكل سهولة.
+                    بدأت رحلة سفن جرين من قلب حضرموت اليمن، عندما لاحظنا حاجة ملحة لمنتجات عناية بالشعر طبيعية وفعالة في السوق. كانت معظم المنتجات المتوفرة إما محملة بمواد كيميائية ضارة أو غير فعالة في معالجة مشاكل تساقط الشعر. يمكنك الآن <Link to="/order" className="text-primary hover:underline font-semibold">طلب المنتج الأصلي</Link> بكل سهولة.
                   </p>
                   <p className="mb-4 leading-relaxed">
                     قررنا أن نغير ذلك من خلال تطوير تركيبة فريدة تجمع بين خلاصة السرو والأوسمان الطبيعية، مكونين معروفين بخصائصهما العلاجية لتقوية الشعر ومنع التساقط. بعد سنوات من البحث والتطوير، ولدت صابونة سفن جرين المثلثة الشهيرة.
@@ -172,7 +172,7 @@ const About = () => {
               ) : (
                 <>
                   <p className="mb-4 leading-relaxed">
-                    Seven Green's journey began in 2020 from the heart of South Korea, when we noticed an urgent need for natural and effective hair care products in the market. Most available products were either loaded with harmful chemicals or ineffective in treating hair loss problems.
+                    Seven Green's journey began from the heart of Hadhramaut, Yemen, when we noticed an urgent need for natural and effective hair care products in the market. Most available products were either loaded with harmful chemicals or ineffective in treating hair loss problems.
                   </p>
                   <p className="mb-4 leading-relaxed">
                     We decided to change that by developing a unique formula combining natural cypress and ottoman extracts, two ingredients known for their therapeutic properties in strengthening hair and preventing hair loss. After years of research and development, the famous Seven Green Triangle Soap was born.
