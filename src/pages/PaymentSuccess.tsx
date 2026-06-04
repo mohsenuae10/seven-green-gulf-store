@@ -38,7 +38,36 @@ const PaymentSuccess = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    const fetchOrderDetails = async () => {
+    let cancelled = false;
+    let conversionTracked = false;
+
+    // This page is DISPLAY-ONLY. The Stripe webhook is the single source of
+    // truth that marks an order paid. Here we just read the status, and poll
+    // briefly in case the webhook hasn't landed yet right after the redirect.
+    const fetchOrder = async () => {
+      const { data, error: orderError } = await supabase
+        .rpc('get_order_secure', { order_id_param: orderId });
+      if (orderError) throw new Error(orderError.message);
+      if (!data || data.length === 0) throw new Error("الطلب غير موجود");
+      return data[0] as OrderData;
+    };
+
+    const trackConversion = (order: OrderData) => {
+      if (conversionTracked) return;
+      conversionTracked = true;
+      // Google Ads Purchase Conversion Event
+      // NOTE: استبدل 'XXXXXX' بالـ Conversion ID من Google Ads
+      if (typeof window.gtag !== 'undefined') {
+        window.gtag('event', 'conversion', {
+          'send_to': 'AW-17646380077/XXXXXX',
+          'value': order.total_amount,
+          'currency': 'SAR',
+          'transaction_id': order.id,
+        });
+      }
+    };
+
+    const run = async () => {
       if (!orderId) {
         setError("معرف الطلب غير موجود");
         setLoading(false);
@@ -46,81 +75,42 @@ const PaymentSuccess = () => {
       }
 
       try {
-        // Use secure function instead of direct database query
-        const { data, error: orderError } = await supabase
-          .rpc('get_order_secure', { order_id_param: orderId });
-
-        if (orderError) {
-          throw new Error(orderError.message);
-        }
-
-        if (data && data.length > 0) {
-          const order = data[0];
+        // Poll up to ~10s for the webhook to confirm the payment.
+        const maxAttempts = 6;
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+          const order = await fetchOrder();
+          if (cancelled) return;
           setOrderData(order);
-          
-          // Update payment status if still pending using secure function
-          if (order.payment_status === 'pending') {
-            await supabase.rpc('update_order_payment_status', {
-              order_id_param: orderId
-            });
-            
-            // Send payment confirmation email (different from order created email)
-            try {
-              await supabase.functions.invoke('send-payment-confirmation', {
-                body: {
-                  customerName: order.customer_name,
-                  customerEmail: order.customer_email,
-                  orderId: orderId,
-                  totalAmount: order.total_amount,
-                  productName: 'منتج Seven Green للعناية بالشعر'
-                }
-              });
-              console.log('Payment confirmation email sent successfully');
-            } catch (emailError) {
-              console.error('Error sending payment confirmation email:', emailError);
-              // Don't fail the whole process if email fails
-            }
-            
-            // Update local state to reflect the change
-            setOrderData({
-              ...order,
-              payment_status: 'paid',
-              status: 'confirmed'
-            });
 
-            // Google Ads Purchase Conversion Event
-            // NOTE: يحتاج Conversion ID منفصل للـ Purchase - استبدل 'XXXXXX' بالـ ID من Google Ads
-            if (typeof window.gtag !== 'undefined') {
-              window.gtag('event', 'conversion', {
-                'send_to': 'AW-17646380077/XXXXXX', // ⚠️ Replace with your Purchase Conversion ID
-                'value': order.total_amount,
-                'currency': 'SAR',
-                'transaction_id': orderId
-              });
-              console.log('Google Ads Purchase Conversion tracked:', {
-                value: order.total_amount,
-                currency: 'SAR',
-                transaction_id: orderId
-              });
-            }
+          if (order.payment_status === 'paid') {
+            trackConversion(order);
+            break;
           }
-        } else {
-          throw new Error("الطلب غير موجود");
+          if (order.payment_status === 'failed') break;
+
+          // Still pending: wait and retry.
+          if (attempt < maxAttempts - 1) {
+            await new Promise((r) => setTimeout(r, 1800));
+          }
         }
       } catch (err: any) {
         console.error("Error fetching order:", err);
+        if (cancelled) return;
         setError(err.message || "حدث خطأ في جلب تفاصيل الطلب");
         toast({
           title: "خطأ",
           description: "لم نتمكن من جلب تفاصيل طلبك. يرجى المحاولة مرة أخرى.",
-          variant: "destructive"
+          variant: "destructive",
         });
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
-    fetchOrderDetails();
+    run();
+    return () => {
+      cancelled = true;
+    };
   }, [orderId, toast]);
 
   // Loading state
@@ -183,11 +173,19 @@ const PaymentSuccess = () => {
           {/* Success Message */}
           <Card className="bg-gradient-card border-border/50 shadow-medium p-8 mb-8">
             <h1 className="text-3xl font-bold text-foreground mb-4">
-              تم تأكيد طلبك بنجاح! 🎉
+              {orderData.payment_status === 'paid'
+                ? 'تم تأكيد طلبك بنجاح! 🎉'
+                : orderData.payment_status === 'failed'
+                ? 'لم يكتمل الدفع'
+                : 'جاري تأكيد الدفع...'}
             </h1>
-            
+
             <p className="text-xl text-muted-foreground mb-6">
-              شكراً لك على ثقتك في سيفن جرين. تم استلام طلبك وسيتم معالجته قريباً.
+              {orderData.payment_status === 'paid'
+                ? 'شكراً لك على ثقتك في سيفن جرين. تم استلام طلبك وسيتم معالجته قريباً.'
+                : orderData.payment_status === 'failed'
+                ? 'تعذّر إتمام عملية الدفع. لم يتم خصم أي مبلغ. يمكنك المحاولة مرة أخرى أو التواصل معنا.'
+                : 'نتحقق من عملية الدفع لديك، قد يستغرق ذلك لحظات. لا تغلق الصفحة.'}
             </p>
 
             {/* Order Details */}
@@ -224,7 +222,19 @@ const PaymentSuccess = () => {
                 
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">حالة الطلب:</span>
-                  <span className="font-medium text-secondary">مؤكد ومدفوع</span>
+                  <span className={`font-medium ${
+                    orderData.payment_status === 'paid'
+                      ? 'text-secondary'
+                      : orderData.payment_status === 'failed'
+                      ? 'text-destructive'
+                      : 'text-yellow-600'
+                  }`}>
+                    {orderData.payment_status === 'paid'
+                      ? 'مؤكد ومدفوع'
+                      : orderData.payment_status === 'failed'
+                      ? 'فشل الدفع'
+                      : 'بانتظار تأكيد الدفع...'}
+                  </span>
                 </div>
               </div>
             </div>
