@@ -16,7 +16,6 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { AlertCircle, Loader2, Phone, Flag, ChevronRight, Shield, Truck, RotateCcw } from "lucide-react";
@@ -30,86 +29,11 @@ import { CONTACT_INFO } from "@/config/contact";
 import { PriceDisplay } from "@/components/PriceDisplay";
 import { supabase } from "@/integrations/supabase/client";
 import StripePaymentForm from "@/components/checkout/StripePaymentForm";
-
-// Country data with codes and flags
-const getCountries = (language: string) => [
-  { 
-    code: "AE", 
-    name: language === 'ar' ? "الإمارات العربية المتحدة" : "United Arab Emirates", 
-    flag: "🇦🇪", 
-    phoneCode: "+971" 
-  },
-  { 
-    code: "SA", 
-    name: language === 'ar' ? "المملكة العربية السعودية" : "Saudi Arabia", 
-    flag: "🇸🇦", 
-    phoneCode: "+966" 
-  },
-  { 
-    code: "YE", 
-    name: language === 'ar' ? "اليمن" : "Yemen", 
-    flag: "🇾🇪", 
-    phoneCode: "+967" 
-  },
-  { 
-    code: "EG", 
-    name: language === 'ar' ? "مصر" : "Egypt", 
-    flag: "🇪🇬", 
-    phoneCode: "+20" 
-  },
-  { 
-    code: "JO", 
-    name: language === 'ar' ? "الأردن" : "Jordan", 
-    flag: "🇯🇴", 
-    phoneCode: "+962" 
-  },
-  { 
-    code: "MA", 
-    name: language === 'ar' ? "المغرب" : "Morocco", 
-    flag: "🇲🇦", 
-    phoneCode: "+212" 
-  },
-  { 
-    code: "IQ", 
-    name: language === 'ar' ? "العراق" : "Iraq", 
-    flag: "🇮🇶", 
-    phoneCode: "+964" 
-  },
-  { 
-    code: "US", 
-    name: language === 'ar' ? "الولايات المتحدة الأمريكية" : "United States", 
-    flag: "🇺🇸", 
-    phoneCode: "+1" 
-  },
-  { 
-    code: "QA", 
-    name: language === 'ar' ? "قطر" : "Qatar", 
-    flag: "🇶🇦", 
-    phoneCode: "+974" 
-  },
-  { 
-    code: "KW", 
-    name: language === 'ar' ? "الكويت" : "Kuwait", 
-    flag: "🇰🇼", 
-    phoneCode: "+965" 
-  },
-  { 
-    code: "BH", 
-    name: language === 'ar' ? "البحرين" : "Bahrain", 
-    flag: "🇧🇭", 
-    phoneCode: "+973" 
-  },
-  { 
-    code: "OM", 
-    name: language === 'ar' ? "عمان" : "Oman", 
-    flag: "🇴🇲", 
-    phoneCode: "+968" 
-  },
-];
+import CountrySelect from "@/components/CountrySelect";
+import { countries } from "@/data/countries";
 
 const Order = () => {
   const { language, t } = useLanguage();
-  const countries = getCountries(language);
   
   const [formData, setFormData] = useState({
     customerName: "",
@@ -427,37 +351,16 @@ const Order = () => {
                     {t('order.phone')} *
                   </Label>
                   <div className="flex gap-2">
-                    <Select
-                      value={formData.countryCode}
-                      onValueChange={(value) => {
-                        handleInputChange("countryCode", value);
-                        // Also set the country based on phone code
-                        const country = countries.find(c => c.phoneCode === value);
-                        if (country) {
+                    <div className="w-[150px] shrink-0">
+                      <CountrySelect
+                        value={formData.country}
+                        onChange={(country) => {
                           handleInputChange("country", country.code);
-                        }
-                      }}
-                    >
-                      <SelectTrigger className="w-[140px] text-right touch-target">
-                        <SelectValue>
-                          <div className="flex items-center gap-2">
-                            <span>{countries.find(c => c.phoneCode === formData.countryCode)?.flag}</span>
-                            <span>{formData.countryCode}</span>
-                          </div>
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg z-50">
-                        {countries.map((country) => (
-                          <SelectItem key={country.code} value={country.phoneCode} className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <div className="flex items-center gap-2">
-                              <span>{country.flag}</span>
-                              <span>{country.phoneCode}</span>
-                              <span className="text-sm text-muted-foreground">{country.name}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                          handleInputChange("countryCode", country.phoneCode);
+                        }}
+                        placeholder={formData.countryCode || "+???"}
+                      />
+                    </div>
                     <Input
                       id="phone"
                       type="tel"
@@ -484,43 +387,18 @@ const Order = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="country" className={`block mobile-text font-medium flex items-center gap-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+                    <Label className={`block mobile-text font-medium flex items-center gap-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                       <Flag className="w-4 h-4" />
                       {t('order.country')} *
                     </Label>
-                    <Select
+                    <CountrySelect
                       value={formData.country}
-                      onValueChange={(value) => {
-                        handleInputChange("country", value);
-                        // Update country code based on selected country
-                        const country = countries.find(c => c.code === value);
-                        if (country) {
-                          handleInputChange("countryCode", country.phoneCode);
-                        }
+                      onChange={(country) => {
+                        handleInputChange("country", country.code);
+                        handleInputChange("countryCode", country.phoneCode);
                       }}
-                      required
-                    >
-                      <SelectTrigger className={`touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-                        <SelectValue placeholder={t('order.country.placeholder')}>
-                          {formData.country && (
-                            <div className="flex items-center gap-2">
-                              <span>{countries.find(c => c.code === formData.country)?.flag}</span>
-                              <span>{countries.find(c => c.code === formData.country)?.name}</span>
-                            </div>
-                          )}
-                        </SelectValue>
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg z-50">
-                        {countries.map((country) => (
-                          <SelectItem key={country.code} value={country.code} className="hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <div className="flex items-center gap-2">
-                              <span>{country.flag}</span>
-                              <span>{country.name}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      placeholder={t('order.country.placeholder')}
+                    />
                   </div>
 
                   <div className="space-y-2">
