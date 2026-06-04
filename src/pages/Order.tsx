@@ -127,6 +127,7 @@ const Order = () => {
   const [step, setStep] = useState<"form" | "payment">("form");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [orderAmount, setOrderAmount] = useState<number>(0);
   const { price: productPrice } = useProductPrice();
   const { getPriceData, selectedCurrency } = useCurrency();
   const { toast } = useToast();
@@ -212,6 +213,7 @@ const Order = () => {
       // Show the inline Stripe payment form (no redirect to Stripe).
       setClientSecret(data.clientSecret);
       setOrderId(data.order_id);
+      setOrderAmount(data.amount || 0);
       setStep("payment");
     } catch (error) {
       console.error("Order submission error:", error);
@@ -399,10 +401,12 @@ const Order = () => {
                   <StripePaymentForm
                     clientSecret={clientSecret}
                     orderId={orderId}
+                    amount={orderAmount}
                     onBack={() => {
                       setStep("form");
                       setClientSecret(null);
                       setOrderId(null);
+                      setOrderAmount(0);
                       setError(null);
                     }}
                   />
