@@ -29,6 +29,7 @@ import { CONTACT_INFO } from "@/config/contact";
 import { PriceDisplay } from "@/components/PriceDisplay";
 import { supabase } from "@/integrations/supabase/client";
 import StripePaymentForm from "@/components/checkout/StripePaymentForm";
+import Header from "@/components/Header";
 import CountrySelect from "@/components/CountrySelect";
 import { countries } from "@/data/countries";
 
@@ -270,6 +271,7 @@ const Order = () => {
       </Helmet>
       
       <MobileOptimized className="min-h-screen bg-gradient-to-br from-green-50 to-white" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <Header />
         <MobileNav />
         
         {/* Breadcrumb */}
@@ -358,6 +360,7 @@ const Order = () => {
                 </div>
               ) : (
               <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
+                {/* 1. الاسم */}
                 <div className="space-y-2">
                   <Label htmlFor="name" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.name')} *</Label>
                   <Input
@@ -371,6 +374,33 @@ const Order = () => {
                   />
                 </div>
 
+                {/* 2. الدولة */}
+                <div className="space-y-2">
+                  <Label className={`block mobile-text font-medium flex items-center gap-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+                    <Flag className="w-4 h-4" />
+                    {t('order.country')} *
+                    {detectingCountry && (
+                      <span className="text-xs text-muted-foreground font-normal flex items-center gap-1">
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                        {language === 'ar' ? 'جاري الاكتشاف...' : 'Detecting...'}
+                      </span>
+                    )}
+                  </Label>
+                  <CountrySelect
+                    value={formData.country}
+                    onChange={(country) => {
+                      handleInputChange("country", country.code);
+                      handleInputChange("countryCode", country.phoneCode);
+                    }}
+                    placeholder={
+                      detectingCountry
+                        ? (language === 'ar' ? 'جاري اكتشاف دولتك...' : 'Detecting your country...')
+                        : t('order.country.placeholder')
+                    }
+                  />
+                </div>
+
+                {/* 3. رقم الهاتف */}
                 <div className="space-y-2">
                   <Label htmlFor="phone" className={`block mobile-text font-medium flex items-center gap-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                     <Phone className="w-4 h-4" />
@@ -399,6 +429,7 @@ const Order = () => {
                   </div>
                 </div>
 
+                {/* 4. البريد الإلكتروني */}
                 <div className="space-y-2">
                   <Label htmlFor="email" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.email')}</Label>
                   <Input
@@ -411,44 +442,18 @@ const Order = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className={`block mobile-text font-medium flex items-center gap-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-                      <Flag className="w-4 h-4" />
-                      {t('order.country')} *
-                      {detectingCountry && (
-                        <span className="text-xs text-muted-foreground font-normal flex items-center gap-1">
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                          {language === 'ar' ? 'جاري الاكتشاف...' : 'Detecting...'}
-                        </span>
-                      )}
-                    </Label>
-                    <CountrySelect
-                      value={formData.country}
-                      onChange={(country) => {
-                        handleInputChange("country", country.code);
-                        handleInputChange("countryCode", country.phoneCode);
-                      }}
-                      placeholder={
-                        detectingCountry
-                          ? (language === 'ar' ? 'جاري اكتشاف دولتك...' : 'Detecting your country...')
-                          : t('order.country.placeholder')
-                      }
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="city" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.city')} *</Label>
-                    <Input
-                      id="city"
-                      type="text"
-                      placeholder={t('order.city.placeholder')}
-                      value={formData.city}
-                      onChange={(e) => handleInputChange("city", e.target.value)}
-                      className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
-                      required
-                    />
-                  </div>
+                {/* 5. المدينة */}
+                <div className="space-y-2">
+                  <Label htmlFor="city" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.city')} *</Label>
+                  <Input
+                    id="city"
+                    type="text"
+                    placeholder={t('order.city.placeholder')}
+                    value={formData.city}
+                    onChange={(e) => handleInputChange("city", e.target.value)}
+                    className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                    required
+                  />
                 </div>
 
                 <div className="space-y-2">

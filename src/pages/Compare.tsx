@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
+import Header from "@/components/Header";
 import MobileNav from "@/components/MobileNav";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,7 @@ const Compare = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background">
+        <Header />
         <MobileNav />
         <main className="container mx-auto px-4 py-8">
           <h1 className="text-4xl font-bold text-center mb-8">{language === 'ar' ? 'مقارنة المنتجات' : 'Product Comparison'}</h1>

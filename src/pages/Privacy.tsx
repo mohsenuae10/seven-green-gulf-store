@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
 import { ChevronRight } from "lucide-react";
 import MobileOptimized from "@/components/MobileOptimized";
+import Header from "@/components/Header";
 import { CONTACT_INFO } from "@/config/contact";
 
 const Privacy = () => {
@@ -26,6 +27,7 @@ const Privacy = () => {
       </Helmet>
 
       <MobileOptimized className="min-h-screen bg-background">
+        <Header />
         <nav className="container mx-auto px-4 py-4" aria-label="breadcrumb">
           <ol className="flex items-center gap-2 text-sm">
             <li>

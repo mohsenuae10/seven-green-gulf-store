@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import Header from "@/components/Header";
 import { CheckCircle, Package, Truck, Phone, Home, Loader2 } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -160,7 +161,8 @@ const PaymentSuccess = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-primary/5 flex items-center justify-center" dir="rtl">
+    <div className="min-h-screen bg-gradient-to-b from-background to-primary/5" dir="rtl">
+      <Header />
       <div className="container mx-auto px-4 py-8">
         
         <div className="max-w-2xl mx-auto text-center">

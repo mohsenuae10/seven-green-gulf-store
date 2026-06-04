@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useLanguage } from "@/hooks/useLanguage";
+import Header from "@/components/Header";
 import MobileNav from "@/components/MobileNav";
 import Footer from "@/components/Footer";
 import FAQ from "@/components/FAQ";
@@ -96,6 +97,7 @@ const FAQPage = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background">
+        <Header />
         <MobileNav />
         <FAQ />
         <Footer />

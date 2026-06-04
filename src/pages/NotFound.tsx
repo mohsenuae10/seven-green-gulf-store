@@ -4,6 +4,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { Home, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet";
+import Header from "@/components/Header";
 
 const NotFound = () => {
   const location = useLocation();
@@ -25,6 +26,7 @@ const NotFound = () => {
         <link rel="canonical" href="https://sevensgreen.com/404" />
       </Helmet>
       
+      <Header />
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-background to-muted/20">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-2xl mx-auto">

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
+import Header from "@/components/Header";
 import MobileNav from "@/components/MobileNav";
 import Footer from "@/components/Footer";
 import { Card } from "@/components/ui/card";
@@ -41,6 +42,7 @@ const Benefits = () => {
       </Helmet>
 
       <div className="min-h-screen bg-background">
+        <Header />
         <MobileNav />
         
         <main className="container mx-auto px-4 py-8 max-w-5xl">
