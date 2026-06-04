@@ -53,8 +53,8 @@ const CheckoutForm = ({ orderId, amountLabel, onBack }: Omit<StripePaymentFormPr
     <form onSubmit={handleSubmit} className="space-y-5">
       <PaymentElement
         options={{
-          layout: "tabs",
-          wallets: { applePay: "auto", googlePay: "auto" },
+          layout: "accordion",
+          defaultValues: { billingDetails: { address: { country: "SA" } } },
         }}
       />
 
@@ -104,11 +104,8 @@ const CheckoutForm = ({ orderId, amountLabel, onBack }: Omit<StripePaymentFormPr
 };
 
 const StripePaymentForm = ({ clientSecret, orderId, amountLabel, onBack }: StripePaymentFormProps) => {
-  const { language } = useLanguage();
-
   const options: StripeElementsOptions = {
     clientSecret,
-    locale: language === "ar" ? "ar" : "en",
     appearance: {
       theme: "stripe",
       variables: {
