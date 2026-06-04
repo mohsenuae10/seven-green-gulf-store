@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Elements,
   PaymentElement,
-  PaymentRequestButtonElement,
+  ExpressCheckoutElement,
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import type { StripeElementsOptions, PaymentRequest } from "@stripe/stripe-js";
+import type { StripeElementsOptions } from "@stripe/stripe-js";
 import { getStripe } from "@/integrations/stripe/client";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -23,58 +23,45 @@ interface StripePaymentFormProps {
 
 interface CheckoutFormProps {
   orderId: string;
-  clientSecret: string;
-  amount: number;
   amountLabel?: string;
   onBack?: () => void;
 }
 
 const stripePromise = getStripe();
 
-const CheckoutForm = ({ orderId, clientSecret, amount, amountLabel, onBack }: CheckoutFormProps) => {
+const CheckoutForm = ({ orderId, amountLabel, onBack }: CheckoutFormProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const { language } = useLanguage();
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | null>(null);
+  const [hasExpressCheckout, setHasExpressCheckout] = useState(false);
 
-  useEffect(() => {
-    if (!stripe || !amount) return;
+  const returnUrl = `${window.location.origin}/payment-success?order_id=${orderId}`;
 
-    const pr = stripe.paymentRequest({
-      country: "SA",
-      currency: "sar",
-      total: { label: "Seven Green", amount: Math.round(amount * 100) },
-      requestPayerName: true,
+  // Called when Apple Pay / Google Pay button is available
+  const handleExpressReady = ({ availablePaymentMethods }: { availablePaymentMethods: Record<string, boolean> | null }) => {
+    if (availablePaymentMethods) setHasExpressCheckout(true);
+  };
+
+  // Called when user authorises via Apple Pay / Google Pay
+  const handleExpressConfirm = async () => {
+    if (!stripe || !elements) return;
+    setIsProcessing(true);
+    setError(null);
+
+    const { error: confirmError } = await stripe.confirmPayment({
+      elements,
+      confirmParams: { return_url: returnUrl },
     });
 
-    pr.canMakePayment().then((result) => {
-      if (result) setPaymentRequest(pr);
-    });
+    if (confirmError) {
+      setError(confirmError.message || (language === "ar" ? "فشل الدفع" : "Payment failed"));
+      setIsProcessing(false);
+    }
+  };
 
-    pr.on("paymentmethod", async (e) => {
-      const { error: confirmError, paymentIntent } = await stripe.confirmCardPayment(
-        clientSecret,
-        { payment_method: e.paymentMethod.id },
-        { handleActions: false }
-      );
-
-      if (confirmError) {
-        e.complete("fail");
-        setError(confirmError.message || (language === "ar" ? "فشل الدفع" : "Payment failed"));
-      } else {
-        e.complete("success");
-        if (paymentIntent?.status === "requires_action") {
-          const { error: actionError } = await stripe.confirmCardPayment(clientSecret);
-          if (!actionError) window.location.href = `/payment-success?order_id=${orderId}`;
-        } else {
-          window.location.href = `/payment-success?order_id=${orderId}`;
-        }
-      }
-    });
-  }, [stripe, amount, clientSecret, orderId, language]);
-
+  // Called when user submits card form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!stripe || !elements) return;
@@ -83,9 +70,7 @@ const CheckoutForm = ({ orderId, clientSecret, amount, amountLabel, onBack }: Ch
 
     const { error: submitError } = await stripe.confirmPayment({
       elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/payment-success?order_id=${orderId}`,
-      },
+      confirmParams: { return_url: returnUrl },
     });
 
     if (submitError) {
@@ -98,18 +83,20 @@ const CheckoutForm = ({ orderId, clientSecret, amount, amountLabel, onBack }: Ch
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      {/* Apple Pay / Google Pay — large button at top */}
-      {paymentRequest && (
-        <div className="space-y-3">
-          <PaymentRequestButtonElement
-            options={{
-              paymentRequest,
-              style: {
-                paymentRequestButton: { type: "buy", theme: "dark", height: "56px" },
-              },
-            }}
-          />
+    <div className="space-y-4">
+      {/* Apple Pay / Google Pay — always mount, hidden until available */}
+      <div className={hasExpressCheckout ? "space-y-3" : ""}>
+        <ExpressCheckoutElement
+          onConfirm={handleExpressConfirm}
+          onReady={handleExpressReady}
+          options={{
+            buttonType: { applePay: "buy", googlePay: "buy" },
+            buttonHeight: 56,
+            layout: { maxColumns: 1, maxRows: 2, overflow: "auto" },
+          }}
+        />
+
+        {hasExpressCheckout && (
           <div className="relative flex items-center gap-3 py-1">
             <div className="flex-1 border-t border-gray-200" />
             <span className="text-sm text-muted-foreground px-3 bg-white">
@@ -117,72 +104,74 @@ const CheckoutForm = ({ orderId, clientSecret, amount, amountLabel, onBack }: Ch
             </span>
             <div className="flex-1 border-t border-gray-200" />
           </div>
-        </div>
-      )}
-
-      {/* Card fields */}
-      <div className="rounded-xl border border-gray-200 p-4 bg-white shadow-sm">
-        <div className="flex items-center gap-2 mb-3">
-          <CreditCard className="w-4 h-4 text-primary" />
-          <span className="text-sm font-medium text-gray-700">
-            {language === "ar" ? "بيانات البطاقة" : "Card details"}
-          </span>
-        </div>
-        <PaymentElement
-          options={{
-            layout: "accordion",
-            wallets: { applePay: "never", googlePay: "never" },
-            defaultValues: { billingDetails: { address: { country: "SA" } } },
-          }}
-        />
+        )}
       </div>
 
-      {error && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription className={language === "ar" ? "text-right" : "text-left"}>
-            {error}
-          </AlertDescription>
-        </Alert>
-      )}
+      {/* Card form */}
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="rounded-xl border border-gray-200 p-4 bg-white shadow-sm">
+          <div className="flex items-center gap-2 mb-3">
+            <CreditCard className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium text-gray-700">
+              {language === "ar" ? "بيانات البطاقة" : "Card details"}
+            </span>
+          </div>
+          <PaymentElement
+            options={{
+              layout: "accordion",
+              wallets: { applePay: "never", googlePay: "never" },
+              defaultValues: { billingDetails: { address: { country: "SA" } } },
+            }}
+          />
+        </div>
 
-      <Button
-        type="submit"
-        variant="hero"
-        size="lg"
-        className="w-full mobile-button touch-target h-14 text-base"
-        disabled={!stripe || isProcessing}
-      >
-        {isProcessing ? (
-          <>
-            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            {language === "ar" ? "جاري معالجة الدفع..." : "Processing payment..."}
-          </>
-        ) : (
-          <>
-            <Lock className="mr-2 h-5 w-5" />
-            {language === "ar"
-              ? `ادفع الآن${amountLabel ? ` ${amountLabel}` : ""}`
-              : `Pay now${amountLabel ? ` ${amountLabel}` : ""}`}
-          </>
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className={language === "ar" ? "text-right" : "text-left"}>
+              {error}
+            </AlertDescription>
+          </Alert>
         )}
-      </Button>
 
-      {onBack && (
-        <Button type="button" variant="ghost" size="lg" className="w-full" onClick={onBack} disabled={isProcessing}>
-          {language === "ar" ? "رجوع وتعديل البيانات" : "Back to edit details"}
+        <Button
+          type="submit"
+          variant="hero"
+          size="lg"
+          className="w-full mobile-button touch-target h-14 text-base"
+          disabled={!stripe || isProcessing}
+        >
+          {isProcessing ? (
+            <>
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              {language === "ar" ? "جاري معالجة الدفع..." : "Processing payment..."}
+            </>
+          ) : (
+            <>
+              <Lock className="mr-2 h-5 w-5" />
+              {language === "ar"
+                ? `ادفع الآن${amountLabel ? ` ${amountLabel}` : ""}`
+                : `Pay now${amountLabel ? ` ${amountLabel}` : ""}`}
+            </>
+          )}
         </Button>
-      )}
 
-      <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1">
-        <Lock className="w-3 h-3" />
-        {language === "ar" ? "دفع آمن ومشفّر عبر Stripe" : "Secure encrypted payment via Stripe"}
-      </p>
-    </form>
+        {onBack && (
+          <Button type="button" variant="ghost" size="lg" className="w-full" onClick={onBack} disabled={isProcessing}>
+            {language === "ar" ? "رجوع وتعديل البيانات" : "Back to edit details"}
+          </Button>
+        )}
+
+        <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1">
+          <Lock className="w-3 h-3" />
+          {language === "ar" ? "دفع آمن ومشفّر عبر Stripe" : "Secure encrypted payment via Stripe"}
+        </p>
+      </form>
+    </div>
   );
 };
 
-const StripePaymentForm = ({ clientSecret, orderId, amount = 0, amountLabel, onBack }: StripePaymentFormProps) => {
+const StripePaymentForm = ({ clientSecret, orderId, amountLabel, onBack }: StripePaymentFormProps) => {
   const options: StripeElementsOptions = {
     clientSecret,
     appearance: {
@@ -193,13 +182,7 @@ const StripePaymentForm = ({ clientSecret, orderId, amount = 0, amountLabel, onB
 
   return (
     <Elements stripe={stripePromise} options={options}>
-      <CheckoutForm
-        orderId={orderId}
-        clientSecret={clientSecret}
-        amount={amount}
-        amountLabel={amountLabel}
-        onBack={onBack}
-      />
+      <CheckoutForm orderId={orderId} amountLabel={amountLabel} onBack={onBack} />
     </Elements>
   );
 };
