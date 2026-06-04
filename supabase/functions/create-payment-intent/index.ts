@@ -132,7 +132,7 @@ serve(async (req) => {
       amount: amountInMinorUnits,
       currency,
       customer: customerId,
-      automatic_payment_methods: { enabled: true },
+      payment_method_types: ["card"],
       metadata: {
         order_id: orderData.id,
         customer_name: customerName,

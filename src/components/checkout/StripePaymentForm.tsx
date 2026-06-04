@@ -51,7 +51,12 @@ const CheckoutForm = ({ orderId, amountLabel, onBack }: Omit<StripePaymentFormPr
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      <PaymentElement options={{ layout: "tabs" }} />
+      <PaymentElement
+        options={{
+          layout: "tabs",
+          wallets: { applePay: "auto", googlePay: "auto" },
+        }}
+      />
 
       {error && (
         <Alert variant="destructive">
