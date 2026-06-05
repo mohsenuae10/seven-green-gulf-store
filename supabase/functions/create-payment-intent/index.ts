@@ -7,6 +7,11 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+interface CartItem {
+  productId: string;
+  quantity: number;
+}
+
 interface PaymentRequest {
   customerName: string;
   customerEmail?: string;
@@ -14,7 +19,10 @@ interface PaymentRequest {
   country: string;
   city: string;
   address: string;
-  quantity: number;
+  // Multi-product cart (new)
+  cartItems?: CartItem[];
+  // Legacy single-product fallback
+  quantity?: number;
 }
 
 serve(async (req) => {
@@ -23,6 +31,7 @@ serve(async (req) => {
   }
 
   try {
+    const body: PaymentRequest = await req.json();
     const {
       customerName,
       customerEmail,
@@ -30,16 +39,12 @@ serve(async (req) => {
       country,
       city,
       address,
+      cartItems,
       quantity,
-    }: PaymentRequest = await req.json();
+    } = body;
 
-    // ---- Validate input ----
     if (!customerName?.trim() || !customerPhone?.trim() || !country?.trim() || !city?.trim() || !address?.trim()) {
       throw new Error("بيانات الطلب غير مكتملة");
-    }
-    const qty = Number(quantity);
-    if (!Number.isInteger(qty) || qty < 1 || qty > 100) {
-      throw new Error("الكمية غير صحيحة");
     }
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -51,37 +56,75 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // ---- Get the active product & price from the DB (never trust the client) ----
-    const { data: products, error: productError } = await supabase
-      .from("products")
-      .select("id, name, price")
-      .eq("is_active", true)
-      .order("updated_at", { ascending: false })
-      .limit(1);
+    // ── Resolve cart items ──────────────────────────────────────────────────
+    let resolvedItems: { productId: string; quantity: number; unitPrice: number; name: string }[] = [];
 
-    if (productError || !products || products.length === 0) {
-      console.error("Product lookup failed:", productError);
-      throw new Error("المنتج غير متوفر حالياً");
+    if (cartItems && cartItems.length > 0) {
+      // Multi-product path: fetch all products by ID from DB
+      const productIds = cartItems.map(i => i.productId);
+      const { data: products, error: productError } = await supabase
+        .from("products")
+        .select("id, name, price")
+        .in("id", productIds)
+        .eq("is_active", true);
+
+      if (productError || !products || products.length === 0) {
+        throw new Error("بعض المنتجات غير متوفرة");
+      }
+
+      for (const item of cartItems) {
+        const qty = Number(item.quantity);
+        if (!Number.isInteger(qty) || qty < 1 || qty > 100) {
+          throw new Error("كمية غير صحيحة");
+        }
+        const prod = products.find(p => p.id === item.productId);
+        if (!prod) throw new Error(`المنتج ${item.productId} غير موجود`);
+        resolvedItems.push({
+          productId: prod.id,
+          quantity: qty,
+          unitPrice: Number(prod.price),
+          name: prod.name,
+        });
+      }
+    } else {
+      // Legacy single-product fallback
+      const qty = Number(quantity ?? 1);
+      if (!Number.isInteger(qty) || qty < 1 || qty > 100) {
+        throw new Error("الكمية غير صحيحة");
+      }
+      const { data: products, error: productError } = await supabase
+        .from("products")
+        .select("id, name, price")
+        .eq("is_active", true)
+        .order("updated_at", { ascending: false })
+        .limit(1);
+
+      if (productError || !products || products.length === 0) {
+        throw new Error("المنتج غير متوفر حالياً");
+      }
+      resolvedItems.push({
+        productId: products[0].id,
+        quantity: qty,
+        unitPrice: Number(products[0].price),
+        name: products[0].name,
+      });
     }
 
-    const product = products[0];
-    const unitPrice = Number(product.price);
-    if (!(unitPrice > 0)) {
-      throw new Error("سعر المنتج غير صالح");
-    }
+    // ── Compute total ───────────────────────────────────────────────────────
+    const totalAmount = Math.round(
+      resolvedItems.reduce((s, i) => s + i.unitPrice * i.quantity, 0) * 100
+    ) / 100;
 
-    // ---- Compute the authoritative amount on the server ----
-    const totalAmount = Math.round(unitPrice * qty * 100) / 100; // 2 decimals
-    const amountInMinorUnits = Math.round(totalAmount * 100); // SAR -> halalas
+    if (!(totalAmount > 0)) throw new Error("المبلغ الإجمالي غير صالح");
+
+    const amountInMinorUnits = Math.round(totalAmount * 100);
     const currency = "sar";
 
-    // ---- Find or create the Stripe customer ----
+    // ── Stripe customer ─────────────────────────────────────────────────────
     let customerId: string | undefined;
     if (customerEmail) {
       const customers = await stripe.customers.list({ email: customerEmail, limit: 1 });
-      if (customers.data.length > 0) {
-        customerId = customers.data[0].id;
-      }
+      if (customers.data.length > 0) customerId = customers.data[0].id;
     }
     if (!customerId) {
       const customer = await stripe.customers.create({
@@ -93,7 +136,7 @@ serve(async (req) => {
       customerId = customer.id;
     }
 
-    // ---- Create the order (pending) ----
+    // ── Create order ────────────────────────────────────────────────────────
     const { data: orderData, error: orderError } = await supabase
       .from("orders")
       .insert({
@@ -111,23 +154,24 @@ serve(async (req) => {
       .single();
 
     if (orderError || !orderData) {
-      console.error("Order creation failed:", orderError);
       throw new Error("فشل في إنشاء الطلب");
     }
 
-    // ---- Create the order item ----
-    const { error: itemError } = await supabase.from("order_items").insert({
+    // ── Create order_items (one row per product) ────────────────────────────
+    const orderItemsPayload = resolvedItems.map(i => ({
       order_id: orderData.id,
-      product_id: product.id,
-      quantity: qty,
-      unit_price: unitPrice,
-      total_price: totalAmount,
-    });
+      product_id: i.productId,
+      quantity: i.quantity,
+      unit_price: i.unitPrice,
+      total_price: Math.round(i.unitPrice * i.quantity * 100) / 100,
+    }));
+
+    const { error: itemError } = await supabase.from("order_items").insert(orderItemsPayload);
     if (itemError) {
-      console.error("Order item creation failed:", itemError);
+      console.error("Order items creation failed:", itemError);
     }
 
-    // ---- Create the PaymentIntent ----
+    // ── Stripe PaymentIntent ────────────────────────────────────────────────
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInMinorUnits,
       currency,
@@ -137,11 +181,11 @@ serve(async (req) => {
         order_id: orderData.id,
         customer_name: customerName,
         customer_phone: customerPhone,
-        quantity: String(qty),
+        items_count: String(resolvedItems.length),
+        total_qty: String(resolvedItems.reduce((s, i) => s + i.quantity, 0)),
       },
     });
 
-    // ---- Link the PaymentIntent to the order for the webhook ----
     await supabase
       .from("orders")
       .update({ payment_intent_id: paymentIntent.id })

@@ -10,9 +10,9 @@ declare global {
     gtag: (...args: any[]) => void;
   }
 }
-import { useProductPrice } from "@/hooks/useProductPrice";
 import { useCurrency } from "@/hooks/useCurrency";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,7 +23,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import MobileNav from "@/components/MobileNav";
 import MobileOptimized from "@/components/MobileOptimized";
 import PaymentMethods from "@/components/PaymentMethods";
-import OptimizedImage from "@/components/OptimizedImage";
 import TrustBadges from "@/components/TrustBadges";
 import { CONTACT_INFO } from "@/config/contact";
 import { PriceDisplay } from "@/components/PriceDisplay";
@@ -35,6 +34,7 @@ import { countries } from "@/data/countries";
 
 const Order = () => {
   const { language, t } = useLanguage();
+  const { items, updateQty, removeItem, totalPrice, clearCart } = useCart();
 
   const [formData, setFormData] = useState({
     customerName: "",
@@ -44,16 +44,13 @@ const Order = () => {
     countryCode: "",
     city: "",
     address: "",
-    quantity: 1,
   });
   const [detectingCountry, setDetectingCountry] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // Two-step checkout: collect shipping details, then pay inline (no redirect).
   const [step, setStep] = useState<"form" | "payment">("form");
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
-  const { price: productPrice } = useProductPrice();
   const { getPriceData, selectedCurrency } = useCurrency();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -100,6 +97,10 @@ const Order = () => {
   };
 
   const validateForm = () => {
+    if (items.length === 0) {
+      setError(language === 'ar' ? 'السلة فارغة، أضف منتجاً أولاً' : 'Cart is empty, add a product first');
+      return false;
+    }
     if (!formData.customerName.trim()) {
       setError(t('order.validation.name'));
       return false;
@@ -120,10 +121,6 @@ const Order = () => {
       setError(t('order.validation.address'));
       return false;
     }
-    if (formData.quantity < 1) {
-      setError(t('order.validation.quantity'));
-      return false;
-    }
     return true;
   };
 
@@ -138,7 +135,6 @@ const Order = () => {
     setError(null);
 
     try {
-      // The server computes the authoritative amount from the DB product price.
       const { data, error: fnError } = await supabase.functions.invoke('create-payment-intent', {
         body: {
           customerName: formData.customerName,
@@ -147,7 +143,13 @@ const Order = () => {
           country: formData.country,
           city: formData.city,
           address: formData.address,
-          quantity: formData.quantity,
+          // Multi-product cart
+          cartItems: items.map(i => ({
+            productId: i.productId,
+            quantity: i.quantity,
+          })),
+          // Fallback single-product for legacy compatibility
+          quantity: items.reduce((s, i) => s + i.quantity, 0),
         },
       });
 
@@ -178,8 +180,6 @@ const Order = () => {
     }
   };
 
-  const totalAmount = productPrice * formData.quantity;
-
   const title = language === 'ar' 
     ? "اطلب سفن جرين الآن - توصيل سريع لجميع دول الخليج"
     : "Order Seven Green Now - Fast Delivery to All GCC Countries";
@@ -193,7 +193,7 @@ const Order = () => {
     "@type": "Offer",
     "url": "https://sevensgreen.com/order",
     "priceCurrency": "SAR",
-    "price": productPrice.toString(),
+    "price": totalPrice.toString(),
     "availability": "https://schema.org/InStock",
     "itemOffered": {
       "@type": "Product",
@@ -300,34 +300,49 @@ const Order = () => {
             <p className="text-gray-600 mobile-text">{t('order.subtitle')}</p>
           </div>
 
+          {/* Cart summary */}
+          {items.length === 0 ? (
+            <Card className="p-8 text-center">
+              <p className="text-muted-foreground mb-4">
+                {language === 'ar' ? 'سلتك فارغة' : 'Your cart is empty'}
+              </p>
+              <Link to="/products">
+                <Button variant="outline" className="rounded-full">
+                  {language === 'ar' ? 'تصفح المنتجات' : 'Browse Products'}
+                </Button>
+              </Link>
+            </Card>
+          ) : (
           <Card className="mobile-card shadow-medium border-border/50">
-            <CardHeader className="pb-4">
-              <CardTitle className={`mobile-subheading ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.form.title')}</CardTitle>
-              <CardDescription className={`${language === 'ar' ? 'text-right' : 'text-left'} mobile-text`}>
-                <span className="flex items-center gap-3 mt-3 p-3 bg-accent/20 rounded-lg">
-                  <OptimizedImage 
-                    src="/lovable-uploads/8d004a44-148f-471d-949f-6cc6b414bd1d.png" 
-                    alt="سيفن جرين - منتج العناية بالشعر" 
-                    className="w-16 h-16 object-cover rounded-lg shadow-sm"
-                    width={64}
-                    height={64}
-                    priority
-                  />
-                  <span className="flex-1">
-                    <span className="block font-bold text-foreground text-lg">{language === 'ar' ? 'سيفن جرين' : 'Seven Green'}</span>
-                    <span className="block font-semibold text-primary text-sm">SEVEN GREEN</span>
-                    <span className="block text-muted-foreground text-sm">{language === 'ar' ? 'منتج العناية بالشعر الطبيعي' : 'Natural Hair Care Product'}</span>
-                    <span className="flex items-center gap-1 mt-1">
-                      <span className="text-yellow-500 text-sm">★★★★★</span>
-                      <span className="text-xs text-muted-foreground">(5.0)</span>
-                    </span>
-                  </span>
-                  <span className="text-left">
-                    <span className="block text-xs text-muted-foreground mb-1">{language === 'ar' ? 'السعر' : 'Price'}</span>
-                    <span className="text-xl font-bold text-primary"><PriceDisplay {...getPriceData(productPrice)} /></span>
-                  </span>
-                </span>
-              </CardDescription>
+            <CardHeader className="pb-2">
+              <CardTitle className={`mobile-subheading ${language === 'ar' ? 'text-right' : 'text-left'}`}>
+                {language === 'ar' ? 'منتجاتك' : 'Your Items'}
+              </CardTitle>
+              {/* Cart items list */}
+              <div className="space-y-2 mt-3">
+                {items.map(item => (
+                  <div key={item.productId} className="flex items-center gap-3 p-2 bg-accent/10 rounded-lg">
+                    <img src={item.image} alt={language === 'ar' ? item.name : item.nameEn}
+                      className="w-12 h-12 object-cover rounded-lg shrink-0"
+                      onError={(e) => { e.currentTarget.src = "/images/sevengreen-logo.webp"; }} />
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold text-sm truncate">{language === 'ar' ? item.name : item.nameEn}</p>
+                      <p className="text-primary text-sm font-bold">
+                        <PriceDisplay {...getPriceData(item.price)} />
+                      </p>
+                    </div>
+                    <div className="flex items-center border border-gray-200 rounded-full overflow-hidden bg-white">
+                      <button type="button" onClick={() => updateQty(item.productId, item.quantity - 1)}
+                        className="w-7 h-7 flex items-center justify-center hover:bg-gray-100 text-sm">−</button>
+                      <span className="w-8 text-center text-sm font-bold">{item.quantity}</span>
+                      <button type="button" onClick={() => updateQty(item.productId, item.quantity + 1)}
+                        className="w-7 h-7 flex items-center justify-center hover:bg-gray-100 text-sm">+</button>
+                    </div>
+                    <button type="button" onClick={() => removeItem(item.productId)}
+                      className="text-red-400 hover:text-red-600 text-lg px-1">×</button>
+                  </div>
+                ))}
+              </div>
             </CardHeader>
             <CardContent className="p-4 sm:p-6">
               {error && (
@@ -344,7 +359,7 @@ const Order = () => {
                   <div className="border-t pt-4 bg-accent/30 -mx-4 px-4 py-4 lg:-mx-6 lg:px-6 rounded-lg">
                     <div className="flex justify-between items-center text-lg font-semibold">
                       <span className="text-primary">{t('order.total')}:</span>
-                      <PriceDisplay {...getPriceData(totalAmount)} />
+                      <PriceDisplay {...getPriceData(totalPrice)} />
                     </div>
                   </div>
                   <StripePaymentForm
@@ -469,36 +484,12 @@ const Order = () => {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="quantity" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.quantity')}</Label>
-                  <div className="flex items-center justify-center gap-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="lg"
-                      onClick={() => handleInputChange("quantity", Math.max(1, formData.quantity - 1))}
-                      disabled={formData.quantity <= 1}
-                      className="touch-target w-12 h-12 rounded-full"
-                    >
-                      -
-                    </Button>
-                    <span className="text-xl lg:text-2xl font-semibold w-12 text-center">{formData.quantity}</span>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="lg"
-                      onClick={() => handleInputChange("quantity", formData.quantity + 1)}
-                      className="touch-target w-12 h-12 rounded-full"
-                    >
-                      +
-                    </Button>
-                  </div>
-                </div>
-
                 <div className="border-t pt-4 bg-accent/30 -mx-4 px-4 py-4 lg:-mx-6 lg:px-6 rounded-lg">
-                  <div className="flex flex-col sm:flex-row justify-between items-center gap-2 text-lg lg:text-xl font-semibold">
-                    <span className="text-primary">{t('order.total')}: <PriceDisplay {...getPriceData(totalAmount)} /></span>
-                    <span className="text-muted-foreground text-sm lg:text-base">(<PriceDisplay {...getPriceData(productPrice)} /> × {formData.quantity})</span>
+                  <div className="flex justify-between items-center text-lg font-semibold">
+                    <span className="text-gray-700">{t('order.total')}:</span>
+                    <span className="text-primary text-xl font-black">
+                      <PriceDisplay {...getPriceData(totalPrice)} />
+                    </span>
                   </div>
                 </div>
 
@@ -524,6 +515,7 @@ const Order = () => {
               )}
             </CardContent>
           </Card>
+          )}
 
           {/* Trust Signals */}
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">

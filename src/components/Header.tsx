@@ -2,8 +2,9 @@ import { Link, useLocation } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
+import CartDrawer from "@/components/CartDrawer";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 
 const Header = () => {
@@ -13,7 +14,7 @@ const Header = () => {
 
   const navLinks = [
     { name: language === 'ar' ? 'الرئيسية' : 'Home', path: '/' },
-    { name: language === 'ar' ? 'المنتج' : 'Product', path: '/product' },
+    { name: language === 'ar' ? 'المنتجات' : 'Products', path: '/products' },
     { name: language === 'ar' ? 'الفوائد' : 'Benefits', path: '/benefits' },
     { name: language === 'ar' ? 'المكونات' : 'Ingredients', path: '/ingredients' },
     { name: language === 'ar' ? 'من نحن' : 'About', path: '/about' },
@@ -71,16 +72,8 @@ const Header = () => {
               <CurrencySwitcher variant="header" />
             </div>
 
-            {/* Order CTA */}
-            <Link to="/order" className="hidden sm:block">
-              <Button
-                size="sm"
-                className="bg-primary hover:bg-primary/90 text-white rounded-full px-4 gap-1.5 shadow-sm"
-              >
-                <ShoppingCart className="w-3.5 h-3.5" />
-                {language === 'ar' ? 'اطلب الآن' : 'Order Now'}
-              </Button>
-            </Link>
+            {/* Cart */}
+            <CartDrawer />
 
             {/* Mobile menu toggle */}
             <button
