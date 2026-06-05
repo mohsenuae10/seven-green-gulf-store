@@ -39,11 +39,12 @@ const CartDrawer = () => {
         />
       )}
 
-      {/* Drawer */}
+      {/* Drawer — لا يُضاف للـ DOM إطلاقاً قبل الـ mount */}
+      {mounted && (
       <div
         className={`
           fixed top-0 z-50 h-full w-full max-w-sm bg-white shadow-2xl
-          flex flex-col duration-300 ${mounted ? 'transition-transform' : ''}
+          flex flex-col transition-transform duration-300
           ${language === 'ar' ? 'left-0' : 'right-0'}
           ${open
             ? 'translate-x-0'
@@ -154,6 +155,7 @@ const CartDrawer = () => {
           </div>
         )}
       </div>
+      )}
     </>
   );
 };
