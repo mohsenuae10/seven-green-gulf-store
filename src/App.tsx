@@ -2,14 +2,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LanguageProvider from "./providers/LanguageProvider";
 import { CartProvider } from "@/contexts/CartContext";
 import { ChatBot } from "@/components/ChatBot";
 import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Order from "./pages/Order";
-import Product from "./pages/Product";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
@@ -47,7 +46,6 @@ const App = () => (
             <Route path="/compare" element={<Compare />} />
             <Route path="/products" element={<Products />} />
             <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/product" element={<Navigate to="/products" replace />} />
             <Route path="/order" element={<Order />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/privacy" element={<Privacy />} />
