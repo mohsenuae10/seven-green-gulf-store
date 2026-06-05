@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import LangLink from "@/components/LangLink";
 import { ShoppingCart, Eye, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -48,7 +48,7 @@ const ProductCard = ({ id, name, nameEn, price, image, description, stockQuantit
   return (
     <div className="group relative bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
       {/* Image */}
-      <Link to={`/product/${id}`} className="block relative overflow-hidden bg-gray-50">
+      <LangLink to={`/product/${id}`} className="block relative overflow-hidden bg-gray-50">
         <div className="aspect-square">
           <img
             src={image || "/images/sevengreen-logo.webp"}
@@ -67,16 +67,16 @@ const ProductCard = ({ id, name, nameEn, price, image, description, stockQuantit
         )}
         {/* Quick view overlay */}
         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-          <Link
+          <LangLink
             to={`/product/${id}`}
             className="bg-white text-primary rounded-full px-4 py-1.5 text-sm font-medium flex items-center gap-1.5 shadow"
             onClick={e => e.stopPropagation()}
           >
             <Eye className="w-3.5 h-3.5" />
             {language === 'ar' ? 'عرض' : 'View'}
-          </Link>
+          </LangLink>
         </div>
-      </Link>
+      </LangLink>
 
       {/* Content */}
       <div className="flex flex-col flex-1 p-4 gap-3">
@@ -89,11 +89,11 @@ const ProductCard = ({ id, name, nameEn, price, image, description, stockQuantit
         </div>
 
         {/* Name */}
-        <Link to={`/product/${id}`}>
+        <LangLink to={`/product/${id}`}>
           <h3 className="font-bold text-gray-900 leading-snug hover:text-primary transition-colors line-clamp-2">
             {displayName}
           </h3>
-        </Link>
+        </LangLink>
 
         {/* Description */}
         {description && (

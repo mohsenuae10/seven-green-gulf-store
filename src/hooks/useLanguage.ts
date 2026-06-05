@@ -2,6 +2,11 @@ import { useState, useEffect, createContext, useContext } from 'react';
 
 export type Language = 'ar' | 'en';
 
+// Make translations available globally for LanguageProvider
+if (typeof window !== 'undefined') {
+  (window as any).__SG_TRANSLATIONS_INIT__ = true;
+}
+
 interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
@@ -10,7 +15,7 @@ interface LanguageContextType {
 
 export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-const translations = {
+export const translations: Record<Language, Record<string, string>> = {
   ar: {
     // Header
     "currency.switcher": "تبديل العملة",
@@ -412,6 +417,18 @@ export const useLanguage = () => {
     throw new Error('useLanguage must be used within a LanguageProvider');
   }
   return context;
+};
+
+/** Returns a function that prefixes paths with /en when in English mode */
+export const useLangPath = () => {
+  const { language } = useLanguage();
+  return (path: string): string => {
+    if (language !== 'en') return path;
+    // /en + /path, but /en alone for root
+    if (path === '/') return '/en';
+    if (path.startsWith('/en')) return path; // already prefixed
+    return `/en${path}`;
+  };
 };
 
 export const useLanguageHook = () => {

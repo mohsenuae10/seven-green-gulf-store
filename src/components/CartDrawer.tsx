@@ -4,7 +4,7 @@ import { useCurrency } from "@/hooks/useCurrency";
 import { PriceDisplay } from "@/components/PriceDisplay";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
-import { Link } from "react-router-dom";
+import LangLink from "@/components/LangLink";
 import { useState, useEffect } from "react";
 
 const CartDrawer = () => {
@@ -81,11 +81,11 @@ const CartDrawer = () => {
               <p className="font-medium">
                 {language === 'ar' ? 'السلة فارغة' : 'Your cart is empty'}
               </p>
-              <Link to="/products" onClick={() => setOpen(false)}>
+              <LangLink to="/products" onClick={() => setOpen(false)}>
                 <Button variant="outline" size="sm" className="rounded-full mt-2">
                   {language === 'ar' ? 'تصفح المنتجات' : 'Browse Products'}
                 </Button>
-              </Link>
+              </LangLink>
             </div>
           ) : (
             items.map(item => (
@@ -143,15 +143,15 @@ const CartDrawer = () => {
                 <PriceDisplay {...getPriceData(totalPrice)} />
               </span>
             </div>
-            <Link to="/order" onClick={() => setOpen(false)} className="block">
+            <LangLink to="/order" onClick={() => setOpen(false)} className="block">
               <Button className="w-full rounded-full font-bold gap-2">
                 <ShoppingCart className="w-4 h-4" />
                 {language === 'ar' ? 'إتمام الطلب' : 'Checkout'}
               </Button>
-            </Link>
-            <Link to="/products" onClick={() => setOpen(false)} className="block text-center text-sm text-gray-500 hover:text-primary">
+            </LangLink>
+            <LangLink to="/products" onClick={() => setOpen(false)} className="block text-center text-sm text-gray-500 hover:text-primary">
               {language === 'ar' ? '← متابعة التسوق' : '← Continue Shopping'}
-            </Link>
+            </LangLink>
           </div>
         )}
       </div>

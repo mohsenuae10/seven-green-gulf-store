@@ -67,6 +67,46 @@ const FAQPage = () => {
             ? "نعم، نقدم ضمان استرجاع المبلغ خلال 30 يوم إذا لم تكن راضياً عن النتائج."
             : "Yes, we offer a 30-day money-back guarantee if you are not satisfied with the results."
         }
+      },
+      {
+        "@type": "Question",
+        "name": language === 'ar' ? "هل سفن جرين شامبو بار أم سائل؟" : "Is Seven Green a shampoo bar or liquid shampoo?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": language === 'ar'
+            ? "سفن جرين صابون شامبو بار صلب (Solid Shampoo Bar) على شكل مثلث أخضر. الشكل الصلب يجعله أكثر تركيزاً وفعالية من الشامبو السائل، ويدوم أطول ويتميز بعدم احتوائه على ماء."
+            : "Seven Green is a solid shampoo bar in a green triangle shape. The solid bar form makes it more concentrated and effective than liquid shampoo, lasts longer, and contains no water fillers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": language === 'ar' ? "هل سفن جرين مثبط DHT؟" : "Is Seven Green a DHT blocker?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": language === 'ar'
+            ? "نعم، تحتوي مكونات سفن جرين الطبيعية (السرو والأوسمان وعشبة الـ Polygonum) على خصائص طبيعية لتثبيط DHT، وهو الهرمون المسؤول عن تساقط الشعر الوراثي."
+            : "Yes, Seven Green's natural ingredients (cypress, usman grass, and Polygonum) contain natural DHT-blocking properties. DHT is the hormone responsible for hereditary hair loss."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": language === 'ar' ? "ما هي مكونات سفن جرين الصينية؟" : "What are the Chinese herbal ingredients in Seven Green?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": language === 'ar'
+            ? "يحتوي سفن جرين على 7 أعشاب صينية طبيعية: السرو الشرقي (Cepress Orientalis)، الأوسمان (Usman Grass)، الجينسينج، البوليجونوم (Polygonum)، شاي الكاميليا، إكليل الجبل، والقراص. جميعها أعشاب معروفة علمياً بفعاليتها في تقوية الشعر."
+            : "Seven Green contains 7 natural Chinese herbs: Eastern Cypress (Cepress Orientalis), Usman Grass, Ginseng, Polygonum, Camellia Tea, Rosemary, and Nettle. All are scientifically recognized for their hair-strengthening effectiveness."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": language === 'ar' ? "هل سفن جرين خالي من الكبريتات والبارابين؟" : "Is Seven Green sulfate-free and paraben-free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": language === 'ar'
+            ? "نعم، سفن جرين خالٍ تماماً من الكبريتات (Sulfate-Free)، البارابين، السيليكون، والأصباغ الصناعية. تركيبة نباتية طبيعية 100% آمنة لجميع أنواع الشعر."
+            : "Yes, Seven Green is completely Sulfate-Free, Paraben-Free, Silicone-Free, and Artificial Dye-Free. 100% plant-based natural formula, safe for all hair types."
+        }
       }
     ]
   };

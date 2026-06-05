@@ -1,5 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
-import { useLanguage } from "@/hooks/useLanguage";
+import { useLocation } from "react-router-dom";
+import { useLanguage, useLangPath } from "@/hooks/useLanguage";
+import LangLink from "@/components/LangLink";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import CurrencySwitcher from "@/components/CurrencySwitcher";
 import CartDrawer from "@/components/CartDrawer";
@@ -9,6 +10,7 @@ import { useState } from "react";
 
 const Header = () => {
   const { language } = useLanguage();
+  const langPath = useLangPath();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -20,7 +22,7 @@ const Header = () => {
     { name: language === 'ar' ? 'من نحن' : 'About', path: '/about' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => location.pathname === langPath(path);
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
@@ -28,7 +30,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-20">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 shrink-0 group">
+          <LangLink to="/" className="flex items-center gap-3 shrink-0 group">
             <img
               src="/images/sevengreen-logo.webp"
               alt="Seven Green"
@@ -42,12 +44,12 @@ const Header = () => {
                 七绿 · Qī Lǜ
               </span>
             </div>
-          </Link>
+          </LangLink>
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
-              <Link
+              <LangLink
                 key={link.path}
                 to={link.path}
                 className={`
@@ -59,7 +61,7 @@ const Header = () => {
                 `}
               >
                 {link.name}
-              </Link>
+              </LangLink>
             ))}
           </nav>
 
@@ -93,7 +95,7 @@ const Header = () => {
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-gray-100 py-3 space-y-1">
             {navLinks.map((link) => (
-              <Link
+              <LangLink
                 key={link.path}
                 to={link.path}
                 onClick={() => setMobileMenuOpen(false)}
@@ -106,17 +108,17 @@ const Header = () => {
                 `}
               >
                 {link.name}
-              </Link>
+              </LangLink>
             ))}
             {/* Mobile: Language + Currency + Order */}
             <div className="flex items-center gap-2 px-4 pt-2 flex-wrap">
               <LanguageSwitcher />
               <CurrencySwitcher variant="header" />
-              <Link to="/order" onClick={() => setMobileMenuOpen(false)}>
+              <LangLink to="/order" onClick={() => setMobileMenuOpen(false)}>
                 <Button size="sm" className="bg-primary text-white rounded-full px-4">
                   {language === 'ar' ? 'اطلب الآن' : 'Order Now'}
                 </Button>
-              </Link>
+              </LangLink>
             </div>
           </div>
         )}

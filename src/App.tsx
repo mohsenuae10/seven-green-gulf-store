@@ -26,39 +26,59 @@ import ProductDetail from "./pages/ProductDetail";
 
 const queryClient = new QueryClient();
 
+// All page routes — shared between Arabic and English
+const pageRoutes = [
+  { path: "",        element: <Index /> },
+  { path: "about",   element: <About /> },
+  { path: "benefits",    element: <Benefits /> },
+  { path: "ingredients", element: <Ingredients /> },
+  { path: "how-to-use",  element: <HowToUse /> },
+  { path: "reviews",     element: <Reviews /> },
+  { path: "faq",         element: <FAQPage /> },
+  { path: "compare",     element: <Compare /> },
+  { path: "products",    element: <Products /> },
+  { path: "product/:id", element: <ProductDetail /> },
+  { path: "order",           element: <Order /> },
+  { path: "payment-success", element: <PaymentSuccess /> },
+  { path: "privacy",         element: <Privacy /> },
+];
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <CartProvider>
+    <CartProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/benefits" element={<Benefits />} />
-            <Route path="/ingredients" element={<Ingredients />} />
-            <Route path="/how-to-use" element={<HowToUse />} />
-            <Route path="/reviews" element={<Reviews />} />
-            <Route path="/faq" element={<FAQPage />} />
-            <Route path="/compare" element={<Compare />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/order" element={<Order />} />
-            <Route path="/payment-success" element={<PaymentSuccess />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/admin" element={<Admin />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <ChatBot />
+          {/* LanguageProvider is INSIDE BrowserRouter so it can read URL */}
+          <LanguageProvider>
+            <ScrollToTop />
+            <Routes>
+              {/* ── Arabic routes (default, no prefix) ── */}
+              <Route path="/" element={<Index />} />
+              {pageRoutes.filter(r => r.path).map(r => (
+                <Route key={r.path} path={`/${r.path}`} element={r.element} />
+              ))}
+
+              {/* ── English routes (/en/ prefix) ── */}
+              <Route path="/en" element={<Index />} />
+              <Route path="/en/" element={<Index />} />
+              {pageRoutes.filter(r => r.path).map(r => (
+                <Route key={`en-${r.path}`} path={`/en/${r.path}`} element={r.element} />
+              ))}
+
+              {/* ── Non-localized routes ── */}
+              <Route path="/auth"  element={<Auth />} />
+              <Route path="/admin" element={<Admin />} />
+
+              {/* ── 404 ── */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <ChatBot />
+          </LanguageProvider>
         </BrowserRouter>
       </TooltipProvider>
-      </CartProvider>
-    </LanguageProvider>
+    </CartProvider>
   </QueryClientProvider>
 );
 

@@ -66,17 +66,25 @@ const Products = () => {
     load();
   }, []);
 
-  const title = language === 'ar' ? "منتجات سفن جرين | عناية طبيعية بالشعر" : "Seven Green Products | Natural Hair Care";
+  const title = language === 'ar'
+    ? "سفن جرين 🌿 صابونة وشامبو بار عشبي | علاج تساقط الشعر الطبيعي"
+    : "Seven Green | Herbal Shampoo Bar | Natural Hair Loss Treatment - DHT Blocker";
   const description = language === 'ar'
-    ? "تصفح جميع منتجات سفن جرين الطبيعية لعناية الشعر. صابون وشامبو عشبي طبيعي 100% بخلاصة السرو والأوسمان."
-    : "Browse all Seven Green natural hair care products. 100% natural herbal soap and shampoo with cypress and osman extracts.";
+    ? "متجر سفن جرين الرسمي — صابون شامبو بار عشبي طبيعي 100% بخلاصة السرو والأوسمان والجينسينج. مثبط DHT طبيعي لعلاج تساقط الشعر وتكثيفه. خالي من الكبريتات."
+    : "Seven Green Official Store — 100% natural herbal shampoo bar with cypress, usman grass and ginseng. Natural DHT blocker for hair loss treatment. Sulfate-free, for all hair types.";
 
   return (
     <>
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
+        <meta name="keywords" content={language === 'ar'
+          ? "سفن جرين, صابونة سفن جرين, شامبو سفن جرين, صابون شامبو بار, شامبو بار للشعر, صابونة الأعشاب الصينية, مثبط DHT, علاج تساقط الشعر, الصابونة المثلثة, سيفن جرين, سيفن جرين نيتشر, سفن قرين, تقوية جذور الشعر, العناية بفروة الرأس, تكثيف الشعر, صابون عشبي, السرو والأوسمان, خالي من الكبريتات"
+          : "seven green, seven green shampoo bar, seven green soap, nature seven green, sevengreen, nature triangle shampoo bar, DHT blocker shampoo, polygonum shampoo, usman grass shampoo, Chinese herbal hair soap, solid shampoo bar, sulfate-free, hair loss treatment, hair growth soap, scalp care, green triangle soap"
+        } />
         <link rel="canonical" href="https://sevensgreen.com/products" />
+        <link rel="alternate" hreflang="ar" href="https://sevensgreen.com/products" />
+        <link rel="alternate" hreflang="en" href="https://sevensgreen.com/en/products" />
       </Helmet>
 
       <div className="min-h-screen bg-gray-50">

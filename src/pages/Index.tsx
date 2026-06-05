@@ -66,13 +66,18 @@ const Index = () => {
       <Helmet>
         <title>
           {language === 'ar'
-            ? 'سفن جرين | منتجات طبيعية لعناية الشعر'
-            : 'Seven Green | Natural Hair Care Products'}
+            ? 'سفن جرين 🌿 صابون شامبو بار عشبي | علاج تساقط الشعر | مثبط DHT طبيعي'
+            : 'Seven Green 🌿 Herbal Shampoo Bar | Hair Loss Treatment | Natural DHT Blocker'}
         </title>
         <meta name="description" content={
           language === 'ar'
-            ? 'سفن جرين — منتجات طبيعية 100% لعناية الشعر. صابونة وشامبو عشبي من السرو والأوسمان لعلاج تساقط الشعر. شحن مجاني.'
-            : 'Seven Green — 100% natural hair care products. Herbal soap and shampoo from cypress and osman for hair loss treatment. Free worldwide shipping.'
+            ? 'سفن جرين — صابون شامبو بار عشبي طبيعي 100% بالسرو والأوسمان والجينسينج. مثبط DHT طبيعي فعّال لعلاج تساقط الشعر وتكثيفه وتطويله. خالي من الكبريتات. للرجال والنساء. نتائج خلال 4 أسابيع.'
+            : 'Seven Green — 100% natural herbal shampoo bar with cypress, usman grass and ginseng. Natural DHT blocker for hair loss treatment, thickening and growth. Sulfate-free. For men and women. Results in 4 weeks.'
+        } />
+        <meta name="keywords" content={
+          language === 'ar'
+            ? 'سفن جرين, صابون شامبو بار, شامبو بار للشعر, مثبط DHT, صابونة الأعشاب الصينية, علاج تساقط الشعر, الصابونة المثلثة, سيفن جرين, سيفن جرين نيتشر, سفن قرين, صابونة سفن جرين, شامبو سفن جرين, تقوية جذور الشعر, العناية بفروة الرأس, تكثيف الشعر, السرو والأوسمان, خالي من الكبريتات, جينسينج للشعر'
+            : 'seven green, seven green shampoo bar, seven green soap, nature seven green, sevengreen, nature triangle shampoo bar, DHT blocker, polygonum shampoo, usman grass shampoo, Chinese herbal hair soap, solid shampoo, sulfate-free, hair loss treatment, scalp care, green triangle soap, ginseng hair soap'
         } />
         <link rel="canonical" href="https://sevensgreen.com/" />
         <meta property="og:type"  content="website" />
