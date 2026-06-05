@@ -81,8 +81,9 @@ export function ProductsManagement() {
 
   // Product content stored in site_content table — independent per product
   const [content, setContent] = useState({
-    nameEn:       "" as string,
-    descriptionEn:"" as string,
+    nameEn:        "" as string,
+    descriptionEn: "" as string,
+    contentImages: [] as string[],
     features:    ["", "", "", "", "", ""] as string[],
     ingredients: [
       { name: "", benefit: "" }, { name: "", benefit: "" },
