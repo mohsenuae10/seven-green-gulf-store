@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LanguageProvider from "./providers/LanguageProvider";
 import { CartProvider } from "@/contexts/CartContext";
-import { ChatBot } from "@/components/ChatBot";
+// import { ChatBot } from "@/components/ChatBot"; // hidden
 import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Order from "./pages/Order";
@@ -74,7 +74,7 @@ const App = () => (
               {/* ── 404 ── */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <ChatBot />
+            {/* <ChatBot /> */}
           </LanguageProvider>
         </BrowserRouter>
       </TooltipProvider>

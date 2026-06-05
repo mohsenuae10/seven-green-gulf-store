@@ -20,7 +20,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useCurrency } from '@/hooks/useCurrency';
 import { PriceDisplay } from '@/components/PriceDisplay';
 import { Button } from '@/components/ui/button';
-import { ShoppingCart, Zap } from 'lucide-react';
+import { ShoppingCart, Zap, Plus, Minus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -49,6 +49,7 @@ const ProductDetail = () => {
   const { getPriceData } = useCurrency();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [qty, setQty] = useState(1);
 
   const [product, setProduct] = useState<ProductData | null>(null);
   const [productImages, setProductImages] = useState<ProductImage[]>([]);
@@ -343,32 +344,37 @@ const ProductDetail = () => {
 
       {/* ── Sticky Bottom CTA Bar ── */}
       {product && (
-        <div className={`
-          fixed bottom-0 left-0 right-0 z-50
-          bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-2xl
-          safe-bottom
-        `}>
-          <div className="container mx-auto px-4 py-3 max-w-2xl">
-            <div className={`flex items-center gap-3 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/97 backdrop-blur-md border-t border-gray-100 shadow-2xl">
+          <div className="container mx-auto px-3 py-2.5 max-w-2xl">
+            <div className={`flex items-center gap-2 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
 
-              {/* Price */}
-              <div className="shrink-0">
-                <p className="text-[10px] text-gray-400 leading-none mb-0.5">
-                  {language === 'ar' ? 'السعر' : 'Price'}
-                </p>
-                <p className="text-lg font-black text-primary leading-none">
-                  <PriceDisplay {...getPriceData(product.price)} />
-                </p>
+              {/* Qty control */}
+              <div className="flex items-center border border-gray-200 rounded-full overflow-hidden bg-gray-50 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setQty(q => Math.max(1, q - 1))}
+                  className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-600"
+                >
+                  <Minus className="w-3.5 h-3.5" />
+                </button>
+                <span className="w-8 text-center text-sm font-bold text-gray-900">{qty}</span>
+                <button
+                  type="button"
+                  onClick={() => setQty(q => q + 1)}
+                  className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 transition-colors text-gray-600"
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
               </div>
 
               {/* Add to Cart */}
               <Button
                 variant="outline"
-                className="flex-1 gap-2 rounded-full border-primary text-primary hover:bg-primary hover:text-white transition-all"
+                className="flex-1 h-10 gap-1.5 rounded-full border-primary text-primary hover:bg-primary hover:text-white transition-all text-sm font-semibold"
                 onClick={() => {
                   const cartItem = items.find(i => i.productId === product.id);
                   if (cartItem) {
-                    updateQty(product.id, cartItem.quantity + 1);
+                    updateQty(product.id, cartItem.quantity + qty);
                   } else {
                     addItem({
                       productId: product.id,
@@ -376,32 +382,34 @@ const ProductDetail = () => {
                       nameEn: productContent.nameEn || productName,
                       price: product.price,
                       image: primaryImage,
-                    });
+                    }, qty);
                   }
                   toast({
-                    title: language === 'ar' ? 'تمت الإضافة ✓' : 'Added to cart ✓',
+                    title: language === 'ar' ? `تمت الإضافة ✓ (${qty})` : `Added to cart ✓ (${qty})`,
                     description: productName,
                   });
                 }}
                 disabled={!!(product.stock_quantity !== null && product.stock_quantity <= 0)}
               >
                 <ShoppingCart className="w-4 h-4" />
-                {language === 'ar' ? 'أضف للسلة' : 'Add to Cart'}
+                {language === 'ar' ? 'السلة' : 'Cart'}
               </Button>
 
               {/* Buy Now */}
               <Button
-                className="flex-1 gap-2 rounded-full bg-primary hover:bg-primary/90 text-white font-bold shadow-md"
+                className="flex-1 h-10 gap-1.5 rounded-full bg-primary hover:bg-primary/90 text-white font-bold shadow-sm text-sm"
                 onClick={() => {
                   const cartItem = items.find(i => i.productId === product.id);
-                  if (!cartItem) {
+                  if (cartItem) {
+                    updateQty(product.id, cartItem.quantity + qty);
+                  } else {
                     addItem({
                       productId: product.id,
                       name: productName,
                       nameEn: productContent.nameEn || productName,
                       price: product.price,
                       image: primaryImage,
-                    });
+                    }, qty);
                   }
                   navigate(language === 'ar' ? '/ar/order' : '/order');
                 }}
@@ -410,6 +418,13 @@ const ProductDetail = () => {
                 <Zap className="w-4 h-4" />
                 {language === 'ar' ? 'اشترِ الآن' : 'Buy Now'}
               </Button>
+
+              {/* Price pill */}
+              <div className="shrink-0 bg-primary/8 rounded-full px-3 py-1.5 text-center">
+                <p className="text-xs font-black text-primary leading-none">
+                  <PriceDisplay {...getPriceData(product.price * qty)} />
+                </p>
+              </div>
             </div>
           </div>
         </div>
