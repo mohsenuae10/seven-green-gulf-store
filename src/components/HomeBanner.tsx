@@ -75,14 +75,6 @@ const HomeBanner = () => {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center text-center text-white px-4 py-24 md:py-32">
-        {/* Logo */}
-        <img
-          src="/images/sevengreen-logo.webp"
-          alt="Seven Green"
-          className="h-20 w-auto object-contain mb-6 drop-shadow-lg"
-          onError={e => { e.currentTarget.style.display = 'none'; }}
-        />
-
         {/* Title */}
         {title && (
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-black mb-4 drop-shadow-lg leading-tight">
