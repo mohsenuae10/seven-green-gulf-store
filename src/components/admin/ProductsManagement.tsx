@@ -49,7 +49,8 @@ interface StagedImage {
 export function ProductsManagement() {
   const { formatPrice, getCurrentCurrency } = useCurrency();
   const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef  = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
   // List
   const [products, setProducts] = useState<Product[]>([]);
@@ -719,33 +720,45 @@ export function ProductsManagement() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Drop zone */}
-                <div
-                  onDrop={handleDrop}
-                  onDragOver={e => e.preventDefault()}
-                  className="border-2 border-dashed border-gray-300 hover:border-primary/50 rounded-xl p-6 text-center transition-colors cursor-pointer"
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                  <p className="text-sm text-gray-600 font-medium">
-                    {uploading ? "جاري الرفع..." : "اسحب الصور هنا أو اضغط للاختيار"}
-                  </p>
-                  <p className="text-xs text-gray-400 mt-1">PNG، JPG، WEBP — أكثر من صورة مسموح</p>
-                  {uploading && <Loader2 className="w-5 h-5 animate-spin mx-auto mt-2 text-primary" />}
+                {/* Drop zone — صور وفيديو */}
+                <div className="grid grid-cols-2 gap-3">
+                  {/* صور */}
+                  <div
+                    onDrop={handleDrop} onDragOver={e => e.preventDefault()}
+                    className="border-2 border-dashed border-gray-300 hover:border-primary/50 rounded-xl p-4 text-center transition-colors cursor-pointer"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload className="w-6 h-6 mx-auto mb-1 text-gray-400" />
+                    <p className="text-xs text-gray-600 font-medium">
+                      {uploading ? "جاري الرفع..." : "رفع صور"}
+                    </p>
+                    <p className="text-[10px] text-gray-400 mt-0.5">PNG، JPG، WEBP</p>
+                    {uploading && <Loader2 className="w-4 h-4 animate-spin mx-auto mt-1 text-primary" />}
+                  </div>
+                  {/* فيديو */}
+                  <div
+                    className="border-2 border-dashed border-purple-200 hover:border-purple-400 rounded-xl p-4 text-center transition-colors cursor-pointer"
+                    onClick={() => videoInputRef.current?.click()}
+                  >
+                    <Star className="w-6 h-6 mx-auto mb-1 text-purple-400" />
+                    <p className="text-xs text-gray-600 font-medium">رفع فيديو</p>
+                    <p className="text-[10px] text-gray-400 mt-0.5">MP4، WebM، MOV</p>
+                  </div>
                 </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  className="hidden"
+                <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden"
                   onChange={e => {
                     const files = Array.from(e.target.files || []);
                     if (editingProduct) files.forEach(uploadImage);
                     else files.forEach(stageImage);
                     e.target.value = "";
-                  }}
-                />
+                  }} />
+                <input ref={videoInputRef} type="file" accept="video/*" multiple className="hidden"
+                  onChange={e => {
+                    const files = Array.from(e.target.files || []);
+                    if (editingProduct) files.forEach(uploadImage);
+                    else files.forEach(stageImage);
+                    e.target.value = "";
+                  }} />
 
                 {/* Staged images (new product, not yet uploaded) */}
                 {mode === "create" && stagedImages.length > 0 && (
@@ -779,12 +792,15 @@ export function ProductsManagement() {
                     <p className="text-center text-sm text-muted-foreground py-4">لا توجد صور بعد</p>
                   ) : (
                     <div className="grid grid-cols-3 gap-2">
-                      {images.map(img => (
+                      {images.map(img => {
+                        const isVid = /\.(mp4|webm|mov|ogg)(\?|$)/i.test(img.image_url);
+                        return (
                         <div key={img.id} className="relative group rounded-lg overflow-hidden aspect-square bg-gray-100">
-                          <img
-                            src={img.image_url} alt={img.alt_text || ""}
-                            className="w-full h-full object-cover"
-                          />
+                          {isVid ? (
+                            <video src={img.image_url} muted className="w-full h-full object-cover" />
+                          ) : (
+                            <img src={img.image_url} alt={img.alt_text || ""} className="w-full h-full object-cover" />
+                          )}
                           {img.is_primary && (
                             <span className="absolute top-1 right-1 bg-yellow-500 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold">رئيسية</span>
                           )}
@@ -810,7 +826,7 @@ export function ProductsManagement() {
                             </button>
                           </div>
                         </div>
-                      ))}
+                      );})}
                     </div>
                   )
                 )}

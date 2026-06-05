@@ -5,11 +5,12 @@ import Header from "@/components/Header";
 import MobileNav from "@/components/MobileNav";
 import Footer from "@/components/Footer";
 import HomeBanner from "@/components/HomeBanner";
+import BottomBanner from "@/components/BottomBanner";
 import ProductCard from "@/components/ProductCard";
-import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
 import { supabase } from "@/integrations/supabase/client";
 import { Shield, Truck, RefreshCw, Leaf, ChevronRight, ChevronLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ProductWithImage {
   id: string;
@@ -186,35 +187,8 @@ const Index = () => {
             </div>
           </section>
 
-          {/* ── 4. Bottom promotional strip ── */}
-          <section className="py-16 bg-gradient-to-r from-primary via-green-600 to-green-700 text-white relative overflow-hidden">
-            {/* Decorative circles */}
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full" />
-            <div className="absolute -bottom-10 -left-10 w-56 h-56 bg-white/5 rounded-full" />
-
-            <div className="container mx-auto px-4 text-center relative z-10">
-              <p className="text-sm font-semibold tracking-widest uppercase text-white/70 mb-3">
-                {language === 'ar' ? 'عرض حصري' : 'Exclusive Offer'}
-              </p>
-              <h2 className="text-2xl md:text-4xl font-black mb-3">
-                🌿 {language === 'ar' ? 'شحن مجاني لجميع الدول' : 'Free Worldwide Shipping'}
-              </h2>
-              <p className="text-white/85 text-base md:text-lg mb-8 max-w-xl mx-auto">
-                {language === 'ar'
-                  ? 'اطلب الآن واستلم طلبك مع ضمان الجودة لمدة 30 يوم'
-                  : 'Order now and receive with 30-day quality guarantee'}
-              </p>
-              <Link to="/products">
-                <Button
-                  size="lg"
-                  className="bg-white text-primary hover:bg-white/90 font-bold rounded-full px-10 shadow-lg text-base gap-2"
-                >
-                  {language === 'ar' ? 'تسوق الآن' : 'Shop Now'}
-                  <ChevronIcon className="w-4 h-4" />
-                </Button>
-              </Link>
-            </div>
-          </section>
+          {/* ── 4. Bottom Banner (from admin) ── */}
+          <BottomBanner />
 
         </main>
 

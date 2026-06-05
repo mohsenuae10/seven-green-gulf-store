@@ -8,6 +8,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface BannerData {
   image: string;
+  videoUrl?: string;
   titleAr: string;
   titleEn: string;
   subtitleAr: string;
@@ -47,8 +48,15 @@ const HomeBanner = () => {
 
   return (
     <section className="relative w-full overflow-hidden" style={{ minHeight: "420px" }}>
-      {/* Background */}
-      {banner?.image ? (
+      {/* Background — فيديو أو صورة */}
+      {banner?.videoUrl ? (
+        <video
+          autoPlay muted loop playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src={banner.videoUrl} />
+        </video>
+      ) : banner?.image ? (
         <img
           src={banner.image}
           alt={title || "Seven Green"}
