@@ -224,8 +224,8 @@ const About = () => {
               </h2>
               <p className="text-muted-foreground leading-relaxed">
                 {language === 'ar'
-                  ? 'أن نكون العلامة التجارية الأولى في منطقة الخليج العربي للعناية بالشعر الطبيعي، ونساهم في تحسين جودة حياة ملايين النساء من خلال منتجات طبيعية آمنة وفعالة.'
-                  : 'To be the first brand in the Gulf region for natural hair care, and contribute to improving the quality of life for millions of women through safe and effective natural products.'}
+                  ? 'أن نكون العلامة التجارية الأولى في العالم العربي للعناية بالشعر الطبيعي، ونساهم في تحسين جودة حياة ملايين النساء من خلال منتجات طبيعية آمنة وفعالة.'
+                  : 'To be the first brand in the Arab world for natural hair care, and contribute to improving the quality of life for millions of women through safe and effective natural products.'}
               </p>
             </Card>
 

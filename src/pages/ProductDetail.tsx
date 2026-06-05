@@ -232,7 +232,7 @@ const ProductDetail = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 { icon: Shield, ar: 'منتج طبيعي 100%', en: '100% Natural Product' },
-                { icon: Truck, ar: 'شحن مجاني للخليج', en: 'Free GCC Shipping' },
+                { icon: Truck, ar: 'شحن مجاني', en: 'Free Shipping' },
                 { icon: Lock, ar: 'دفع آمن ومشفر', en: 'Secure Payment' },
                 { icon: RefreshCw, ar: 'ضمان 30 يوم', en: '30-Day Guarantee' },
               ].map((b, i) => (

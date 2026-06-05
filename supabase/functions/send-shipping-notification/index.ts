@@ -81,9 +81,6 @@ const handler = async (req: Request): Promise<Response> => {
 
               <p>سيصل طلبك خلال 3-7 أيام عمل. في حال وجود أي استفسار، لا تتردد في التواصل معنا.</p>
               
-              <div style="text-align: center;">
-                <a href="https://wa.me/971508824227" class="btn">تواصل معنا عبر واتساب</a>
-              </div>
             </div>
             
             <div class="footer">

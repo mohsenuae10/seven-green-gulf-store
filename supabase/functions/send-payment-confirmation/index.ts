@@ -85,11 +85,7 @@ const handler = async (req: Request): Promise<Response> => {
 
               <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin: 20px 0;">
                 <h4 style="color: #92400e; margin-top: 0;">ملاحظة هامة:</h4>
-                <p style="color: #92400e; margin-bottom: 0;">في حال وجود أي استفسار حول طلبك، لا تتردد في التواصل معنا على واتساب.</p>
-              </div>
-              
-              <div style="text-align: center;">
-                <a href="https://wa.me/971508824227" class="btn">تواصل معنا عبر واتساب</a>
+                <p style="color: #92400e; margin-bottom: 0;">في حال وجود أي استفسار حول طلبك، يرجى التواصل معنا عبر البريد الإلكتروني.</p>
               </div>
             </div>
             

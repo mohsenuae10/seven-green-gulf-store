@@ -56,7 +56,7 @@ const Index = () => {
   const trustBadges = [
     { icon: Leaf,      ar: "طبيعي 100%",       en: "100% Natural" },
     { icon: Shield,    ar: "دفع آمن",            en: "Secure Payment" },
-    { icon: Truck,     ar: "شحن مجاني للخليج",  en: "Free GCC Shipping" },
+    { icon: Truck,     ar: "شحن مجاني",  en: "Free Shipping" },
     { icon: RefreshCw, ar: "ضمان 30 يوم",       en: "30-Day Guarantee" },
   ];
 
@@ -70,8 +70,8 @@ const Index = () => {
         </title>
         <meta name="description" content={
           language === 'ar'
-            ? 'سفن جرين — منتجات طبيعية 100% لعناية الشعر. صابونة وشامبو عشبي من السرو والأوسمان لعلاج تساقط الشعر. شحن مجاني لدول الخليج.'
-            : 'Seven Green — 100% natural hair care products. Herbal soap and shampoo from cypress and osman for hair loss treatment. Free shipping to GCC countries.'
+            ? 'سفن جرين — منتجات طبيعية 100% لعناية الشعر. صابونة وشامبو عشبي من السرو والأوسمان لعلاج تساقط الشعر. شحن مجاني.'
+            : 'Seven Green — 100% natural hair care products. Herbal soap and shampoo from cypress and osman for hair loss treatment. Free worldwide shipping.'
         } />
         <link rel="canonical" href="https://sevensgreen.com/" />
         <meta property="og:type"  content="website" />
@@ -197,12 +197,12 @@ const Index = () => {
                 {language === 'ar' ? 'عرض حصري' : 'Exclusive Offer'}
               </p>
               <h2 className="text-2xl md:text-4xl font-black mb-3">
-                🌿 {language === 'ar' ? 'شحن مجاني لجميع دول الخليج' : 'Free Shipping to All GCC Countries'}
+                🌿 {language === 'ar' ? 'شحن مجاني لجميع الدول' : 'Free Worldwide Shipping'}
               </h2>
               <p className="text-white/85 text-base md:text-lg mb-8 max-w-xl mx-auto">
                 {language === 'ar'
-                  ? 'اطلب الآن واستلم طلبك خلال 2-5 أيام مع ضمان الجودة لمدة 30 يوم'
-                  : 'Order now and receive within 2-5 days with 30-day quality guarantee'}
+                  ? 'اطلب الآن واستلم طلبك مع ضمان الجودة لمدة 30 يوم'
+                  : 'Order now and receive with 30-day quality guarantee'}
               </p>
               <Link to="/products">
                 <Button

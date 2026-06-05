@@ -73,7 +73,7 @@ const translations = {
     // Reviews Section
     "reviews.badge": "آراء العملاء",
     "reviews.title": "ماذا يقول عملاؤنا؟",
-    "reviews.description": "أكثر من 10,000 عميلة راضية في دول الخليج يؤكدن فعالية المنتج",
+    "reviews.description": "أكثر من 10,000 عميلة راضية يؤكدن فعالية المنتج",
     "reviews.stats.customers": "عميلة راضية",
     "reviews.stats.rating": "تقييم العملاء",
     "reviews.stats.satisfaction": "نسبة الرضا",
@@ -177,7 +177,7 @@ const translations = {
     
     // Order Section
     "order.section.title": "احصل على سيفن جرين اليوم",
-    "order.section.desc": "اطلب الآن واستمتع بالتوصيل السريع لجميع دول الخليج مع ضمان الجودة",
+    "order.section.desc": "اطلب الآن واستمتع بالتوصيل السريع مع ضمان الجودة",
     "order.section.badge": "اطلب الآن",
     "order.info": "معلومات الطلب",
     "order.shipping": "معلومات الشحن",
@@ -262,7 +262,7 @@ const translations = {
     // Reviews Section
     "reviews.badge": "Customer Reviews",
     "reviews.title": "What do our customers say?",
-    "reviews.description": "More than 10,000 satisfied customers in the Gulf countries confirm the product's effectiveness",
+    "reviews.description": "More than 10,000 satisfied customers confirm the product's effectiveness",
     "reviews.stats.customers": "satisfied customers",
     "reviews.stats.rating": "customer rating",
     "reviews.stats.satisfaction": "satisfaction rate",
@@ -329,7 +329,7 @@ const translations = {
     
     // Order Section
     "order.section.title": "Get Seven Green Today",
-    "order.section.desc": "Order now and enjoy free shipping to all Gulf countries with quality guarantee",
+    "order.section.desc": "Order now and enjoy fast shipping with quality guarantee",
     "order.section.badge": "Order Now",
     "order.info": "Order Information",
     "order.shipping": "Shipping Information",

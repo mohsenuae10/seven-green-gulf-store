@@ -181,12 +181,12 @@ const Order = () => {
   };
 
   const title = language === 'ar' 
-    ? "اطلب سفن جرين الآن - توصيل سريع لجميع دول الخليج"
-    : "Order Seven Green Now - Fast Delivery to All GCC Countries";
+    ? "اطلب سفن جرين الآن - توصيل سريع"
+    : "Order Seven Green Now - Fast Delivery";
     
   const description = language === 'ar'
-    ? "اطلب صابونة سفن جرين المثلثة الأصلية الآن. توصيل سريع لجميع دول الخليج خلال 2-5 أيام. ضمان استرجاع المال 30 يوم. دفع آمن 100%."
-    : "Order the original Seven Green Triangle Soap now. Fast delivery to all GCC countries in 2-5 days. 30-day money-back guarantee. 100% secure payment.";
+    ? "اطلب صابونة سفن جرين المثلثة الأصلية الآن. ضمان استرجاع المال 30 يوم. دفع آمن 100%."
+    : "Order the original Seven Green Triangle Soap now. 30-day money-back guarantee. 100% secure payment.";
 
   const offerSchema = {
     "@context": "https://schema.org",
@@ -539,7 +539,7 @@ const Order = () => {
               {language === 'ar' ? 'لماذا تطلب من سفن جرين؟' : 'Why Order from Seven Green?'}
             </h2>
             <ul className="space-y-2">
-              <li>✅ {language === 'ar' ? 'توصيل سريع لجميع دول الخليج' : 'Fast delivery to all GCC countries'}</li>
+              <li>✅ {language === 'ar' ? 'توصيل سريع' : 'Fast delivery'}</li>
               <li>✅ {language === 'ar' ? 'ضمان استرجاع المال 30 يوم' : '30-day money-back guarantee'}</li>
               <li>✅ {language === 'ar' ? 'منتج أصلي 100% معتمد من هيئة الغذاء والدواء' : '100% original product certified by FDA'}</li>
               <li>✅ {language === 'ar' ? 'دعم عملاء على مدار الساعة' : '24/7 customer support'}</li>

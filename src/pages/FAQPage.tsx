@@ -54,8 +54,8 @@ const FAQPage = () => {
         "acceptedAnswer": {
           "@type": "Answer",
           "text": language === 'ar'
-            ? "سعر سفن جرين 71 ريال سعودي مع شحن مجاني لجميع أنحاء السعودية والخليج."
-            : "Seven Green price is 71 SAR with free shipping throughout Saudi Arabia and the Gulf."
+            ? "سعر سفن جرين 71 ريال سعودي مع شحن مجاني."
+            : "Seven Green price is 71 SAR with free shipping."
         }
       },
       {

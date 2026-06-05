@@ -30,7 +30,7 @@ const FAQ = () => {
     },
     {
       question: "هل توفرون التوصيل لجميع الدول؟",
-      answer: "نعم، نوفر التوصيل لجميع دول الخليج: السعودية، الإمارات، الكويت، قطر، البحرين، عمان، واليمن. يستغرق التوصيل عادة 2-5 أيام عمل حسب موقعك."
+      answer: "نعم، نوفر التوصيل لجميع الدول. يستغرق التوصيل عادة 2-5 أيام عمل حسب موقعك."
     },
     {
       question: "ما الذي يجعل صابونة سفن جرين مختلفة عن المنتجات الأخرى؟",
@@ -63,7 +63,7 @@ const FAQ = () => {
     },
     {
       question: "Do you offer delivery to all countries?",
-      answer: "Yes, we offer delivery to all GCC countries: Saudi Arabia, UAE, Kuwait, Qatar, Bahrain, Oman, and Yemen. Delivery usually takes 2-5 business days depending on your location."
+      answer: "Yes, we offer delivery to all countries. Delivery usually takes 2-5 business days depending on your location."
     },
     {
       question: "What makes Seven Green different from other products?",
