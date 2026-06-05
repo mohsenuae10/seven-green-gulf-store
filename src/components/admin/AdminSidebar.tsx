@@ -1,11 +1,9 @@
 import { User } from '@supabase/supabase-js';
-import { 
-  LayoutDashboard, 
-  ShoppingCart, 
-  Package, 
+import {
+  LayoutDashboard,
+  ShoppingCart,
+  Package,
   LogOut,
-  BarChart3,
-  Image,
   FileText,
   Truck,
   UserPlus
@@ -37,7 +35,6 @@ const menuItems = [
   { id: "orders", title: "إدارة الطلبات", icon: ShoppingCart },
   { id: "shipping", title: "إدارة الشحن", icon: Truck },
   { id: "products", title: "إدارة المنتجات", icon: Package },
-  { id: "images", title: "إدارة الصور", icon: Image },
   { id: "content", title: "إدارة المحتوى", icon: FileText },
   { id: "admin-requests", title: "طلبات المسؤولين", icon: UserPlus },
 ];
