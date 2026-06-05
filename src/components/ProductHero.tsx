@@ -11,7 +11,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useCallback, useEffect, useState, useRef } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import OptimizedImage from "@/components/OptimizedImage";
-import sevenGreenLogo from "@/assets/seven-green-logo.png";
+const sevenGreenLogo = "/images/sevengreen-logo.webp";
 import { PriceDisplay } from "@/components/PriceDisplay";
 
 const ProductHero = () => {

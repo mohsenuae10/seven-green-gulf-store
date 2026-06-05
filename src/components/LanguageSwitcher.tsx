@@ -1,35 +1,36 @@
-import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
 
 const LanguageSwitcher = () => {
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage } = useLanguage();
 
   return (
-    <div className="flex items-center gap-0.5 bg-gradient-to-br from-primary/5 to-primary/10 backdrop-blur-sm rounded-full p-0.5 border border-primary/20 shadow-soft hover:border-primary/30 transition-all duration-300">
-      <Button
-        size="sm"
-        variant="ghost"
+    <div className="flex items-center gap-0.5 bg-gray-100 rounded-full p-0.5">
+      <button
         onClick={() => setLanguage('ar')}
-        className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-all duration-300 ${
-          language === 'ar' 
-            ? 'bg-gradient-primary text-white shadow-elegant scale-105' 
-            : 'text-muted-foreground hover:bg-primary/10 hover:text-primary hover:scale-105'
-        }`}
+        className={`
+          px-2.5 py-0.5 rounded-full text-xs font-semibold transition-all duration-200
+          ${language === 'ar'
+            ? 'bg-white text-primary shadow-sm'
+            : 'text-gray-500 hover:text-gray-700'
+          }
+        `}
+        aria-label="Arabic"
       >
-        عربي
-      </Button>
-      <Button
-        size="sm"
-        variant="ghost"
+        ع
+      </button>
+      <button
         onClick={() => setLanguage('en')}
-        className={`rounded-full px-2.5 py-1 text-xs font-semibold transition-all duration-300 ${
-          language === 'en' 
-            ? 'bg-gradient-primary text-white shadow-elegant scale-105' 
-            : 'text-muted-foreground hover:bg-primary/10 hover:text-primary hover:scale-105'
-        }`}
+        className={`
+          px-2.5 py-0.5 rounded-full text-xs font-semibold transition-all duration-200 font-english
+          ${language === 'en'
+            ? 'bg-white text-primary shadow-sm'
+            : 'text-gray-500 hover:text-gray-700'
+          }
+        `}
+        aria-label="English"
       >
         EN
-      </Button>
+      </button>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Facebook, Twitter, Mail, Instagram, Leaf } from "lucide-react";
+import { Facebook, Twitter, Mail, Instagram } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 
 const Footer = () => {
@@ -13,12 +13,21 @@ const Footer = () => {
           
           {/* Logo & About Section */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <Leaf className="w-6 h-6 text-primary" />
-              <span className="text-xl font-bold bg-gradient-primary bg-clip-text text-transparent font-english">
-                Seven Green
+            <Link to="/">
+              <img
+                src="/images/sevengreen-logo.webp"
+                alt="Seven Green"
+                className="h-14 w-auto object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const next = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (next) next.style.removeProperty('display');
+                }}
+              />
+              <span className="text-xl font-bold text-primary font-english" style={{ display: 'none' }}>
+                SEVEN GREEN
               </span>
-            </div>
+            </Link>
             <p className="text-muted-foreground text-sm leading-relaxed">
               {language === 'ar' 
                 ? 'صابونة طبيعية 100% من أوراق السرو ونبات الأوسمان. الحل الطبيعي الأمثل لعلاج تساقط الشعر وتعزيز نموه.'
