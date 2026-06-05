@@ -5,7 +5,8 @@ import {
   Package,
   LogOut,
   Truck,
-  UserPlus
+  UserPlus,
+  Image,
 } from "lucide-react";
 import {
   Sidebar,
@@ -30,11 +31,12 @@ interface AdminSidebarProps {
 }
 
 const menuItems = [
-  { id: "dashboard", title: "لوحة المعلومات", icon: LayoutDashboard },
-  { id: "orders", title: "إدارة الطلبات", icon: ShoppingCart },
-  { id: "shipping", title: "إدارة الشحن", icon: Truck },
-  { id: "products", title: "إدارة المنتجات", icon: Package },
-  { id: "admin-requests", title: "طلبات المسؤولين", icon: UserPlus },
+  { id: "dashboard",      title: "لوحة المعلومات",   icon: LayoutDashboard },
+  { id: "orders",         title: "إدارة الطلبات",    icon: ShoppingCart },
+  { id: "shipping",       title: "إدارة الشحن",      icon: Truck },
+  { id: "products",       title: "إدارة المنتجات",   icon: Package },
+  { id: "banner",         title: "البنر الرئيسي",    icon: Image },
+  { id: "admin-requests", title: "طلبات المسؤولين",  icon: UserPlus },
 ];
 
 export function AdminSidebar({ activeSection, setActiveSection, user, onSignOut }: AdminSidebarProps) {

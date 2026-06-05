@@ -2,23 +2,14 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
-import ProductHero from "@/components/ProductHero";
-import ProductFeatures from "@/components/ProductFeatures";
-import ProductIngredients from "@/components/ProductIngredients";
-import ProductDetails from "@/components/ProductDetails";
-import CustomerReviews from "@/components/CustomerReviews";
-import FAQ from "@/components/FAQ";
-import TrustBadges from "@/components/TrustBadges";
 import MobileNav from "@/components/MobileNav";
-import MobileOptimized from "@/components/MobileOptimized";
 import Footer from "@/components/Footer";
+import HomeBanner from "@/components/HomeBanner";
 import ProductCard from "@/components/ProductCard";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
-import { useProductPrice } from "@/hooks/useProductPrice";
 import { supabase } from "@/integrations/supabase/client";
-import { CONTACT_INFO } from "@/config/contact";
+import { Shield, Truck, RefreshCw, Leaf, ChevronRight, ChevronLeft } from "lucide-react";
 
 interface ProductWithImage {
   id: string;
@@ -31,506 +22,154 @@ interface ProductWithImage {
 
 const Index = () => {
   const { language } = useLanguage();
-  const { price } = useProductPrice({ fallback: 71 });
   const [products, setProducts] = useState<ProductWithImage[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadProducts = async () => {
+    document.documentElement.lang = language === 'ar' ? 'ar' : 'en';
+    document.documentElement.dir  = language === 'ar' ? 'rtl' : 'ltr';
+  }, [language]);
+
+  useEffect(() => {
+    const load = async () => {
       const { data: prods } = await supabase
         .from("products").select("*").eq("is_active", true)
-        .order("created_at", { ascending: false }).limit(8);
-      if (!prods || prods.length === 0) return;
+        .order("created_at", { ascending: false });
+      if (!prods || prods.length === 0) { setLoading(false); return; }
+
       const { data: images } = await supabase
         .from("product_images").select("product_id, image_url, is_primary, display_order")
         .in("product_id", prods.map(p => p.id)).order("display_order");
+
       setProducts(prods.map(p => {
         const imgs = images?.filter(i => i.product_id === p.id) ?? [];
         const primary = imgs.find(i => i.is_primary) ?? imgs[0];
         return { ...p, primaryImage: primary?.image_url ?? p.image_url ?? "/images/sevengreen-logo.webp" };
       }));
+      setLoading(false);
     };
-    loadProducts();
+    load();
   }, []);
-  
-  useEffect(() => {
-    // Update document language
-    document.documentElement.lang = language === 'ar' ? 'ar' : 'en';
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-  }, [language]);
 
-  const title = language === 'ar' 
-    ? "سفن جرين | علاج طبيعي لتساقط الشعر 🌿 صابونة وشامبو"
-    : "Seven Green | Natural Hair Loss Treatment 🌿 Soap & Shampoo";
-    
-  const description = language === 'ar'
-    ? "صابونة سفن جرين الأصلية 🌿 علاج فعال لتساقط الشعر وتكثيفه بمكونات طبيعية 100% | شامبو سفن جرين المثلث من السرو والأوسمان ⭐ نتائج مضمونة | السعر 71 ريال 🚚 شحن مجاني"
-    : "Original Seven Green Soap 🌿 Effective hair loss treatment with 100% natural ingredients | Seven Green Triangle Shampoo from Cypress & Osman ⭐ Guaranteed results | Price 71 SAR 🚚 Free shipping";
+  const ChevronIcon = language === 'ar' ? ChevronLeft : ChevronRight;
 
-  const keywords = language === 'ar'
-    ? "سفن جرين, Seven Green, صابونة سفن جرين, شامبو سفن جرين, سفن قرين, سيفن جرين, الصابونة المثلثة, علاج تساقط الشعر, تكثيف الشعر, صابون طبيعي, شامبو طبيعي, السرو والأوسمان, منتج سفن جرين, سفن جرين الأصلي"
-    : "Seven Green, سفن جرين, hair loss treatment, natural soap, natural shampoo, triangle soap, hair thickening, cypress soap, osman soap, Seven Green original";
-  
-  const productSchema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": language === 'ar' ? "سفن جرين - صابونة وشامبو طبيعي" : "Seven Green - Natural Soap & Shampoo",
-    "alternateName": [
-      "سفن جرين",
-      "Seven Green",
-      "صابونة سفن جرين",
-      "شامبو سفن جرين",
-      "سفن قرين",
-      "سيفن جرين",
-      "الصابونة المثلثة",
-      "منتج سفن جرين",
-      "سفن جرين الأصلي"
-    ],
-    "description": language === 'ar' 
-      ? "صابونة وشامبو سفن جرين الطبيعي 100% من السرو والأوسمان لعلاج تساقط الشعر وتكثيفه"
-      : "Seven Green 100% natural soap and shampoo made from cypress and osman for hair loss treatment and thickening",
-    "image": "https://sevensgreen.com/lovable-uploads/seven-green-icon.png",
-    "brand": {
-      "@type": "Brand",
-      "name": "Seven Green",
-      "alternateName": ["سفن جرين", "سفن قرين", "سيفن جرين"]
-    },
-    "offers": {
-      "@type": "Offer",
-      "url": "https://sevensgreen.com/",
-      "priceCurrency": "SAR",
-      "price": price.toString(),
-      "availability": "https://schema.org/InStock",
-      "priceValidUntil": "2026-12-31",
-      "shippingDetails": {
-        "@type": "OfferShippingDetails",
-        "shippingRate": {
-          "@type": "MonetaryAmount",
-          "value": "0",
-          "currency": "SAR"
-        },
-        "shippingDestination": {
-          "@type": "DefinedRegion",
-          "addressCountry": "SA"
-        }
-      }
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "reviewCount": "2847",
-      "bestRating": "5",
-      "worstRating": "1"
-    }
-  };
-
-  const organizationSchema = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "سفن جرين - Seven Green",
-    "alternateName": ["سفن جرين", "Seven Green", "سفن قرين", "سيفن جرين"],
-    "url": "https://sevensgreen.com",
-    "logo": "https://sevensgreen.com/lovable-uploads/seven-green-icon.png",
-    "sameAs": [
-      "https://www.snapchat.com/add/sevengreen"
-    ],
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": CONTACT_INFO.phone,
-      "contactType": "Customer Service",
-      "email": CONTACT_INFO.email,
-      "areaServed": ["SA", "AE", "KW", "BH", "OM", "QA", "YE"],
-      "availableLanguage": ["ar", "en"]
-    }
-  };
-
-  const localBusinessSchema = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "سفن جرين - Seven Green",
-    "alternateName": ["سفن جرين", "Seven Green"],
-    "image": "https://sevensgreen.com/lovable-uploads/seven-green-icon.png",
-    "url": "https://sevensgreen.com",
-    "telephone": CONTACT_INFO.phone,
-    "email": CONTACT_INFO.email,
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": CONTACT_INFO.country,
-      "addressRegion": language === 'ar' ? CONTACT_INFO.countryName.ar : CONTACT_INFO.countryName.en
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": "24.7136",
-      "longitude": "46.6753"
-    },
-    "priceRange": "$$",
-    "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
-        "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Saturday"
-      ],
-      "opens": "09:00",
-      "closes": "18:00"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "reviewCount": "2847"
-    }
-  };
-
-  const websiteSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "سفن جرين - Seven Green",
-    "alternateName": ["سفن جرين", "Seven Green", "سفن قرين", "سيفن جرين"],
-    "url": "https://sevensgreen.com",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://sevensgreen.com/?s={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  };
-
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": language === 'ar' ? "الرئيسية" : "Home",
-        "item": "https://sevensgreen.com/"
-      }
-    ]
-  };
-
-  const reviewSchema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": language === 'ar' ? "صابونة سفن جرين المثلثة" : "Seven Green Triangle Soap",
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.8",
-      "reviewCount": "2847",
-      "bestRating": "5",
-      "worstRating": "1"
-    },
-    "review": [
-      {
-        "@type": "Review",
-        "author": {
-          "@type": "Person",
-          "name": language === 'ar' ? "نورة العتيبي" : "Noura Al-Otaibi"
-        },
-        "datePublished": "2025-01-10",
-        "reviewBody": language === 'ar' 
-          ? "منتج رائع! لاحظت تحسن كبير في كثافة شعري بعد شهر من الاستخدام. رائحته طبيعية ولطيف على فروة الرأس."
-          : "Amazing product! I noticed significant improvement in hair density after one month. Natural scent and gentle on scalp.",
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "5",
-          "bestRating": "5"
-        }
-      },
-      {
-        "@type": "Review",
-        "author": {
-          "@type": "Person",
-          "name": language === 'ar' ? "سارة المطيري" : "Sarah Al-Mutairi"
-        },
-        "datePublished": "2025-01-08",
-        "reviewBody": language === 'ar'
-          ? "توقف تساقط شعري تماماً بعد 3 أسابيع. المنتج طبيعي 100% وفعال جداً. أنصح به بشدة."
-          : "Hair fall stopped completely after 3 weeks. 100% natural and very effective. Highly recommend.",
-        "reviewRating": {
-          "@type": "Rating",
-          "ratingValue": "5",
-          "bestRating": "5"
-        }
-      }
-    ]
-  };
-
-  const howToSchema = {
-    "@context": "https://schema.org",
-    "@type": "HowTo",
-    "name": language === 'ar' 
-      ? "طريقة استخدام صابونة سفن جرين المثلثة"
-      : "How to Use Seven Green Triangle Soap",
-    "description": language === 'ar'
-      ? "دليل خطوة بخطوة لاستخدام صابونة سفن جرين لأفضل النتائج في منع تساقط الشعر"
-      : "Step-by-step guide to using Seven Green soap for best results in preventing hair loss",
-    "totalTime": "PT10M",
-    "step": [
-      {
-        "@type": "HowToStep",
-        "position": 1,
-        "name": language === 'ar' ? "ترطيب الشعر" : "Wet Hair",
-        "text": language === 'ar' 
-          ? "بلل شعرك بالماء الدافئ بشكل كامل"
-          : "Wet your hair completely with warm water"
-      },
-      {
-        "@type": "HowToStep",
-        "position": 2,
-        "name": language === 'ar' ? "تطبيق الصابونة" : "Apply Soap",
-        "text": language === 'ar'
-          ? "افرك الصابونة المثلثة على فروة الرأس والشعر حتى تتكون رغوة غنية"
-          : "Rub the triangle soap on scalp and hair until rich lather forms"
-      },
-      {
-        "@type": "HowToStep",
-        "position": 3,
-        "name": language === 'ar' ? "التدليك" : "Massage",
-        "text": language === 'ar'
-          ? "دلك فروة الرأس بحركات دائرية لطيفة لمدة 2-3 دقائق"
-          : "Massage scalp with gentle circular motions for 2-3 minutes"
-      },
-      {
-        "@type": "HowToStep",
-        "position": 4,
-        "name": language === 'ar' ? "الانتظار" : "Wait",
-        "text": language === 'ar'
-          ? "اترك الصابونة على الشعر لمدة 5 دقائق للاستفادة القصوى"
-          : "Leave the soap on hair for 5 minutes for maximum benefit"
-      },
-      {
-        "@type": "HowToStep",
-        "position": 5,
-        "name": language === 'ar' ? "الشطف" : "Rinse",
-        "text": language === 'ar'
-          ? "اشطف الشعر جيداً بالماء الفاتر حتى إزالة كل الرغوة"
-          : "Rinse hair thoroughly with lukewarm water until all lather is removed"
-      }
-    ]
-  };
+  const trustBadges = [
+    { icon: Leaf,      ar: "طبيعي 100%",       en: "100% Natural" },
+    { icon: Shield,    ar: "دفع آمن",            en: "Secure Payment" },
+    { icon: Truck,     ar: "شحن مجاني للخليج",  en: "Free GCC Shipping" },
+    { icon: RefreshCw, ar: "ضمان 30 يوم",       en: "30-Day Guarantee" },
+  ];
 
   return (
     <>
       <Helmet>
-        <title>{title}</title>
-        <meta name="description" content={description} />
-        <meta name="keywords" content={keywords} />
-        <meta name="author" content="Seven Green" />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://sevensgreen.com/" />
-        <meta property="og:image" content="https://sevensgreen.com/lovable-uploads/seven-green-icon.png" />
-        <meta property="og:site_name" content="سفن جرين - Seven Green" />
-        <link rel="alternate" hrefLang="ar" href="https://sevensgreen.com/?lang=ar" />
-        <link rel="alternate" hrefLang="en" href="https://sevensgreen.com/?lang=en" />
-        <link rel="alternate" hrefLang="x-default" href="https://sevensgreen.com/" />
-        <meta name="application-name" content="سفن جرين" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content="https://sevensgreen.com/lovable-uploads/seven-green-icon.png" />
+        <title>
+          {language === 'ar'
+            ? 'سفن جرين | منتجات طبيعية لعناية الشعر'
+            : 'Seven Green | Natural Hair Care Products'}
+        </title>
+        <meta name="description" content={
+          language === 'ar'
+            ? 'سفن جرين — منتجات طبيعية 100% لعناية الشعر. صابونة وشامبو عشبي من السرو والأوسمان لعلاج تساقط الشعر. شحن مجاني لدول الخليج.'
+            : 'Seven Green — 100% natural hair care products. Herbal soap and shampoo from cypress and osman for hair loss treatment. Free shipping to GCC countries.'
+        } />
         <link rel="canonical" href="https://sevensgreen.com/" />
-        <script type="application/ld+json">
-          {JSON.stringify(productSchema)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(organizationSchema)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(localBusinessSchema)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(websiteSchema)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(breadcrumbSchema)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(reviewSchema)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(howToSchema)}
-        </script>
+        <meta property="og:type"  content="website" />
+        <meta property="og:title" content="Seven Green | سفن جرين" />
+        <meta property="og:url"   content="https://sevensgreen.com/" />
+        <meta property="og:image" content="https://sevensgreen.com/images/sevengreen-logo.webp" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          "name": "Seven Green | سفن جرين",
+          "url": "https://sevensgreen.com",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://sevensgreen.com/products?q={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        })}</script>
       </Helmet>
-      
-      <MobileOptimized className="min-h-screen">
+
+      <div className="min-h-screen flex flex-col bg-white">
         <Header />
         <MobileNav />
 
-        <main>
-          <div id="product">
-            <ProductHero />
-          </div>
-          <TrustBadges />
-          <ProductDetails />
-          <div id="ingredients">
-            <ProductIngredients />
-          </div>
-          <div id="features">
-            <ProductFeatures />
-          </div>
-          <div id="reviews">
-            <CustomerReviews />
-          </div>
-          <div id="faq">
-            <FAQ />
-          </div>
-          
-          {/* Rich SEO Content Section - Visible and Crawlable */}
-          <section className="container mx-auto px-4 py-16 max-w-4xl">
-            <article className="prose prose-lg dark:prose-invert mx-auto">
-              <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">
-                {language === 'ar' ? 'سفن جرين - شامبو سفن جرين وصابونة سفن جرين الأصلية' : 'Seven Green - Original Seven Green Shampoo and Soap'}
-              </h1>
-              
-              <div className="space-y-6 text-foreground/90 leading-relaxed">
-                {language === 'ar' ? (
-                  <>
-                    <p>
-                      <strong><Link to="/order" className="text-primary hover:underline">صابونة سفن جرين</Link></strong> و<strong>شامبو سفن جرين</strong> هما منتج طبيعي واحد 100% معتمد من هيئة الغذاء والدواء، مصمم خصيصاً لعلاج مشاكل تساقط الشعر وزيادة كثافته بطريقة آمنة وفعالة. تحتوي الصابونة على تركيبة فريدة من خلاصة السرو والأوسمان الطبيعية التي أثبتت فعاليتها في تقوية بصيلات الشعر ومنع التساقط.
-                    </p>
-                    
-                    <h2 className="text-2xl font-semibold mt-8 mb-4">شامبو سفن جرين - شامبو تساقط الشعر العشبي</h2>
-                    <p>
-                      يُعد <strong>شامبو سفن جرين</strong> الحل الأمثل لمن يعانون من تساقط الشعر. هذا الشامبو العشبي المميز يجمع بين فوائد 7 أعشاب طبيعية لتقوية جذور الشعر ومنع التساقط. <strong>شامبو تساقط الشعر</strong> من سفن جرين يتميز بتركيبته الخالية من المواد الكيميائية الضارة.
-                    </p>
-                    
-                    <h2 className="text-2xl font-semibold mt-8 mb-4">صابونة سفن جرين العشبية - المكونات الطبيعية</h2>
-                    <p>
-                      تتميز <strong>صابونة سفن جرين العشبية</strong> بمكوناتها الطبيعية 100% التي تشمل خلاصة السرو المعروفة بخصائصها في تقوية الشعر، وخلاصة الأوسمان التي تساعد على تنظيم إفراز الزيوت في فروة الرأس. هذا <strong>الشامبو العشبي</strong> يعمل على توفير علاج شامل لمشاكل الشعر.
-                    </p>
-                    
-                    <h2 className="text-2xl font-semibold mt-8 mb-4">نتائج مثبتة علمياً - شامبو سفن جرين ضد التساقط</h2>
-                    <p>
-                      أثبتت الدراسات السريرية أن استخدام <strong>شامبو سفن جرين ضد التساقط</strong> بانتظام لمدة شهر واحد يمكن أن يقلل من تساقط الشعر بنسبة تصل إلى 85%. أكثر من 2847 عميل حققوا نتائج ملحوظة في تحسين كثافة الشعر وتقليل التساقط، مع تقييم عام يبلغ 4.8 من 5 نجوم.
-                    </p>
-                    
-                    <h3 className="text-xl font-semibold mt-8 mb-4">طريقة استخدام شامبو سفن جرين</h3>
-                    <p>
-                      للحصول على أفضل النتائج، يُنصح باستخدام <strong>صابونة سفن جرين</strong> 2-3 مرات أسبوعياً. بلل الشعر جيداً، ثم دلك فروة الرأس بالصابونة بحركات دائرية لطيفة لمدة 2-3 دقائق، واتركها لمدة 5 دقائق قبل الشطف بالماء الفاتر.
-                    </p>
-                    
-                    <h3 className="text-xl font-semibold mt-8 mb-4">ضمان الجودة - سفن جرين الأصلي</h3>
-                    <p>
-                      جميع منتجات <strong>سفن جرين</strong> معتمدة وتخضع لأعلى معايير الجودة. نحن نقدم ضمان استرجاع المال لمدة 30 يوماً في حال عدم الرضا عن النتائج. ثقتنا في منتجنا تأتي من آلاف التجارب الناجحة لعملائنا. <Link to="/about" className="text-primary hover:underline font-semibold">اقرأ المزيد عن قصتنا</Link>.
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <p>
-                      <strong>Seven Green Soap</strong> and <strong>Seven Green Shampoo</strong> are a single 100% natural product certified by the Food and Drug Authority, specifically designed to treat hair loss problems and increase hair density safely and effectively. The soap contains a unique formula of natural cypress and osman extracts that have proven effective in strengthening hair follicles and preventing hair loss.
-                    </p>
-                    
-                    <h2 className="text-2xl font-semibold mt-8 mb-4">Seven Green Shampoo - Herbal Hair Loss Treatment</h2>
-                    <p>
-                      <strong>Seven Green Shampoo</strong> is the perfect solution for those suffering from hair loss. This distinctive herbal shampoo combines the benefits of 7 natural herbs to strengthen hair roots and prevent hair loss. Seven Green hair loss shampoo features a formula free from harmful chemicals.
-                    </p>
-                    
-                    <h2 className="text-2xl font-semibold mt-8 mb-4">Seven Green Herbal Soap - Natural Ingredients</h2>
-                    <p>
-                      <strong>Seven Green Herbal Soap</strong> is distinguished by its 100% natural ingredients, including cypress extract known for its hair-strengthening properties, and osman extract that helps regulate oil secretion in the scalp. This herbal shampoo provides comprehensive treatment for hair problems.
-                    </p>
-                    
-                    <h2 className="text-2xl font-semibold mt-8 mb-4">Scientifically Proven Results - Anti Hair Fall Shampoo</h2>
-                    <p>
-                      Clinical studies have proven that regular use of <strong>Seven Green Anti-Hair Fall Shampoo</strong> for one month can reduce hair loss by up to 85%. More than 2,847 customers have achieved noticeable results in improving hair density and reducing hair loss, with an overall rating of 4.8 out of 5 stars.
-                    </p>
-                    
-                    <h3 className="text-xl font-semibold mt-8 mb-4">How to Use Seven Green Shampoo</h3>
-                    <p>
-                      For best results, it is recommended to use <strong>Seven Green Soap</strong> 2-3 times weekly. Wet your hair thoroughly, then massage the scalp with the soap in gentle circular motions for 2-3 minutes, and leave it for 5 minutes before rinsing with lukewarm water.
-                    </p>
-                    
-                    <h3 className="text-xl font-semibold mt-8 mb-4">Quality Guarantee - Original Seven Green</h3>
-                    <p>
-                      All <strong>Seven Green</strong> products are certified and subject to the highest quality standards. We offer a 30-day money-back guarantee if you are not satisfied with the results. Our confidence in our product comes from thousands of successful experiences of our customers.
-                    </p>
-                  </>
-                )}
-              </div>
-            </article>
-          </section>
+        <main className="flex-1">
 
-          {/* Related Content Section */}
-          <section className="py-12 bg-accent/10">
+          {/* ── 1. Banner ── */}
+          <HomeBanner />
+
+          {/* ── 2. Trust Badges Strip ── */}
+          <section className="bg-white border-b border-gray-100">
             <div className="container mx-auto px-4">
-              <h2 className="text-3xl font-bold text-center mb-8">
-                {language === 'ar' ? 'قد يهمك أيضاً' : 'You May Also Like'}
-              </h2>
-              <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-                <Link to="/about" className="group">
-                  <Card className="p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
-                    <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-3xl">📖</span>
-                      </div>
-                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                        {language === 'ar' ? 'قصتنا' : 'Our Story'}
-                      </h3>
-                      <p className="text-muted-foreground">
-                        {language === 'ar' 
-                          ? 'تعرفي على رحلة سفن جرين ورؤيتنا'
-                          : 'Learn about Seven Green journey and vision'}
-                      </p>
-                    </div>
-                  </Card>
-                </Link>
-                
-                <Link to="/order" className="group">
-                  <Card className="p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full bg-gradient-primary/5">
-                    <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-3xl">🛒</span>
-                      </div>
-                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                        {language === 'ar' ? 'اطلبي الآن' : 'Order Now'}
-                      </h3>
-                      <p className="text-muted-foreground">
-                        {language === 'ar' 
-                          ? 'احصلي على صابونة سفن جرين الأصلية'
-                          : 'Get the original Seven Green soap'}
-                      </p>
-                    </div>
-                  </Card>
-                </Link>
-                
-                <a href="#faq" className="group">
-                  <Card className="p-6 hover:shadow-lg transition-all hover:-translate-y-1 h-full">
-                    <div className="text-center">
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-3xl">❓</span>
-                      </div>
-                      <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                        {language === 'ar' ? 'الأسئلة الشائعة' : 'FAQs'}
-                      </h3>
-                      <p className="text-muted-foreground">
-                        {language === 'ar' 
-                          ? 'إجابات لأكثر الأسئلة شيوعاً'
-                          : 'Answers to most common questions'}
-                      </p>
-                    </div>
-                  </Card>
-                </a>
+              <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100 rtl:divide-x-reverse">
+                {trustBadges.map((b, i) => (
+                  <div key={i} className="flex items-center justify-center gap-2.5 py-4 px-3">
+                    <b.icon className="w-5 h-5 text-primary shrink-0" />
+                    <span className="text-sm font-medium text-gray-700">
+                      {language === 'ar' ? b.ar : b.en}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
           </section>
-          {/* ── Products Catalog Section ── */}
-          {products.length > 0 && (
-            <section className="py-16 bg-gray-50">
-              <div className="container mx-auto px-4">
-                <div className="flex items-center justify-between mb-8">
-                  <div>
-                    <h2 className="text-3xl font-black text-gray-900">
-                      {language === 'ar' ? 'منتجاتنا' : 'Our Products'}
-                    </h2>
-                    <p className="text-gray-500 mt-1">
-                      {language === 'ar' ? 'منتجات طبيعية 100% لعناية الشعر' : '100% natural hair care products'}
-                    </p>
-                  </div>
-                  <Link to="/products">
-                    <Button variant="outline" className="rounded-full gap-2">
-                      {language === 'ar' ? 'عرض الكل' : 'View All'}
-                    </Button>
-                  </Link>
+
+          {/* ── 3. Products Grid ── */}
+          <section className="py-14 bg-gray-50">
+            <div className="container mx-auto px-4">
+
+              {/* Section header */}
+              <div className={`flex items-end justify-between mb-8 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
+                <div className={language === 'ar' ? 'text-right' : 'text-left'}>
+                  <p className="text-primary text-sm font-semibold tracking-widest uppercase mb-1">
+                    {language === 'ar' ? 'تشكيلتنا' : 'Our Collection'}
+                  </p>
+                  <h2 className="text-3xl md:text-4xl font-black text-gray-900">
+                    {language === 'ar' ? 'منتجاتنا الطبيعية' : 'Natural Products'}
+                  </h2>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                <Link to="/products">
+                  <Button variant="outline" className="rounded-full gap-1.5 border-primary/30 hover:border-primary text-primary">
+                    {language === 'ar' ? 'عرض الكل' : 'View All'}
+                    <ChevronIcon className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Skeleton loading */}
+              {loading && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                  {[...Array(8)].map((_, i) => (
+                    <div key={i} className="bg-white rounded-2xl overflow-hidden animate-pulse">
+                      <div className="aspect-square bg-gray-200" />
+                      <div className="p-4 space-y-2">
+                        <div className="h-4 bg-gray-200 rounded w-3/4" />
+                        <div className="h-3 bg-gray-200 rounded w-full" />
+                        <div className="h-8 bg-gray-200 rounded-full w-full mt-3" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Empty state */}
+              {!loading && products.length === 0 && (
+                <div className="text-center py-24 text-gray-400">
+                  <Leaf className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                  <p className="text-lg font-medium">
+                    {language === 'ar' ? 'لا توجد منتجات حالياً' : 'No products available'}
+                  </p>
+                  <p className="text-sm mt-1">
+                    {language === 'ar' ? 'يمكنك إضافة منتجات من لوحة التحكم' : 'Add products from the admin panel'}
+                  </p>
+                </div>
+              )}
+
+              {/* Products grid */}
+              {!loading && products.length > 0 && (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                   {products.map(p => (
                     <ProductCard
                       key={p.id}
@@ -543,32 +182,44 @@ const Index = () => {
                     />
                   ))}
                 </div>
-              </div>
-            </section>
-          )}
+              )}
+            </div>
+          </section>
 
-          {/* ── Promotional Banner ── */}
-          <section className="py-12 bg-gradient-to-r from-primary to-green-700 text-white">
-            <div className="container mx-auto px-4 text-center">
-              <h2 className="text-2xl md:text-3xl font-black mb-3">
-                {language === 'ar' ? '🌿 شحن مجاني لجميع دول الخليج' : '🌿 Free Shipping to All GCC Countries'}
+          {/* ── 4. Bottom promotional strip ── */}
+          <section className="py-16 bg-gradient-to-r from-primary via-green-600 to-green-700 text-white relative overflow-hidden">
+            {/* Decorative circles */}
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/5 rounded-full" />
+            <div className="absolute -bottom-10 -left-10 w-56 h-56 bg-white/5 rounded-full" />
+
+            <div className="container mx-auto px-4 text-center relative z-10">
+              <p className="text-sm font-semibold tracking-widest uppercase text-white/70 mb-3">
+                {language === 'ar' ? 'عرض حصري' : 'Exclusive Offer'}
+              </p>
+              <h2 className="text-2xl md:text-4xl font-black mb-3">
+                🌿 {language === 'ar' ? 'شحن مجاني لجميع دول الخليج' : 'Free Shipping to All GCC Countries'}
               </h2>
-              <p className="text-white/90 mb-6 text-lg">
+              <p className="text-white/85 text-base md:text-lg mb-8 max-w-xl mx-auto">
                 {language === 'ar'
-                  ? 'اطلب الآن واحصل على شحن مجاني + ضمان 30 يوم'
-                  : 'Order now and get free shipping + 30-day guarantee'}
+                  ? 'اطلب الآن واستلم طلبك خلال 2-5 أيام مع ضمان الجودة لمدة 30 يوم'
+                  : 'Order now and receive within 2-5 days with 30-day quality guarantee'}
               </p>
               <Link to="/products">
-                <Button size="lg" variant="secondary" className="rounded-full px-8 font-bold">
+                <Button
+                  size="lg"
+                  className="bg-white text-primary hover:bg-white/90 font-bold rounded-full px-10 shadow-lg text-base gap-2"
+                >
                   {language === 'ar' ? 'تسوق الآن' : 'Shop Now'}
+                  <ChevronIcon className="w-4 h-4" />
                 </Button>
               </Link>
             </div>
           </section>
+
         </main>
 
         <Footer />
-      </MobileOptimized>
+      </div>
     </>
   );
 };
