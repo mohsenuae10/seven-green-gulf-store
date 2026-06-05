@@ -9,7 +9,7 @@ import BottomBanner from "@/components/BottomBanner";
 import ProductCard from "@/components/ProductCard";
 import { useLanguage } from "@/hooks/useLanguage";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, Truck, RefreshCw, Leaf, ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ProductWithImage {
@@ -66,11 +66,11 @@ const Index = () => {
 
   const ChevronIcon = language === 'ar' ? ChevronLeft : ChevronRight;
 
-  const trustBadges = [
-    { icon: Leaf,      ar: "طبيعي 100%",       en: "100% Natural" },
-    { icon: Shield,    ar: "دفع آمن",            en: "Secure Payment" },
-    { icon: Truck,     ar: "شحن مجاني",  en: "Free Shipping" },
-    { icon: RefreshCw, ar: "ضمان 30 يوم",       en: "30-Day Guarantee" },
+  const highlights = [
+    { emoji: "🌿", ar: "أعشاب طبيعية 100%",        en: "100% Natural Herbs" },
+    { emoji: "🧪", ar: "خالي من الكيماويات",        en: "Chemical-Free Formula" },
+    { emoji: "💆", ar: "يقوي جذور الشعر",           en: "Strengthens Hair Roots" },
+    { emoji: "✨", ar: "نتائج خلال 4 أسابيع",       en: "Results in 4 Weeks" },
   ];
 
   return (
@@ -118,15 +118,15 @@ const Index = () => {
           {/* ── 1. Banner ── */}
           <HomeBanner />
 
-          {/* ── 2. Trust Badges Strip ── */}
-          <section className="bg-white border-b border-gray-100">
+          {/* ── 2. Highlights Strip ── */}
+          <section className="bg-primary/5 border-b border-primary/10">
             <div className="container mx-auto px-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-gray-100 rtl:divide-x-reverse">
-                {trustBadges.map((b, i) => (
+              <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-primary/10 rtl:divide-x-reverse">
+                {highlights.map((h, i) => (
                   <div key={i} className="flex items-center justify-center gap-2.5 py-4 px-3">
-                    <b.icon className="w-5 h-5 text-primary shrink-0" />
-                    <span className="text-sm font-medium text-gray-700">
-                      {language === 'ar' ? b.ar : b.en}
+                    <span className="text-xl leading-none">{h.emoji}</span>
+                    <span className="text-sm font-semibold text-primary">
+                      {language === 'ar' ? h.ar : h.en}
                     </span>
                   </div>
                 ))}
