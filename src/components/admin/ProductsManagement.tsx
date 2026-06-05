@@ -206,7 +206,29 @@ export function ProductsManagement() {
 
   const closeForm = () => { setMode(null); setStagedImages([]); setImages([]); };
 
+  const [generatingDesc, setGeneratingDesc] = useState(false);
   const [generatingFull, setGeneratingFull] = useState(false);
+
+  /* ── AI Description only (original — working) ── */
+  const generateDesc = async () => {
+    if (!form.name.trim()) {
+      toast({ title: "تنبيه", description: "أدخل اسم المنتج أولاً", variant: "destructive" });
+      return;
+    }
+    setGeneratingDesc(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-product-description", {
+        body: { productName: form.name, keywords: aiKeywords, language: "ar" },
+      });
+      if (error || !data?.description) throw new Error(error?.message || "لا يوجد وصف");
+      setForm(f => ({ ...f, description: data.description }));
+      toast({ title: "✨ تم التوليد", description: "تم توليد الوصف بالذكاء الاصطناعي" });
+    } catch (err: any) {
+      toast({ title: "خطأ", description: err?.message || "فشل توليد الوصف", variant: "destructive" });
+    } finally {
+      setGeneratingDesc(false);
+    }
+  };
 
   /* ── AI Full content generation ── */
   const generateFullAI = async () => {
@@ -599,14 +621,14 @@ export function ProductsManagement() {
                   <CardTitle className="text-base font-semibold text-gray-700">الوصف</CardTitle>
                   <Button
                     type="button" variant="outline" size="sm"
-                    onClick={generateFullAI} disabled={generatingFull}
-                    className="gap-1.5 text-xs bg-gradient-to-r from-violet-50 to-purple-50 border-violet-200 hover:border-violet-300 text-violet-700"
+                    onClick={generateDesc} disabled={generatingDesc}
+                    className="gap-1.5 text-xs"
                   >
-                    {generatingFull
+                    {generatingDesc
                       ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
                       : <Sparkles className="h-3.5 w-3.5" />
                     }
-                    {generatingFull ? "جاري التوليد..." : "✨ توليد المحتوى كامل"}
+                    {generatingDesc ? "جاري التوليد..." : "توليد بالذكاء الاصطناعي"}
                   </Button>
                 </div>
               </CardHeader>
