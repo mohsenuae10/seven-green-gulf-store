@@ -230,47 +230,106 @@ export function ProductsManagement() {
     }
   };
 
-  /* ── AI Full content generation ── */
+  /* ── AI Full content — uses the same working endpoint, sequential calls ── */
   const generateFullAI = async () => {
     if (!form.name.trim()) {
-      toast({ title: "تنبيه", description: "أدخل اسم المنتج أولاً ثم ولّد المحتوى", variant: "destructive" });
+      toast({ title: "تنبيه", description: "أدخل اسم المنتج أولاً", variant: "destructive" });
       return;
     }
     setGeneratingFull(true);
-    try {
+
+    // Helper: call the same working endpoint
+    const call = async (keywords: string): Promise<string> => {
       const { data, error } = await supabase.functions.invoke("generate-product-description", {
-        body: {
-          productName: form.name,
-          keywords: aiKeywords || form.description,
-          language: "ar",
-          generateFullContent: true,
-        },
+        body: { productName: form.name, keywords, language: "ar" },
       });
-
       if (error) throw new Error(error.message);
-      if (data?.error) throw new Error(data.error);
+      if (!data?.description) throw new Error("لا توجد استجابة");
+      return data.description as string;
+    };
 
-      const c = data?.fullContent;
-      if (!c) throw new Error("لم يتم استلام المحتوى");
+    // Parse numbered/bulleted lines into clean array
+    const parseLines = (text: string, max: number): string[] =>
+      text.split('\n')
+        .map(l => l.replace(/^[\s\-•*\d.]+/, '').trim())
+        .filter(Boolean)
+        .slice(0, max);
 
-      // Fill description if empty
-      if (c.description && !form.description.trim()) {
-        setForm(f => ({ ...f, description: c.description }));
+    const base = emptyContent();
+
+    try {
+      const desc = form.description || aiKeywords || form.name;
+
+      // ── 1. Features ──
+      toast({ description: "⏳ جاري توليد الفوائد..." });
+      const featText = await call(
+        `بناءً على هذا الوصف: "${desc}" — اكتب بالعربي 6 فوائد رئيسية مختصرة للمنتج. كل فائدة في سطر منفصل، بدون ترقيم أو نقاط.`
+      );
+      const features = parseLines(featText, 6);
+      setContent(c => ({ ...c, features: [...features, ...base.features].slice(0, 6) }));
+
+      // ── 2. Ingredients ──
+      toast({ description: "⏳ جاري توليد المكونات..." });
+      const ingText = await call(
+        `بناءً على هذا الوصف: "${desc}" — اكتب بالعربي 7 مكونات طبيعية للمنتج. كل مكون في سطر بالتنسيق: اسم المكون: فائدته`
+      );
+      const ingredients = ingText.split('\n')
+        .map(l => l.replace(/^[\s\-•*\d.]+/, '').trim())
+        .filter(l => l.includes(':'))
+        .slice(0, 7)
+        .map(l => { const [n, ...r] = l.split(':'); return { name: n.trim(), benefit: r.join(':').trim() }; });
+      setContent(c => ({ ...c, ingredients: [...ingredients, ...base.ingredients].slice(0, 7) }));
+
+      // ── 3. Specs ──
+      toast({ description: "⏳ جاري توليد المواصفات..." });
+      const specText = await call(
+        `بناءً على هذا الوصف: "${desc}" — اكتب بالعربي 5 مواصفات تقنية للمنتج. كل مواصفة في سطر بالتنسيق: الخاصية: القيمة`
+      );
+      const specs = specText.split('\n')
+        .map(l => l.replace(/^[\s\-•*\d.]+/, '').trim())
+        .filter(l => l.includes(':'))
+        .slice(0, 5)
+        .map(l => { const [label, ...r] = l.split(':'); return { label: label.trim(), value: r.join(':').trim() }; });
+      setContent(c => ({ ...c, specs: [...specs, ...base.specs].slice(0, 5) }));
+
+      // ── 4. How To Use ──
+      toast({ description: "⏳ جاري توليد طريقة الاستخدام..." });
+      const howText = await call(
+        `بناءً على هذا الوصف: "${desc}" — اكتب بالعربي 5 خطوات لاستخدام المنتج. كل خطوة في سطر منفصل، بدون ترقيم.`
+      );
+      const howToUse = parseLines(howText, 5);
+      setContent(c => ({ ...c, howToUse: [...howToUse, ...base.howToUse].slice(0, 5) }));
+
+      // ── 5. FAQ ──
+      toast({ description: "⏳ جاري توليد الأسئلة الشائعة..." });
+      const faqText = await call(
+        `بناءً على هذا الوصف: "${desc}" — اكتب بالعربي 3 أسئلة شائعة مع إجاباتها. كل سؤال وجواب في سطرين: س: السؤال؟ / ج: الإجابة`
+      );
+      const faqLines = faqText.split('\n').map(l => l.trim()).filter(Boolean);
+      const faq: { q: string; a: string }[] = [];
+      let currentQ = '';
+      for (const line of faqLines) {
+        if (line.startsWith('س:') || line.startsWith('سؤال')) {
+          currentQ = line.replace(/^س:\s*|^سؤال\s*\d*:\s*/i, '').trim();
+        } else if ((line.startsWith('ج:') || line.startsWith('جواب')) && currentQ) {
+          faq.push({ q: currentQ, a: line.replace(/^ج:\s*|^جواب\s*\d*:\s*/i, '').trim() });
+          currentQ = '';
+        }
       }
+      // Fallback: pair lines if parsing failed
+      if (faq.length === 0) {
+        for (let i = 0; i + 1 < faqLines.length; i += 2) {
+          faq.push({ q: faqLines[i].replace(/^[-•*\d.]+/, '').trim(), a: faqLines[i + 1].replace(/^[-•*\d.]+/, '').trim() });
+        }
+      }
+      setContent(c => ({ ...c, faq: [...faq, ...base.faq].slice(0, 3) }));
 
-      const base = emptyContent();
-
-      setContent({
-        features:    Array.isArray(c.features)    ? [...c.features,    ...base.features].slice(0, 6)    : base.features,
-        ingredients: Array.isArray(c.ingredients) ? [...c.ingredients, ...base.ingredients].slice(0, 7) : base.ingredients,
-        specs:       Array.isArray(c.specs)       ? [...c.specs,       ...base.specs].slice(0, 5)       : base.specs,
-        howToUse:    Array.isArray(c.howToUse)    ? [...c.howToUse,    ...base.howToUse].slice(0, 5)    : base.howToUse,
-        faq:         Array.isArray(c.faq)         ? [...c.faq,         ...base.faq].slice(0, 3)         : base.faq,
-      });
+      // Switch to features tab so user sees the result
+      setContentTab("features");
 
       toast({
         title: "✨ تم توليد المحتوى الكامل",
-        description: "تم توليد الفوائد، المكونات، المواصفات، الاستخدام والأسئلة",
+        description: "تم ملء الفوائد، المكونات، المواصفات، الاستخدام والأسئلة",
       });
     } catch (err: any) {
       toast({ title: "خطأ", description: err?.message || "فشل توليد المحتوى", variant: "destructive" });
