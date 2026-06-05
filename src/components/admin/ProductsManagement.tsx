@@ -79,6 +79,8 @@ export function ProductsManagement() {
 
   // Product content stored in site_content table — independent per product
   const [content, setContent] = useState({
+    nameEn:       "" as string,
+    descriptionEn:"" as string,
     features:    ["", "", "", "", "", ""] as string[],
     ingredients: [
       { name: "", benefit: "" }, { name: "", benefit: "" },
@@ -119,6 +121,8 @@ export function ProductsManagement() {
 
   /* ── Fetch & Save product content ── */
   const emptyContent = () => ({
+    nameEn:       "",
+    descriptionEn:"",
     features:    ["", "", "", "", "", ""] as string[],
     ingredients: Array(7).fill(null).map(() => ({ name: "", benefit: "" })),
     specs:       Array(5).fill(null).map(() => ({ label: "", value: "" })),
@@ -134,6 +138,8 @@ export function ProductsManagement() {
       const c = data.content as any;
       const base = emptyContent();
       setContent({
+        nameEn:        c.nameEn        || "",
+        descriptionEn: c.descriptionEn || "",
         features:    Array.isArray(c.features)    ? [...c.features,    ...base.features].slice(0, 6)    : base.features,
         ingredients: Array.isArray(c.ingredients) ? [...c.ingredients, ...base.ingredients].slice(0, 7) : base.ingredients,
         specs:       Array.isArray(c.specs)       ? [...c.specs,       ...base.specs].slice(0, 5)       : base.specs,
@@ -157,6 +163,8 @@ export function ProductsManagement() {
         title: `محتوى المنتج`,
         description: "",
         content: {
+          nameEn:        content.nameEn.trim(),
+          descriptionEn: content.descriptionEn.trim(),
           features:    content.features.filter(f => f?.trim()),
           ingredients: content.ingredients.filter(i => i?.name?.trim()),
           specs:       content.specs.filter(s => s?.label?.trim()),
@@ -185,7 +193,7 @@ export function ProductsManagement() {
     setImages([]);
     setStagedImages([]);
     setContent(emptyContent());
-    setContentTab("features");
+    setContentTab("english");
     setMode("create");
   };
 
@@ -882,13 +890,42 @@ export function ProductsManagement() {
               </CardHeader>
               <CardContent>
                 <Tabs value={contentTab} onValueChange={setContentTab}>
-                  <TabsList className="w-full grid grid-cols-5 text-xs">
+                  <TabsList className="w-full grid grid-cols-6 text-xs">
+                    <TabsTrigger value="english">🇬🇧 إنجليزي</TabsTrigger>
                     <TabsTrigger value="features">الفوائد</TabsTrigger>
                     <TabsTrigger value="ingredients">المكونات</TabsTrigger>
                     <TabsTrigger value="specs">المواصفات</TabsTrigger>
                     <TabsTrigger value="howto">الاستخدام</TabsTrigger>
                     <TabsTrigger value="faq">الأسئلة</TabsTrigger>
                   </TabsList>
+
+                  {/* English Name & Description */}
+                  <TabsContent value="english" className="space-y-4 pt-3">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-700">
+                      هذه الحقول تظهر عندما يختار المستخدم اللغة الإنجليزية
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-semibold">اسم المنتج — إنجليزي</Label>
+                      <Input
+                        value={content.nameEn}
+                        onChange={e => setContent(c => ({ ...c, nameEn: e.target.value }))}
+                        placeholder="Seven Green Triangle Soap"
+                        className="text-sm"
+                        dir="ltr"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-semibold">وصف المنتج — إنجليزي</Label>
+                      <Textarea
+                        value={content.descriptionEn}
+                        onChange={e => setContent(c => ({ ...c, descriptionEn: e.target.value }))}
+                        placeholder="100% natural herbal shampoo bar with cypress and usman grass..."
+                        rows={4}
+                        className="text-sm"
+                        dir="ltr"
+                      />
+                    </div>
+                  </TabsContent>
 
                   {/* Features */}
                   <TabsContent value="features" className="space-y-2 pt-3">

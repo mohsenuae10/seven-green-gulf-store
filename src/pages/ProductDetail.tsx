@@ -46,12 +46,14 @@ const ProductDetail = () => {
 
   // Per-product content from site_content table
   const [productContent, setProductContent] = useState<{
+    nameEn: string;
+    descriptionEn: string;
     features: string[];
     ingredients: ProductIngredient[];
     specs: ProductSpec[];
     howToUse: string[];
     faq: ProductFaq[];
-  }>({ features: [], ingredients: [], specs: [], howToUse: [], faq: [] });
+  }>({ nameEn: '', descriptionEn: '', features: [], ingredients: [], specs: [], howToUse: [], faq: [] });
 
   useEffect(() => {
     if (!id) { setNotFound(true); return; }
@@ -77,6 +79,8 @@ const ProductDetail = () => {
       if (contentRow?.content) {
         const c = contentRow.content as any;
         setProductContent({
+          nameEn:        c.nameEn        || '',
+          descriptionEn: c.descriptionEn || '',
           features:    Array.isArray(c.features)    ? c.features    : [],
           ingredients: Array.isArray(c.ingredients) ? c.ingredients : [],
           specs:       Array.isArray(c.specs)       ? c.specs       : [],
@@ -106,7 +110,15 @@ const ProductDetail = () => {
     );
   }
 
-  const productName = product?.name || (language === 'ar' ? 'جاري التحميل...' : 'Loading...');
+  // Show English name/description if available and language is English
+  const productName = language === 'en' && productContent.nameEn
+    ? productContent.nameEn
+    : product?.name || (language === 'ar' ? 'جاري التحميل...' : 'Loading...');
+
+  const productDescription = language === 'en' && productContent.descriptionEn
+    ? productContent.descriptionEn
+    : product?.description ?? undefined;
+
   const primaryImage = productImages.find(i => i.is_primary)?.image_url
     || productImages[0]?.image_url
     || product?.image_url
@@ -219,7 +231,7 @@ const ProductDetail = () => {
                     productName={productName}
                     priceOverride={product.price}
                     stockOverride={product.stock_quantity ?? 999}
-                    descriptionOverride={product.description ?? undefined}
+                    descriptionOverride={productDescription}
                     imageForCart={primaryImage}
                   />
                 )}
@@ -247,7 +259,7 @@ const ProductDetail = () => {
           {/* Product Tabs */}
           <section className="container mx-auto px-4 py-8">
             <ProductTabs
-              productDescription={product?.description ?? undefined}
+              productDescription={productDescription}
               features={productContent.features}
               ingredients={productContent.ingredients}
               specs={productContent.specs}

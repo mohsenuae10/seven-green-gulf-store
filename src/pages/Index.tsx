@@ -19,6 +19,8 @@ interface ProductWithImage {
   description: string | null;
   stock_quantity: number | null;
   primaryImage: string;
+  nameEn?: string;
+  descriptionEn?: string;
 }
 
 const Index = () => {
@@ -42,10 +44,20 @@ const Index = () => {
         .from("product_images").select("product_id, image_url, is_primary, display_order")
         .in("product_id", prods.map(p => p.id)).order("display_order");
 
+      const { data: contentRows } = await supabase
+        .from("site_content").select("section, content")
+        .in("section", prods.map(p => `product_${p.id}`));
+
       setProducts(prods.map(p => {
         const imgs = images?.filter(i => i.product_id === p.id) ?? [];
         const primary = imgs.find(i => i.is_primary) ?? imgs[0];
-        return { ...p, primaryImage: primary?.image_url ?? p.image_url ?? "/images/sevengreen-logo.webp" };
+        const c = (contentRows?.find(r => r.section === `product_${p.id}`)?.content as any) ?? {};
+        return {
+          ...p,
+          primaryImage: primary?.image_url ?? p.image_url ?? "/images/sevengreen-logo.webp",
+          nameEn:        c.nameEn        || undefined,
+          descriptionEn: c.descriptionEn || undefined,
+        };
       }));
       setLoading(false);
     };
@@ -181,9 +193,10 @@ const Index = () => {
                       key={p.id}
                       id={p.id}
                       name={p.name}
+                      nameEn={p.nameEn}
                       price={p.price}
                       image={p.primaryImage}
-                      description={p.description ?? undefined}
+                      description={language === 'en' ? (p.descriptionEn ?? p.description ?? undefined) : (p.description ?? undefined)}
                       stockQuantity={p.stock_quantity ?? undefined}
                     />
                   ))}
