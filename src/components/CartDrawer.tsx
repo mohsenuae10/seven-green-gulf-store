@@ -5,13 +5,15 @@ import { PriceDisplay } from "@/components/PriceDisplay";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, X, Plus, Minus, Trash2, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const CartDrawer = () => {
   const { language } = useLanguage();
   const { getPriceData } = useCurrency();
   const { items, removeItem, updateQty, totalItems, totalPrice } = useCart();
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   return (
     <>
@@ -41,7 +43,7 @@ const CartDrawer = () => {
       <div
         className={`
           fixed top-0 z-50 h-full w-full max-w-sm bg-white shadow-2xl
-          flex flex-col transition-transform duration-300
+          flex flex-col duration-300 ${mounted ? 'transition-transform' : ''}
           ${language === 'ar' ? 'left-0' : 'right-0'}
           ${open
             ? 'translate-x-0'
