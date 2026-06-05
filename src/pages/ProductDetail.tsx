@@ -14,7 +14,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Skeleton } from '@/components/ui/skeleton';
 import { ProductImageGallery } from '@/components/product/ProductImageGallery';
 import { ProductInfo } from '@/components/product/ProductInfo';
-import { ProductTabs } from '@/components/product/ProductTabs';
+import { ProductTabs, ProductIngredient, ProductSpec, ProductFaq } from '@/components/product/ProductTabs';
 import { useLanguage } from '@/hooks/useLanguage';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -44,6 +44,15 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
+  // Per-product content from site_content table
+  const [productContent, setProductContent] = useState<{
+    features: string[];
+    ingredients: ProductIngredient[];
+    specs: ProductSpec[];
+    howToUse: string[];
+    faq: ProductFaq[];
+  }>({ features: [], ingredients: [], specs: [], howToUse: [], faq: [] });
+
   useEffect(() => {
     if (!id) { setNotFound(true); return; }
     const load = async () => {
@@ -57,6 +66,25 @@ const ProductDetail = () => {
       const { data: imgs } = await supabase
         .from('product_images').select('*').eq('product_id', id).order('display_order');
       setProductImages(imgs || []);
+
+      // Fetch per-product content
+      const { data: contentRow } = await supabase
+        .from('site_content')
+        .select('content')
+        .eq('section', `product_${id}`)
+        .maybeSingle();
+
+      if (contentRow?.content) {
+        const c = contentRow.content as any;
+        setProductContent({
+          features:    Array.isArray(c.features)    ? c.features    : [],
+          ingredients: Array.isArray(c.ingredients) ? c.ingredients : [],
+          specs:       Array.isArray(c.specs)       ? c.specs       : [],
+          howToUse:    Array.isArray(c.howToUse)    ? c.howToUse    : [],
+          faq:         Array.isArray(c.faq)         ? c.faq         : [],
+        });
+      }
+
       setLoading(false);
     };
     load();
@@ -84,24 +112,6 @@ const ProductDetail = () => {
     || product?.image_url
     || '/images/sevengreen-logo.webp';
 
-  const faqItems = [
-    {
-      q: language === 'ar' ? 'كم مدة ظهور النتائج؟' : 'How long until results appear?',
-      a: language === 'ar' ? 'النتائج تبدأ في الظهور خلال 2-4 أسابيع من الاستخدام المنتظم.' : 'Results begin to appear within 2-4 weeks of regular use.',
-    },
-    {
-      q: language === 'ar' ? 'هل المنتج مناسب لجميع أنواع الشعر؟' : 'Is it suitable for all hair types?',
-      a: language === 'ar' ? 'نعم، المنتج مناسب لجميع أنواع الشعر للرجال والنساء.' : 'Yes, suitable for all hair types for men and women.',
-    },
-    {
-      q: language === 'ar' ? 'كيف أستخدم المنتج؟' : 'How do I use the product?',
-      a: language === 'ar' ? 'استخدمه 2-3 مرات أسبوعياً: بلل الشعر، افرك الصابونة، دلك 2-3 دقائق، اترك 5 دقائق، ثم اشطف جيداً.' : 'Use 2-3 times weekly: wet hair, apply soap, massage 2-3 minutes, leave 5 minutes, then rinse thoroughly.',
-    },
-    {
-      q: language === 'ar' ? 'هل هناك ضمان على المنتج؟' : 'Is there a product guarantee?',
-      a: language === 'ar' ? 'نعم، نوفر ضمان استرجاع المال خلال 30 يوم إذا لم تكن راضياً عن النتائج.' : 'Yes, we offer a 30-day money-back guarantee if you are not satisfied with the results.',
-    },
-  ];
 
   return (
     <>
@@ -234,29 +244,34 @@ const ProductDetail = () => {
             </div>
           </section>
 
-          {/* Product Tabs (Description, Ingredients, Specs, Reviews, How To) */}
+          {/* Product Tabs */}
           <section className="container mx-auto px-4 py-8">
-            <ProductTabs productDescription={product?.description ?? undefined} />
+            <ProductTabs
+              productDescription={product?.description ?? undefined}
+              features={productContent.features}
+              ingredients={productContent.ingredients}
+              specs={productContent.specs}
+              howToUse={productContent.howToUse}
+              faq={productContent.faq}
+            />
           </section>
 
-          {/* FAQ Section */}
-          <section className="container mx-auto px-4 py-8 max-w-3xl" id="faq">
-            <h2 className="text-2xl font-bold mb-6">
-              {language === 'ar' ? 'الأسئلة الشائعة' : 'Frequently Asked Questions'}
-            </h2>
-            <Accordion type="single" collapsible className="w-full">
-              {faqItems.map((item, i) => (
-                <AccordionItem key={i} value={`item-${i}`}>
-                  <AccordionTrigger className="text-right font-medium">
-                    {item.q}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    {item.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </section>
+          {/* FAQ Section (from product content) */}
+          {productContent.faq.filter(f => f?.q?.trim()).length > 0 && (
+            <section className="container mx-auto px-4 py-8 max-w-3xl" id="faq">
+              <h2 className="text-2xl font-bold mb-6">
+                {language === 'ar' ? 'الأسئلة الشائعة' : 'Frequently Asked Questions'}
+              </h2>
+              <Accordion type="single" collapsible className="w-full">
+                {productContent.faq.filter(f => f?.q?.trim()).map((item, i) => (
+                  <AccordionItem key={i} value={`item-${i}`}>
+                    <AccordionTrigger className="text-right font-medium">{item.q}</AccordionTrigger>
+                    <AccordionContent className="text-muted-foreground">{item.a}</AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </section>
+          )}
 
           {/* SEO Rich Content */}
           <section className="container mx-auto px-4 py-12 max-w-4xl border-t">

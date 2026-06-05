@@ -4,7 +4,6 @@ import {
   ShoppingCart,
   Package,
   LogOut,
-  FileText,
   Truck,
   UserPlus
 } from "lucide-react";
@@ -35,7 +34,6 @@ const menuItems = [
   { id: "orders", title: "إدارة الطلبات", icon: ShoppingCart },
   { id: "shipping", title: "إدارة الشحن", icon: Truck },
   { id: "products", title: "إدارة المنتجات", icon: Package },
-  { id: "content", title: "إدارة المحتوى", icon: FileText },
   { id: "admin-requests", title: "طلبات المسؤولين", icon: UserPlus },
 ];
 

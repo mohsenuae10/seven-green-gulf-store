@@ -77,13 +77,25 @@ export function ProductsManagement() {
   // Staged images for new product (uploaded after product is created)
   const [stagedImages, setStagedImages] = useState<StagedImage[]>([]);
 
-  // Product content (features, howToUse, faq) stored in site_content table
+  // Product content stored in site_content table — independent per product
   const [content, setContent] = useState({
-    features: ["", "", "", "", "", ""],
-    howToUse: ["", "", "", "", ""],
-    faq: [{ q: "", a: "" }, { q: "", a: "" }, { q: "", a: "" }],
+    features:    ["", "", "", "", "", ""] as string[],
+    ingredients: [
+      { name: "", benefit: "" }, { name: "", benefit: "" },
+      { name: "", benefit: "" }, { name: "", benefit: "" },
+      { name: "", benefit: "" }, { name: "", benefit: "" },
+      { name: "", benefit: "" },
+    ] as { name: string; benefit: string }[],
+    specs: [
+      { label: "", value: "" }, { label: "", value: "" },
+      { label: "", value: "" }, { label: "", value: "" },
+      { label: "", value: "" },
+    ] as { label: string; value: string }[],
+    howToUse: ["", "", "", "", ""] as string[],
+    faq:      [{ q: "", a: "" }, { q: "", a: "" }, { q: "", a: "" }] as { q: string; a: string }[],
   });
   const [savingContent, setSavingContent] = useState(false);
+  const [contentTab, setContentTab] = useState("features");
 
   /* ── Fetch ── */
   useEffect(() => { fetchProducts(); }, []);
@@ -106,19 +118,30 @@ export function ProductsManagement() {
   };
 
   /* ── Fetch & Save product content ── */
+  const emptyContent = () => ({
+    features:    ["", "", "", "", "", ""] as string[],
+    ingredients: Array(7).fill(null).map(() => ({ name: "", benefit: "" })),
+    specs:       Array(5).fill(null).map(() => ({ label: "", value: "" })),
+    howToUse:    ["", "", "", "", ""] as string[],
+    faq:         Array(3).fill(null).map(() => ({ q: "", a: "" })),
+  });
+
   const fetchContent = async (productId: string) => {
     const { data } = await supabase
       .from("site_content").select("content")
       .eq("section", `product_${productId}`).maybeSingle();
     if (data?.content) {
       const c = data.content as any;
+      const base = emptyContent();
       setContent({
-        features: c.features || ["", "", "", "", "", ""],
-        howToUse: c.howToUse || ["", "", "", "", ""],
-        faq: c.faq || [{ q: "", a: "" }, { q: "", a: "" }, { q: "", a: "" }],
+        features:    Array.isArray(c.features)    ? [...c.features,    ...base.features].slice(0, 6)    : base.features,
+        ingredients: Array.isArray(c.ingredients) ? [...c.ingredients, ...base.ingredients].slice(0, 7) : base.ingredients,
+        specs:       Array.isArray(c.specs)       ? [...c.specs,       ...base.specs].slice(0, 5)       : base.specs,
+        howToUse:    Array.isArray(c.howToUse)    ? [...c.howToUse,    ...base.howToUse].slice(0, 5)    : base.howToUse,
+        faq:         Array.isArray(c.faq)         ? [...c.faq,         ...base.faq].slice(0, 3)         : base.faq,
       });
     } else {
-      setContent({ features: ["", "", "", "", "", ""], howToUse: ["", "", "", "", ""], faq: [{ q: "", a: "" }, { q: "", a: "" }, { q: "", a: "" }] });
+      setContent(emptyContent());
     }
   };
 
@@ -131,12 +154,14 @@ export function ProductsManagement() {
 
       const payload = {
         section,
-        title: `محتوى المنتج ${productId}`,
+        title: `محتوى المنتج`,
         description: "",
         content: {
-          features: content.features.filter(f => f.trim()),
-          howToUse: content.howToUse.filter(s => s.trim()),
-          faq: content.faq.filter(f => f.q.trim()),
+          features:    content.features.filter(f => f?.trim()),
+          ingredients: content.ingredients.filter(i => i?.name?.trim()),
+          specs:       content.specs.filter(s => s?.label?.trim()),
+          howToUse:    content.howToUse.filter(s => s?.trim()),
+          faq:         content.faq.filter(f => f?.q?.trim()),
         },
       };
 
@@ -145,7 +170,7 @@ export function ProductsManagement() {
       } else {
         await supabase.from("site_content").insert(payload);
       }
-      toast({ title: "تم الحفظ", description: "تم حفظ محتوى المنتج ✓" });
+      toast({ title: "تم الحفظ", description: "تم حفظ محتوى المنتج بنجاح ✓" });
     } catch {
       toast({ title: "خطأ", description: "فشل في حفظ المحتوى", variant: "destructive" });
     } finally {
@@ -159,6 +184,8 @@ export function ProductsManagement() {
     setAiKeywords("");
     setImages([]);
     setStagedImages([]);
+    setContent(emptyContent());
+    setContentTab("features");
     setMode("create");
   };
 
@@ -180,7 +207,9 @@ export function ProductsManagement() {
 
   const closeForm = () => { setMode(null); setStagedImages([]); setImages([]); };
 
-  /* ── AI Description ── */
+  const [generatingFull, setGeneratingFull] = useState(false);
+
+  /* ── AI Description only ── */
   const generateDesc = async () => {
     if (!form.name.trim()) {
       toast({ title: "تنبيه", description: "أدخل اسم المنتج أولاً", variant: "destructive" });
@@ -198,6 +227,55 @@ export function ProductsManagement() {
       toast({ title: "خطأ", description: "فشل توليد الوصف", variant: "destructive" });
     } finally {
       setGeneratingDesc(false);
+    }
+  };
+
+  /* ── AI Full content generation ── */
+  const generateFullAI = async () => {
+    if (!form.name.trim()) {
+      toast({ title: "تنبيه", description: "أدخل اسم المنتج أولاً ثم ولّد المحتوى", variant: "destructive" });
+      return;
+    }
+    setGeneratingFull(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-product-description", {
+        body: {
+          productName: form.name,
+          keywords: aiKeywords || form.description,
+          language: "ar",
+          generateFullContent: true,
+        },
+      });
+
+      if (error) throw new Error(error.message);
+      if (data?.error) throw new Error(data.error);
+
+      const c = data?.fullContent;
+      if (!c) throw new Error("لم يتم استلام المحتوى");
+
+      // Fill description if empty
+      if (c.description && !form.description.trim()) {
+        setForm(f => ({ ...f, description: c.description }));
+      }
+
+      const base = emptyContent();
+
+      setContent({
+        features:    Array.isArray(c.features)    ? [...c.features,    ...base.features].slice(0, 6)    : base.features,
+        ingredients: Array.isArray(c.ingredients) ? [...c.ingredients, ...base.ingredients].slice(0, 7) : base.ingredients,
+        specs:       Array.isArray(c.specs)       ? [...c.specs,       ...base.specs].slice(0, 5)       : base.specs,
+        howToUse:    Array.isArray(c.howToUse)    ? [...c.howToUse,    ...base.howToUse].slice(0, 5)    : base.howToUse,
+        faq:         Array.isArray(c.faq)         ? [...c.faq,         ...base.faq].slice(0, 3)         : base.faq,
+      });
+
+      toast({
+        title: "✨ تم توليد المحتوى الكامل",
+        description: "تم توليد الفوائد، المكونات، المواصفات، الاستخدام والأسئلة",
+      });
+    } catch (err: any) {
+      toast({ title: "خطأ", description: err?.message || "فشل توليد المحتوى", variant: "destructive" });
+    } finally {
+      setGeneratingFull(false);
     }
   };
 
@@ -240,9 +318,22 @@ export function ProductsManagement() {
           setStagedImages([]);
         }
 
-        // Switch to edit mode so images can be managed
+        // Save content if any was filled
+        const hasContent =
+          content.features.some(f => f?.trim()) ||
+          content.ingredients.some(i => i?.name?.trim()) ||
+          content.specs.some(s => s?.label?.trim()) ||
+          content.howToUse.some(s => s?.trim()) ||
+          content.faq.some(f => f?.q?.trim());
+
+        if (hasContent && productId) {
+          await saveContent(productId);
+        }
+
+        // Switch to edit mode
         setMode(productId!);
         fetchImages(productId!);
+        fetchContent(productId!);
         fetchProducts();
         setSaving(false);
         return;
@@ -679,87 +770,121 @@ export function ProductsManagement() {
             </div>
           </form>
 
-          {/* ─ Section 4: Content (only for existing products) ─ */}
-          {editingProduct && (
-            <Card>
+          {/* ─ Section 4: Content (shown for both new and existing products) ─ */}
+          <Card>
               <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-2">
                   <CardTitle className="text-base font-semibold text-gray-700 flex items-center gap-2">
                     <FileText className="w-4 h-4" />
                     محتوى صفحة المنتج
+                    {mode === "create" && (
+                      <span className="text-xs text-muted-foreground font-normal">(سيُحفظ عند إضافة المنتج)</span>
+                    )}
                   </CardTitle>
-                  <Button
-                    type="button" size="sm" onClick={() => saveContent(editingProduct.id)}
-                    disabled={savingContent} className="gap-1.5 text-xs"
-                  >
-                    {savingContent ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-                    {savingContent ? "جاري الحفظ..." : "حفظ المحتوى"}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button" size="sm" variant="outline"
+                      onClick={generateFullAI} disabled={generatingFull}
+                      className="gap-1.5 text-xs bg-gradient-to-r from-violet-50 to-purple-50 border-violet-200 hover:border-violet-300 text-violet-700"
+                    >
+                      {generatingFull
+                        ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        : <Sparkles className="w-3.5 h-3.5" />
+                      }
+                      {generatingFull ? "جاري التوليد..." : "✨ توليد المحتوى كامل"}
+                    </Button>
+                    {editingProduct && (
+                      <Button
+                        type="button" size="sm" onClick={() => saveContent(editingProduct.id)}
+                        disabled={savingContent} className="gap-1.5 text-xs"
+                      >
+                        {savingContent ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                        {savingContent ? "جاري الحفظ..." : "حفظ المحتوى"}
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <Tabs defaultValue="features">
-                  <TabsList className="w-full grid grid-cols-3">
+                <Tabs value={contentTab} onValueChange={setContentTab}>
+                  <TabsList className="w-full grid grid-cols-5 text-xs">
                     <TabsTrigger value="features">الفوائد</TabsTrigger>
-                    <TabsTrigger value="howto">طريقة الاستخدام</TabsTrigger>
-                    <TabsTrigger value="faq">الأسئلة الشائعة</TabsTrigger>
+                    <TabsTrigger value="ingredients">المكونات</TabsTrigger>
+                    <TabsTrigger value="specs">المواصفات</TabsTrigger>
+                    <TabsTrigger value="howto">الاستخدام</TabsTrigger>
+                    <TabsTrigger value="faq">الأسئلة</TabsTrigger>
                   </TabsList>
 
                   {/* Features */}
-                  <TabsContent value="features" className="space-y-3 pt-3">
-                    <p className="text-xs text-muted-foreground">أدخل فائدة في كل حقل (تظهر في تبويب الوصف)</p>
+                  <TabsContent value="features" className="space-y-2 pt-3">
+                    <p className="text-xs text-muted-foreground">فوائد المنتج — تظهر في تبويب الوصف</p>
                     {content.features.map((f, i) => (
-                      <Input
-                        key={i}
-                        value={f}
+                      <Input key={i} value={f}
                         onChange={e => setContent(c => ({ ...c, features: c.features.map((v, j) => j === i ? e.target.value : v) }))}
-                        placeholder={`الفائدة ${i + 1}`}
-                        className="text-sm"
-                      />
+                        placeholder={`الفائدة ${i + 1}`} className="text-sm" />
+                    ))}
+                  </TabsContent>
+
+                  {/* Ingredients */}
+                  <TabsContent value="ingredients" className="space-y-3 pt-3">
+                    <p className="text-xs text-muted-foreground">المكونات الطبيعية — تظهر في تبويب المكونات</p>
+                    {content.ingredients.map((ing, i) => (
+                      <div key={i} className="grid grid-cols-2 gap-2 border rounded-lg p-2">
+                        <Input value={ing.name}
+                          onChange={e => setContent(c => ({ ...c, ingredients: c.ingredients.map((v, j) => j === i ? { ...v, name: e.target.value } : v) }))}
+                          placeholder={`اسم المكون ${i + 1}`} className="text-sm" />
+                        <Input value={ing.benefit}
+                          onChange={e => setContent(c => ({ ...c, ingredients: c.ingredients.map((v, j) => j === i ? { ...v, benefit: e.target.value } : v) }))}
+                          placeholder="فائدته..." className="text-sm" />
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  {/* Specs */}
+                  <TabsContent value="specs" className="space-y-3 pt-3">
+                    <p className="text-xs text-muted-foreground">مواصفات المنتج — تظهر في تبويب المواصفات</p>
+                    {content.specs.map((spec, i) => (
+                      <div key={i} className="grid grid-cols-2 gap-2 border rounded-lg p-2">
+                        <Input value={spec.label}
+                          onChange={e => setContent(c => ({ ...c, specs: c.specs.map((v, j) => j === i ? { ...v, label: e.target.value } : v) }))}
+                          placeholder={`الخاصية ${i + 1} (مثل: الوزن)`} className="text-sm" />
+                        <Input value={spec.value}
+                          onChange={e => setContent(c => ({ ...c, specs: c.specs.map((v, j) => j === i ? { ...v, value: e.target.value } : v) }))}
+                          placeholder="القيمة (مثل: 100 جرام)" className="text-sm" />
+                      </div>
                     ))}
                   </TabsContent>
 
                   {/* How To Use */}
-                  <TabsContent value="howto" className="space-y-3 pt-3">
-                    <p className="text-xs text-muted-foreground">خطوات الاستخدام (تظهر في تبويب طريقة الاستخدام)</p>
+                  <TabsContent value="howto" className="space-y-2 pt-3">
+                    <p className="text-xs text-muted-foreground">خطوات الاستخدام — تظهر في تبويب الاستخدام</p>
                     {content.howToUse.map((step, i) => (
                       <div key={i} className="flex gap-2 items-center">
                         <span className="text-xs font-bold text-primary w-5 shrink-0">{i + 1}</span>
-                        <Input
-                          value={step}
+                        <Input value={step}
                           onChange={e => setContent(c => ({ ...c, howToUse: c.howToUse.map((v, j) => j === i ? e.target.value : v) }))}
-                          placeholder={`الخطوة ${i + 1}`}
-                          className="text-sm"
-                        />
+                          placeholder={`الخطوة ${i + 1}`} className="text-sm" />
                       </div>
                     ))}
                   </TabsContent>
 
                   {/* FAQ */}
-                  <TabsContent value="faq" className="space-y-4 pt-3">
-                    <p className="text-xs text-muted-foreground">أسئلة وأجوبة (تظهر في صفحة المنتج)</p>
+                  <TabsContent value="faq" className="space-y-3 pt-3">
+                    <p className="text-xs text-muted-foreground">أسئلة وأجوبة خاصة بهذا المنتج</p>
                     {content.faq.map((item, i) => (
                       <div key={i} className="space-y-2 border rounded-lg p-3">
-                        <Input
-                          value={item.q}
+                        <Input value={item.q}
                           onChange={e => setContent(c => ({ ...c, faq: c.faq.map((v, j) => j === i ? { ...v, q: e.target.value } : v) }))}
-                          placeholder={`السؤال ${i + 1}`}
-                          className="text-sm font-medium"
-                        />
-                        <Textarea
-                          value={item.a}
+                          placeholder={`السؤال ${i + 1}`} className="text-sm font-medium" />
+                        <Textarea value={item.a}
                           onChange={e => setContent(c => ({ ...c, faq: c.faq.map((v, j) => j === i ? { ...v, a: e.target.value } : v) }))}
-                          placeholder="الإجابة..."
-                          rows={2}
-                          className="text-sm"
-                        />
+                          placeholder="الإجابة..." rows={2} className="text-sm" />
                       </div>
                     ))}
                   </TabsContent>
                 </Tabs>
               </CardContent>
             </Card>
-          )}
 
           {/* Bottom padding */}
           <div className="pb-6" />
