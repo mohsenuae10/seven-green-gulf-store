@@ -16,6 +16,13 @@ import { ProductImageGallery } from '@/components/product/ProductImageGallery';
 import { ProductInfo } from '@/components/product/ProductInfo';
 import { ProductTabs, ProductIngredient, ProductSpec, ProductFaq } from '@/components/product/ProductTabs';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useCart } from '@/contexts/CartContext';
+import { useCurrency } from '@/hooks/useCurrency';
+import { PriceDisplay } from '@/components/PriceDisplay';
+import { Button } from '@/components/ui/button';
+import { ShoppingCart, Zap } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
 interface ProductData {
@@ -38,6 +45,10 @@ interface ProductImage {
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { language } = useLanguage();
+  const { addItem, items, updateQty } = useCart();
+  const { getPriceData } = useCurrency();
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   const [product, setProduct] = useState<ProductData | null>(null);
   const [productImages, setProductImages] = useState<ProductImage[]>([]);
@@ -324,8 +335,85 @@ const ProductDetail = () => {
           </section>
         </main>
 
+        {/* Spacer so footer isn't hidden behind sticky bar */}
+        <div className="h-20" />
+
         <Footer />
       </div>
+
+      {/* ── Sticky Bottom CTA Bar ── */}
+      {product && (
+        <div className={`
+          fixed bottom-0 left-0 right-0 z-50
+          bg-white/95 backdrop-blur-md border-t border-gray-100 shadow-2xl
+          safe-bottom
+        `}>
+          <div className="container mx-auto px-4 py-3 max-w-2xl">
+            <div className={`flex items-center gap-3 ${language === 'ar' ? 'flex-row-reverse' : ''}`}>
+
+              {/* Price */}
+              <div className="shrink-0">
+                <p className="text-[10px] text-gray-400 leading-none mb-0.5">
+                  {language === 'ar' ? 'السعر' : 'Price'}
+                </p>
+                <p className="text-lg font-black text-primary leading-none">
+                  <PriceDisplay {...getPriceData(product.price)} />
+                </p>
+              </div>
+
+              {/* Add to Cart */}
+              <Button
+                variant="outline"
+                className="flex-1 gap-2 rounded-full border-primary text-primary hover:bg-primary hover:text-white transition-all"
+                onClick={() => {
+                  const cartItem = items.find(i => i.productId === product.id);
+                  if (cartItem) {
+                    updateQty(product.id, cartItem.quantity + 1);
+                  } else {
+                    addItem({
+                      productId: product.id,
+                      name: productName,
+                      nameEn: productContent.nameEn || productName,
+                      price: product.price,
+                      image: primaryImage,
+                    });
+                  }
+                  toast({
+                    title: language === 'ar' ? 'تمت الإضافة ✓' : 'Added to cart ✓',
+                    description: productName,
+                  });
+                }}
+                disabled={!!(product.stock_quantity !== null && product.stock_quantity <= 0)}
+              >
+                <ShoppingCart className="w-4 h-4" />
+                {language === 'ar' ? 'أضف للسلة' : 'Add to Cart'}
+              </Button>
+
+              {/* Buy Now */}
+              <Button
+                className="flex-1 gap-2 rounded-full bg-primary hover:bg-primary/90 text-white font-bold shadow-md"
+                onClick={() => {
+                  const cartItem = items.find(i => i.productId === product.id);
+                  if (!cartItem) {
+                    addItem({
+                      productId: product.id,
+                      name: productName,
+                      nameEn: productContent.nameEn || productName,
+                      price: product.price,
+                      image: primaryImage,
+                    });
+                  }
+                  navigate(language === 'ar' ? '/ar/order' : '/order');
+                }}
+                disabled={!!(product.stock_quantity !== null && product.stock_quantity <= 0)}
+              >
+                <Zap className="w-4 h-4" />
+                {language === 'ar' ? 'اشترِ الآن' : 'Buy Now'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };
