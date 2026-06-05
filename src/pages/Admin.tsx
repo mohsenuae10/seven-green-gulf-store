@@ -5,8 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { User, Session } from '@supabase/supabase-js';
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { AdminSidebar, AdminBottomNav, menuItems } from "@/components/admin/AdminSidebar";
 import { OrdersManagement } from "@/components/admin/OrdersManagement";
 import { ProductsManagement } from "@/components/admin/ProductsManagement";
 import BannerManagement from "@/components/admin/BannerManagement";
@@ -187,28 +186,65 @@ const Admin = () => {
     }
   };
 
+  const activeItem = menuItems.find(m => m.id === activeSection);
+  const ActiveIcon = activeItem?.icon;
+
   return (
-    <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AdminSidebar 
+    /* Fixed full-screen layout — no page scroll, like a native app */
+    <div className="fixed inset-0 flex flex-col bg-gray-50 overflow-hidden" dir="rtl">
+
+      {/* ── Top Header (fixed) ── */}
+      <header className="flex items-center justify-between px-4 h-14 bg-white border-b border-gray-100 shrink-0 z-40">
+        <div className="flex items-center gap-2.5">
+          <img
+            src="/images/sevengreen-logo.webp"
+            alt="Seven Green"
+            className="h-8 w-auto object-contain lg:hidden"
+            onError={e => { e.currentTarget.style.display = 'none'; }}
+          />
+          <div className="flex items-center gap-2">
+            {ActiveIcon && <ActiveIcon className="w-4 h-4 text-primary" />}
+            <h1 className="text-sm font-bold text-gray-900">
+              {activeItem?.label || 'لوحة التحكم'}
+            </h1>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-400 hidden sm:block">{user?.email}</span>
+          <button
+            onClick={handleSignOut}
+            className="text-xs text-red-500 hover:text-red-700 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors"
+          >
+            خروج
+          </button>
+        </div>
+      </header>
+
+      {/* ── Body: sidebar + content ── */}
+      <div className="flex flex-1 overflow-hidden">
+
+        {/* Desktop sidebar */}
+        <AdminSidebar
           activeSection={activeSection}
           setActiveSection={setActiveSection}
           user={user}
           onSignOut={handleSignOut}
         />
-        
-        <main className="flex-1 p-6 bg-muted/50">
-          <div className="max-w-7xl mx-auto">
-            <header className="mb-6">
-              <h1 className="text-3xl font-bold">لوحة تحكم المسؤول</h1>
-              <p className="text-muted-foreground">إدارة متجر Seven Green</p>
-            </header>
-            
+
+        {/* Scrollable content */}
+        <main className="flex-1 overflow-y-auto">
+          <div className="p-4 pb-24 lg:pb-6 lg:p-6 max-w-7xl mx-auto">
             {renderActiveSection()}
           </div>
         </main>
       </div>
-    </SidebarProvider>
+
+      {/* Mobile bottom nav */}
+      <AdminBottomNav
+        activeSection={activeSection}
+        setActiveSection={setActiveSection}
+      />
+    </div>
   );
 };
 
