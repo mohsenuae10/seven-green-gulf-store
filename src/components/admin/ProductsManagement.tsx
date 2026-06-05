@@ -13,9 +13,10 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  Edit2, Plus, Trash2, Sparkles, Upload, Star, StarOff,
-  X, Loader2, Image, ArrowRight, Package,
+  Edit2, Plus, Trash2, Sparkles, Upload, Star,
+  X, Loader2, Image, ArrowRight, Package, FileText,
 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface Product {
@@ -76,6 +77,14 @@ export function ProductsManagement() {
   // Staged images for new product (uploaded after product is created)
   const [stagedImages, setStagedImages] = useState<StagedImage[]>([]);
 
+  // Product content (features, howToUse, faq) stored in site_content table
+  const [content, setContent] = useState({
+    features: ["", "", "", "", "", ""],
+    howToUse: ["", "", "", "", ""],
+    faq: [{ q: "", a: "" }, { q: "", a: "" }, { q: "", a: "" }],
+  });
+  const [savingContent, setSavingContent] = useState(false);
+
   /* ── Fetch ── */
   useEffect(() => { fetchProducts(); }, []);
 
@@ -94,6 +103,54 @@ export function ProductsManagement() {
       .eq("product_id", productId).order("display_order");
     setImages(data || []);
     setLoadingImgs(false);
+  };
+
+  /* ── Fetch & Save product content ── */
+  const fetchContent = async (productId: string) => {
+    const { data } = await supabase
+      .from("site_content").select("content")
+      .eq("section", `product_${productId}`).maybeSingle();
+    if (data?.content) {
+      const c = data.content as any;
+      setContent({
+        features: c.features || ["", "", "", "", "", ""],
+        howToUse: c.howToUse || ["", "", "", "", ""],
+        faq: c.faq || [{ q: "", a: "" }, { q: "", a: "" }, { q: "", a: "" }],
+      });
+    } else {
+      setContent({ features: ["", "", "", "", "", ""], howToUse: ["", "", "", "", ""], faq: [{ q: "", a: "" }, { q: "", a: "" }, { q: "", a: "" }] });
+    }
+  };
+
+  const saveContent = async (productId: string) => {
+    setSavingContent(true);
+    try {
+      const section = `product_${productId}`;
+      const { data: existing } = await supabase
+        .from("site_content").select("id").eq("section", section).maybeSingle();
+
+      const payload = {
+        section,
+        title: `محتوى المنتج ${productId}`,
+        description: "",
+        content: {
+          features: content.features.filter(f => f.trim()),
+          howToUse: content.howToUse.filter(s => s.trim()),
+          faq: content.faq.filter(f => f.q.trim()),
+        },
+      };
+
+      if (existing) {
+        await supabase.from("site_content").update(payload).eq("id", existing.id);
+      } else {
+        await supabase.from("site_content").insert(payload);
+      }
+      toast({ title: "تم الحفظ", description: "تم حفظ محتوى المنتج ✓" });
+    } catch {
+      toast({ title: "خطأ", description: "فشل في حفظ المحتوى", variant: "destructive" });
+    } finally {
+      setSavingContent(false);
+    }
   };
 
   /* ── Open form ── */
@@ -118,6 +175,7 @@ export function ProductsManagement() {
     setStagedImages([]);
     setMode(product.id);
     fetchImages(product.id);
+    fetchContent(product.id);
   };
 
   const closeForm = () => { setMode(null); setStagedImages([]); setImages([]); };
@@ -610,7 +668,7 @@ export function ProductsManagement() {
             </Card>
 
             {/* ─ Save Button ─ */}
-            <div className="flex gap-3 pb-6">
+            <div className="flex gap-3 pb-2">
               <Button type="submit" className="flex-1 gap-2" disabled={saving}>
                 {saving && <Loader2 className="w-4 h-4 animate-spin" />}
                 {saving ? "جاري الحفظ..." : (mode === "create" ? "إضافة المنتج" : "حفظ التغييرات")}
@@ -620,6 +678,91 @@ export function ProductsManagement() {
               </Button>
             </div>
           </form>
+
+          {/* ─ Section 4: Content (only for existing products) ─ */}
+          {editingProduct && (
+            <Card>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base font-semibold text-gray-700 flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    محتوى صفحة المنتج
+                  </CardTitle>
+                  <Button
+                    type="button" size="sm" onClick={() => saveContent(editingProduct.id)}
+                    disabled={savingContent} className="gap-1.5 text-xs"
+                  >
+                    {savingContent ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                    {savingContent ? "جاري الحفظ..." : "حفظ المحتوى"}
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="features">
+                  <TabsList className="w-full grid grid-cols-3">
+                    <TabsTrigger value="features">الفوائد</TabsTrigger>
+                    <TabsTrigger value="howto">طريقة الاستخدام</TabsTrigger>
+                    <TabsTrigger value="faq">الأسئلة الشائعة</TabsTrigger>
+                  </TabsList>
+
+                  {/* Features */}
+                  <TabsContent value="features" className="space-y-3 pt-3">
+                    <p className="text-xs text-muted-foreground">أدخل فائدة في كل حقل (تظهر في تبويب الوصف)</p>
+                    {content.features.map((f, i) => (
+                      <Input
+                        key={i}
+                        value={f}
+                        onChange={e => setContent(c => ({ ...c, features: c.features.map((v, j) => j === i ? e.target.value : v) }))}
+                        placeholder={`الفائدة ${i + 1}`}
+                        className="text-sm"
+                      />
+                    ))}
+                  </TabsContent>
+
+                  {/* How To Use */}
+                  <TabsContent value="howto" className="space-y-3 pt-3">
+                    <p className="text-xs text-muted-foreground">خطوات الاستخدام (تظهر في تبويب طريقة الاستخدام)</p>
+                    {content.howToUse.map((step, i) => (
+                      <div key={i} className="flex gap-2 items-center">
+                        <span className="text-xs font-bold text-primary w-5 shrink-0">{i + 1}</span>
+                        <Input
+                          value={step}
+                          onChange={e => setContent(c => ({ ...c, howToUse: c.howToUse.map((v, j) => j === i ? e.target.value : v) }))}
+                          placeholder={`الخطوة ${i + 1}`}
+                          className="text-sm"
+                        />
+                      </div>
+                    ))}
+                  </TabsContent>
+
+                  {/* FAQ */}
+                  <TabsContent value="faq" className="space-y-4 pt-3">
+                    <p className="text-xs text-muted-foreground">أسئلة وأجوبة (تظهر في صفحة المنتج)</p>
+                    {content.faq.map((item, i) => (
+                      <div key={i} className="space-y-2 border rounded-lg p-3">
+                        <Input
+                          value={item.q}
+                          onChange={e => setContent(c => ({ ...c, faq: c.faq.map((v, j) => j === i ? { ...v, q: e.target.value } : v) }))}
+                          placeholder={`السؤال ${i + 1}`}
+                          className="text-sm font-medium"
+                        />
+                        <Textarea
+                          value={item.a}
+                          onChange={e => setContent(c => ({ ...c, faq: c.faq.map((v, j) => j === i ? { ...v, a: e.target.value } : v) }))}
+                          placeholder="الإجابة..."
+                          rows={2}
+                          className="text-sm"
+                        />
+                      </div>
+                    ))}
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Bottom padding */}
+          <div className="pb-6" />
         </div>
       )}
     </div>

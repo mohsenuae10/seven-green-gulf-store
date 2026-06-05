@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Header from "@/components/Header";
@@ -12,14 +12,45 @@ import TrustBadges from "@/components/TrustBadges";
 import MobileNav from "@/components/MobileNav";
 import MobileOptimized from "@/components/MobileOptimized";
 import Footer from "@/components/Footer";
+import ProductCard from "@/components/ProductCard";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useProductPrice } from "@/hooks/useProductPrice";
+import { supabase } from "@/integrations/supabase/client";
 import { CONTACT_INFO } from "@/config/contact";
+
+interface ProductWithImage {
+  id: string;
+  name: string;
+  price: number;
+  description: string | null;
+  stock_quantity: number | null;
+  primaryImage: string;
+}
 
 const Index = () => {
   const { language } = useLanguage();
   const { price } = useProductPrice({ fallback: 71 });
+  const [products, setProducts] = useState<ProductWithImage[]>([]);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      const { data: prods } = await supabase
+        .from("products").select("*").eq("is_active", true)
+        .order("created_at", { ascending: false }).limit(8);
+      if (!prods || prods.length === 0) return;
+      const { data: images } = await supabase
+        .from("product_images").select("product_id, image_url, is_primary, display_order")
+        .in("product_id", prods.map(p => p.id)).order("display_order");
+      setProducts(prods.map(p => {
+        const imgs = images?.filter(i => i.product_id === p.id) ?? [];
+        const primary = imgs.find(i => i.is_primary) ?? imgs[0];
+        return { ...p, primaryImage: primary?.image_url ?? p.image_url ?? "/images/sevengreen-logo.webp" };
+      }));
+    };
+    loadProducts();
+  }, []);
   
   useEffect(() => {
     // Update document language
@@ -480,8 +511,62 @@ const Index = () => {
               </div>
             </div>
           </section>
+          {/* ── Products Catalog Section ── */}
+          {products.length > 0 && (
+            <section className="py-16 bg-gray-50">
+              <div className="container mx-auto px-4">
+                <div className="flex items-center justify-between mb-8">
+                  <div>
+                    <h2 className="text-3xl font-black text-gray-900">
+                      {language === 'ar' ? 'منتجاتنا' : 'Our Products'}
+                    </h2>
+                    <p className="text-gray-500 mt-1">
+                      {language === 'ar' ? 'منتجات طبيعية 100% لعناية الشعر' : '100% natural hair care products'}
+                    </p>
+                  </div>
+                  <Link to="/products">
+                    <Button variant="outline" className="rounded-full gap-2">
+                      {language === 'ar' ? 'عرض الكل' : 'View All'}
+                    </Button>
+                  </Link>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                  {products.map(p => (
+                    <ProductCard
+                      key={p.id}
+                      id={p.id}
+                      name={p.name}
+                      price={p.price}
+                      image={p.primaryImage}
+                      description={p.description ?? undefined}
+                      stockQuantity={p.stock_quantity ?? undefined}
+                    />
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ── Promotional Banner ── */}
+          <section className="py-12 bg-gradient-to-r from-primary to-green-700 text-white">
+            <div className="container mx-auto px-4 text-center">
+              <h2 className="text-2xl md:text-3xl font-black mb-3">
+                {language === 'ar' ? '🌿 شحن مجاني لجميع دول الخليج' : '🌿 Free Shipping to All GCC Countries'}
+              </h2>
+              <p className="text-white/90 mb-6 text-lg">
+                {language === 'ar'
+                  ? 'اطلب الآن واحصل على شحن مجاني + ضمان 30 يوم'
+                  : 'Order now and get free shipping + 30-day guarantee'}
+              </p>
+              <Link to="/products">
+                <Button size="lg" variant="secondary" className="rounded-full px-8 font-bold">
+                  {language === 'ar' ? 'تسوق الآن' : 'Shop Now'}
+                </Button>
+              </Link>
+            </div>
+          </section>
         </main>
-        
+
         <Footer />
       </MobileOptimized>
     </>

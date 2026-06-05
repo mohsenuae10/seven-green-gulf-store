@@ -1,19 +1,22 @@
-import { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { Helmet } from "react-helmet";
-import { ChevronRight, ShoppingCart, Star, Package, ChevronLeft, ChevronRight as ChevronRightIcon, Plus, Minus } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { useLanguage } from "@/hooks/useLanguage";
-import { useCurrency } from "@/hooks/useCurrency";
-import { useCart } from "@/contexts/CartContext";
-import { useToast } from "@/hooks/use-toast";
-import { PriceDisplay } from "@/components/PriceDisplay";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import Header from "@/components/Header";
-import MobileNav from "@/components/MobileNav";
-import Footer from "@/components/Footer";
+import { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import { Shield, Truck, Lock, RefreshCw, Package } from 'lucide-react';
+import Header from '@/components/Header';
+import MobileNav from '@/components/MobileNav';
+import Footer from '@/components/Footer';
+import {
+  Breadcrumb, BreadcrumbItem, BreadcrumbLink,
+  BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { Card } from '@/components/ui/card';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Skeleton } from '@/components/ui/skeleton';
+import { ProductImageGallery } from '@/components/product/ProductImageGallery';
+import { ProductInfo } from '@/components/product/ProductInfo';
+import { ProductTabs } from '@/components/product/ProductTabs';
+import { useLanguage } from '@/hooks/useLanguage';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ProductData {
   id: string;
@@ -35,69 +38,29 @@ interface ProductImage {
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { language } = useLanguage();
-  const { getPriceData } = useCurrency();
-  const { addItem, items, updateQty } = useCart();
-  const { toast } = useToast();
-  const navigate = useNavigate();
 
   const [product, setProduct] = useState<ProductData | null>(null);
-  const [images, setImages] = useState<ProductImage[]>([]);
-  const [selectedImg, setSelectedImg] = useState(0);
-  const [qty, setQty] = useState(1);
+  const [productImages, setProductImages] = useState<ProductImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-
-  const cartItem = items.find(i => i.productId === id);
-  const inStock = !product?.stock_quantity || product.stock_quantity > 0;
 
   useEffect(() => {
     if (!id) { setNotFound(true); return; }
     const load = async () => {
       setLoading(true);
       const { data: prod } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", id)
-        .eq("is_active", true)
-        .maybeSingle();
+        .from('products').select('*').eq('id', id).eq('is_active', true).maybeSingle();
 
       if (!prod) { setNotFound(true); setLoading(false); return; }
       setProduct(prod);
 
       const { data: imgs } = await supabase
-        .from("product_images")
-        .select("*")
-        .eq("product_id", id)
-        .order("display_order");
-
-      setImages(imgs ?? []);
+        .from('product_images').select('*').eq('product_id', id).order('display_order');
+      setProductImages(imgs || []);
       setLoading(false);
     };
     load();
   }, [id]);
-
-  const allImages = images.length > 0
-    ? images.map(i => ({ url: i.image_url, alt: i.alt_text || product?.name || "" }))
-    : [{ url: product?.image_url || "/images/sevengreen-logo.webp", alt: product?.name || "" }];
-
-  const handleAddToCart = () => {
-    if (!product) return;
-    if (cartItem) {
-      updateQty(product.id, cartItem.quantity + qty);
-    } else {
-      addItem({
-        productId: product.id,
-        name: product.name,
-        nameEn: product.name,
-        price: product.price,
-        image: allImages[0].url,
-      }, qty);
-    }
-    toast({
-      title: language === 'ar' ? 'تمت الإضافة للسلة ✓' : 'Added to cart ✓',
-      description: `${product.name} × ${qty}`,
-    });
-  };
 
   if (notFound) {
     return (
@@ -115,165 +78,203 @@ const ProductDetail = () => {
     );
   }
 
+  const productName = product?.name || (language === 'ar' ? 'جاري التحميل...' : 'Loading...');
+  const primaryImage = productImages.find(i => i.is_primary)?.image_url
+    || productImages[0]?.image_url
+    || product?.image_url
+    || '/images/sevengreen-logo.webp';
+
+  const faqItems = [
+    {
+      q: language === 'ar' ? 'كم مدة ظهور النتائج؟' : 'How long until results appear?',
+      a: language === 'ar' ? 'النتائج تبدأ في الظهور خلال 2-4 أسابيع من الاستخدام المنتظم.' : 'Results begin to appear within 2-4 weeks of regular use.',
+    },
+    {
+      q: language === 'ar' ? 'هل المنتج مناسب لجميع أنواع الشعر؟' : 'Is it suitable for all hair types?',
+      a: language === 'ar' ? 'نعم، المنتج مناسب لجميع أنواع الشعر للرجال والنساء.' : 'Yes, suitable for all hair types for men and women.',
+    },
+    {
+      q: language === 'ar' ? 'كيف أستخدم المنتج؟' : 'How do I use the product?',
+      a: language === 'ar' ? 'استخدمه 2-3 مرات أسبوعياً: بلل الشعر، افرك الصابونة، دلك 2-3 دقائق، اترك 5 دقائق، ثم اشطف جيداً.' : 'Use 2-3 times weekly: wet hair, apply soap, massage 2-3 minutes, leave 5 minutes, then rinse thoroughly.',
+    },
+    {
+      q: language === 'ar' ? 'هل هناك ضمان على المنتج؟' : 'Is there a product guarantee?',
+      a: language === 'ar' ? 'نعم، نوفر ضمان استرجاع المال خلال 30 يوم إذا لم تكن راضياً عن النتائج.' : 'Yes, we offer a 30-day money-back guarantee if you are not satisfied with the results.',
+    },
+  ];
+
   return (
     <>
-      {product && (
-        <Helmet>
-          <title>{product.name} | سفن جرين Seven Green</title>
-          <meta name="description" content={product.description || product.name} />
-        </Helmet>
-      )}
+      <Helmet>
+        <title>
+          {product
+            ? `${productName} | سفن جرين Seven Green`
+            : 'سفن جرين | Seven Green'
+          }
+        </title>
+        <meta
+          name="description"
+          content={product?.description || (language === 'ar'
+            ? 'منتج طبيعي 100% لعناية الشعر من سفن جرين'
+            : '100% natural hair care product from Seven Green'
+          )}
+        />
+        {product && (
+          <>
+            <link rel="canonical" href={`https://sevensgreen.com/product/${product.id}`} />
+            <meta property="og:type" content="product" />
+            <meta property="og:title" content={productName} />
+            <meta property="og:image" content={primaryImage} />
+            <meta property="product:price:amount" content={product.price.toString()} />
+            <meta property="product:price:currency" content="SAR" />
+            <script type="application/ld+json">{JSON.stringify({
+              "@context": "https://schema.org/",
+              "@type": "Product",
+              "name": productName,
+              "description": product.description,
+              "image": productImages.map(i => i.image_url),
+              "offers": {
+                "@type": "Offer",
+                "priceCurrency": "SAR",
+                "price": product.price.toString(),
+                "availability": "https://schema.org/InStock",
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "reviewCount": "2847",
+              },
+            })}</script>
+          </>
+        )}
+      </Helmet>
 
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen flex flex-col" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <Header />
         <MobileNav />
 
-        <main className="container mx-auto px-4 py-8 max-w-5xl">
+        <main className="flex-grow">
           {/* Breadcrumb */}
-          <nav className={`flex items-center gap-1.5 text-sm text-gray-500 mb-6 ${language === 'ar' ? 'flex-row-reverse justify-end' : ''}`}>
-            <Link to="/" className="hover:text-primary">{language === 'ar' ? 'الرئيسية' : 'Home'}</Link>
-            {language === 'ar' ? <ChevronLeft className="w-3.5 h-3.5" /> : <ChevronRightIcon className="w-3.5 h-3.5" />}
-            <Link to="/products" className="hover:text-primary">{language === 'ar' ? 'المنتجات' : 'Products'}</Link>
-            {language === 'ar' ? <ChevronLeft className="w-3.5 h-3.5" /> : <ChevronRightIcon className="w-3.5 h-3.5" />}
-            <span className="text-gray-900 font-medium truncate max-w-[180px]">{product?.name}</span>
-          </nav>
+          <div className="container mx-auto px-4 py-4">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/">{language === 'ar' ? 'الرئيسية' : 'Home'}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/products">{language === 'ar' ? 'المنتجات' : 'Products'}</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="max-w-[200px] truncate">{productName}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
 
-          {loading ? (
-            <div className="grid md:grid-cols-2 gap-8">
-              <Skeleton className="aspect-square rounded-2xl" />
-              <div className="space-y-4">
-                <Skeleton className="h-8 w-3/4" />
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-5/6" />
-                <Skeleton className="h-12 w-1/2 mt-4" />
-                <Skeleton className="h-12 w-full mt-2" />
-              </div>
-            </div>
-          ) : product && (
-            <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-              {/* Images */}
-              <div className="space-y-3">
-                <div className="aspect-square bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
-                  <img
-                    src={allImages[selectedImg]?.url}
-                    alt={allImages[selectedImg]?.alt}
-                    className="w-full h-full object-contain p-4"
-                    onError={(e) => { e.currentTarget.src = "/images/sevengreen-logo.webp"; }}
+          {/* Product Hero */}
+          <section className="container mx-auto px-4 py-8">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+              {/* Image Gallery */}
+              <div>
+                {loading ? (
+                  <Skeleton className="aspect-square rounded-xl" />
+                ) : (
+                  <ProductImageGallery
+                    images={productImages}
+                    productName={productName}
                   />
-                </div>
-                {allImages.length > 1 && (
-                  <div className="flex gap-2 overflow-x-auto pb-1">
-                    {allImages.map((img, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setSelectedImg(idx)}
-                        className={`shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all ${
-                          selectedImg === idx ? 'border-primary' : 'border-gray-100 hover:border-gray-300'
-                        }`}
-                      >
-                        <img src={img.url} alt={img.alt} className="w-full h-full object-cover"
-                          onError={(e) => { e.currentTarget.src = "/images/sevengreen-logo.webp"; }} />
-                      </button>
-                    ))}
-                  </div>
                 )}
               </div>
 
-              {/* Info */}
-              <div className={`space-y-5 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
-                {/* Stock badge */}
-                <Badge variant={inStock ? "secondary" : "destructive"} className="text-xs">
-                  {inStock
-                    ? (language === 'ar' ? '✓ متوفر في المخزون' : '✓ In Stock')
-                    : (language === 'ar' ? 'نفذت الكمية' : 'Out of Stock')}
-                </Badge>
-
-                {/* Name */}
-                <h1 className="text-2xl lg:text-3xl font-black text-gray-900 leading-tight">
-                  {product.name}
-                </h1>
-
-                {/* Stars */}
-                <div className={`flex items-center gap-1 ${language === 'ar' ? 'flex-row-reverse justify-end' : ''}`}>
-                  {[1,2,3,4,5].map(s => (
-                    <Star key={s} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                  <span className="text-sm text-gray-500 ml-2">5.0 (2847+)</span>
-                </div>
-
-                {/* Price */}
-                <div className="text-3xl font-black text-primary">
-                  <PriceDisplay {...getPriceData(product.price)} />
-                </div>
-
-                {/* Description */}
-                {product.description && (
-                  <p className="text-gray-600 leading-relaxed text-sm">{product.description}</p>
-                )}
-
-                {/* Quantity */}
-                <div className={`flex items-center gap-3 ${language === 'ar' ? 'flex-row-reverse justify-end' : ''}`}>
-                  <span className="text-sm font-medium text-gray-700">
-                    {language === 'ar' ? 'الكمية:' : 'Quantity:'}
-                  </span>
-                  <div className="flex items-center border border-gray-200 rounded-full overflow-hidden">
-                    <button
-                      onClick={() => setQty(q => Math.max(1, q - 1))}
-                      className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                    >
-                      <Minus className="w-3.5 h-3.5" />
-                    </button>
-                    <span className="w-10 text-center font-bold text-sm">{qty}</span>
-                    <button
-                      onClick={() => setQty(q => q + 1)}
-                      className="w-9 h-9 flex items-center justify-center hover:bg-gray-100 transition-colors"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
+              {/* Product Info */}
+              <div>
+                {loading ? (
+                  <div className="space-y-4">
+                    <Skeleton className="h-8 w-3/4" />
+                    <Skeleton className="h-6 w-1/2" />
+                    <Skeleton className="h-10 w-1/3" />
+                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-12 w-full" />
+                    <Skeleton className="h-12 w-full" />
                   </div>
-                </div>
-
-                {/* Add to cart */}
-                <div className="flex flex-col gap-3 pt-2">
-                  <Button
-                    size="lg"
-                    onClick={handleAddToCart}
-                    disabled={!inStock}
-                    className="w-full rounded-full gap-2 text-base font-bold"
-                  >
-                    <ShoppingCart className="w-5 h-5" />
-                    {cartItem
-                      ? (language === 'ar' ? `تحديث السلة (${cartItem.quantity + qty})` : `Update Cart (${cartItem.quantity + qty})`)
-                      : (language === 'ar' ? 'أضف إلى السلة' : 'Add to Cart')
-                    }
-                  </Button>
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="w-full rounded-full text-base font-bold"
-                    onClick={() => { handleAddToCart(); navigate("/order"); }}
-                    disabled={!inStock}
-                  >
-                    {language === 'ar' ? 'اطلب الآن' : 'Buy Now'}
-                  </Button>
-                </div>
-
-                {/* Trust badges */}
-                <div className="grid grid-cols-3 gap-3 pt-2 border-t border-gray-100">
-                  {[
-                    { icon: '🚚', ar: 'شحن مجاني', en: 'Free Shipping' },
-                    { icon: '🔄', ar: 'ضمان 30 يوم', en: '30-Day Guarantee' },
-                    { icon: '🌿', ar: 'طبيعي 100%', en: '100% Natural' },
-                  ].map(b => (
-                    <div key={b.en} className="text-center text-xs text-gray-500">
-                      <div className="text-xl mb-1">{b.icon}</div>
-                      {language === 'ar' ? b.ar : b.en}
-                    </div>
-                  ))}
-                </div>
+                ) : product && (
+                  <ProductInfo
+                    productId={product.id}
+                    productName={productName}
+                    priceOverride={product.price}
+                    stockOverride={product.stock_quantity ?? 999}
+                    descriptionOverride={product.description ?? undefined}
+                    imageForCart={primaryImage}
+                  />
+                )}
               </div>
             </div>
-          )}
+          </section>
+
+          {/* Trust Badges */}
+          <section className="container mx-auto px-4 py-8 border-t">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {[
+                { icon: Shield, ar: 'منتج طبيعي 100%', en: '100% Natural Product' },
+                { icon: Truck, ar: 'شحن مجاني للخليج', en: 'Free GCC Shipping' },
+                { icon: Lock, ar: 'دفع آمن ومشفر', en: 'Secure Payment' },
+                { icon: RefreshCw, ar: 'ضمان 30 يوم', en: '30-Day Guarantee' },
+              ].map((b, i) => (
+                <Card key={i} className="p-4 text-center hover:shadow-md transition-shadow">
+                  <b.icon className="w-8 h-8 mx-auto mb-2 text-primary" />
+                  <h3 className="font-semibold text-sm">{language === 'ar' ? b.ar : b.en}</h3>
+                </Card>
+              ))}
+            </div>
+          </section>
+
+          {/* Product Tabs (Description, Ingredients, Specs, Reviews, How To) */}
+          <section className="container mx-auto px-4 py-8">
+            <ProductTabs productDescription={product?.description ?? undefined} />
+          </section>
+
+          {/* FAQ Section */}
+          <section className="container mx-auto px-4 py-8 max-w-3xl" id="faq">
+            <h2 className="text-2xl font-bold mb-6">
+              {language === 'ar' ? 'الأسئلة الشائعة' : 'Frequently Asked Questions'}
+            </h2>
+            <Accordion type="single" collapsible className="w-full">
+              {faqItems.map((item, i) => (
+                <AccordionItem key={i} value={`item-${i}`}>
+                  <AccordionTrigger className="text-right font-medium">
+                    {item.q}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">
+                    {item.a}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </section>
+
+          {/* SEO Rich Content */}
+          <section className="container mx-auto px-4 py-12 max-w-4xl border-t">
+            <article className="prose prose-lg dark:prose-invert mx-auto">
+              <h2 className="text-2xl font-bold mb-4">
+                {language === 'ar' ? `${productName} - علاج طبيعي لتساقط الشعر` : `${productName} - Natural Hair Loss Treatment`}
+              </h2>
+              {language === 'ar' ? (
+                <p className="text-muted-foreground leading-relaxed">
+                  {product?.description || 'منتج سفن جرين الطبيعي 100% لعناية الشعر. تركيبة فريدة من الأعشاب الطبيعية لعلاج تساقط الشعر وتكثيفه. نتائج مضمونة خلال 4 أسابيع من الاستخدام المنتظم.'}
+                </p>
+              ) : (
+                <p className="text-muted-foreground leading-relaxed">
+                  {product?.description || 'Seven Green 100% natural hair care product. Unique formula of natural herbs to treat hair loss and increase density. Guaranteed results within 4 weeks of regular use.'}
+                </p>
+              )}
+            </article>
+          </section>
         </main>
 
         <Footer />

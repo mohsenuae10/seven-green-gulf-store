@@ -3,7 +3,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { useLanguage } from '@/hooks/useLanguage';
 
-export const ProductTabs = () => {
+interface ProductTabsProps {
+  productDescription?: string;
+}
+
+export const ProductTabs = ({ productDescription }: ProductTabsProps = {}) => {
   const { language } = useLanguage();
 
   const ingredients = [
@@ -113,10 +117,10 @@ export const ProductTabs = () => {
           </h3>
           <div className="prose prose-sm dark:prose-invert max-w-none">
             <p>
-              {language === 'ar'
+              {productDescription || (language === 'ar'
                 ? 'صابونة سفن جرين المثلثة هي تركيبة فريدة من نوعها تجمع بين 7 أعشاب طبيعية تم اختيارها بعناية لعلاج مشاكل تساقط الشعر وتكثيفه. تتميز الصابونة بشكلها المثلث الفريد الذي يسهل الاستخدام والتطبيق.'
                 : 'Seven Green Triangle Soap is a unique formula combining 7 carefully selected natural herbs to treat hair loss and increase density. The soap features a unique triangular shape that makes it easy to use and apply.'
-              }
+              )}
             </p>
           </div>
         </div>
