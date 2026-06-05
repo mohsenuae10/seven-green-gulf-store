@@ -419,15 +419,15 @@ export const useLanguage = () => {
   return context;
 };
 
-/** Returns a function that prefixes paths with /en when in English mode */
+/** Returns a function that prefixes paths with /ar when in Arabic mode */
 export const useLangPath = () => {
   const { language } = useLanguage();
   return (path: string): string => {
-    if (language !== 'en') return path;
-    // /en + /path, but /en alone for root
-    if (path === '/') return '/en';
-    if (path.startsWith('/en')) return path; // already prefixed
-    return `/en${path}`;
+    if (language !== 'ar') return path;
+    // /ar + /path, but /ar alone for root
+    if (path === '/') return '/ar';
+    if (path.startsWith('/ar')) return path; // already prefixed
+    return `/ar${path}`;
   };
 };
 

@@ -37,8 +37,8 @@ Allow: /faq?lang=ar
 Allow: /how-to-use?lang=ar
 
 Allow: /privacy
-Allow: /en/
-Allow: /en/*
+Allow: /ar/
+Allow: /ar/*
 
 # Disallow admin and sensitive pages
 Disallow: /admin

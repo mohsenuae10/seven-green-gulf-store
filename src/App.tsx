@@ -54,17 +54,17 @@ const App = () => (
           <LanguageProvider>
             <ScrollToTop />
             <Routes>
-              {/* ── Arabic routes (default, no prefix) ── */}
+              {/* ── English routes (default, no prefix) ── */}
               <Route path="/" element={<Index />} />
               {pageRoutes.filter(r => r.path).map(r => (
                 <Route key={r.path} path={`/${r.path}`} element={r.element} />
               ))}
 
-              {/* ── English routes (/en/ prefix) ── */}
-              <Route path="/en" element={<Index />} />
-              <Route path="/en/" element={<Index />} />
+              {/* ── Arabic routes (/ar/ prefix) ── */}
+              <Route path="/ar" element={<Index />} />
+              <Route path="/ar/" element={<Index />} />
               {pageRoutes.filter(r => r.path).map(r => (
-                <Route key={`en-${r.path}`} path={`/en/${r.path}`} element={r.element} />
+                <Route key={`ar-${r.path}`} path={`/ar/${r.path}`} element={r.element} />
               ))}
 
               {/* ── Non-localized routes ── */}

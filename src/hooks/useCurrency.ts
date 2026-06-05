@@ -17,7 +17,7 @@ const currencies: Record<Currency, CurrencyData> = {
 };
 
 export function useCurrency() {
-  const [selectedCurrency, setSelectedCurrencyState] = useState<Currency>('SAR');
+  const [selectedCurrency, setSelectedCurrencyState] = useState<Currency>('USD');
 
   // Load currency from localStorage on mount
   useEffect(() => {
