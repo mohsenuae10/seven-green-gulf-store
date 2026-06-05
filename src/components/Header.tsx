@@ -24,29 +24,23 @@ const Header = () => {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 shrink-0">
+          <Link to="/" className="flex items-center gap-3 shrink-0 group">
             <img
               src="/images/sevengreen-logo.webp"
               alt="Seven Green"
-              className="h-10 w-auto object-contain"
-              onError={(e) => {
-                const target = e.currentTarget;
-                target.style.display = 'none';
-                const fallback = target.nextElementSibling as HTMLElement;
-                if (fallback) fallback.style.display = 'flex';
-              }}
+              className="h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
             />
-            {/* Fallback if image missing */}
-            <span
-              className="items-center gap-1.5 hidden"
-              style={{ display: 'none' }}
-            >
-              <span className="text-xl font-black tracking-tight text-primary font-english">SEVEN</span>
-              <span className="text-xl font-black tracking-tight text-green-700 font-english">GREEN</span>
-            </span>
+            <div className="flex flex-col leading-tight">
+              <span className="text-lg font-black tracking-widest text-primary font-english uppercase">
+                SEVEN GREEN
+              </span>
+              <span className="text-sm font-semibold tracking-wider text-green-700" style={{ fontFamily: "'Noto Sans SC', 'PingFang SC', sans-serif" }}>
+                七绿 · Qī Lǜ
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Nav */}

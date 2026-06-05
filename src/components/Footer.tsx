@@ -13,20 +13,20 @@ const Footer = () => {
           
           {/* Logo & About Section */}
           <div className="space-y-4">
-            <Link to="/">
+            <Link to="/" className="flex items-center gap-3 group">
               <img
                 src="/images/sevengreen-logo.webp"
                 alt="Seven Green"
-                className="h-14 w-auto object-contain"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  const next = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (next) next.style.removeProperty('display');
-                }}
+                className="h-16 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
               />
-              <span className="text-xl font-bold text-primary font-english" style={{ display: 'none' }}>
-                SEVEN GREEN
-              </span>
+              <div className="flex flex-col leading-tight">
+                <span className="text-lg font-black tracking-widest text-primary font-english uppercase">
+                  SEVEN GREEN
+                </span>
+                <span className="text-sm font-semibold tracking-wider text-green-700" style={{ fontFamily: "'Noto Sans SC', 'PingFang SC', sans-serif" }}>
+                  七绿 · Qī Lǜ
+                </span>
+              </div>
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed">
               {language === 'ar' 
