@@ -172,6 +172,19 @@
     max-width: 100vw;
   }
 
+  /*
+   * Fix: Prevent iOS Safari from auto-zooming when tapping input fields.
+   * iOS zooms in on any input with font-size < 16px.
+   * We force 16px on mobile and restore smaller size on desktop.
+   */
+  @media screen and (max-width: 768px) {
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+  }
+
   /* Arabic RTL Support with mobile optimization */
   [dir="rtl"] {
     direction: rtl;

@@ -48,12 +48,13 @@ const ProductDetail = () => {
   const [productContent, setProductContent] = useState<{
     nameEn: string;
     descriptionEn: string;
+    contentImages: string[];
     features: string[];
     ingredients: ProductIngredient[];
     specs: ProductSpec[];
     howToUse: string[];
     faq: ProductFaq[];
-  }>({ nameEn: '', descriptionEn: '', features: [], ingredients: [], specs: [], howToUse: [], faq: [] });
+  }>({ nameEn: '', descriptionEn: '', contentImages: [], features: [], ingredients: [], specs: [], howToUse: [], faq: [] });
 
   useEffect(() => {
     if (!id) { setNotFound(true); return; }
@@ -81,6 +82,7 @@ const ProductDetail = () => {
         setProductContent({
           nameEn:        c.nameEn        || '',
           descriptionEn: c.descriptionEn || '',
+          contentImages: Array.isArray(c.contentImages) ? c.contentImages : [],
           features:    Array.isArray(c.features)    ? c.features    : [],
           ingredients: Array.isArray(c.ingredients) ? c.ingredients : [],
           specs:       Array.isArray(c.specs)       ? c.specs       : [],
@@ -282,6 +284,24 @@ const ProductDetail = () => {
                   </AccordionItem>
                 ))}
               </Accordion>
+            </section>
+          )}
+
+          {/* ── Content Images (full-width, below description) ── */}
+          {productContent.contentImages.length > 0 && (
+            <section className="container mx-auto px-4 py-8 max-w-3xl">
+              <div className="space-y-4">
+                {productContent.contentImages.map((url, i) => (
+                  <img
+                    key={i}
+                    src={url}
+                    alt={`${productName} - ${i + 1}`}
+                    className="w-full h-auto rounded-2xl shadow-sm object-cover"
+                    loading="lazy"
+                    onError={e => { e.currentTarget.style.display = 'none'; }}
+                  />
+                ))}
+              </div>
             </section>
           )}
 

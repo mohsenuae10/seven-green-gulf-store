@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, Loader2, Lock } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
+import type { StripeElementLocale } from "@stripe/stripe-js";
 
 interface StripePaymentFormProps {
   clientSecret: string;
@@ -101,8 +102,11 @@ const CheckoutForm = ({ orderId, amountLabel, onBack }: Omit<StripePaymentFormPr
 };
 
 const StripePaymentForm = ({ clientSecret, orderId, amountLabel, onBack }: StripePaymentFormProps) => {
+  const { language } = useLanguage();
+
   const options: StripeElementsOptions = {
     clientSecret,
+    locale: (language === 'ar' ? 'ar' : 'en') as StripeElementLocale,
     appearance: {
       theme: "stripe",
       variables: { colorPrimary: "#16a34a", borderRadius: "8px" },

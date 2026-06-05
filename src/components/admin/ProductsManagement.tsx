@@ -49,8 +49,10 @@ interface StagedImage {
 export function ProductsManagement() {
   const { formatPrice, getCurrentCurrency } = useCurrency();
   const { toast } = useToast();
-  const fileInputRef  = useRef<HTMLInputElement>(null);
-  const videoInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef        = useRef<HTMLInputElement>(null);
+  const videoInputRef       = useRef<HTMLInputElement>(null);
+  const contentImageInputRef = useRef<HTMLInputElement>(null);
+  const [uploadingContent, setUploadingContent] = useState(false);
 
   // List
   const [products, setProducts] = useState<Product[]>([]);
@@ -121,8 +123,9 @@ export function ProductsManagement() {
 
   /* ── Fetch & Save product content ── */
   const emptyContent = () => ({
-    nameEn:       "",
-    descriptionEn:"",
+    nameEn:        "",
+    descriptionEn: "",
+    contentImages: [] as string[],
     features:    ["", "", "", "", "", ""] as string[],
     ingredients: Array(7).fill(null).map(() => ({ name: "", benefit: "" })),
     specs:       Array(5).fill(null).map(() => ({ label: "", value: "" })),
@@ -140,6 +143,7 @@ export function ProductsManagement() {
       setContent({
         nameEn:        c.nameEn        || "",
         descriptionEn: c.descriptionEn || "",
+        contentImages: Array.isArray(c.contentImages) ? c.contentImages : [],
         features:    Array.isArray(c.features)    ? [...c.features,    ...base.features].slice(0, 6)    : base.features,
         ingredients: Array.isArray(c.ingredients) ? [...c.ingredients, ...base.ingredients].slice(0, 7) : base.ingredients,
         specs:       Array.isArray(c.specs)       ? [...c.specs,       ...base.specs].slice(0, 5)       : base.specs,
@@ -165,6 +169,7 @@ export function ProductsManagement() {
         content: {
           nameEn:        content.nameEn.trim(),
           descriptionEn: content.descriptionEn.trim(),
+          contentImages: content.contentImages.filter(u => u?.trim()),
           features:    content.features.filter(f => f?.trim()),
           ingredients: content.ingredients.filter(i => i?.name?.trim()),
           specs:       content.specs.filter(s => s?.label?.trim()),
@@ -193,7 +198,7 @@ export function ProductsManagement() {
     setImages([]);
     setStagedImages([]);
     setContent(emptyContent());
-    setContentTab("english");
+    setContentTab("features");
     setMode("create");
   };
 
@@ -470,6 +475,25 @@ export function ProductsManagement() {
     setStagedImages(prev => [...prev, { file, preview }]);
   };
 
+  /* ── Upload content/detail images ── */
+  const uploadContentImage = async (file: File) => {
+    setUploadingContent(true);
+    try {
+      const ext  = file.name.split(".").pop();
+      const pid  = editingProduct?.id || "staged";
+      const path = `${pid}/content-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from("product-images").upload(path, file);
+      if (error) throw error;
+      const { data: { publicUrl } } = supabase.storage.from("product-images").getPublicUrl(path);
+      setContent(c => ({ ...c, contentImages: [...c.contentImages, publicUrl] }));
+      toast({ title: "تم الرفع", description: "تم رفع صورة المحتوى ✓" });
+    } catch {
+      toast({ title: "خطأ", description: "فشل في رفع الصورة", variant: "destructive" });
+    } finally {
+      setUploadingContent(false);
+    }
+  };
+
   const removeStagedImage = (idx: number) => {
     setStagedImages(prev => {
       URL.revokeObjectURL(prev[idx].preview);
@@ -620,99 +644,114 @@ export function ProductsManagement() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
 
-            {/* ─ Section 1: Basic Info ─ */}
+            {/* ─ Section 1: الاسم (عربي + إنجليزي) ─ */}
             <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-base font-semibold text-gray-700">المعلومات الأساسية</CardTitle>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">١</span>
+                  الاسم
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <Label>اسم المنتج *</Label>
+                    <Label className="text-xs flex items-center gap-1">🇸🇦 عربي *</Label>
                     <Input
                       value={form.name}
                       onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                       placeholder="صابونة سفن جرين..."
-                      required
+                      dir="rtl" required
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>السعر ({getCurrentCurrency().symbol}) *</Label>
+                    <Label className="text-xs flex items-center gap-1">🇬🇧 English</Label>
                     <Input
-                      type="number" step="0.01" min="0"
-                      value={form.price}
-                      onChange={e => setForm(f => ({ ...f, price: e.target.value }))}
-                      placeholder="71"
-                      required
+                      value={content.nameEn}
+                      onChange={e => setContent(c => ({ ...c, nameEn: e.target.value }))}
+                      placeholder="Seven Green Soap..."
+                      dir="ltr"
                     />
                   </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <Label>كمية المخزون</Label>
-                    <Input
-                      type="number" min="0"
-                      value={form.stock_quantity}
-                      onChange={e => setForm(f => ({ ...f, stock_quantity: e.target.value }))}
-                      placeholder="100"
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label>رابط الصورة الرئيسية (اختياري)</Label>
-                    <Input
-                      type="url"
-                      value={form.image_url}
-                      onChange={e => setForm(f => ({ ...f, image_url: e.target.value }))}
-                      placeholder="https://..."
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3 pt-1">
-                  <Switch
-                    id="is_active"
-                    checked={form.is_active}
-                    onCheckedChange={v => setForm(f => ({ ...f, is_active: v }))}
-                  />
-                  <Label htmlFor="is_active" className="cursor-pointer">
-                    {form.is_active ? "المنتج نشط (مرئي للعملاء)" : "المنتج مخفي"}
-                  </Label>
                 </div>
               </CardContent>
             </Card>
 
-            {/* ─ Section 2: Description ─ */}
+            {/* ─ Section 2: السعر والمخزون ─ */}
             <Card>
-              <CardHeader className="pb-3">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">٢</span>
+                  السعر والمخزون
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">السعر ({getCurrentCurrency().symbol}) *</Label>
+                    <Input type="number" step="0.01" min="0" value={form.price}
+                      onChange={e => setForm(f => ({ ...f, price: e.target.value }))}
+                      placeholder="71" required />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">المخزون</Label>
+                    <Input type="number" min="0" value={form.stock_quantity}
+                      onChange={e => setForm(f => ({ ...f, stock_quantity: e.target.value }))}
+                      placeholder="100" />
+                  </div>
+                  <div className="space-y-1.5 flex flex-col justify-end">
+                    <div className="flex items-center gap-2 h-10">
+                      <Switch id="is_active" checked={form.is_active}
+                        onCheckedChange={v => setForm(f => ({ ...f, is_active: v }))} />
+                      <Label htmlFor="is_active" className="text-xs cursor-pointer">
+                        {form.is_active ? "✅ نشط" : "⛔ مخفي"}
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* ─ Section 3: الوصف (عربي + إنجليزي) ─ */}
+            <Card>
+              <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-base font-semibold text-gray-700">الوصف</CardTitle>
-                  <Button
-                    type="button" variant="outline" size="sm"
-                    onClick={generateDesc} disabled={generatingDesc}
-                    className="gap-1.5 text-xs"
-                  >
-                    {generatingDesc
-                      ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      : <Sparkles className="h-3.5 w-3.5" />
-                    }
-                    {generatingDesc ? "جاري التوليد..." : "توليد بالذكاء الاصطناعي"}
-                  </Button>
+                  <CardTitle className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">٣</span>
+                    الوصف
+                  </CardTitle>
+                  <div className="flex gap-2">
+                    <Button type="button" variant="outline" size="sm"
+                      onClick={generateDesc} disabled={generatingDesc}
+                      className="gap-1 text-xs">
+                      {generatingDesc ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                      {generatingDesc ? "..." : "AI"}
+                    </Button>
+                    <Button type="button" size="sm"
+                      onClick={generateFullAI} disabled={generatingFull}
+                      className="gap-1 text-xs bg-violet-600 hover:bg-violet-700">
+                      {generatingFull ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
+                      {generatingFull ? "..." : "توليد الكل ✨"}
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Input
-                  value={aiKeywords}
-                  onChange={e => setAiKeywords(e.target.value)}
-                  placeholder="كلمات مفتاحية للذكاء الاصطناعي: طبيعي، للشعر، تساقط..."
-                  className="text-sm"
-                />
-                <Textarea
-                  value={form.description}
-                  onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                  rows={4}
-                  placeholder="اكتب وصف المنتج يدوياً أو ولّده بالذكاء الاصطناعي..."
-                />
+                <Input value={aiKeywords} onChange={e => setAiKeywords(e.target.value)}
+                  placeholder="كلمات مفتاحية للذكاء الاصطناعي..." className="text-xs" />
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">🇸🇦 وصف عربي</Label>
+                    <Textarea value={form.description}
+                      onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+                      rows={5} placeholder="اكتب الوصف بالعربي..." dir="rtl" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label className="text-xs">🇬🇧 English Description</Label>
+                    <Textarea value={content.descriptionEn}
+                      onChange={e => setContent(c => ({ ...c, descriptionEn: e.target.value }))}
+                      rows={5} placeholder="Write description in English..." dir="ltr" />
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
@@ -841,6 +880,67 @@ export function ProductsManagement() {
               </CardContent>
             </Card>
 
+            {/* ─ Section 4: صور المحتوى (تظهر أسفل الوصف في صفحة المنتج) ─ */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-semibold text-gray-600 flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center font-bold">٤</span>
+                  صور المحتوى
+                  <span className="text-xs font-normal text-muted-foreground">(تظهر بالطول أسفل الوصف في صفحة المنتج)</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div
+                  className="border-2 border-dashed border-orange-200 hover:border-orange-400 rounded-xl p-4 text-center cursor-pointer transition-colors"
+                  onClick={() => contentImageInputRef.current?.click()}
+                >
+                  {uploadingContent
+                    ? <Loader2 className="w-6 h-6 animate-spin mx-auto text-orange-400" />
+                    : <><Image className="w-6 h-6 mx-auto mb-1 text-orange-400" />
+                      <p className="text-xs text-gray-500">رفع صور محتوى (بنر، تفاصيل، مكونات...)</p>
+                      <p className="text-[10px] text-gray-400 mt-0.5">يُفضل صور بالعرض الكامل</p></>
+                  }
+                </div>
+                <input ref={contentImageInputRef} type="file" accept="image/*" multiple className="hidden"
+                  onChange={e => {
+                    Array.from(e.target.files || []).forEach(uploadContentImage);
+                    e.target.value = "";
+                  }} />
+
+                {/* URL input */}
+                <div className="flex gap-2">
+                  <Input placeholder="أو أضف رابط صورة مباشرة..." className="text-xs flex-1"
+                    onKeyDown={e => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const val = (e.currentTarget as HTMLInputElement).value.trim();
+                        if (val) {
+                          setContent(c => ({ ...c, contentImages: [...c.contentImages, val] }));
+                          (e.currentTarget as HTMLInputElement).value = "";
+                        }
+                      }
+                    }} />
+                  <span className="text-xs text-gray-400 self-center">Enter</span>
+                </div>
+
+                {/* Preview */}
+                {content.contentImages.length > 0 && (
+                  <div className="space-y-2">
+                    {content.contentImages.map((url, i) => (
+                      <div key={i} className="relative group rounded-lg overflow-hidden">
+                        <img src={url} alt="" className="w-full h-auto rounded-lg object-cover max-h-48"
+                          onError={e => { e.currentTarget.style.opacity = '0.3'; }} />
+                        <button type="button" onClick={() => setContent(c => ({ ...c, contentImages: c.contentImages.filter((_, j) => j !== i) }))}
+                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             {/* ─ Save Button ─ */}
             <div className="flex gap-3 pb-2">
               <Button type="submit" className="flex-1 gap-2" disabled={saving}>
@@ -890,42 +990,13 @@ export function ProductsManagement() {
               </CardHeader>
               <CardContent>
                 <Tabs value={contentTab} onValueChange={setContentTab}>
-                  <TabsList className="w-full grid grid-cols-6 text-xs">
-                    <TabsTrigger value="english">🇬🇧 إنجليزي</TabsTrigger>
+                  <TabsList className="w-full grid grid-cols-5 text-xs">
                     <TabsTrigger value="features">الفوائد</TabsTrigger>
                     <TabsTrigger value="ingredients">المكونات</TabsTrigger>
                     <TabsTrigger value="specs">المواصفات</TabsTrigger>
                     <TabsTrigger value="howto">الاستخدام</TabsTrigger>
                     <TabsTrigger value="faq">الأسئلة</TabsTrigger>
                   </TabsList>
-
-                  {/* English Name & Description */}
-                  <TabsContent value="english" className="space-y-4 pt-3">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs text-blue-700">
-                      هذه الحقول تظهر عندما يختار المستخدم اللغة الإنجليزية
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-semibold">اسم المنتج — إنجليزي</Label>
-                      <Input
-                        value={content.nameEn}
-                        onChange={e => setContent(c => ({ ...c, nameEn: e.target.value }))}
-                        placeholder="Seven Green Triangle Soap"
-                        className="text-sm"
-                        dir="ltr"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-semibold">وصف المنتج — إنجليزي</Label>
-                      <Textarea
-                        value={content.descriptionEn}
-                        onChange={e => setContent(c => ({ ...c, descriptionEn: e.target.value }))}
-                        placeholder="100% natural herbal shampoo bar with cypress and usman grass..."
-                        rows={4}
-                        className="text-sm"
-                        dir="ltr"
-                      />
-                    </div>
-                  </TabsContent>
 
                   {/* Features */}
                   <TabsContent value="features" className="space-y-2 pt-3">

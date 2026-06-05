@@ -318,6 +318,7 @@ const Order = () => {
               <CardTitle className={`mobile-subheading ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                 {language === 'ar' ? 'منتجاتك' : 'Your Items'}
               </CardTitle>
+
               {/* Cart items list */}
               <div className="space-y-2 mt-3">
                 {items.map(item => (
@@ -348,7 +349,7 @@ const Order = () => {
               {error && (
                 <Alert variant="destructive" className="mb-6">
                   <AlertCircle className="h-4 w-4" />
-                  <AlertDescription className="text-right">
+                  <AlertDescription className={language === 'ar' ? 'text-right' : 'text-left'}>
                     {error}
                   </AlertDescription>
                 </Alert>
