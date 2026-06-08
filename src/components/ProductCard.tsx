@@ -1,12 +1,13 @@
 import LangLink from "@/components/LangLink";
-import { ShoppingCart, Eye, Star } from "lucide-react";
+import { ShoppingCart, Eye, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
-import { useLanguage } from "@/hooks/useLanguage";
+import { useLanguage, useLangPath } from "@/hooks/useLanguage";
 import { useCurrency } from "@/hooks/useCurrency";
 import { PriceDisplay } from "@/components/PriceDisplay";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
   id: string;
@@ -21,9 +22,11 @@ interface ProductCardProps {
 
 const ProductCard = ({ id, name, nameEn, price, image, description, stockQuantity }: ProductCardProps) => {
   const { language } = useLanguage();
+  const langPath = useLangPath();
   const { getPriceData } = useCurrency();
   const { addItem, items } = useCart();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const displayName = language === 'ar' ? name : (nameEn || name);
   const inCart = items.find(i => i.productId === id);
@@ -43,6 +46,13 @@ const ProductCard = ({ id, name, nameEn, price, image, description, stockQuantit
       title: language === 'ar' ? 'تمت الإضافة للسلة ✓' : 'Added to cart ✓',
       description: displayName,
     });
+  };
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem({ productId: id, name, nameEn: nameEn || name, price, image });
+    navigate(langPath('/order'));
   };
 
   return (
@@ -100,25 +110,42 @@ const ProductCard = ({ id, name, nameEn, price, image, description, stockQuantit
           <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">{description}</p>
         )}
 
-        {/* Price + Cart */}
-        <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
+        {/* Price + Buttons */}
+        <div className="mt-auto pt-2 border-t border-gray-50 space-y-2">
           <div className="text-xl font-black text-primary">
             <PriceDisplay {...getPriceData(price)} />
           </div>
-          <Button
-            size="sm"
-            onClick={handleAddToCart}
-            disabled={!inStock}
-            className={`rounded-full gap-1.5 text-xs px-3 ${
-              inCart ? 'bg-green-600 hover:bg-green-700' : 'bg-primary hover:bg-primary/90'
-            }`}
-          >
-            <ShoppingCart className="w-3.5 h-3.5" />
-            {inCart
-              ? (language === 'ar' ? `في السلة (${inCart.quantity})` : `In Cart (${inCart.quantity})`)
-              : (language === 'ar' ? 'أضف للسلة' : 'Add to Cart')
-            }
-          </Button>
+          <div className="grid grid-cols-2 gap-1.5">
+            <Button
+              size="sm"
+              onClick={handleAddToCart}
+              disabled={!inStock}
+              className={`rounded-full gap-1 text-xs px-2 ${
+                inCart
+                  ? 'bg-green-600 hover:bg-green-700 text-white'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+              }`}
+            >
+              <ShoppingCart className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">
+                {inCart
+                  ? (language === 'ar' ? `السلة (${inCart.quantity})` : `Cart (${inCart.quantity})`)
+                  : (language === 'ar' ? 'السلة' : 'Cart')
+                }
+              </span>
+            </Button>
+            <Button
+              size="sm"
+              onClick={handleBuyNow}
+              disabled={!inStock}
+              className="rounded-full gap-1 text-xs px-2 bg-primary hover:bg-primary/90 text-white"
+            >
+              <Zap className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">
+                {language === 'ar' ? 'اشتر الآن' : 'Buy Now'}
+              </span>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

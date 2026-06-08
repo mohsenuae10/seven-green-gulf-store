@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import MobileNav from "@/components/MobileNav";
 import Footer from "@/components/Footer";
 import HomeBanner from "@/components/HomeBanner";
 import BottomBanner from "@/components/BottomBanner";
 import ProductCard from "@/components/ProductCard";
-import { useLanguage } from "@/hooks/useLanguage";
+import { useLanguage, useLangPath } from "@/hooks/useLanguage";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronRight, ChevronLeft, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/contexts/CartContext";
 
 interface ProductWithImage {
   id: string;
@@ -25,6 +26,9 @@ interface ProductWithImage {
 
 const Index = () => {
   const { language } = useLanguage();
+  const langPath = useLangPath();
+  const navigate = useNavigate();
+  const { totalItems, totalPrice } = useCart();
   const [products, setProducts] = useState<ProductWithImage[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -109,7 +113,42 @@ const Index = () => {
         })}</script>
       </Helmet>
 
-      <div className="min-h-screen flex flex-col bg-white">
+      {/* Fixed animated bottom checkout bar */}
+      <div
+        className={`fixed bottom-0 left-0 right-0 z-50 transition-transform duration-500 ease-in-out ${
+          totalItems > 0 ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
+        <div className="bg-gradient-to-r from-green-700 to-green-500 shadow-2xl">
+          <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-white">
+              <div className="relative">
+                <ShoppingBag className="w-6 h-6" />
+                <span className="absolute -top-1.5 -right-1.5 bg-white text-green-700 text-xs font-black rounded-full w-4 h-4 flex items-center justify-center leading-none">
+                  {totalItems}
+                </span>
+              </div>
+              <div className={language === 'ar' ? 'text-right' : 'text-left'}>
+                <p className="text-xs font-medium opacity-90">
+                  {language === 'ar' ? `${totalItems} منتج في السلة` : `${totalItems} item${totalItems > 1 ? 's' : ''} in cart`}
+                </p>
+                <p className="text-sm font-black">
+                  {totalPrice.toFixed(2)} {language === 'ar' ? 'ريال' : 'SAR'}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate(langPath('/order'))}
+              className="flex items-center gap-2 bg-white text-green-700 font-black text-sm px-5 py-2.5 rounded-full shadow-md hover:bg-green-50 active:scale-95 transition-all duration-150 animate-pulse hover:animate-none"
+            >
+              {language === 'ar' ? 'اتمام الشراء' : 'Complete Purchase'}
+              <span className="text-base">{language === 'ar' ? '←' : '→'}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className={`min-h-screen flex flex-col bg-white transition-all duration-500 ${totalItems > 0 ? 'pb-16' : ''}`}>
         <Header />
         <MobileNav />
 
