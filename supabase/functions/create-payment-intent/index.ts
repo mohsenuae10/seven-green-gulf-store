@@ -57,14 +57,14 @@ serve(async (req) => {
     );
 
     // ── Resolve cart items ──────────────────────────────────────────────────
-    let resolvedItems: { productId: string; quantity: number; unitPrice: number; name: string }[] = [];
+    let resolvedItems: { productId: string; quantity: number; unitPrice: number; name: string; imageUrl: string | null }[] = [];
 
     if (cartItems && cartItems.length > 0) {
       // Multi-product path: fetch all products by ID from DB
       const productIds = cartItems.map(i => i.productId);
       const { data: products, error: productError } = await supabase
         .from("products")
-        .select("id, name, price")
+        .select("id, name, price, image_url")
         .in("id", productIds)
         .eq("is_active", true);
 
@@ -84,6 +84,7 @@ serve(async (req) => {
           quantity: qty,
           unitPrice: Number(prod.price),
           name: prod.name,
+          imageUrl: prod.image_url ?? null,
         });
       }
     } else {
@@ -94,7 +95,7 @@ serve(async (req) => {
       }
       const { data: products, error: productError } = await supabase
         .from("products")
-        .select("id, name, price")
+        .select("id, name, price, image_url")
         .eq("is_active", true)
         .order("updated_at", { ascending: false })
         .limit(1);
@@ -107,6 +108,7 @@ serve(async (req) => {
         quantity: qty,
         unitPrice: Number(products[0].price),
         name: products[0].name,
+        imageUrl: products[0].image_url ?? null,
       });
     }
 
@@ -161,6 +163,8 @@ serve(async (req) => {
     const orderItemsPayload = resolvedItems.map(i => ({
       order_id: orderData.id,
       product_id: i.productId,
+      product_name: i.name,
+      product_image_url: i.imageUrl,
       quantity: i.quantity,
       unit_price: i.unitPrice,
       total_price: Math.round(i.unitPrice * i.quantity * 100) / 100,

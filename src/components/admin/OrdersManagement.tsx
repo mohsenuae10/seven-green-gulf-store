@@ -18,10 +18,8 @@ interface OrderItem {
   quantity: number;
   unit_price: number;
   total_price: number;
-  products: {
-    name: string;
-    image_url: string | null;
-  } | null;
+  product_name: string | null;
+  product_image_url: string | null;
 }
 
 interface Order {
@@ -57,7 +55,7 @@ export function OrdersManagement() {
         .from('orders')
         .select(`
           *,
-          order_items(quantity, unit_price, total_price, products(name, image_url))
+          order_items(quantity, unit_price, total_price, product_name, product_image_url)
         `)
         .order('created_at', { ascending: false });
 
@@ -401,10 +399,10 @@ export function OrdersManagement() {
                         <div className="space-y-2">
                           {order.order_items.map((item, idx) => (
                             <div key={idx} className="flex items-center gap-3 p-2 rounded-lg bg-gray-50">
-                              {item.products?.image_url ? (
+                              {item.product_image_url ? (
                                 <img
-                                  src={item.products.image_url}
-                                  alt={item.products.name}
+                                  src={item.product_image_url}
+                                  alt={item.product_name || 'منتج'}
                                   className="w-12 h-12 rounded-lg object-cover border border-gray-200 shrink-0"
                                   onError={(e) => { e.currentTarget.style.display = 'none'; }}
                                 />
@@ -415,7 +413,7 @@ export function OrdersManagement() {
                               )}
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium truncate">
-                                  {item.products?.name || 'منتج'}
+                                  {item.product_name || 'منتج'}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
                                   الكمية: {item.quantity} × {item.unit_price} ريال
