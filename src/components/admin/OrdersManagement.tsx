@@ -14,6 +14,16 @@ import {
 } from "@/components/ui/select";
 import { Eye, Package, User, MapPin, Phone, Mail, Calendar, CreditCard, Copy, Bell } from "lucide-react";
 
+interface OrderItem {
+  quantity: number;
+  unit_price: number;
+  total_price: number;
+  products: {
+    name: string;
+    image_url: string | null;
+  } | null;
+}
+
 interface Order {
   id: string;
   customer_name: string;
@@ -28,6 +38,7 @@ interface Order {
   created_at: string;
   updated_at: string;
   total_items?: number;
+  order_items?: OrderItem[];
 }
 
 export function OrdersManagement() {
@@ -46,7 +57,7 @@ export function OrdersManagement() {
         .from('orders')
         .select(`
           *,
-          order_items(quantity)
+          order_items(quantity, unit_price, total_price, products(name, image_url))
         `)
         .order('created_at', { ascending: false });
 
@@ -379,6 +390,45 @@ export function OrdersManagement() {
                         </div>
                       </div>
                     </div>
+
+                    {/* Products in this order */}
+                    {order.order_items && order.order_items.length > 0 && (
+                      <div className="border-t pt-4">
+                        <p className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-1">
+                          <Package className="h-3.5 w-3.5" />
+                          المنتجات المطلوبة
+                        </p>
+                        <div className="space-y-2">
+                          {order.order_items.map((item, idx) => (
+                            <div key={idx} className="flex items-center gap-3 p-2 rounded-lg bg-gray-50">
+                              {item.products?.image_url ? (
+                                <img
+                                  src={item.products.image_url}
+                                  alt={item.products.name}
+                                  className="w-12 h-12 rounded-lg object-cover border border-gray-200 shrink-0"
+                                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                                />
+                              ) : (
+                                <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                                  <Package className="h-5 w-5 text-primary" />
+                                </div>
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium truncate">
+                                  {item.products?.name || 'منتج'}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  الكمية: {item.quantity} × {item.unit_price} ريال
+                                </p>
+                              </div>
+                              <span className="text-sm font-semibold text-primary shrink-0">
+                                {item.total_price} ريال
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {/* Order Summary */}
                     <div className="border-t pt-4">
