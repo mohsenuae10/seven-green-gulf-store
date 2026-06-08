@@ -137,13 +137,28 @@ const Index = () => {
                 </p>
               </div>
             </div>
-            <button
-              onClick={() => navigate(langPath('/order'))}
-              className="flex items-center gap-2 bg-white text-green-700 font-black text-sm px-5 py-2.5 rounded-full shadow-md hover:bg-green-50 active:scale-95 transition-all duration-150 animate-pulse hover:animate-none"
+            {/* Snake running-light border button */}
+            <div
+              className="relative p-[2px] rounded-full overflow-hidden flex-shrink-0"
+              style={{ background: '#166534' }}
             >
-              {language === 'ar' ? 'اتمام الشراء' : 'Complete Purchase'}
-              <span className="text-base">{language === 'ar' ? '←' : '→'}</span>
-            </button>
+              {/* Rotating light segment — creates the "snake" border effect */}
+              <div
+                className="absolute animate-spin"
+                style={{
+                  inset: '-6px',
+                  background: 'conic-gradient(from 0deg, transparent 0%, rgba(255,255,255,0.95) 18%, transparent 36%)',
+                  animationDuration: '1.6s',
+                }}
+              />
+              <button
+                onClick={() => navigate(langPath('/order'))}
+                className="relative z-10 flex items-center gap-2 bg-white text-green-700 font-black text-sm px-5 py-2.5 rounded-full whitespace-nowrap active:scale-95 transition-transform duration-150"
+              >
+                {language === 'ar' ? 'اتمام الشراء' : 'Complete Purchase'}
+                <span className="text-base">{language === 'ar' ? '←' : '→'}</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -56,7 +56,7 @@ const ProductCard = ({ id, name, nameEn, price, image, description, stockQuantit
   };
 
   return (
-    <div className="group relative bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col">
+    <div className="group relative bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col" onClick={() => {}}>
       {/* Image */}
       <LangLink to={`/product/${id}`} className="block relative overflow-hidden bg-gray-50">
         <div className="aspect-square">
