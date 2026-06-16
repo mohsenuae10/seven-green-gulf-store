@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { useCurrency } from "@/hooks/useCurrency";
+import { countries } from "@/data/countries";
 import {
   Dialog,
   DialogContent,
@@ -265,8 +266,15 @@ export function ShippingManagement() {
   );
 }
 
+const getCountryInfo = (code: string) => {
+  const found = countries.find(c => c.code === code);
+  return found
+    ? { flag: found.flag, nameAr: found.nameAr }
+    : { flag: "🌍", nameAr: code };
+};
+
 // Component for orders ready to ship
-function OrderShippingCard({ 
+function OrderShippingCard({
   order, 
   onShipping, 
   processing, 
@@ -294,12 +302,16 @@ function OrderShippingCard({
   return (
     <Card className="relative border-amber-200 bg-amber-50">
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <Package className="h-4 w-4 text-primary" />
             <CardTitle className="text-lg font-mono">
               #{order.id.slice(-8)}
             </CardTitle>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800">
+              <span className="text-xl leading-none">{getCountryInfo(order.country).flag}</span>
+              <span className="text-sm font-semibold">{getCountryInfo(order.country).nameAr}</span>
+            </div>
           </div>
           <Badge variant="secondary">جاهز للشحن</Badge>
         </div>
@@ -325,12 +337,19 @@ function OrderShippingCard({
           </div>
           
           <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <MapPin className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">{order.country}, {order.city}</span>
+            <div className="flex items-start gap-2">
+              <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-base leading-none">{getCountryInfo(order.country).flag}</span>
+                  <span className="font-semibold text-sm">{getCountryInfo(order.country).nameAr}</span>
+                  <span className="text-muted-foreground text-xs">({order.country})</span>
+                </div>
+                <div className="text-sm text-muted-foreground mt-0.5">{order.city}</div>
+              </div>
             </div>
             <div className="flex items-start gap-2">
-              <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+              <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">{order.address}</span>
             </div>
             <div className="flex items-center gap-2">
@@ -427,12 +446,16 @@ function ShippedOrderCard({ order, formatPrice }: { order: Order; formatPrice: (
   return (
     <Card className="relative border-green-200 bg-green-50">
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
             <Truck className="h-4 w-4 text-green-600" />
             <CardTitle className="text-lg font-mono">
               #{order.id.slice(-8)}
             </CardTitle>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800">
+              <span className="text-xl leading-none">{getCountryInfo(order.country).flag}</span>
+              <span className="text-sm font-semibold">{getCountryInfo(order.country).nameAr}</span>
+            </div>
           </div>
           <Badge className="bg-green-100 text-green-800">تم الشحن</Badge>
         </div>

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/components/ui/use-toast";
 import { useCurrency } from "@/hooks/useCurrency";
+import { countries } from "@/data/countries";
 import {
   Select,
   SelectContent,
@@ -38,6 +39,13 @@ interface Order {
   total_items?: number;
   order_items?: OrderItem[];
 }
+
+const getCountryInfo = (code: string) => {
+  const found = countries.find(c => c.code === code);
+  return found
+    ? { flag: found.flag, nameAr: found.nameAr }
+    : { flag: "🌍", nameAr: code };
+};
 
 export function OrdersManagement() {
   const { formatPrice } = useCurrency();
@@ -318,12 +326,17 @@ export function OrdersManagement() {
               {orders.map((order) => (
                 <Card key={order.id} className="relative">
                   <CardHeader className="pb-3">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
                       <div className="flex items-center gap-2">
                         <Package className="h-4 w-4 text-primary" />
                         <CardTitle className="text-lg font-mono">
                           #{order.id.slice(-8)}
                         </CardTitle>
+                        {/* Country flag + Arabic name badge */}
+                        <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800">
+                          <span className="text-xl leading-none">{getCountryInfo(order.country).flag}</span>
+                          <span className="text-sm font-semibold">{getCountryInfo(order.country).nameAr}</span>
+                        </div>
                       </div>
                       <div className="flex gap-2">
                         {getStatusBadge(order.status)}
@@ -365,12 +378,19 @@ export function OrdersManagement() {
                       </div>
                       
                       <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-sm">{order.country}, {order.city}</span>
+                        <div className="flex items-start gap-2">
+                          <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-base leading-none">{getCountryInfo(order.country).flag}</span>
+                              <span className="font-semibold text-sm">{getCountryInfo(order.country).nameAr}</span>
+                              <span className="text-muted-foreground text-xs">({order.country})</span>
+                            </div>
+                            <div className="text-sm text-muted-foreground mt-0.5">{order.city}</div>
+                          </div>
                         </div>
                         <div className="flex items-start gap-2">
-                          <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+                          <MapPin className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
                           <span className="text-sm text-muted-foreground">{order.address}</span>
                         </div>
                         <div className="flex items-center gap-2">
