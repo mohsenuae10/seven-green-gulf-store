@@ -23,6 +23,8 @@ import Compare from "./pages/Compare";
 import Privacy from "./pages/Privacy";
 import Products from "./pages/Products";
 import ProductDetail from "./pages/ProductDetail";
+import SoapLanding from "./pages/landing/SoapLanding";
+import ShampooLanding from "./pages/landing/ShampooLanding";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +40,8 @@ const pageRoutes = [
   { path: "compare",     element: <Compare /> },
   { path: "products",    element: <Products /> },
   { path: "product/:id", element: <ProductDetail /> },
+  { path: "lp/soap",    element: <SoapLanding /> },
+  { path: "lp/shampoo", element: <ShampooLanding /> },
   { path: "order",           element: <Order /> },
   { path: "payment-success", element: <PaymentSuccess /> },
   { path: "privacy",         element: <Privacy /> },
