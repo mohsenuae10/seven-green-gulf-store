@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, Link } from 'react-router-dom';
 import {
@@ -14,6 +14,7 @@ import { useLanguage, useLangPath } from '@/hooks/useLanguage';
 import { useCurrency } from '@/hooks/useCurrency';
 import { PriceDisplay } from '@/components/PriceDisplay';
 import { useToast } from '@/hooks/use-toast';
+import { trackViewContent } from '@/lib/metaPixel';
 
 /* ─── Product constants ─────────────────────────────────────── */
 const PRODUCT_ID    = '47a281f0-2e17-4e15-831d-df124462c924';
@@ -203,6 +204,10 @@ const SoapLanding = () => {
   const c = isAr ? content.ar : content.en;
   const dir = isAr ? 'rtl' : 'ltr';
   const productName = isAr ? NAME_AR : NAME_EN;
+
+  useEffect(() => {
+    trackViewContent({ contentId: PRODUCT_ID, contentName: NAME_EN, value: PRODUCT_PRICE });
+  }, []);
 
   const handleAddToCart = () => {
     const existing = items.find(i => i.productId === PRODUCT_ID);

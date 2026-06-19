@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { useNavigate, Link } from 'react-router-dom';
 import {
@@ -14,6 +14,7 @@ import { useLanguage, useLangPath } from '@/hooks/useLanguage';
 import { useCurrency } from '@/hooks/useCurrency';
 import { PriceDisplay } from '@/components/PriceDisplay';
 import { useToast } from '@/hooks/use-toast';
+import { trackViewContent } from '@/lib/metaPixel';
 
 /* ─── Product constants ─────────────────────────────────────── */
 const PRODUCT_ID    = '6d3e3733-cd60-4b38-b907-a896844f0ed3';
@@ -203,6 +204,10 @@ const ShampooLanding = () => {
   const c = isAr ? content.ar : content.en;
   const dir = isAr ? 'rtl' : 'ltr';
   const productName = isAr ? NAME_AR : NAME_EN;
+
+  useEffect(() => {
+    trackViewContent({ contentId: PRODUCT_ID, contentName: NAME_EN, value: PRODUCT_PRICE });
+  }, []);
 
   const handleAddToCart = () => {
     const existing = items.find(i => i.productId === PRODUCT_ID);

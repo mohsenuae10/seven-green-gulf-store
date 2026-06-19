@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { trackAddToCart } from "@/lib/metaPixel";
 
 export interface CartItem {
   productId: string;
@@ -38,6 +39,12 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [items]);
 
   const addItem = (item: Omit<CartItem, "quantity">, qty = 1) => {
+    trackAddToCart({
+      contentId: item.productId,
+      contentName: item.nameEn || item.name,
+      value: item.price * qty,
+      quantity: qty,
+    });
     setItems(prev => {
       const existing = prev.find(i => i.productId === item.productId);
       if (existing) {

@@ -24,6 +24,7 @@ import { ShoppingCart, Zap, Plus, Minus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { trackViewContent } from '@/lib/metaPixel';
 
 interface ProductData {
   id: string;
@@ -107,6 +108,15 @@ const ProductDetail = () => {
     };
     load();
   }, [id]);
+
+  useEffect(() => {
+    if (!product) return;
+    trackViewContent({
+      contentId: product.id,
+      contentName: product.name,
+      value: product.price,
+    });
+  }, [product]);
 
   if (notFound) {
     return (

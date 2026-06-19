@@ -6,6 +6,7 @@ import { CheckCircle, Package, Truck, Phone, Home, Loader2 } from "lucide-react"
 import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { trackPurchase } from "@/lib/metaPixel";
 
 // TypeScript declaration for gtag
 declare global {
@@ -66,6 +67,11 @@ const PaymentSuccess = () => {
           'transaction_id': order.id,
         });
       }
+      // Meta Pixel Purchase Conversion Event
+      trackPurchase({
+        value: order.total_amount,
+        orderId: order.id,
+      });
     };
 
     const run = async () => {

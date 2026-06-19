@@ -28,6 +28,7 @@ import { CONTACT_INFO } from "@/config/contact";
 import { PriceDisplay } from "@/components/PriceDisplay";
 import { supabase } from "@/integrations/supabase/client";
 import StripePaymentForm from "@/components/checkout/StripePaymentForm";
+import { trackInitiateCheckout } from "@/lib/metaPixel";
 import Header from "@/components/Header";
 import CountrySelect from "@/components/CountrySelect";
 import { countries } from "@/data/countries";
@@ -88,6 +89,17 @@ const Order = () => {
         'send_to': 'AW-17646380077/YYYYYY' // ⚠️ Replace with your Begin Checkout Conversion ID
       });
     }
+  }, []);
+
+  // Meta Pixel InitiateCheckout
+  useEffect(() => {
+    if (items.length === 0) return;
+    trackInitiateCheckout({
+      contentIds: items.map(i => i.productId),
+      value: totalPrice,
+      numItems: items.reduce((s, i) => s + i.quantity, 0),
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleInputChange = (field: string, value: string | number) => {
