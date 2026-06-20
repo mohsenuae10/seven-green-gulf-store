@@ -75,9 +75,18 @@ const PaymentSuccess = () => {
     };
 
     const trackConversion = (order: OrderData) => {
-      if (conversionTracked || wasPurchaseTracked(order.id)) return;
+      console.log("[PaymentSuccess] trackConversion() called for order:", order.id, "payment_status:", order.payment_status);
+      if (conversionTracked) {
+        console.log("[PaymentSuccess] SKIPPED — already tracked this mount (conversionTracked=true)");
+        return;
+      }
+      if (wasPurchaseTracked(order.id)) {
+        console.log("[PaymentSuccess] SKIPPED — order already in localStorage dedup list:", order.id);
+        return;
+      }
       conversionTracked = true;
       markPurchaseTracked(order.id);
+      console.log("[PaymentSuccess] proceeding to fire Purchase for order:", order.id, "amount:", order.total_amount, order.currency);
       // Google Ads Purchase Conversion Event
       // NOTE: استبدل 'XXXXXX' بالـ Conversion ID من Google Ads
       if (typeof window.gtag !== 'undefined') {
@@ -95,6 +104,7 @@ const PaymentSuccess = () => {
         currency: order.currency,
         orderId: order.id,
       });
+      console.log("[PaymentSuccess] trackPurchase() call returned for order:", order.id);
     };
 
     const run = async () => {
@@ -112,6 +122,7 @@ const PaymentSuccess = () => {
         const maxAttempts = 40;
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
           const order = await fetchOrder();
+          console.log(`[PaymentSuccess] poll attempt ${attempt + 1}/${maxAttempts} — order ${order.id} payment_status=${order.payment_status}`);
           if (cancelled) return;
           setOrderData(order);
           // Stop showing the generic loading skeleton as soon as we have any

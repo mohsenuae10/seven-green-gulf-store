@@ -5,8 +5,13 @@ declare global {
 }
 
 const fbq = (...args: any[]) => {
-  if (typeof window !== "undefined" && typeof window.fbq === "function") {
-    window.fbq(...args);
+  const fbqExists = typeof window !== "undefined" && typeof window.fbq === "function";
+  console.log("[MetaPixel] fbq call:", args, "| window.fbq exists:", fbqExists);
+  if (fbqExists) {
+    window.fbq!(...args);
+    console.log("[MetaPixel] fbq call dispatched to window.fbq");
+  } else {
+    console.warn("[MetaPixel] window.fbq is NOT available — event dropped:", args);
   }
 };
 
