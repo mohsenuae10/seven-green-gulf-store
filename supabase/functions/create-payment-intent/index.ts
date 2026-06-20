@@ -149,6 +149,7 @@ serve(async (req) => {
         city,
         address,
         total_amount: totalAmount,
+        currency: currency.toUpperCase(),
         status: "pending",
         payment_status: "pending",
       })

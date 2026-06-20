@@ -58,13 +58,13 @@ export const trackInitiateCheckout = (params: {
 
 export const trackPurchase = (params: {
   value: number;
+  currency: string;
   orderId?: string;
   contentIds?: string[];
-  currency?: string;
 }) =>
   fbq("track", "Purchase", {
     value: params.value,
-    currency: params.currency || "SAR",
+    currency: params.currency,
     content_ids: params.contentIds,
     content_type: "product",
     ...(params.orderId ? { order_id: params.orderId } : {}),

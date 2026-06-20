@@ -25,11 +25,31 @@ interface OrderData {
   city: string;
   address: string;
   total_amount: number;
+  currency: string;
   status: string;
   payment_status: string;
   created_at: string;
   updated_at: string;
 }
+
+const PURCHASE_TRACKED_KEY = "sg_meta_purchase_tracked";
+
+const wasPurchaseTracked = (orderId: string) => {
+  try {
+    return JSON.parse(localStorage.getItem(PURCHASE_TRACKED_KEY) || "[]").includes(orderId);
+  } catch {
+    return false;
+  }
+};
+
+const markPurchaseTracked = (orderId: string) => {
+  try {
+    const tracked = JSON.parse(localStorage.getItem(PURCHASE_TRACKED_KEY) || "[]");
+    localStorage.setItem(PURCHASE_TRACKED_KEY, JSON.stringify([...tracked, orderId].slice(-50)));
+  } catch {
+    // ignore storage errors
+  }
+};
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -55,21 +75,24 @@ const PaymentSuccess = () => {
     };
 
     const trackConversion = (order: OrderData) => {
-      if (conversionTracked) return;
+      if (conversionTracked || wasPurchaseTracked(order.id)) return;
       conversionTracked = true;
+      markPurchaseTracked(order.id);
       // Google Ads Purchase Conversion Event
       // NOTE: استبدل 'XXXXXX' بالـ Conversion ID من Google Ads
       if (typeof window.gtag !== 'undefined') {
         window.gtag('event', 'conversion', {
           'send_to': 'AW-17646380077/XXXXXX',
           'value': order.total_amount,
-          'currency': 'SAR',
+          'currency': order.currency,
           'transaction_id': order.id,
         });
       }
-      // Meta Pixel Purchase Conversion Event
+      // Meta Pixel Purchase Conversion Event — only fires once the order is
+      // confirmed paid, using the order's real settlement amount/currency.
       trackPurchase({
         value: order.total_amount,
+        currency: order.currency,
         orderId: order.id,
       });
     };
@@ -82,12 +105,19 @@ const PaymentSuccess = () => {
       }
 
       try {
-        // Poll up to ~10s for the webhook to confirm the payment.
-        const maxAttempts = 6;
+        // Poll for the webhook to confirm the payment. Stripe webhooks can lag
+        // a few seconds behind the redirect, so we keep retrying for up to ~2
+        // minutes rather than giving up after a few seconds and silently
+        // missing the Purchase conversion event.
+        const maxAttempts = 40;
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
           const order = await fetchOrder();
           if (cancelled) return;
           setOrderData(order);
+          // Stop showing the generic loading skeleton as soon as we have any
+          // order data — the "pending confirmation" UI takes over from here
+          // while polling continues quietly in the background.
+          setLoading(false);
 
           if (order.payment_status === 'paid') {
             trackConversion(order);
@@ -97,7 +127,7 @@ const PaymentSuccess = () => {
 
           // Still pending: wait and retry.
           if (attempt < maxAttempts - 1) {
-            await new Promise((r) => setTimeout(r, 1800));
+            await new Promise((r) => setTimeout(r, 3000));
           }
         }
       } catch (err: any) {

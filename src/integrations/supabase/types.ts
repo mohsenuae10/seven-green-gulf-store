@@ -104,6 +104,7 @@ export type Database = {
           city: string
           country: string
           created_at: string
+          currency: string
           customer_email: string | null
           customer_name: string
           customer_phone: string
@@ -123,6 +124,7 @@ export type Database = {
           city: string
           country: string
           created_at?: string
+          currency?: string
           customer_email?: string | null
           customer_name: string
           customer_phone: string
@@ -142,6 +144,7 @@ export type Database = {
           city?: string
           country?: string
           created_at?: string
+          currency?: string
           customer_email?: string | null
           customer_name?: string
           customer_phone?: string
@@ -325,6 +328,7 @@ export type Database = {
           city: string
           country: string
           created_at: string
+          currency: string
           customer_email: string
           customer_name: string
           customer_phone: string
