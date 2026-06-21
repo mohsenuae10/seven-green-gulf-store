@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { useState, useEffect } from "react";
+import { Elements, PaymentElement, ExpressCheckoutElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import type { StripeElementsOptions } from "@stripe/stripe-js";
 import { getStripe } from "@/integrations/stripe/client";
 import { Button } from "@/components/ui/button";
@@ -24,8 +24,11 @@ const CheckoutForm = ({ orderId, amountLabel, onBack }: Omit<StripePaymentFormPr
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, []);
+
+  const confirmPayment = async () => {
     if (!stripe || !elements) return;
 
     setIsProcessing(true);
@@ -47,8 +50,17 @@ const CheckoutForm = ({ orderId, amountLabel, onBack }: Omit<StripePaymentFormPr
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await confirmPayment();
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
+      <ExpressCheckoutElement
+        onConfirm={confirmPayment}
+        options={{ buttonHeight: 55 }}
+      />
       <PaymentElement
         options={{
           layout: "tabs",
@@ -109,7 +121,16 @@ const StripePaymentForm = ({ clientSecret, orderId, amountLabel, onBack }: Strip
     locale: (language === 'ar' ? 'ar' : 'en') as StripeElementLocale,
     appearance: {
       theme: "stripe",
-      variables: { colorPrimary: "#16a34a", borderRadius: "8px" },
+      variables: {
+        colorPrimary: "#16a34a",
+        borderRadius: "8px",
+        spacingUnit: "3px",
+        fontSizeBase: "14px",
+      },
+      rules: {
+        ".Input": { padding: "10px 12px" },
+        ".Tab": { padding: "8px 12px" },
+      },
     },
   };
 
