@@ -4,7 +4,7 @@ import type { StripeElementsOptions } from "@stripe/stripe-js";
 import { getStripe } from "@/integrations/stripe/client";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Loader2, Lock } from "lucide-react";
+import { AlertCircle, Loader2, Lock, MessageCircle, Mail } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import type { StripeElementLocale } from "@stripe/stripe-js";
 
@@ -74,6 +74,18 @@ const CheckoutForm = ({ orderId, amountLabel, onBack }: Omit<StripePaymentFormPr
           <AlertDescription className={language === "ar" ? "text-right" : "text-left"}>{error}</AlertDescription>
         </Alert>
       )}
+
+      <div className={`bg-accent/30 rounded-lg p-3 flex items-start gap-2 text-sm text-muted-foreground ${language === "ar" ? "text-right" : "text-left"}`}>
+        <div className="flex gap-1 shrink-0 pt-0.5">
+          <MessageCircle className="w-4 h-4" />
+          <Mail className="w-4 h-4" />
+        </div>
+        <p>
+          {language === "ar"
+            ? "سيصلك إشعار عبر واتساب والبريد الإلكتروني يتضمن رقم التتبع وتأكيد الشحن والطلب بعد إتمام الدفع."
+            : "You'll receive a WhatsApp message and an email with your tracking number and shipping/order confirmation right after payment."}
+        </p>
+      </div>
 
       <div className="flex flex-col gap-3">
         <Button
