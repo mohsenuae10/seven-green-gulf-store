@@ -12,12 +12,13 @@ interface StripePaymentFormProps {
   clientSecret: string;
   orderId: string;
   amountLabel?: string;
+  shippingCountry?: string;
   onBack?: () => void;
 }
 
 const stripePromise = getStripe();
 
-const CheckoutForm = ({ orderId, amountLabel, onBack }: Omit<StripePaymentFormProps, "clientSecret">) => {
+const CheckoutForm = ({ orderId, amountLabel, shippingCountry, onBack }: Omit<StripePaymentFormProps, "clientSecret">) => {
   const stripe = useStripe();
   const elements = useElements();
   const { language } = useLanguage();
@@ -64,7 +65,9 @@ const CheckoutForm = ({ orderId, amountLabel, onBack }: Omit<StripePaymentFormPr
       <PaymentElement
         options={{
           layout: "tabs",
-          defaultValues: { billingDetails: { address: { country: "SA" } } },
+          defaultValues: shippingCountry
+            ? { billingDetails: { address: { country: shippingCountry } } }
+            : undefined,
         }}
       />
 
@@ -125,7 +128,7 @@ const CheckoutForm = ({ orderId, amountLabel, onBack }: Omit<StripePaymentFormPr
   );
 };
 
-const StripePaymentForm = ({ clientSecret, orderId, amountLabel, onBack }: StripePaymentFormProps) => {
+const StripePaymentForm = ({ clientSecret, orderId, amountLabel, shippingCountry, onBack }: StripePaymentFormProps) => {
   const { language } = useLanguage();
 
   const options: StripeElementsOptions = {
@@ -148,7 +151,7 @@ const StripePaymentForm = ({ clientSecret, orderId, amountLabel, onBack }: Strip
 
   return (
     <Elements stripe={stripePromise} options={options}>
-      <CheckoutForm orderId={orderId} amountLabel={amountLabel} onBack={onBack} />
+      <CheckoutForm orderId={orderId} amountLabel={amountLabel} shippingCountry={shippingCountry} onBack={onBack} />
     </Elements>
   );
 };

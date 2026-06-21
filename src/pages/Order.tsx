@@ -378,6 +378,7 @@ const Order = () => {
                   <StripePaymentForm
                     clientSecret={clientSecret}
                     orderId={orderId}
+                    shippingCountry={formData.country}
                     onBack={() => {
                       setStep("form");
                       setClientSecret(null);
