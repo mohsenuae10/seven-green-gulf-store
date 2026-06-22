@@ -12,6 +12,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { ChevronRight, ChevronLeft, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
+import { useCurrency } from "@/hooks/useCurrency";
+import { PriceDisplay } from "@/components/PriceDisplay";
 
 interface ProductWithImage {
   id: string;
@@ -29,6 +31,7 @@ const Index = () => {
   const langPath = useLangPath();
   const navigate = useNavigate();
   const { totalItems, totalPrice } = useCart();
+  const { getPriceData } = useCurrency();
   const [products, setProducts] = useState<ProductWithImage[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -132,8 +135,8 @@ const Index = () => {
                 <p className="text-xs font-medium opacity-90">
                   {language === 'ar' ? `${totalItems} منتج في السلة` : `${totalItems} item${totalItems > 1 ? 's' : ''} in cart`}
                 </p>
-                <p className="text-sm font-black">
-                  {totalPrice.toFixed(2)} {language === 'ar' ? 'ريال' : 'SAR'}
+                <p className="text-sm">
+                  <PriceDisplay {...getPriceData(totalPrice)} />
                 </p>
               </div>
             </div>

@@ -372,7 +372,7 @@ const Order = () => {
                   <div className="border-t pt-4 bg-accent/30 -mx-4 px-4 py-4 lg:-mx-6 lg:px-6 rounded-lg">
                     <div className="flex justify-between items-center text-lg font-semibold">
                       <span className="text-primary">{t('order.total')}:</span>
-                      <PriceDisplay {...getPriceData(totalPrice)} className="text-2xl md:text-3xl font-black text-primary" />
+                      <PriceDisplay {...getPriceData(totalPrice)} className="text-2xl md:text-3xl text-primary" />
                     </div>
                   </div>
                   <StripePaymentForm
@@ -501,7 +501,7 @@ const Order = () => {
                 <div className="border-t pt-4 bg-accent/30 -mx-4 px-4 py-4 lg:-mx-6 lg:px-6 rounded-lg">
                   <div className="flex justify-between items-center text-lg font-semibold">
                     <span className="text-gray-700">{t('order.total')}:</span>
-                    <PriceDisplay {...getPriceData(totalPrice)} className="text-2xl md:text-3xl font-black text-primary" />
+                    <PriceDisplay {...getPriceData(totalPrice)} className="text-2xl md:text-3xl text-primary" />
                   </div>
                 </div>
 

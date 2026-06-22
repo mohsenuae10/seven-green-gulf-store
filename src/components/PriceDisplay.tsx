@@ -10,12 +10,12 @@ export const PriceDisplay = ({ amount, currency, className = "" }: PriceDisplayP
   
   if (currency === 'SAR') {
     return (
-      <span className={`inline-flex items-center gap-1 ${className}`}>
-        <span className="tabular-nums">{amount}</span>
+      <span className={`inline-flex items-baseline gap-1 ${className}`}>
+        <span className="tabular-nums" style={{ fontWeight: 300 }}>{amount}</span>
         <img
           src="/images/sar-symbol.svg"
           alt="ريال سعودي"
-          className="inline-block w-4 h-4"
+          className="inline-block w-4 h-4 self-center"
           style={{ verticalAlign: 'middle' }}
         />
       </span>
@@ -23,9 +23,19 @@ export const PriceDisplay = ({ amount, currency, className = "" }: PriceDisplayP
   }
 
   if (currency === 'USD') {
-    return <span className={`tabular-nums ${className}`}>${amount}</span>;
+    return (
+      <span className={`inline-flex items-baseline ${className}`}>
+        <span className="text-[0.55em] opacity-70 mr-0.5" style={{ fontWeight: 300 }}>$</span>
+        <span className="tabular-nums" style={{ fontWeight: 300 }}>{amount}</span>
+      </span>
+    );
   }
 
   // AED
-  return <span className={`tabular-nums ${className}`}>{amount} د.إ</span>;
+  return (
+    <span className={`inline-flex items-baseline gap-1 ${className}`}>
+      <span className="tabular-nums" style={{ fontWeight: 300 }}>{amount}</span>
+      <span className="text-[0.55em] opacity-70" style={{ fontWeight: 300 }}>د.إ</span>
+    </span>
+  );
 };
