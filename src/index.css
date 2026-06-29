@@ -237,7 +237,7 @@
   }
 
   .mobile-card {
-    @apply p-4 sm:p-6 lg:p-8 rounded-lg sm:rounded-xl lg:rounded-2xl;
+    @apply p-3 sm:p-4 lg:p-5 rounded-lg sm:rounded-xl lg:rounded-2xl;
   }
 
   /* Touch-friendly interactions for mobile */
@@ -247,6 +247,7 @@
 
   /* Mobile input optimization */
   .mobile-input {
+    height: 46px !important;
     font-size: 16px !important; /* Prevents zoom on iOS */
   }
 

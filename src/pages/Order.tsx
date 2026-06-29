@@ -287,7 +287,7 @@ const Order = () => {
         <MobileNav />
         
         {/* Breadcrumb */}
-        <nav className="container mx-auto px-4 py-4" aria-label="breadcrumb">
+        <nav className="container mx-auto px-4 py-2" aria-label="breadcrumb">
           <ol className="flex items-center gap-2 text-sm">
             <li>
               <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -302,10 +302,10 @@ const Order = () => {
             </li>
           </ol>
         </nav>
-      <div className="mobile-container py-4 sm:py-8">
+      <div className="mobile-container py-2 sm:py-4">
         <div className="max-w-2xl mx-auto">
-          <div className="text-center mb-6 lg:mb-8 px-4">
-            <h1 className="mobile-heading font-bold text-gray-900 mb-2">
+          <div className="text-center mb-3 lg:mb-4 px-4">
+            <h1 className="mobile-heading font-bold text-gray-900 mb-1">
               {t('order.title')}
               <span className="block text-base font-medium text-primary mt-1">SEVEN GREEN</span>
             </h1>
@@ -332,11 +332,11 @@ const Order = () => {
               </CardTitle>
 
               {/* Cart items list */}
-              <div className="space-y-2 mt-3">
+              <div className="space-y-1.5 mt-2">
                 {items.map(item => (
-                  <div key={item.productId} className="flex items-center gap-3 p-2 bg-accent/10 rounded-lg">
+                  <div key={item.productId} className="flex items-center gap-2 p-1.5 bg-accent/10 rounded-lg">
                     <img src={item.image} alt={language === 'ar' ? item.name : item.nameEn}
-                      className="w-12 h-12 object-cover rounded-lg shrink-0"
+                      className="w-10 h-10 object-cover rounded-lg shrink-0"
                       onError={(e) => { e.currentTarget.src = "/images/sevengreen-logo.webp"; }} />
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-sm truncate">{language === 'ar' ? item.name : item.nameEn}</p>
@@ -357,9 +357,9 @@ const Order = () => {
                 ))}
               </div>
             </CardHeader>
-            <CardContent className="p-4 sm:p-6">
+            <CardContent className="p-3 sm:p-4">
               {error && (
-                <Alert variant="destructive" className="mb-6">
+                <Alert variant="destructive" className="mb-4">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription className={language === 'ar' ? 'text-right' : 'text-left'}>
                     {error}
@@ -368,8 +368,8 @@ const Order = () => {
               )}
 
               {step === "payment" && clientSecret && orderId ? (
-                <div className="space-y-4">
-                  <div className="border-t pt-4 bg-accent/30 -mx-4 px-4 py-4 lg:-mx-6 lg:px-6 rounded-lg">
+                <div className="space-y-3">
+                  <div className="bg-gradient-to-br from-primary/10 to-accent/30 border border-primary/20 -mx-3 px-3 py-2.5 lg:-mx-4 lg:px-4 rounded-lg">
                     <div className="flex justify-between items-center text-lg font-semibold">
                       <span className="text-primary">{t('order.total')}:</span>
                       <PriceDisplay {...getPriceData(totalPrice)} className="text-2xl md:text-3xl text-primary" />
@@ -388,9 +388,9 @@ const Order = () => {
                   />
                 </div>
               ) : (
-              <form onSubmit={handleSubmit} className="space-y-4 lg:space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-3 lg:space-y-4">
                 {/* 1. الاسم */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="name" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.name')} *</Label>
                   <Input
                     id="name"
@@ -398,13 +398,13 @@ const Order = () => {
                     placeholder={t('order.name.placeholder')}
                     value={formData.customerName}
                     onChange={(e) => handleInputChange("customerName", e.target.value)}
-                    className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                    className={`mobile-input ${language === 'ar' ? 'text-right' : 'text-left'}`}
                     required
                   />
                 </div>
 
                 {/* 2. الدولة */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label className={`block mobile-text font-medium flex items-center gap-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                     <Flag className="w-4 h-4" />
                     {t('order.country')} *
@@ -430,7 +430,7 @@ const Order = () => {
                 </div>
 
                 {/* 3. رقم الهاتف */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="phone" className={`block mobile-text font-medium flex items-center gap-2 ${language === 'ar' ? 'text-right' : 'text-left'}`}>
                     <Phone className="w-4 h-4" />
                     {t('order.phone')} *
@@ -452,14 +452,14 @@ const Order = () => {
                       placeholder={t('order.phone.placeholder')}
                       value={formData.customerPhone}
                       onChange={(e) => handleInputChange("customerPhone", e.target.value)}
-                      className={`mobile-input touch-target flex-1 ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                      className={`mobile-input flex-1 ${language === 'ar' ? 'text-right' : 'text-left'}`}
                       required
                     />
                   </div>
                 </div>
 
                 {/* 4. البريد الإلكتروني */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="email" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.email')}</Label>
                   <Input
                     id="email"
@@ -467,12 +467,12 @@ const Order = () => {
                     placeholder={t('order.email.placeholder')}
                     value={formData.customerEmail}
                     onChange={(e) => handleInputChange("customerEmail", e.target.value)}
-                    className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                    className={`mobile-input ${language === 'ar' ? 'text-right' : 'text-left'}`}
                   />
                 </div>
 
                 {/* 5. المدينة */}
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="city" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.city')} *</Label>
                   <Input
                     id="city"
@@ -480,12 +480,12 @@ const Order = () => {
                     placeholder={t('order.city.placeholder')}
                     value={formData.city}
                     onChange={(e) => handleInputChange("city", e.target.value)}
-                    className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                    className={`mobile-input ${language === 'ar' ? 'text-right' : 'text-left'}`}
                     required
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <Label htmlFor="address" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.address')} *</Label>
                   <Input
                     id="address"
@@ -493,19 +493,19 @@ const Order = () => {
                     placeholder={t('order.address.placeholder')}
                     value={formData.address}
                     onChange={(e) => handleInputChange("address", e.target.value)}
-                    className={`mobile-input touch-target ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                    className={`mobile-input ${language === 'ar' ? 'text-right' : 'text-left'}`}
                     required
                   />
                 </div>
 
-                <div className="border-t pt-4 bg-accent/30 -mx-4 px-4 py-4 lg:-mx-6 lg:px-6 rounded-lg">
+                <PaymentMethods />
+
+                <div className="bg-gradient-to-br from-primary/10 to-accent/30 border border-primary/20 -mx-3 px-3 py-2.5 lg:-mx-4 lg:px-4 rounded-lg">
                   <div className="flex justify-between items-center text-lg font-semibold">
                     <span className="text-gray-700">{t('order.total')}:</span>
                     <PriceDisplay {...getPriceData(totalPrice)} className="text-2xl md:text-3xl text-primary" />
                   </div>
                 </div>
-
-                <PaymentMethods />
 
                 <Button
                   type="submit"
@@ -530,23 +530,23 @@ const Order = () => {
           )}
 
           {/* Trust Signals */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="p-4 text-center">
-              <Shield className="w-8 h-8 mx-auto mb-2 text-primary" />
+          <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <Card className="p-3 text-center">
+              <Shield className="w-7 h-7 mx-auto mb-1.5 text-primary" />
               <h3 className="font-semibold text-sm">{language === 'ar' ? 'دفع آمن 100%' : '100% Secure Payment'}</h3>
             </Card>
-            <Card className="p-4 text-center">
-              <Truck className="w-8 h-8 mx-auto mb-2 text-primary" />
+            <Card className="p-3 text-center">
+              <Truck className="w-7 h-7 mx-auto mb-1.5 text-primary" />
               <h3 className="font-semibold text-sm">{language === 'ar' ? 'توصيل سريع' : 'Fast Delivery'}</h3>
             </Card>
-            <Card className="p-4 text-center">
-              <RotateCcw className="w-8 h-8 mx-auto mb-2 text-primary" />
+            <Card className="p-3 text-center">
+              <RotateCcw className="w-7 h-7 mx-auto mb-1.5 text-primary" />
               <h3 className="font-semibold text-sm">{language === 'ar' ? 'ضمان 30 يوم' : '30-Day Guarantee'}</h3>
             </Card>
           </div>
 
           {/* SEO Content */}
-          <section className="mt-12 prose prose-lg dark:prose-invert mx-auto max-w-3xl px-4">
+          <section className="mt-8 prose prose-lg dark:prose-invert mx-auto max-w-3xl px-4">
             <h2 className="text-2xl font-bold mb-4">
               {language === 'ar' ? 'لماذا تطلب من سفن جرين؟' : 'Why Order from Seven Green?'}
             </h2>

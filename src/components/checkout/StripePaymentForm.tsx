@@ -57,10 +57,10 @@ const CheckoutForm = ({ orderId, amountLabel, shippingCountry, onBack }: Omit<St
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-3">
       <ExpressCheckoutElement
         onConfirm={confirmPayment}
-        options={{ buttonHeight: 55 }}
+        options={{ buttonHeight: 50 }}
       />
       <PaymentElement
         options={{
@@ -78,7 +78,7 @@ const CheckoutForm = ({ orderId, amountLabel, shippingCountry, onBack }: Omit<St
         </Alert>
       )}
 
-      <div className={`bg-accent/30 rounded-lg p-3 flex items-start gap-2 text-sm text-muted-foreground ${language === "ar" ? "text-right" : "text-left"}`}>
+      <div className={`bg-accent/30 rounded-lg p-2.5 flex items-start gap-2 text-sm text-muted-foreground ${language === "ar" ? "text-right" : "text-left"}`}>
         <div className="flex gap-1 shrink-0 pt-0.5">
           <MessageCircle className="w-4 h-4" />
           <Mail className="w-4 h-4" />
