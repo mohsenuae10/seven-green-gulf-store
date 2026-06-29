@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
@@ -55,6 +55,20 @@ const Order = () => {
   const { getPriceData, selectedCurrency } = useCurrency();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Refs for fast mobile checkout: auto-advance focus between fields
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const phoneInputRef = useRef<HTMLInputElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const cityInputRef = useRef<HTMLInputElement>(null);
+  const addressInputRef = useRef<HTMLInputElement>(null);
+
+  const focusNext = (ref: React.RefObject<HTMLInputElement>) => (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      ref.current?.focus();
+    }
+  };
 
   // Auto-detect user country via IP geolocation
   useEffect(() => {
@@ -394,7 +408,13 @@ const Order = () => {
                   <Label htmlFor="name" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.name')} *</Label>
                   <Input
                     id="name"
+                    name="name"
                     type="text"
+                    inputMode="text"
+                    autoComplete="name"
+                    enterKeyHint="next"
+                    ref={nameInputRef}
+                    onKeyDown={focusNext(phoneInputRef)}
                     placeholder={t('order.name.placeholder')}
                     value={formData.customerName}
                     onChange={(e) => handleInputChange("customerName", e.target.value)}
@@ -415,11 +435,32 @@ const Order = () => {
                       </span>
                     )}
                   </Label>
+                  {/* Hidden field so browser autofill profiles (name/address autofill) can populate the country */}
+                  <input
+                    type="text"
+                    name="country"
+                    autoComplete="country"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    className="sr-only"
+                    onChange={(e) => {
+                      const val = e.target.value.trim().toLowerCase();
+                      if (!val) return;
+                      const match = countries.find(
+                        (c) => c.code.toLowerCase() === val || c.nameEn.toLowerCase() === val
+                      );
+                      if (match) {
+                        handleInputChange("country", match.code);
+                        handleInputChange("countryCode", match.phoneCode);
+                      }
+                    }}
+                  />
                   <CountrySelect
                     value={formData.country}
                     onChange={(country) => {
                       handleInputChange("country", country.code);
                       handleInputChange("countryCode", country.phoneCode);
+                      phoneInputRef.current?.focus();
                     }}
                     placeholder={
                       detectingCountry
@@ -442,13 +483,20 @@ const Order = () => {
                         onChange={(country) => {
                           handleInputChange("country", country.code);
                           handleInputChange("countryCode", country.phoneCode);
+                          phoneInputRef.current?.focus();
                         }}
                         phoneCodeOnly
                       />
                     </div>
                     <Input
                       id="phone"
+                      name="phone"
                       type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      enterKeyHint="next"
+                      ref={phoneInputRef}
+                      onKeyDown={focusNext(emailInputRef)}
                       placeholder={t('order.phone.placeholder')}
                       value={formData.customerPhone}
                       onChange={(e) => handleInputChange("customerPhone", e.target.value)}
@@ -463,7 +511,13 @@ const Order = () => {
                   <Label htmlFor="email" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.email')}</Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    enterKeyHint="next"
+                    ref={emailInputRef}
+                    onKeyDown={focusNext(cityInputRef)}
                     placeholder={t('order.email.placeholder')}
                     value={formData.customerEmail}
                     onChange={(e) => handleInputChange("customerEmail", e.target.value)}
@@ -476,7 +530,13 @@ const Order = () => {
                   <Label htmlFor="city" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.city')} *</Label>
                   <Input
                     id="city"
+                    name="city"
                     type="text"
+                    inputMode="text"
+                    autoComplete="address-level2"
+                    enterKeyHint="next"
+                    ref={cityInputRef}
+                    onKeyDown={focusNext(addressInputRef)}
                     placeholder={t('order.city.placeholder')}
                     value={formData.city}
                     onChange={(e) => handleInputChange("city", e.target.value)}
@@ -489,7 +549,12 @@ const Order = () => {
                   <Label htmlFor="address" className={`block mobile-text font-medium ${language === 'ar' ? 'text-right' : 'text-left'}`}>{t('order.address')} *</Label>
                   <Input
                     id="address"
+                    name="address"
                     type="text"
+                    inputMode="text"
+                    autoComplete="street-address"
+                    enterKeyHint="done"
+                    ref={addressInputRef}
                     placeholder={t('order.address.placeholder')}
                     value={formData.address}
                     onChange={(e) => handleInputChange("address", e.target.value)}
