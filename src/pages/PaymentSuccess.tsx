@@ -334,23 +334,13 @@ const PaymentSuccess = () => {
           </Card>
 
           {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex justify-center">
             <Link to="/">
               <Button size="lg" className="bg-gradient-primary hover:scale-105 transition-all duration-300">
                 <Home className="w-5 h-5 ml-2" />
                 العودة للمتجر
               </Button>
             </Link>
-            
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={() => window.open("https://wa.me/971508824227", "_blank")}
-              className="hover:scale-105 transition-all duration-300"
-            >
-              <Phone className="w-5 h-5 ml-2" />
-              تواصل معنا عبر واتساب
-            </Button>
           </div>
 
           {/* Contact Info */}
