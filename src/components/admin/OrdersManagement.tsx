@@ -257,6 +257,8 @@ export function OrdersManagement() {
   };
 
   const formatPhoneNumber = (phone: string) => {
+    if (!phone) return "";
+
     // If phone already has country code, return as is
     if (phone.startsWith('+')) {
       return phone;
@@ -330,7 +332,7 @@ export function OrdersManagement() {
                       <div className="flex items-center gap-2">
                         <Package className="h-4 w-4 text-primary" />
                         <CardTitle className="text-lg font-mono">
-                          #{order.id.slice(-8)}
+                          #{order.id?.slice(-8) ?? "—"}
                         </CardTitle>
                         {/* Country flag + Arabic name badge */}
                         <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800">
@@ -473,7 +475,7 @@ export function OrdersManagement() {
                           <div className="space-y-2">
                             <label className="text-sm font-medium">حالة الطلب</label>
                             <Select
-                              value={order.status}
+                              value={order.status || "pending"}
                               onValueChange={(value) => updateOrderStatus(order.id, value)}
                             >
                               <SelectTrigger>
@@ -492,7 +494,7 @@ export function OrdersManagement() {
                           <div className="space-y-2">
                             <label className="text-sm font-medium">حالة الدفع</label>
                             <Select
-                              value={order.payment_status}
+                              value={order.payment_status || "pending"}
                               onValueChange={(value) => updatePaymentStatus(order.id, value)}
                             >
                               <SelectTrigger>

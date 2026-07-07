@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LanguageProvider from "./providers/LanguageProvider";
 import { CartProvider } from "@/contexts/CartContext";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 // import { ChatBot } from "@/components/ChatBot"; // hidden
 import ScrollToTop from "@/components/ScrollToTop";
 import Index from "./pages/Index";
@@ -73,7 +74,7 @@ const App = () => (
 
               {/* ── Non-localized routes ── */}
               <Route path="/auth"  element={<Auth />} />
-              <Route path="/admin" element={<Admin />} />
+              <Route path="/admin" element={<ErrorBoundary><Admin /></ErrorBoundary>} />
 
               {/* ── 404 ── */}
               <Route path="*" element={<NotFound />} />
