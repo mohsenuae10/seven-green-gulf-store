@@ -47,10 +47,13 @@ const getCountryInfo = (code: string) => {
     : { flag: "🌍", nameAr: code };
 };
 
+const ORDERS_PER_PAGE = 15;
+
 export function OrdersManagement() {
   const { formatPrice } = useCurrency();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -309,6 +312,13 @@ export function OrdersManagement() {
     );
   }
 
+  const totalPages = Math.max(1, Math.ceil(orders.length / ORDERS_PER_PAGE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginatedOrders = orders.slice(
+    (safePage - 1) * ORDERS_PER_PAGE,
+    safePage * ORDERS_PER_PAGE
+  );
+
   return (
     <div className="space-y-6">
       <Card>
@@ -325,7 +335,7 @@ export function OrdersManagement() {
             </div>
           ) : (
             <div className="grid gap-6">
-              {orders.map((order) => (
+              {paginatedOrders.map((order) => (
                 <Card key={order.id} className="relative">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between flex-wrap gap-2">
@@ -528,6 +538,29 @@ export function OrdersManagement() {
             </div>
           )}
         </CardContent>
+        {orders.length > ORDERS_PER_PAGE && (
+          <div className="flex items-center justify-between px-6 pb-6">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={safePage === 1}
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+            >
+              السابق
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              صفحة {safePage} من {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={safePage === totalPages}
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+            >
+              التالي
+            </Button>
+          </div>
+        )}
       </Card>
     </div>
   );
