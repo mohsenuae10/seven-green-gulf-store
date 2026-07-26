@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, Loader2, Save, Eye, Image, X, Video } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getYouTubeBackgroundEmbedUrl, isYouTubeUrl } from "@/lib/youtube";
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface BannerData {
@@ -184,7 +185,7 @@ const BannerManagement = () => {
           <input ref={vidRef} type="file" accept="video/*" className="hidden"
             onChange={e => { const f=e.target.files?.[0]; if(f) uploadFile(f,targetVid as any); e.target.value=""; }} />
         </div>
-        <Input value={videoVal} onChange={e=>onVidUrl(e.target.value)} placeholder="أو ضع رابط الفيديو (mp4)..." className="text-xs" />
+        <Input value={videoVal} onChange={e=>onVidUrl(e.target.value)} placeholder="أو ضع رابط الفيديو (mp4) أو رابط يوتيوب..." className="text-xs" />
         {videoVal && (
           <div className="flex items-center gap-2 bg-purple-50 rounded p-2">
             <Video className="w-4 h-4 text-purple-500 shrink-0" />
@@ -192,7 +193,7 @@ const BannerManagement = () => {
             <button onClick={()=>onVid("")}><X className="w-3.5 h-3.5 text-red-400" /></button>
           </div>
         )}
-        <p className="text-[10px] text-gray-400">* الفيديو يشتغل تلقائياً بدون صوت ويتكرر كخلفية</p>
+        <p className="text-[10px] text-gray-400">* الفيديو يشتغل تلقائياً بدون صوت ويتكرر كخلفية — يقبل رابط ملف فيديو مباشر (mp4) أو رابط يوتيوب عادي</p>
       </div>
     </div>
   );
@@ -226,7 +227,15 @@ const BannerManagement = () => {
 
           {previewTop && (
             <div className="relative w-full h-48 rounded-xl overflow-hidden border">
-              {top.videoUrl ? (
+              {top.videoUrl && isYouTubeUrl(top.videoUrl) ? (
+                <iframe
+                  src={getYouTubeBackgroundEmbedUrl(top.videoUrl) ?? undefined}
+                  className="absolute inset-0 w-full h-full pointer-events-none"
+                  style={{ border: 0 }}
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  title="Banner video preview"
+                />
+              ) : top.videoUrl ? (
                 <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
                   <source src={top.videoUrl} />
                 </video>
@@ -304,7 +313,15 @@ const BannerManagement = () => {
 
           {previewBot && (
             <div className="relative w-full h-36 rounded-xl overflow-hidden border">
-              {bottom.videoUrl ? (
+              {bottom.videoUrl && isYouTubeUrl(bottom.videoUrl) ? (
+                <iframe
+                  src={getYouTubeBackgroundEmbedUrl(bottom.videoUrl) ?? undefined}
+                  className="absolute inset-0 w-full h-full pointer-events-none"
+                  style={{ border: 0 }}
+                  allow="autoplay; encrypted-media; picture-in-picture"
+                  title="Banner video preview"
+                />
+              ) : bottom.videoUrl ? (
                 <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
                   <source src={bottom.videoUrl} />
                 </video>

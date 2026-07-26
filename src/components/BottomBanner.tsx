@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getYouTubeBackgroundEmbedUrl, isYouTubeUrl } from "@/lib/youtube";
 
 interface BottomBannerData {
   image: string;
@@ -55,7 +56,15 @@ const BottomBanner = () => {
   return (
     <section className="relative py-16 overflow-hidden">
       {/* Background */}
-      {d.videoUrl ? (
+      {d.videoUrl && isYouTubeUrl(d.videoUrl) ? (
+        <iframe
+          src={getYouTubeBackgroundEmbedUrl(d.videoUrl) ?? undefined}
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          style={{ border: 0 }}
+          allow="autoplay; encrypted-media; picture-in-picture"
+          title="Banner video"
+        />
+      ) : d.videoUrl ? (
         <video autoPlay muted loop playsInline
           className="absolute inset-0 w-full h-full object-cover">
           <source src={d.videoUrl} />
