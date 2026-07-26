@@ -1,11 +1,139 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { Resend } from "npm:resend@2.0.0";
+
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Arab League member country codes — orders shipping here get the Arabic email,
+// everywhere else gets English.
+const ARABIC_COUNTRY_CODES = new Set([
+  "DZ", "BH", "KM", "DJ", "EG", "IQ", "JO", "KW", "LB", "LY", "MR",
+  "MA", "OM", "PS", "QA", "SA", "SO", "SD", "SY", "TN", "AE", "YE",
+]);
+
+async function sendOrderCreatedEmail(params: {
+  customerEmail: string;
+  customerName: string;
+  orderId: string;
+  totalAmount: number;
+  items: { name: string; quantity: number }[];
+  shippingCountry: string;
+}) {
+  const { customerEmail, customerName, orderId, totalAmount, items, shippingCountry } = params;
+  if (!customerEmail) return;
+
+  const isArabic = ARABIC_COUNTRY_CODES.has(shippingCountry?.toUpperCase());
+  const orderRef = orderId.slice(-8);
+
+  try {
+    const html = isArabic
+      ? `
+        <!DOCTYPE html>
+        <html dir="rtl" lang="ar">
+        <head>
+          <meta charset="UTF-8">
+          <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+            .container { max-width: 600px; margin: 0 auto; background-color: white; }
+            .header { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 30px; text-align: center; }
+            .content { padding: 30px; }
+            .order-info { background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .pending-box { background: #fef3c7; border: 2px solid #f59e0b; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; }
+            .footer { background: #f1f5f9; padding: 20px; text-align: center; color: #64748b; }
+            .price { font-size: 24px; font-weight: bold; color: #10b981; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>📝 تم إنشاء طلبك</h1>
+              <p>مرحباً ${customerName}</p>
+            </div>
+            <div class="content">
+              <div class="pending-box">
+                <h2>⏳ بانتظار تأكيد الدفع</h2>
+                <p>استلمنا طلبك وهو الآن بانتظار إتمام عملية الدفع. سيتم تأكيد الطلب فور نجاح الدفع.</p>
+              </div>
+              <div class="order-info">
+                <h3>تفاصيل الطلب:</h3>
+                <p><strong>رقم الطلب:</strong> #${orderRef}</p>
+                <ul>${items.map((i) => `<li>${i.name} × ${i.quantity}</li>`).join("")}</ul>
+                <p><strong>المبلغ الإجمالي:</strong> <span class="price">${totalAmount} ريال</span></p>
+                <p><strong>حالة الدفع:</strong> <span style="color: #f59e0b; font-weight: bold;">بانتظار التأكيد</span></p>
+              </div>
+              <p>إذا لم تكمل عملية الدفع بعد، يمكنك العودة إلى صفحة الطلب لإتمامها.</p>
+            </div>
+            <div class="footer">
+              <p>شكراً لاختيارك متجر Seven Green</p>
+              <p>هذه رسالة تلقائية، يرجى عدم الرد عليها مباشرة</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `
+      : `
+        <!DOCTYPE html>
+        <html dir="ltr" lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <style>
+            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
+            .container { max-width: 600px; margin: 0 auto; background-color: white; }
+            .header { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 30px; text-align: center; }
+            .content { padding: 30px; }
+            .order-info { background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; }
+            .pending-box { background: #fef3c7; border: 2px solid #f59e0b; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; }
+            .footer { background: #f1f5f9; padding: 20px; text-align: center; color: #64748b; }
+            .price { font-size: 24px; font-weight: bold; color: #10b981; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>📝 Your order has been created</h1>
+              <p>Hello ${customerName}</p>
+            </div>
+            <div class="content">
+              <div class="pending-box">
+                <h2>⏳ Awaiting payment confirmation</h2>
+                <p>We've received your order and it's now awaiting payment. It will be confirmed as soon as the payment succeeds.</p>
+              </div>
+              <div class="order-info">
+                <h3>Order details:</h3>
+                <p><strong>Order number:</strong> #${orderRef}</p>
+                <ul>${items.map((i) => `<li>${i.name} × ${i.quantity}</li>`).join("")}</ul>
+                <p><strong>Total amount:</strong> <span class="price">${totalAmount} SAR</span></p>
+                <p><strong>Payment status:</strong> <span style="color: #f59e0b; font-weight: bold;">Awaiting confirmation</span></p>
+              </div>
+              <p>If you haven't completed the payment yet, you can return to the order page to finish it.</p>
+            </div>
+            <div class="footer">
+              <p>Thank you for choosing Seven Green</p>
+              <p>This is an automated message, please do not reply directly.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+
+    await resend.emails.send({
+      from: "Seven Green Store <orders@sevensgreen.com>",
+      to: [customerEmail],
+      subject: isArabic
+        ? `تم إنشاء طلبك #${orderRef} — بانتظار تأكيد الدفع`
+        : `Your order #${orderRef} has been created — awaiting payment confirmation`,
+      html,
+    });
+  } catch (emailError) {
+    console.error("Failed to send order-created email:", emailError);
+  }
+}
 
 interface CartItem {
   productId: string;
@@ -175,6 +303,16 @@ serve(async (req) => {
     if (itemError) {
       console.error("Order items creation failed:", itemError);
     }
+
+    // ── Notify customer that the order was created and is awaiting payment ──
+    await sendOrderCreatedEmail({
+      customerEmail: customerEmail || "",
+      customerName,
+      orderId: orderData.id,
+      totalAmount,
+      items: resolvedItems.map(i => ({ name: i.name, quantity: i.quantity })),
+      shippingCountry: country,
+    });
 
     // ── Stripe PaymentIntent ────────────────────────────────────────────────
     const paymentIntent = await stripe.paymentIntents.create({
