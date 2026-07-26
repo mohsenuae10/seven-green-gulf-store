@@ -26,6 +26,9 @@ export function getYouTubeBackgroundEmbedUrl(url: string): string | null {
     iv_load_policy: "3",
     disablekb: "1",
     playsinline: "1",
+    fs: "0",
+    cc_load_policy: "0",
+    enablejsapi: "0",
   });
   return `https://www.youtube.com/embed/${id}?${params.toString()}`;
 }

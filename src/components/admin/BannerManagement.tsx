@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Upload, Loader2, Save, Eye, Image, X, Video } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getYouTubeBackgroundEmbedUrl, isYouTubeUrl } from "@/lib/youtube";
+import { isYouTubeUrl } from "@/lib/youtube";
+import { YouTubeBackground } from "@/components/YouTubeBackground";
 
 /* ─── Types ─────────────────────────────────────────────── */
 interface BannerData {
@@ -228,13 +229,7 @@ const BannerManagement = () => {
           {previewTop && (
             <div className="relative w-full h-48 rounded-xl overflow-hidden border">
               {top.videoUrl && isYouTubeUrl(top.videoUrl) ? (
-                <iframe
-                  src={getYouTubeBackgroundEmbedUrl(top.videoUrl) ?? undefined}
-                  className="absolute inset-0 w-full h-full pointer-events-none"
-                  style={{ border: 0 }}
-                  allow="autoplay; encrypted-media; picture-in-picture"
-                  title="Banner video preview"
-                />
+                <YouTubeBackground url={top.videoUrl} />
               ) : top.videoUrl ? (
                 <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
                   <source src={top.videoUrl} />
@@ -314,13 +309,7 @@ const BannerManagement = () => {
           {previewBot && (
             <div className="relative w-full h-36 rounded-xl overflow-hidden border">
               {bottom.videoUrl && isYouTubeUrl(bottom.videoUrl) ? (
-                <iframe
-                  src={getYouTubeBackgroundEmbedUrl(bottom.videoUrl) ?? undefined}
-                  className="absolute inset-0 w-full h-full pointer-events-none"
-                  style={{ border: 0 }}
-                  allow="autoplay; encrypted-media; picture-in-picture"
-                  title="Banner video preview"
-                />
+                <YouTubeBackground url={bottom.videoUrl} />
               ) : bottom.videoUrl ? (
                 <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
                   <source src={bottom.videoUrl} />

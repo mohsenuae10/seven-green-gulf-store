@@ -5,7 +5,8 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { getYouTubeBackgroundEmbedUrl, isYouTubeUrl } from "@/lib/youtube";
+import { isYouTubeUrl } from "@/lib/youtube";
+import { YouTubeBackground } from "@/components/YouTubeBackground";
 
 interface BannerData {
   image: string;
@@ -51,13 +52,7 @@ const HomeBanner = () => {
     <section className="relative w-full overflow-hidden" style={{ minHeight: "420px" }}>
       {/* Background — فيديو أو صورة */}
       {banner?.videoUrl && isYouTubeUrl(banner.videoUrl) ? (
-        <iframe
-          src={getYouTubeBackgroundEmbedUrl(banner.videoUrl) ?? undefined}
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          style={{ border: 0 }}
-          allow="autoplay; encrypted-media; picture-in-picture"
-          title="Banner video"
-        />
+        <YouTubeBackground url={banner.videoUrl} />
       ) : banner?.videoUrl ? (
         <video
           autoPlay muted loop playsInline
