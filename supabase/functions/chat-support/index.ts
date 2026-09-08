@@ -114,8 +114,7 @@ serve(async (req) => {
 ✓ شهادة الأصالة مع كل منتج
 
 معلومات الاتصال:
-- واتساب: 971508824227
-- البريد الإلكتروني: متوفر عبر نموذج الاتصال
+- البريد الإلكتروني: support@sevensgreen.com
 - خدمة العملاء متاحة 24/7
 
 العروض الخاصة:
@@ -141,7 +140,7 @@ serve(async (req) => {
 - يمكن استخدامه للأطفال فوق 3 سنوات
 - لا يسبب حساسية لأنه طبيعي بالكامل
 
-إذا لم تعرف إجابة سؤال معين، اعترف بذلك واقترح التواصل مع فريق الدعم عبر واتساب: 971508824227`
+إذا لم تعرف إجابة سؤال معين، اعترف بذلك واقترح التواصل مع فريق الدعم عبر البريد الإلكتروني: support@sevensgreen.com`
       : `You are an intelligent assistant for Seven Green store, specializing in natural Korean hair care products.
 
 Store Information:
@@ -237,8 +236,7 @@ Guarantees:
 ✓ Certificate of authenticity with each product
 
 Contact Information:
-- WhatsApp: 971508824227
-- Email: available via contact form
+- Email: support@sevensgreen.com
 - Customer service available 24/7
 
 Special Offers:
@@ -264,7 +262,7 @@ Important Notes:
 - Can be used for children over 3 years
 - Does not cause allergies as it's completely natural
 
-If you don't know the answer to a specific question, acknowledge it and suggest contacting support via WhatsApp: 971508824227`;
+If you don't know the answer to a specific question, acknowledge it and suggest contacting support via email: support@sevensgreen.com`;
 
     console.log('Starting chat stream with Lovable AI...');
 

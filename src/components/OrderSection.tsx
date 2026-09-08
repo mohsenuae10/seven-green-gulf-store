@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { ShoppingCart, MapPin, Phone, User, CreditCard, Truck, Shield, Crown, Plus, Minus, CheckCircle } from "lucide-react";
+import { ShoppingCart, MapPin, Mail, User, CreditCard, Truck, Shield, Crown, Plus, Minus, CheckCircle } from "lucide-react";
+import { CONTACT_INFO } from "@/config/contact";
 import { Link } from "react-router-dom";
 import { PriceDisplay } from "@/components/PriceDisplay";
 
@@ -315,11 +316,11 @@ const OrderSection = () => {
               <Button 
                 variant="outline" 
                 size="sm"
-                onClick={() => window.open("https://wa.me/971508824227", "_blank")}
+                onClick={() => window.open(`mailto:${CONTACT_INFO.email}`, "_blank")}
                 className="w-full hover:scale-105 transition-all duration-300"
               >
-                <Phone className="w-4 h-4 ml-2" />
-                {language === 'ar' ? 'واتساب +971508824227' : 'WhatsApp +971508824227'}
+                <Mail className="w-4 h-4 ml-2" />
+                {language === 'ar' ? `البريد: ${CONTACT_INFO.email}` : `Email: ${CONTACT_INFO.email}`}
               </Button>
             </Card>
 

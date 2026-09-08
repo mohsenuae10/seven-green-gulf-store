@@ -85,8 +85,8 @@ const CheckoutForm = ({ orderId, amountLabel, shippingCountry, onBack }: Omit<St
         </div>
         <p>
           {language === "ar"
-            ? "سيصلك إشعار عبر واتساب والبريد الإلكتروني يتضمن رقم التتبع وتأكيد الشحن والطلب بعد إتمام الدفع."
-            : "You'll receive a WhatsApp message and an email with your tracking number and shipping/order confirmation right after payment."}
+            ? "سيصلك إشعار عبر البريد الإلكتروني يتضمن رقم التتبع وتأكيد الشحن والطلب بعد إتمام الدفع."
+            : "You'll receive an email with your tracking number and shipping/order confirmation right after payment."}
         </p>
       </div>
 

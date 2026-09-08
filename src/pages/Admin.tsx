@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { CONTACT_INFO } from "@/config/contact";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
@@ -157,7 +158,7 @@ const Admin = () => {
             </Button>
             <Button 
               variant="outline" 
-              onClick={() => window.open("https://wa.me/971508824227", "_blank")}
+              onClick={() => window.open(`mailto:${CONTACT_INFO.email}`, "_blank")}
               className="w-full"
             >
               تواصل مع الإدارة للحصول على صلاحيات

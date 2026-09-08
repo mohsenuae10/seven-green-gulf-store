@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
-import { CheckCircle, Package, Truck, Phone, Home, Loader2 } from "lucide-react";
+import { CheckCircle, Package, Truck, Phone, Mail, Home, Loader2 } from "lucide-react";
+import { CONTACT_INFO } from "@/config/contact";
 import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -194,9 +195,9 @@ const PaymentSuccess = () => {
             <Button 
               variant="outline" 
               size="lg"
-              onClick={() => window.open("https://wa.me/971508824227", "_blank")}
+              onClick={() => window.open(`mailto:${CONTACT_INFO.email}`, "_blank")}
             >
-              <Phone className="w-5 h-5 ml-2" />
+              <Mail className="w-5 h-5 ml-2" />
               تواصل معنا
             </Button>
               </div>
@@ -346,7 +347,7 @@ const PaymentSuccess = () => {
           {/* Contact Info */}
           <div className="mt-8 p-4 bg-primary/5 rounded-lg">
             <p className="text-sm text-muted-foreground">
-              في حالة وجود أي استفسارات، يمكنك التواصل معنا عبر الواتساب أو البريد الإلكتروني
+              في حالة وجود أي استفسارات، يمكنك التواصل معنا عبر البريد الإلكتروني
             </p>
           </div>
         </div>

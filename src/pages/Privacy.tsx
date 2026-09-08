@@ -114,7 +114,6 @@ const Privacy = () => {
                 <p>لأي استفسار بشأن خصوصيتك، تواصل معنا على:</p>
                 <ul className="list-disc list-inside space-y-1 mt-2">
                   <li>البريد: <a href={`mailto:${CONTACT_INFO.email}`} className="text-primary hover:underline">{CONTACT_INFO.email}</a></li>
-                  <li>الهاتف: <a href={`tel:${CONTACT_INFO.phone}`} className="text-primary hover:underline">{CONTACT_INFO.phone}</a></li>
                 </ul>
               </section>
             </div>
@@ -180,7 +179,6 @@ const Privacy = () => {
                 <p>For any privacy inquiries, contact us at:</p>
                 <ul className="list-disc list-inside space-y-1 mt-2">
                   <li>Email: <a href={`mailto:${CONTACT_INFO.email}`} className="text-primary hover:underline">{CONTACT_INFO.email}</a></li>
-                  <li>Phone: <a href={`tel:${CONTACT_INFO.phone}`} className="text-primary hover:underline">{CONTACT_INFO.phone}</a></li>
                 </ul>
               </section>
             </div>
