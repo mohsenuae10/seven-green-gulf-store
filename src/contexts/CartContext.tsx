@@ -13,6 +13,10 @@ export interface CartItem {
 interface CartContextType {
   items: CartItem[];
   addItem: (item: Omit<CartItem, "quantity">, qty?: number) => void;
+  /** "Buy now": puts this product in the cart with EXACTLY `qty` (never adds on top). */
+  setItemQuantity: (item: Omit<CartItem, "quantity">, qty: number) => void;
+  /** Replaces the whole cart (used when resuming an order from a reminder link). */
+  replaceCart: (items: CartItem[]) => void;
   removeItem: (productId: string) => void;
   updateQty: (productId: string, qty: number) => void;
   clearCart: () => void;
@@ -35,7 +39,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   });
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      // storage unavailable (private mode) — cart still works in memory
+    }
   }, [items]);
 
   const addItem = (item: Omit<CartItem, "quantity">, qty = 1) => {
@@ -58,6 +66,23 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     });
   };
 
+  const setItemQuantity = (item: Omit<CartItem, "quantity">, qty: number) => {
+    const quantity = Math.max(1, Math.floor(qty));
+    trackAddToCart({
+      contentId: item.productId,
+      contentName: item.nameEn || item.name,
+      value: item.price * quantity,
+      quantity,
+    });
+    setItems(prev =>
+      prev.some(i => i.productId === item.productId)
+        ? prev.map(i => (i.productId === item.productId ? { ...i, ...item, quantity } : i))
+        : [...prev, { ...item, quantity }]
+    );
+  };
+
+  const replaceCart = (next: CartItem[]) => setItems(next);
+
   const removeItem = (productId: string) =>
     setItems(prev => prev.filter(i => i.productId !== productId));
 
@@ -74,7 +99,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const totalPrice = items.reduce((s, i) => s + i.price * i.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQty, clearCart, totalItems, totalPrice }}>
+    <CartContext.Provider value={{ items, addItem, setItemQuantity, replaceCart, removeItem, updateQty, clearCart, totalItems, totalPrice }}>
       {children}
     </CartContext.Provider>
   );

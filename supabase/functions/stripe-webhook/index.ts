@@ -46,6 +46,34 @@ serve(async (req) => {
       case "payment_intent.succeeded": {
         const pi = event.data.object as Stripe.PaymentIntent;
         console.log("PaymentIntent succeeded:", pi.id);
+        const metadataOrderId = pi.metadata?.order_id;
+
+        // Find the order linked to this PaymentIntent. Safety net: if the link
+        // is missing (should not happen), fall back to the order id stored in
+        // the PaymentIntent metadata so a real payment is never lost.
+        let { data: order } = await supabase
+          .from("orders")
+          .select("id, payment_status, customer_name, customer_email, total_amount")
+          .eq("payment_intent_id", pi.id)
+          .maybeSingle();
+
+        if (!order && metadataOrderId) {
+          const { data: relinked } = await supabase
+            .from("orders")
+            .update({ payment_intent_id: pi.id })
+            .eq("id", metadataOrderId)
+            .neq("payment_status", "paid")
+            .select("id, payment_status, customer_name, customer_email, total_amount")
+            .maybeSingle();
+          order = relinked;
+        }
+
+        if (!order) {
+          console.error("No order found for PaymentIntent", pi.id, "metadata order:", metadataOrderId);
+          break;
+        }
+
+        const alreadyPaid = order.payment_status === "paid";
 
         const { error } = await supabase.rpc("mark_order_paid_by_intent", {
           payment_intent_id_param: pi.id,
@@ -55,27 +83,19 @@ serve(async (req) => {
           return new Response("DB update failed", { status: 500 });
         }
 
-        // Send the payment confirmation email from the trusted server side.
-        const orderId = pi.metadata?.order_id;
-        if (orderId) {
+        // Send the confirmation email once (Stripe may deliver the same event
+        // more than once).
+        if (!alreadyPaid && order.customer_email) {
           try {
-            const { data: orders } = await supabase
-              .from("orders")
-              .select("customer_name, customer_email, total_amount")
-              .eq("id", orderId)
-              .limit(1);
-            const order = orders?.[0];
-            if (order?.customer_email) {
-              await supabase.functions.invoke("send-payment-confirmation", {
-                body: {
-                  customerName: order.customer_name,
-                  customerEmail: order.customer_email,
-                  orderId,
-                  totalAmount: order.total_amount,
-                  productName: "منتج Seven Green للعناية بالشعر",
-                },
-              });
-            }
+            await supabase.functions.invoke("send-payment-confirmation", {
+              body: {
+                customerName: order.customer_name,
+                customerEmail: order.customer_email,
+                orderId: order.id,
+                totalAmount: order.total_amount,
+                productName: "منتج Seven Green للعناية بالشعر",
+              },
+            });
           } catch (emailError) {
             console.error("Confirmation email failed (non-fatal):", emailError);
           }
@@ -85,11 +105,23 @@ serve(async (req) => {
 
       case "payment_intent.payment_failed": {
         const pi = event.data.object as Stripe.PaymentIntent;
-        console.log("PaymentIntent failed:", pi.id);
+        const lastError = pi.last_payment_error;
+        // decline_code is the most specific (do_not_honor, insufficient_funds…);
+        // code covers non-decline failures (expired_card, authentication…).
+        const reason = lastError?.decline_code || lastError?.code || lastError?.type || "unknown";
+        console.log("PaymentIntent failed:", pi.id, "reason:", reason, "-", lastError?.message);
+
         const { error } = await supabase.rpc("mark_order_failed_by_intent", {
           payment_intent_id_param: pi.id,
         });
         if (error) console.error("Failed to mark order failed:", error);
+
+        const { error: reasonError } = await supabase
+          .from("orders")
+          .update({ last_payment_error: reason })
+          .eq("payment_intent_id", pi.id)
+          .neq("payment_status", "paid");
+        if (reasonError) console.error("Failed to store payment error reason:", reasonError);
         break;
       }
 

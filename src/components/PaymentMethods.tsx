@@ -8,8 +8,6 @@ import visaLogo from "@/assets/payment-logos/visa.svg";
 import mastercardLogo from "@/assets/payment-logos/mastercard.svg";
 import applePayLogo from "@/assets/payment-logos/apple-pay.svg";
 import googlePayLogo from "@/assets/payment-logos/google-pay.svg";
-import amexLogo from "@/assets/payment-logos/american-express.svg";
-import paypalLogo from "@/assets/payment-logos/paypal.svg";
 
 const PaymentMethods = () => {
   const { language } = useLanguage();
@@ -31,10 +29,7 @@ const PaymentMethods = () => {
       name: "Google Pay",
       icon: <OptimizedImage src={googlePayLogo} alt="Google Pay" className="h-5 w-auto" width={40} height={20} priority />,
     },
-    {
-      name: "PayPal",
-      icon: <OptimizedImage src={paypalLogo} alt="PayPal" className="h-5 w-auto" width={40} height={20} priority />,
-    },
+    // Only methods actually offered at checkout (PayPal is not available via Stripe in SAR).
   ];
 
   return (
@@ -47,7 +42,7 @@ const PaymentMethods = () => {
           </h3>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 mb-2.5">
+        <div className="grid grid-cols-4 gap-2 mb-2.5">
           {paymentMethods.map((method) => (
             <div
               key={method.name}

@@ -24,7 +24,7 @@ const ProductCard = ({ id, name, nameEn, price, image, description, stockQuantit
   const { language } = useLanguage();
   const langPath = useLangPath();
   const { getPriceData } = useCurrency();
-  const { addItem, items } = useCart();
+  const { addItem, items, setItemQuantity } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -51,7 +51,7 @@ const ProductCard = ({ id, name, nameEn, price, image, description, stockQuantit
   const handleBuyNow = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    addItem({ productId: id, name, nameEn: nameEn || name, price, image });
+    setItemQuantity({ productId: id, name, nameEn: nameEn || name, price, image }, inCart ? inCart.quantity : 1);
     navigate(langPath('/order'));
   };
 

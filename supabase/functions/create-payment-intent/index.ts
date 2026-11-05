@@ -1,357 +1,122 @@
+// Called when the customer presses "Pay" (card) or confirms Apple Pay /
+// Google Pay on /order. Updates the customer's existing checkout order (the
+// one created by checkout-session) — or creates it if the customer paid
+// straight away with a wallet — then creates or reuses a Stripe
+// PaymentIntent for the current cart total and returns its client secret.
+// deno-lint-ignore-file no-explicit-any
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-import { Resend } from "npm:resend@2.0.0";
+import {
+  CheckoutError,
+  corsHeaders,
+  jsonResponse,
+  normalizePhone,
+  phoneDigitCount,
+  resolveCart,
+  upsertCheckoutOrder,
+} from "../_shared/checkout.ts";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
-
-// Arab League member country codes — orders shipping here get the Arabic email,
-// everywhere else gets English.
-const ARABIC_COUNTRY_CODES = new Set([
-  "DZ", "BH", "KM", "DJ", "EG", "IQ", "JO", "KW", "LB", "LY", "MR",
-  "MA", "OM", "PS", "QA", "SA", "SO", "SD", "SY", "TN", "AE", "YE",
-]);
-
-async function sendOrderCreatedEmail(params: {
-  customerEmail: string;
-  customerName: string;
-  orderId: string;
-  totalAmount: number;
-  items: { name: string; quantity: number }[];
-  shippingCountry: string;
-}) {
-  const { customerEmail, customerName, orderId, totalAmount, items, shippingCountry } = params;
-  if (!customerEmail) return;
-
-  const isArabic = ARABIC_COUNTRY_CODES.has(shippingCountry?.toUpperCase());
-  const orderRef = orderId.slice(-8);
-
-  try {
-    const html = isArabic
-      ? `
-        <!DOCTYPE html>
-        <html dir="rtl" lang="ar">
-        <head>
-          <meta charset="UTF-8">
-          <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
-            .container { max-width: 600px; margin: 0 auto; background-color: white; }
-            .header { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 30px; text-align: center; }
-            .content { padding: 30px; }
-            .order-info { background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; }
-            .pending-box { background: #fef3c7; border: 2px solid #f59e0b; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; }
-            .footer { background: #f1f5f9; padding: 20px; text-align: center; color: #64748b; }
-            .price { font-size: 24px; font-weight: bold; color: #10b981; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>📝 تم إنشاء طلبك</h1>
-              <p>مرحباً ${customerName}</p>
-            </div>
-            <div class="content">
-              <div class="pending-box">
-                <h2>⏳ بانتظار تأكيد الدفع</h2>
-                <p>استلمنا طلبك وهو الآن بانتظار إتمام عملية الدفع. سيتم تأكيد الطلب فور نجاح الدفع.</p>
-              </div>
-              <div class="order-info">
-                <h3>تفاصيل الطلب:</h3>
-                <p><strong>رقم الطلب:</strong> #${orderRef}</p>
-                <ul>${items.map((i) => `<li>${i.name} × ${i.quantity}</li>`).join("")}</ul>
-                <p><strong>المبلغ الإجمالي:</strong> <span class="price">${totalAmount} ريال</span></p>
-                <p><strong>حالة الدفع:</strong> <span style="color: #f59e0b; font-weight: bold;">بانتظار التأكيد</span></p>
-              </div>
-              <p>إذا لم تكمل عملية الدفع بعد، يمكنك العودة إلى صفحة الطلب لإتمامها.</p>
-            </div>
-            <div class="footer">
-              <p>شكراً لاختيارك متجر Seven Green</p>
-              <p>هذه رسالة تلقائية، يرجى عدم الرد عليها مباشرة</p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `
-      : `
-        <!DOCTYPE html>
-        <html dir="ltr" lang="en">
-        <head>
-          <meta charset="UTF-8">
-          <style>
-            body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; background-color: #f5f5f5; }
-            .container { max-width: 600px; margin: 0 auto; background-color: white; }
-            .header { background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 30px; text-align: center; }
-            .content { padding: 30px; }
-            .order-info { background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; }
-            .pending-box { background: #fef3c7; border: 2px solid #f59e0b; padding: 20px; border-radius: 8px; text-align: center; margin: 20px 0; }
-            .footer { background: #f1f5f9; padding: 20px; text-align: center; color: #64748b; }
-            .price { font-size: 24px; font-weight: bold; color: #10b981; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>📝 Your order has been created</h1>
-              <p>Hello ${customerName}</p>
-            </div>
-            <div class="content">
-              <div class="pending-box">
-                <h2>⏳ Awaiting payment confirmation</h2>
-                <p>We've received your order and it's now awaiting payment. It will be confirmed as soon as the payment succeeds.</p>
-              </div>
-              <div class="order-info">
-                <h3>Order details:</h3>
-                <p><strong>Order number:</strong> #${orderRef}</p>
-                <ul>${items.map((i) => `<li>${i.name} × ${i.quantity}</li>`).join("")}</ul>
-                <p><strong>Total amount:</strong> <span class="price">${totalAmount} SAR</span></p>
-                <p><strong>Payment status:</strong> <span style="color: #f59e0b; font-weight: bold;">Awaiting confirmation</span></p>
-              </div>
-              <p>If you haven't completed the payment yet, you can return to the order page to finish it.</p>
-            </div>
-            <div class="footer">
-              <p>Thank you for choosing Seven Green</p>
-              <p>This is an automated message, please do not reply directly.</p>
-            </div>
-          </div>
-        </body>
-        </html>
-      `;
-
-    await resend.emails.send({
-      from: "Seven Green Store <orders@sevensgreen.com>",
-      to: [customerEmail],
-      subject: isArabic
-        ? `تم إنشاء طلبك #${orderRef} — بانتظار تأكيد الدفع`
-        : `Your order #${orderRef} has been created — awaiting payment confirmation`,
-      html,
-    });
-  } catch (emailError) {
-    console.error("Failed to send order-created email:", emailError);
-  }
-}
-
-interface CartItem {
-  productId: string;
-  quantity: number;
-}
-
-interface PaymentRequest {
-  customerName: string;
-  customerEmail?: string;
-  customerPhone: string;
-  country: string;
-  city: string;
-  address: string;
-  // Multi-product cart (new)
-  cartItems?: CartItem[];
-  // Legacy single-product fallback
-  quantity?: number;
-}
+// A PaymentIntent in one of these states can still be paid with a new amount.
+const REUSABLE = new Set(["requires_payment_method", "requires_confirmation"]);
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const body: PaymentRequest = await req.json();
-    const {
-      customerName,
-      customerEmail,
-      customerPhone,
-      country,
-      city,
-      address,
-      cartItems,
-      quantity,
-    } = body;
+    const body = await req.json();
+    const customerName = String(body?.customerName ?? "").trim();
+    const customerPhone = normalizePhone(body?.customerPhone);
+    const country = String(body?.country ?? "").trim().toUpperCase();
+    const city = String(body?.city ?? "").trim();
+    const address = String(body?.address ?? "").trim();
 
-    if (!customerName?.trim() || !customerPhone?.trim() || !country?.trim() || !city?.trim() || !address?.trim()) {
-      throw new Error("بيانات الطلب غير مكتملة");
+    if (!customerName || !country || !city || !address) {
+      throw new CheckoutError("بيانات الطلب غير مكتملة", "incomplete_details");
     }
+    if (phoneDigitCount(customerPhone) < 8) throw new CheckoutError("رقم الجوال غير صحيح", "invalid_phone");
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
     });
-
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
 
-    // ── Resolve cart items ──────────────────────────────────────────────────
-    let resolvedItems: { productId: string; quantity: number; unitPrice: number; name: string; imageUrl: string | null }[] = [];
+    const items = await resolveCart(supabase, body?.cartItems);
+    const order = await upsertCheckoutOrder(supabase, {
+      orderId: body?.orderId,
+      checkoutToken: body?.checkoutToken,
+      customer: { ...body, customerName, customerPhone, country, city, address },
+      items,
+      stage: "payment",
+    });
 
-    if (cartItems && cartItems.length > 0) {
-      // Multi-product path: fetch all products by ID from DB
-      const productIds = cartItems.map(i => i.productId);
-      const { data: products, error: productError } = await supabase
-        .from("products")
-        .select("id, name, price, image_url")
-        .in("id", productIds)
-        .eq("is_active", true);
+    const amount = Math.round(order.total * 100);
+    if (!(amount > 0)) throw new CheckoutError("المبلغ الإجمالي غير صالح", "invalid_amount");
 
-      if (productError || !products || products.length === 0) {
-        throw new Error("بعض المنتجات غير متوفرة");
+    const shipping = {
+      name: customerName,
+      phone: customerPhone,
+      address: { line1: address, city, country },
+    };
+    const metadata = {
+      order_id: order.id,
+      customer_name: customerName,
+      customer_phone: customerPhone,
+      items_count: String(items.length),
+      total_qty: String(items.reduce((s, i) => s + i.quantity, 0)),
+    };
+
+    // ── Reuse the order's PaymentIntent when possible ───────────────────────
+    let paymentIntent: Stripe.PaymentIntent | null = null;
+    if (order.paymentIntentId) {
+      const existing = await stripe.paymentIntents.retrieve(order.paymentIntentId);
+      if (existing.status === "succeeded" || existing.status === "processing") {
+        throw new CheckoutError("تمت معالجة الدفع لهذا الطلب مسبقاً", "already_paid");
       }
-
-      for (const item of cartItems) {
-        const qty = Number(item.quantity);
-        if (!Number.isInteger(qty) || qty < 1 || qty > 100) {
-          throw new Error("كمية غير صحيحة");
+      if (REUSABLE.has(existing.status)) {
+        paymentIntent = await stripe.paymentIntents.update(existing.id, { amount, shipping, metadata });
+      } else if (existing.status !== "canceled") {
+        // e.g. requires_action: a 3-D Secure step the customer abandoned.
+        // Cancel it so it can never complete later against a stale amount.
+        try {
+          await stripe.paymentIntents.cancel(existing.id);
+        } catch (cancelError) {
+          console.error("Could not cancel previous PaymentIntent:", cancelError);
+          throw new CheckoutError("عملية دفع سابقة قيد المعالجة، انتظر قليلاً ثم حاول مرة أخرى", "previous_payment_in_progress");
         }
-        const prod = products.find(p => p.id === item.productId);
-        if (!prod) throw new Error(`المنتج ${item.productId} غير موجود`);
-        resolvedItems.push({
-          productId: prod.id,
-          quantity: qty,
-          unitPrice: Number(prod.price),
-          name: prod.name,
-          imageUrl: prod.image_url ?? null,
-        });
       }
-    } else {
-      // Legacy single-product fallback
-      const qty = Number(quantity ?? 1);
-      if (!Number.isInteger(qty) || qty < 1 || qty > 100) {
-        throw new Error("الكمية غير صحيحة");
-      }
-      const { data: products, error: productError } = await supabase
-        .from("products")
-        .select("id, name, price, image_url")
-        .eq("is_active", true)
-        .order("updated_at", { ascending: false })
-        .limit(1);
+    }
 
-      if (productError || !products || products.length === 0) {
-        throw new Error("المنتج غير متوفر حالياً");
-      }
-      resolvedItems.push({
-        productId: products[0].id,
-        quantity: qty,
-        unitPrice: Number(products[0].price),
-        name: products[0].name,
-        imageUrl: products[0].image_url ?? null,
+    if (!paymentIntent) {
+      paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency: "sar",
+        automatic_payment_methods: { enabled: true },
+        description: `Seven Green order #${order.id.slice(-8)}`,
+        shipping,
+        metadata,
       });
+      await supabase.from("orders").update({ payment_intent_id: paymentIntent.id }).eq("id", order.id);
     }
 
-    // ── Compute total ───────────────────────────────────────────────────────
-    const totalAmount = Math.round(
-      resolvedItems.reduce((s, i) => s + i.unitPrice * i.quantity, 0) * 100
-    ) / 100;
-
-    if (!(totalAmount > 0)) throw new Error("المبلغ الإجمالي غير صالح");
-
-    const amountInMinorUnits = Math.round(totalAmount * 100);
-    const currency = "sar";
-
-    // ── Stripe customer ─────────────────────────────────────────────────────
-    let customerId: string | undefined;
-    if (customerEmail) {
-      const customers = await stripe.customers.list({ email: customerEmail, limit: 1 });
-      if (customers.data.length > 0) customerId = customers.data[0].id;
-    }
-    if (!customerId) {
-      const customer = await stripe.customers.create({
-        email: customerEmail || undefined,
-        name: customerName,
-        phone: customerPhone,
-        address: { line1: address, city, country },
-      });
-      customerId = customer.id;
-    }
-
-    // ── Create order ────────────────────────────────────────────────────────
-    const { data: orderData, error: orderError } = await supabase
-      .from("orders")
-      .insert({
-        customer_name: customerName,
-        customer_email: customerEmail || "",
-        customer_phone: customerPhone,
-        country,
-        city,
-        address,
-        total_amount: totalAmount,
-        currency: currency.toUpperCase(),
-        status: "pending",
-        payment_status: "pending",
-      })
-      .select()
-      .single();
-
-    if (orderError || !orderData) {
-      throw new Error("فشل في إنشاء الطلب");
-    }
-
-    // ── Create order_items (one row per product) ────────────────────────────
-    const orderItemsPayload = resolvedItems.map(i => ({
-      order_id: orderData.id,
-      product_id: i.productId,
-      product_name: i.name,
-      product_image_url: i.imageUrl,
-      quantity: i.quantity,
-      unit_price: i.unitPrice,
-      total_price: Math.round(i.unitPrice * i.quantity * 100) / 100,
-    }));
-
-    const { error: itemError } = await supabase.from("order_items").insert(orderItemsPayload);
-    if (itemError) {
-      console.error("Order items creation failed:", itemError);
-    }
-
-    // ── Notify customer that the order was created and is awaiting payment ──
-    await sendOrderCreatedEmail({
-      customerEmail: customerEmail || "",
-      customerName,
-      orderId: orderData.id,
-      totalAmount,
-      items: resolvedItems.map(i => ({ name: i.name, quantity: i.quantity })),
-      shippingCountry: country,
+    return jsonResponse({
+      success: true,
+      clientSecret: paymentIntent.client_secret,
+      order_id: order.id,
+      checkout_token: order.checkoutToken,
+      amount: order.total,
+      amountMinor: amount,
+      currency: "sar",
+      items: items.map((i) => ({ productId: i.productId, unitPrice: i.unitPrice })),
     });
-
-    // ── Stripe PaymentIntent ────────────────────────────────────────────────
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amountInMinorUnits,
-      currency,
-      customer: customerId,
-      automatic_payment_methods: { enabled: true },
-      metadata: {
-        order_id: orderData.id,
-        customer_name: customerName,
-        customer_phone: customerPhone,
-        items_count: String(resolvedItems.length),
-        total_qty: String(resolvedItems.reduce((s, i) => s + i.quantity, 0)),
-      },
-    });
-
-    await supabase
-      .from("orders")
-      .update({ payment_intent_id: paymentIntent.id })
-      .eq("id", orderData.id);
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-        clientSecret: paymentIntent.client_secret,
-        order_id: orderData.id,
-        amount: totalAmount,
-        currency,
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 }
-    );
   } catch (error) {
+    if (error instanceof CheckoutError) {
+      return jsonResponse({ success: false, error: error.message, code: error.code });
+    }
     console.error("Error in create-payment-intent:", error);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 }
-    );
+    return jsonResponse({ success: false, error: "تعذّر تجهيز الدفع، حاول مرة أخرى", code: "server_error" }, 500);
   }
 });

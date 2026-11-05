@@ -38,7 +38,75 @@ interface Order {
   updated_at: string;
   total_items?: number;
   order_items?: OrderItem[];
+  checkout_stage?: string | null;
+  last_payment_error?: string | null;
+  reminder_sent_at?: string | null;
 }
+
+type OrdersView = "all" | "paid" | "abandoned";
+
+// An unpaid order with no activity for 30 minutes counts as an abandoned cart.
+const ABANDONED_AFTER_MS = 30 * 60 * 1000;
+
+const isAbandoned = (order: Order) =>
+  order.payment_status !== "paid" &&
+  order.status !== "cancelled" &&
+  Date.now() - new Date(order.updated_at || order.created_at).getTime() > ABANDONED_AFTER_MS;
+
+// Stripe decline / error codes → what they mean for the store owner.
+const DECLINE_REASONS_AR: Record<string, string> = {
+  generic_decline: "البنك رفض البطاقة بدون سبب محدد",
+  card_declined: "البنك رفض البطاقة",
+  do_not_honor: "البنك رفض العملية (غالباً الشراء الدولي أو الإلكتروني غير مفعّل)",
+  transaction_not_allowed: "البطاقة لا تسمح بهذا النوع من الشراء (دولي/إلكتروني)",
+  card_not_supported: "نوع البطاقة غير مدعوم (مثل بطاقة مدى غير مدمجة)",
+  currency_not_supported: "البطاقة لا تدعم الدفع بالريال",
+  insufficient_funds: "الرصيد غير كافٍ",
+  expired_card: "البطاقة منتهية",
+  incorrect_cvc: "رمز CVC خاطئ",
+  invalid_cvc: "رمز CVC خاطئ",
+  incorrect_number: "رقم البطاقة خاطئ",
+  invalid_number: "رقم البطاقة خاطئ",
+  invalid_expiry_month: "تاريخ انتهاء خاطئ",
+  invalid_expiry_year: "تاريخ انتهاء خاطئ",
+  authentication_required: "البنك طلب التحقق (OTP) ولم يكتمل",
+  payment_intent_authentication_failure: "فشل التحقق من البنك (OTP)",
+  fraudulent: "البنك اشتبه بالعملية",
+  lost_card: "البطاقة مبلّغ عنها كمفقودة",
+  stolen_card: "البطاقة مبلّغ عنها كمسروقة",
+  pickup_card: "البنك أوقف البطاقة",
+  restricted_card: "البطاقة مقيّدة من البنك",
+  security_violation: "البنك رفض لأسباب أمنية",
+  processing_error: "خطأ مؤقت في المعالجة",
+  try_again_later: "خطأ مؤقت لدى البنك",
+  withdrawal_count_limit_exceeded: "تجاوز حد العمليات",
+  card_velocity_exceeded: "تجاوز حد العمليات",
+};
+
+const declineReason = (code?: string | null) =>
+  code ? DECLINE_REASONS_AR[code] ?? `رمز الخطأ: ${code}` : "سبب غير معروف";
+
+const getAbandonStage = (order: Order) => {
+  if (order.payment_status === "failed" || order.last_payment_error) {
+    return {
+      key: "failed",
+      label: `حاول الدفع وفشل — ${declineReason(order.last_payment_error)}`,
+      className: "bg-red-50 border-red-200 text-red-800",
+    };
+  }
+  if (order.checkout_stage === "payment") {
+    return {
+      key: "payment",
+      label: "ضغط «ادفع» ولم يكمل (أغلق الصفحة أو لم يكمل التحقق من البنك)",
+      className: "bg-amber-50 border-amber-200 text-amber-800",
+    };
+  }
+  return {
+    key: "details",
+    label: "عبّأ بياناته ولم يضغط «ادفع»",
+    className: "bg-gray-50 border-gray-200 text-gray-700",
+  };
+};
 
 const getCountryInfo = (code: string) => {
   const found = countries.find(c => c.code === code);
@@ -54,6 +122,7 @@ export function OrdersManagement() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
+  const [view, setView] = useState<OrdersView>("all");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -216,22 +285,19 @@ export function OrdersManagement() {
     }
 
     try {
-      const { error } = await supabase.functions.invoke('send-payment-reminder', {
-        body: {
-          orderId: order.id,
-          customerName: order.customer_name,
-          customerEmail: order.customer_email,
-          totalAmount: order.total_amount,
-          orderDate: order.created_at
-        }
+      // The function reads the email and order details from the database.
+      const { data, error } = await supabase.functions.invoke('send-payment-reminder', {
+        body: { orderId: order.id }
       });
 
       if (error) throw error;
+      if (data && data.success === false) throw new Error(data.error);
 
       toast({
         title: "تم الإرسال",
-        description: "تم إرسال تذكير الدفع بنجاح",
+        description: "تم إرسال تذكير الدفع مع رابط يُرجع العميل لنفس طلبه",
       });
+      fetchOrders();
     } catch (error) {
       console.error('Error sending payment reminder:', error);
       toast({
@@ -312,12 +378,43 @@ export function OrdersManagement() {
     );
   }
 
-  const totalPages = Math.max(1, Math.ceil(orders.length / ORDERS_PER_PAGE));
+  const paidOrders = orders.filter((o) => o.payment_status === "paid");
+  const abandonedOrders = orders.filter(isAbandoned);
+  const visibleOrders =
+    view === "paid" ? paidOrders : view === "abandoned" ? abandonedOrders : orders;
+
+  // Where customers stop — answers "is it a payment problem or did they just leave?"
+  const stageCounts = abandonedOrders.reduce(
+    (acc, o) => {
+      acc[getAbandonStage(o).key as "details" | "payment" | "failed"]++;
+      return acc;
+    },
+    { details: 0, payment: 0, failed: 0 }
+  );
+  const topReasons = Object.entries(
+    abandonedOrders
+      .filter((o) => o.last_payment_error)
+      .reduce<Record<string, number>>((acc, o) => {
+        const k = o.last_payment_error as string;
+        acc[k] = (acc[k] ?? 0) + 1;
+        return acc;
+      }, {})
+  )
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  const totalPages = Math.max(1, Math.ceil(visibleOrders.length / ORDERS_PER_PAGE));
   const safePage = Math.min(currentPage, totalPages);
-  const paginatedOrders = orders.slice(
+  const paginatedOrders = visibleOrders.slice(
     (safePage - 1) * ORDERS_PER_PAGE,
     safePage * ORDERS_PER_PAGE
   );
+
+  const tabs: { key: OrdersView; label: string; count: number }[] = [
+    { key: "all", label: "كل الطلبات", count: orders.length },
+    { key: "paid", label: "المدفوعة", count: paidOrders.length },
+    { key: "abandoned", label: "السلات المتروكة", count: abandonedOrders.length },
+  ];
 
   return (
     <div className="space-y-6">
@@ -327,11 +424,64 @@ export function OrdersManagement() {
           <CardDescription>
             عرض وإدارة جميع الطلبات في المتجر
           </CardDescription>
+          <div className="flex flex-wrap gap-2 pt-3">
+            {tabs.map((tab) => (
+              <Button
+                key={tab.key}
+                size="sm"
+                variant={view === tab.key ? "default" : "outline"}
+                onClick={() => {
+                  setView(tab.key);
+                  setCurrentPage(1);
+                }}
+              >
+                {tab.label}
+                <span className="mr-1.5 rounded-full bg-background/20 px-1.5 text-xs">{tab.count}</span>
+              </Button>
+            ))}
+          </div>
         </CardHeader>
         <CardContent>
-          {orders.length === 0 ? (
+          {view === "abandoned" && abandonedOrders.length > 0 && (
+            <div className="mb-6 space-y-3">
+              <p className="text-sm text-muted-foreground">
+                طلبات لم تُدفع ولم يحدث عليها أي نشاط منذ 30 دقيقة. يُرسَل تذكير تلقائي بالبريد بعد ساعة لمن أدخل بريده.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="rounded-lg border bg-gray-50 p-3">
+                  <div className="text-2xl font-bold">{stageCounts.details}</div>
+                  <div className="text-xs text-muted-foreground">عبّأ بياناته ولم يضغط «ادفع» (تردد / ثقة)</div>
+                </div>
+                <div className="rounded-lg border bg-amber-50 p-3">
+                  <div className="text-2xl font-bold">{stageCounts.payment}</div>
+                  <div className="text-xs text-muted-foreground">ضغط «ادفع» ولم يكمل (أغلق الصفحة / تحقق البنك)</div>
+                </div>
+                <div className="rounded-lg border bg-red-50 p-3">
+                  <div className="text-2xl font-bold">{stageCounts.failed}</div>
+                  <div className="text-xs text-muted-foreground">حاول الدفع وفشل (مشكلة بطاقة / بنك)</div>
+                </div>
+              </div>
+              {topReasons.length > 0 && (
+                <div className="rounded-lg border p-3">
+                  <p className="text-sm font-medium mb-2">أكثر أسباب فشل الدفع:</p>
+                  <ul className="space-y-1 text-sm">
+                    {topReasons.map(([code, count]) => (
+                      <li key={code} className="flex justify-between gap-3">
+                        <span>{declineReason(code)}</span>
+                        <span className="font-semibold">{count}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+
+          {visibleOrders.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground">لا توجد طلبات حتى الآن</p>
+              <p className="text-muted-foreground">
+                {view === "abandoned" ? "لا توجد سلات متروكة 🎉" : "لا توجد طلبات حتى الآن"}
+              </p>
             </div>
           ) : (
             <div className="grid gap-6">
@@ -357,12 +507,20 @@ export function OrdersManagement() {
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    {/* Where an unpaid customer stopped */}
+                    {order.payment_status !== "paid" && (
+                      <div className={`rounded-lg border px-3 py-2 text-sm ${getAbandonStage(order).className}`}>
+                        <span className="font-semibold">أين توقف العميل: </span>
+                        {getAbandonStage(order).label}
+                      </div>
+                    )}
+
                     {/* Customer Info */}
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-3">
                         <div className="flex items-center gap-2">
                           <User className="h-4 w-4 text-muted-foreground" />
-                          <span className="font-medium">{order.customer_name}</span>
+                          <span className="font-medium">{order.customer_name || "— (لم يكتب اسمه بعد)"}</span>
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -519,16 +677,23 @@ export function OrdersManagement() {
                           </div>
                         </div>
 
-                        {/* Payment Reminder Button - Only show for pending payments */}
-                        {order.payment_status === 'pending' && (
-                          <Button 
-                            variant="outline" 
-                            className="w-full bg-amber-50 hover:bg-amber-100 border-amber-200"
-                            onClick={() => sendPaymentReminder(order)}
-                          >
-                            <Bell className="h-4 w-4 ml-2" />
-                            إرسال تذكير بالدفع
-                          </Button>
+                        {/* Payment Reminder Button - for any unpaid order */}
+                        {order.payment_status !== 'paid' && (
+                          <div className="space-y-1">
+                            <Button
+                              variant="outline"
+                              className="w-full bg-amber-50 hover:bg-amber-100 border-amber-200"
+                              onClick={() => sendPaymentReminder(order)}
+                            >
+                              <Bell className="h-4 w-4 ml-2" />
+                              {order.reminder_sent_at ? "إعادة إرسال تذكير بالدفع" : "إرسال تذكير بالدفع"}
+                            </Button>
+                            {order.reminder_sent_at && (
+                              <p className="text-xs text-muted-foreground text-center">
+                                آخر تذكير: {new Date(order.reminder_sent_at).toLocaleString('ar-AE', { dateStyle: 'short', timeStyle: 'short' })}
+                              </p>
+                            )}
+                          </div>
                         )}
                       </div>
                     </div>

@@ -9,7 +9,7 @@ import BottomBanner from "@/components/BottomBanner";
 import ProductCard from "@/components/ProductCard";
 import { useLanguage, useLangPath } from "@/hooks/useLanguage";
 import { supabase } from "@/integrations/supabase/client";
-import { ChevronRight, ChevronLeft, ShoppingBag } from "lucide-react";
+import { ChevronRight, ChevronLeft, ShoppingBag, Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { useCurrency } from "@/hooks/useCurrency";

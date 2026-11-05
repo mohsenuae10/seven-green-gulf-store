@@ -195,7 +195,7 @@ const SoapLanding = () => {
   const { language } = useLanguage();
   const langPath = useLangPath();
   const navigate = useNavigate();
-  const { addItem, items, updateQty } = useCart();
+  const { addItem, items, updateQty, setItemQuantity } = useCart();
   const { getPriceData } = useCurrency();
   const { toast } = useToast();
   const [qty, setQty] = useState(1);
@@ -219,8 +219,9 @@ const SoapLanding = () => {
     toast({ title: isAr ? `✓ تمت الإضافة (${qty})` : `✓ Added (${qty})`, description: productName });
   };
 
+  // "Buy now" sets the exact chosen quantity (clicking it twice must not double the cart).
   const handleBuyNow = () => {
-    handleAddToCart();
+    setItemQuantity({ productId: PRODUCT_ID, name: NAME_AR, nameEn: NAME_EN, price: PRODUCT_PRICE, image: IMAGES[0] }, qty);
     navigate(langPath('/order'));
   };
 

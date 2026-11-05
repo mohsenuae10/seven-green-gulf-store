@@ -16,16 +16,23 @@ const currencies: Record<Currency, CurrencyData> = {
   USD: { code: 'USD', symbol: '$', name: 'دولار أمريكي', flag: '🇺🇸', rate: 0.27 }, // 1 SAR = ~0.27 USD
 };
 
-export function useCurrency() {
-  const [selectedCurrency, setSelectedCurrencyState] = useState<Currency>('USD');
+// Customers are always charged in SAR, so SAR is the default display currency.
+// A new storage key is used on purpose: the old 'selectedCurrency' key was
+// auto-written as 'USD' for every visitor (not a real choice), so it is ignored.
+const STORAGE_KEY = 'sg_currency';
 
-  // Load currency from localStorage on mount
-  useEffect(() => {
-    const saved = localStorage.getItem('selectedCurrency') as Currency;
-    if (saved && currencies[saved]) {
-      setSelectedCurrencyState(saved);
-    }
-  }, []);
+const readSavedCurrency = (): Currency => {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY) as Currency | null;
+    if (saved && currencies[saved]) return saved;
+  } catch {
+    // storage unavailable
+  }
+  return 'SAR';
+};
+
+export function useCurrency() {
+  const [selectedCurrency, setSelectedCurrencyState] = useState<Currency>(readSavedCurrency);
 
   // Listen for currency change events across app
   useEffect(() => {
@@ -38,13 +45,6 @@ export function useCurrency() {
     window.addEventListener('currencychange' as any, handler as any);
     return () => window.removeEventListener('currencychange' as any, handler as any);
   }, []);
-
-  // Save currency to localStorage when changed
-  useEffect(() => {
-    try {
-      localStorage.setItem('selectedCurrency', selectedCurrency);
-    } catch {}
-  }, [selectedCurrency]);
 
   const convertPrice = (priceInSAR: number): number => {
     const rate = currencies[selectedCurrency].rate;
@@ -75,7 +75,7 @@ export function useCurrency() {
   const changeCurrency = (code: Currency) => {
     setSelectedCurrencyState(code);
     try {
-      localStorage.setItem('selectedCurrency', code);
+      localStorage.setItem(STORAGE_KEY, code);
     } catch {}
     window.dispatchEvent(new CustomEvent('currencychange', { detail: code }));
   };

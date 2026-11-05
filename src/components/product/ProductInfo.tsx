@@ -35,7 +35,7 @@ export const ProductInfo = ({
   const { language } = useLanguage();
   const { getPriceData } = useCurrency();
   const { price: hookPrice, stockQuantity: hookStock, loading } = useProductPrice({ fallback: 71 });
-  const { addItem, items, updateQty } = useCart();
+  const { addItem, items, updateQty, setItemQuantity } = useCart();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
@@ -65,9 +65,17 @@ export const ProductInfo = ({
     });
   };
 
+  // "Buy now" sets the exact chosen quantity (never adds on top).
   const handleBuyNow = () => {
-    handleAddToCart();
-    navigate('/order');
+    if (!productId) { navigate(`/order?qty=${quantity}`); return; }
+    setItemQuantity({
+      productId,
+      name: productName,
+      nameEn: productName,
+      price,
+      image: imageForCart || '/images/sevengreen-logo.webp',
+    }, quantity);
+    navigate(language === 'ar' ? '/ar/order' : '/order');
   };
 
   return (

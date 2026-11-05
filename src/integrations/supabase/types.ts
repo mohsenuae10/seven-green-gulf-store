@@ -101,6 +101,8 @@ export type Database = {
       orders: {
         Row: {
           address: string
+          checkout_stage: string
+          checkout_token: string
           city: string
           country: string
           created_at: string
@@ -109,7 +111,10 @@ export type Database = {
           customer_name: string
           customer_phone: string
           id: string
+          last_payment_error: string | null
+          payment_intent_id: string | null
           payment_status: string | null
+          reminder_sent_at: string | null
           seller_notes: string | null
           shipped_at: string | null
           shipping_company: string | null
@@ -121,6 +126,8 @@ export type Database = {
         }
         Insert: {
           address: string
+          checkout_stage?: string
+          checkout_token?: string
           city: string
           country: string
           created_at?: string
@@ -129,7 +136,10 @@ export type Database = {
           customer_name: string
           customer_phone: string
           id?: string
+          last_payment_error?: string | null
+          payment_intent_id?: string | null
           payment_status?: string | null
+          reminder_sent_at?: string | null
           seller_notes?: string | null
           shipped_at?: string | null
           shipping_company?: string | null
@@ -141,6 +151,8 @@ export type Database = {
         }
         Update: {
           address?: string
+          checkout_stage?: string
+          checkout_token?: string
           city?: string
           country?: string
           created_at?: string
@@ -149,7 +161,10 @@ export type Database = {
           customer_name?: string
           customer_phone?: string
           id?: string
+          last_payment_error?: string | null
+          payment_intent_id?: string | null
           payment_status?: string | null
+          reminder_sent_at?: string | null
           seller_notes?: string | null
           shipped_at?: string | null
           shipping_company?: string | null

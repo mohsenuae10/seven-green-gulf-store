@@ -46,7 +46,7 @@ interface ProductImage {
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { language } = useLanguage();
-  const { addItem, items, updateQty } = useCart();
+  const { addItem, items, updateQty, setItemQuantity } = useCart();
   const { getPriceData } = useCurrency();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -409,18 +409,14 @@ const ProductDetail = () => {
               <Button
                 className="flex-1 h-10 gap-1.5 rounded-full bg-primary hover:bg-primary/90 text-white font-bold shadow-sm text-sm"
                 onClick={() => {
-                  const cartItem = items.find(i => i.productId === product.id);
-                  if (cartItem) {
-                    updateQty(product.id, cartItem.quantity + qty);
-                  } else {
-                    addItem({
-                      productId: product.id,
-                      name: productName,
-                      nameEn: productContent.nameEn || productName,
-                      price: product.price,
-                      image: primaryImage,
-                    }, qty);
-                  }
+                  // "Buy now" sets the exact chosen quantity (never adds on top).
+                  setItemQuantity({
+                    productId: product.id,
+                    name: productName,
+                    nameEn: productContent.nameEn || productName,
+                    price: product.price,
+                    image: primaryImage,
+                  }, qty);
                   navigate(language === 'ar' ? '/ar/order' : '/order');
                 }}
                 disabled={!!(product.stock_quantity !== null && product.stock_quantity <= 0)}

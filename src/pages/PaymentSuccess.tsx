@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Header from "@/components/Header";
-import { CheckCircle, Package, Truck, Phone, Mail, Home, Loader2 } from "lucide-react";
+import { CheckCircle, Package, Truck, Phone, Mail, Home, Loader2, XCircle, RotateCcw } from "lucide-react";
 import { CONTACT_INFO } from "@/config/contact";
 import { Link, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { trackPurchase } from "@/lib/metaPixel";
+import { useCart } from "@/contexts/CartContext";
+import { useLangPath } from "@/hooks/useLanguage";
+import { clearCheckoutSession } from "@/lib/checkoutSession";
 
 // TypeScript declaration for gtag
 declare global {
@@ -59,6 +62,18 @@ const PaymentSuccess = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const { clearCart } = useCart();
+  const langPath = useLangPath();
+
+  // Once the order is confirmed paid, empty the cart and forget the checkout
+  // session so the next visit to /order starts a fresh order.
+  useEffect(() => {
+    if (orderData?.payment_status === 'paid') {
+      clearCart();
+      clearCheckoutSession();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderData?.payment_status]);
 
   useEffect(() => {
     let cancelled = false;
@@ -215,10 +230,20 @@ const PaymentSuccess = () => {
         
         <div className="max-w-2xl mx-auto text-center">
           
-          {/* Success Icon */}
-          <div className="w-24 h-24 mx-auto mb-8 bg-gradient-primary rounded-full flex items-center justify-center animate-bounce">
-            <CheckCircle className="w-12 h-12 text-primary-foreground" />
-          </div>
+          {/* Status Icon */}
+          {orderData.payment_status === 'paid' ? (
+            <div className="w-24 h-24 mx-auto mb-8 bg-gradient-primary rounded-full flex items-center justify-center animate-bounce">
+              <CheckCircle className="w-12 h-12 text-primary-foreground" />
+            </div>
+          ) : orderData.payment_status === 'failed' ? (
+            <div className="w-24 h-24 mx-auto mb-8 bg-destructive/10 rounded-full flex items-center justify-center">
+              <XCircle className="w-12 h-12 text-destructive" />
+            </div>
+          ) : (
+            <div className="w-24 h-24 mx-auto mb-8 bg-primary/10 rounded-full flex items-center justify-center">
+              <Loader2 className="w-12 h-12 text-primary animate-spin" />
+            </div>
+          )}
 
           {/* Success Message */}
           <Card className="bg-gradient-card border-border/50 shadow-medium p-8 mb-8">
@@ -237,6 +262,20 @@ const PaymentSuccess = () => {
                 ? 'تعذّر إتمام عملية الدفع. لم يتم خصم أي مبلغ. يمكنك المحاولة مرة أخرى أو التواصل معنا.'
                 : 'نتحقق من عملية الدفع لديك، قد يستغرق ذلك لحظات. لا تغلق الصفحة.'}
             </p>
+
+            {orderData.payment_status === 'failed' && (
+              <div className="mb-6">
+                <Link to={langPath('/order')}>
+                  <Button size="lg" className="bg-gradient-primary">
+                    <RotateCcw className="w-5 h-5 ml-2" />
+                    حاول الدفع مرة أخرى
+                  </Button>
+                </Link>
+                <p className="text-sm text-muted-foreground mt-3">
+                  طلبك ومنتجاتك محفوظة. جرّب Apple Pay أو بطاقة أخرى.
+                </p>
+              </div>
+            )}
 
             {/* Order Details */}
             <div className="bg-primary/10 rounded-lg p-6 mb-6 text-right">
