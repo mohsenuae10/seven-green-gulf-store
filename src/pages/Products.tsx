@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MobileNav from "@/components/MobileNav";
 import ProductCard from "@/components/ProductCard";
+import MiniCartBar from "@/components/MiniCartBar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Package } from "lucide-react";
 
@@ -162,6 +163,7 @@ const Products = () => {
         </main>
 
         <Footer />
+        <MiniCartBar />
       </div>
     </>
   );

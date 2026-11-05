@@ -17,7 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Phone, Flag, ChevronRight, Shield, Truck, RotateCcw } from "lucide-react";
+import { Loader2, Phone, Flag, ChevronRight, Shield, Truck, RotateCcw, Lock, Minus, Plus, Trash2 } from "lucide-react";
+import { useStoreTheme } from "@/hooks/useStoreTheme";
 import MobileNav from "@/components/MobileNav";
 import MobileOptimized from "@/components/MobileOptimized";
 import PaymentMethods from "@/components/PaymentMethods";
@@ -56,6 +57,16 @@ const walletPhone = (raw: string | undefined, countryCode: string | undefined): 
 
 const formatSar = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(2));
 
+/** One-tap city buttons for the "simple" checkout theme: [Arabic, English]. */
+const QUICK_CITIES: Record<string, [string, string][]> = {
+  SA: [["الرياض", "Riyadh"], ["جدة", "Jeddah"], ["الدمام", "Dammam"], ["مكة", "Makkah"], ["المدينة", "Madinah"]],
+  AE: [["دبي", "Dubai"], ["أبوظبي", "Abu Dhabi"], ["الشارقة", "Sharjah"], ["عجمان", "Ajman"], ["العين", "Al Ain"]],
+  KW: [["مدينة الكويت", "Kuwait City"], ["حولي", "Hawalli"], ["الفروانية", "Farwaniya"], ["الأحمدي", "Ahmadi"], ["الجهراء", "Jahra"]],
+  QA: [["الدوحة", "Doha"], ["الريان", "Al Rayyan"], ["الوكرة", "Al Wakrah"], ["الخور", "Al Khor"]],
+  BH: [["المنامة", "Manama"], ["المحرق", "Muharraq"], ["الرفاع", "Riffa"], ["مدينة حمد", "Hamad Town"]],
+  OM: [["مسقط", "Muscat"], ["صلالة", "Salalah"], ["صحار", "Sohar"], ["نزوى", "Nizwa"]],
+};
+
 /** Supabase hides the response body for non-2xx replies; read it from the error context. */
 const readFunctionError = async (err: unknown): Promise<string | undefined> => {
   try {
@@ -85,7 +96,7 @@ const Order = () => {
   const isAr = language === "ar";
   const langPath = useLangPath();
   const { items, updateQty, removeItem, totalPrice, replaceCart } = useCart();
-  const { getPriceData, selectedCurrency } = useCurrency();
+  const { getPriceData, selectedCurrency, formatPrice } = useCurrency();
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -105,6 +116,10 @@ const Order = () => {
   const [restoring, setRestoring] = useState(!!(resumeId && resumeToken));
   const [processing, setProcessing] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const storeTheme = useStoreTheme();
+  // "simple" theme only
+  const [showCountryPicker, setShowCountryPicker] = useState(false);
+  const [showEmail, setShowEmail] = useState(false);
 
   const nameInputRef = useRef<HTMLInputElement>(null);
   const phoneInputRef = useRef<HTMLInputElement>(null);
@@ -299,6 +314,7 @@ const Order = () => {
     const fail = (message: string, ref?: React.RefObject<HTMLInputElement>) => {
       setFormError(message);
       ref?.current?.focus();
+      ref?.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       return false;
     };
     if (items.length === 0) return fail(isAr ? "السلة فارغة، أضف منتجاً أولاً" : "Cart is empty, add a product first");
@@ -408,7 +424,382 @@ const Order = () => {
   };
 
   const align = isAr ? "text-right" : "text-left";
-  const payLabel = isAr ? `ادفع ${formatSar(totalPrice)} ريال` : `Pay SAR ${formatSar(totalPrice)}`;
+
+  // Prices show in the customer's currency, but the charge is always in SAR:
+  // the real amount stays visible on the button and in the note under the total.
+  const isForeignCurrency = selectedCurrency !== "SAR";
+  const approxTotal = isForeignCurrency ? ` (≈ ${formatPrice(totalPrice)})` : "";
+  const payLabel = isAr
+    ? `ادفع ${formatSar(totalPrice)} ريال${approxTotal}`
+    : `Pay SAR ${formatSar(totalPrice)}${approxTotal}`;
+  const chargeNote = isForeignCurrency && (
+    <p className={`text-xs text-[#5B6656] leading-relaxed ${align}`}>
+      {isAr
+        ? `الخصم الفعلي ${formatSar(totalPrice)} ريال سعودي (SAR)، وقد يختلف المبلغ قليلاً حسب بنكك.`
+        : `You will be charged SAR ${formatSar(totalPrice)}. The final amount may vary slightly depending on your bank.`}
+    </p>
+  );
+
+  const detailsComplete =
+    !!formData.customerName.trim() &&
+    !!formData.country &&
+    localPhoneDigits(formData.customerPhone) >= 7 &&
+    !!formData.city.trim() &&
+    !!formData.address.trim();
+
+  const paymentFormProps = {
+    amountMinor,
+    payLabel,
+    detailsComplete,
+    billingDetails: {
+      name: formData.customerName,
+      email: formData.customerEmail,
+      phone: toInternationalPhone(formData.customerPhone, formData.countryCode),
+    },
+    formError,
+    validate: validateForm,
+    prepare: preparePayment,
+    returnUrl: (orderId: string) => `${window.location.origin}${langPath("/payment-success")}?order_id=${orderId}`,
+    onProcessingChange: setProcessing,
+  };
+
+  // First visit, theme not known yet (normally cached by the landing page): brief loader
+  // instead of flashing one layout and then the other.
+  if (!storeTheme.ready) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F6F8F4]">
+        <Loader2 className="w-7 h-7 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // ── "Simple" checkout theme (chosen in Admin → المظهر) ──────────────────
+  if (storeTheme.checkout === "simple") {
+    const selectedCountry = countries.find((c) => c.code === formData.country);
+    const quickCities = QUICK_CITIES[formData.country] ?? [];
+    const fieldClass =
+      "h-[52px] rounded-xl border-[1.5px] border-[#D3DCCD] bg-white px-3.5 text-base focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0 focus-visible:border-primary";
+    const labelClass = `block text-sm font-semibold text-gray-900 ${align}`;
+    const cityValue = formData.city.trim();
+
+    return (
+      <div className="min-h-screen bg-[#F6F8F4] text-[#1F2A1B]" dir={isAr ? "rtl" : "ltr"}>
+        <Helmet>
+          <title>{title}</title>
+          <meta name="description" content={description} />
+          <link rel="canonical" href="https://sevensgreen.com/order" />
+        </Helmet>
+
+        {/* Minimal header: nothing to distract from paying */}
+        <header className="sticky top-0 z-30 h-14 bg-white border-b border-[#E3EADF]">
+          <div className="max-w-xl mx-auto h-full px-4 flex items-center justify-between">
+            <Link to={langPath("/")} className="font-extrabold text-lg tracking-wide text-primary">
+              SEVEN GREEN
+            </Link>
+            <span className="flex items-center gap-1.5 text-[13px] font-semibold text-[#3A5233]">
+              <Lock className="w-4 h-4" />
+              {isAr ? "دفع آمن ومشفّر" : "Secure checkout"}
+            </span>
+          </div>
+        </header>
+
+        <main className="max-w-xl mx-auto px-4 py-4 space-y-3.5">
+          <h1 className="sr-only">{t("order.title")}</h1>
+
+          {restoring ? (
+            <section className="bg-white border border-[#E3EADF] rounded-2xl p-8 text-center">
+              <Loader2 className="w-6 h-6 mx-auto mb-3 animate-spin text-primary" />
+              <p className="text-[#5B6656]">{isAr ? "جاري استرجاع طلبك..." : "Restoring your order..."}</p>
+            </section>
+          ) : items.length === 0 ? (
+            <section className="bg-white border border-[#E3EADF] rounded-2xl p-8 text-center">
+              <p className="text-[#5B6656] mb-4">{isAr ? "سلتك فارغة" : "Your cart is empty"}</p>
+              <Link to={langPath("/products")}>
+                <Button className="h-12 rounded-xl px-6 font-bold">{isAr ? "تصفح المنتجات" : "Browse products"}</Button>
+              </Link>
+            </section>
+          ) : (
+            <>
+              {/* Order summary */}
+              <section className="bg-white border border-[#E3EADF] rounded-2xl p-3.5 space-y-3">
+                {items.map((item) => (
+                  <div key={item.productId} className="flex items-center gap-3">
+                    <img
+                      src={item.image}
+                      alt={isAr ? item.name : item.nameEn}
+                      className="w-16 h-16 shrink-0 rounded-xl object-cover bg-[#E9F0E6]"
+                      onError={(e) => {
+                        e.currentTarget.src = FALLBACK_IMAGE;
+                      }}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[15px] font-bold leading-snug line-clamp-2">{isAr ? item.name : item.nameEn}</p>
+                      <p className="text-[13px] text-[#5B6656] flex items-center gap-1">
+                        <PriceDisplay {...getPriceData(item.price)} /> {isAr ? "للقطعة" : "each"}
+                      </p>
+                    </div>
+                    <div className="flex items-center rounded-full border border-[#DDE5D8] bg-white shrink-0">
+                      <button
+                        type="button"
+                        disabled={processing}
+                        onClick={() => updateQty(item.productId, item.quantity + 1)}
+                        className="w-10 h-10 flex items-center justify-center disabled:opacity-40"
+                        aria-label={isAr ? "زيادة الكمية" : "Increase quantity"}
+                      >
+                        <Plus className="w-4 h-4" />
+                      </button>
+                      <span className="min-w-[22px] text-center font-bold">{item.quantity}</span>
+                      <button
+                        type="button"
+                        disabled={processing}
+                        onClick={() => updateQty(item.productId, item.quantity - 1)}
+                        className="w-10 h-10 flex items-center justify-center disabled:opacity-40"
+                        aria-label={
+                          item.quantity === 1 ? (isAr ? "حذف" : "Remove") : isAr ? "إنقاص الكمية" : "Decrease quantity"
+                        }
+                      >
+                        {item.quantity === 1 ? <Trash2 className="w-4 h-4" /> : <Minus className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <div className="border-t border-dashed border-[#DDE5D8] pt-2.5 space-y-1.5">
+                  <div className="flex justify-between text-sm text-[#5B6656]">
+                    <span>{isAr ? "الشحن" : "Shipping"}</span>
+                    <span className="font-bold text-[#2F6B2A]">{isAr ? "مجاني" : "Free"}</span>
+                  </div>
+                  <div className="flex justify-between items-baseline">
+                    <span className="text-base font-bold">{t("order.total")}</span>
+                    <span className="flex items-baseline gap-1 text-[26px] font-extrabold text-primary">
+                      {isForeignCurrency && <span aria-label={isAr ? "تقريباً" : "approximately"}>≈</span>}
+                      <PriceDisplay {...getPriceData(totalPrice)} />
+                    </span>
+                  </div>
+                  {chargeNote}
+                </div>
+              </section>
+
+              <StripePaymentForm {...paymentFormProps} variant="simple">
+                <fieldset disabled={processing} className="space-y-3.5">
+                  {/* Hidden field so browser autofill profiles can populate the country */}
+                  <input
+                    type="text"
+                    name="country"
+                    autoComplete="country"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    className="sr-only"
+                    onChange={(e) => {
+                      const val = e.target.value.trim().toLowerCase();
+                      if (!val) return;
+                      const match = countries.find((c) => c.code.toLowerCase() === val || c.nameEn.toLowerCase() === val);
+                      if (match) selectCountry(match);
+                    }}
+                  />
+
+                  {/* Country: one line, auto-detected */}
+                  {selectedCountry && !showCountryPicker ? (
+                    <div className="flex items-center justify-between gap-2 text-sm">
+                      <span className="text-[#5B6656]">
+                        {isAr ? "التوصيل إلى: " : "Delivering to: "}
+                        <b className="text-gray-900">
+                          {selectedCountry.flag} {isAr ? selectedCountry.nameAr : selectedCountry.nameEn}
+                        </b>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => setShowCountryPicker(true)}
+                        className="min-h-[44px] px-1 font-bold text-[#3A5233]"
+                      >
+                        {isAr ? "تغيير" : "Change"}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-1.5">
+                      <Label className={labelClass}>
+                        {t("order.country")}
+                        {detectingCountry && (
+                          <Loader2 className="inline w-3 h-3 mx-1 animate-spin text-[#5B6656]" />
+                        )}
+                      </Label>
+                      <CountrySelect
+                        value={formData.country}
+                        onChange={(c) => {
+                          selectCountry(c);
+                          setShowCountryPicker(false);
+                        }}
+                        placeholder={
+                          detectingCountry
+                            ? isAr ? "جاري اكتشاف دولتك..." : "Detecting your country..."
+                            : t("order.country.placeholder")
+                        }
+                      />
+                    </div>
+                  )}
+
+                  {/* Name */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="name" className={labelClass}>{isAr ? "الاسم" : "Name"}</Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      type="text"
+                      autoComplete="name"
+                      enterKeyHint="next"
+                      ref={nameInputRef}
+                      onKeyDown={focusNext(phoneInputRef)}
+                      placeholder={isAr ? "مثال: سارة أحمد" : "e.g. Sarah Ahmed"}
+                      value={formData.customerName}
+                      onChange={(e) => handleInputChange("customerName", e.target.value)}
+                      className={`${fieldClass} ${align}`}
+                    />
+                  </div>
+
+                  {/* Phone: one field with the country code inside */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="phone" className={labelClass}>{isAr ? "رقم الجوال" : "Phone number"}</Label>
+                    <div
+                      dir="ltr"
+                      className="flex h-[52px] rounded-xl border-[1.5px] border-[#D3DCCD] bg-white overflow-hidden focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20"
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setShowCountryPicker(true)}
+                        className="px-3 bg-[#F1F5EE] border-r border-[#D3DCCD] text-[15px] font-bold shrink-0"
+                        aria-label={isAr ? "تغيير مفتاح الدولة" : "Change country code"}
+                      >
+                        {formData.countryCode || "+"}
+                      </button>
+                      <input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        inputMode="tel"
+                        autoComplete="tel-national"
+                        enterKeyHint="next"
+                        ref={phoneInputRef}
+                        onKeyDown={focusNext(cityInputRef)}
+                        placeholder={t("order.phone.placeholder")}
+                        value={formData.customerPhone}
+                        onChange={(e) => handleInputChange("customerPhone", e.target.value)}
+                        className="flex-1 min-w-0 px-3 text-[17px] tracking-wide bg-transparent outline-none placeholder:text-[#7A8574]"
+                      />
+                    </div>
+                    <p className={`text-xs text-[#5B6656] ${align}`}>
+                      {isAr ? "للتواصل معك بخصوص التوصيل فقط" : "Only used to contact you about delivery"}
+                    </p>
+                  </div>
+
+                  {/* City: quick buttons + free text */}
+                  <div className="space-y-2">
+                    <Label htmlFor="city" className={labelClass}>{t("order.city")}</Label>
+                    {quickCities.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {quickCities.map(([ar, en]) => {
+                          const label = isAr ? ar : en;
+                          const selected = cityValue === ar || cityValue === en;
+                          return (
+                            <button
+                              key={en}
+                              type="button"
+                              aria-pressed={selected}
+                              onClick={() => {
+                                handleInputChange("city", label);
+                                addressInputRef.current?.focus();
+                              }}
+                              className={`min-h-[44px] px-4 rounded-full border-[1.5px] text-sm font-bold transition-colors ${
+                                selected
+                                  ? "border-primary bg-[#E9F0E6] text-[#2A3D25]"
+                                  : "border-[#D3DCCD] bg-white text-gray-900"
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                    <Input
+                      id="city"
+                      name="city"
+                      type="text"
+                      autoComplete="address-level2"
+                      enterKeyHint="next"
+                      ref={cityInputRef}
+                      onKeyDown={focusNext(addressInputRef)}
+                      placeholder={
+                        quickCities.length > 0 ? (isAr ? "أو اكتب مدينتك" : "or type your city") : t("order.city.placeholder")
+                      }
+                      value={formData.city}
+                      onChange={(e) => handleInputChange("city", e.target.value)}
+                      className={`${fieldClass} ${align}`}
+                    />
+                  </div>
+
+                  {/* Address */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="address" className={labelClass}>{isAr ? "العنوان" : "Address"}</Label>
+                    <Input
+                      id="address"
+                      name="address"
+                      type="text"
+                      autoComplete="street-address"
+                      enterKeyHint="done"
+                      ref={addressInputRef}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          e.currentTarget.blur();
+                        }
+                      }}
+                      placeholder={isAr ? "الحي، الشارع، رقم المنزل" : "District, street, building no."}
+                      value={formData.address}
+                      onChange={(e) => handleInputChange("address", e.target.value)}
+                      className={`${fieldClass} ${align}`}
+                    />
+                  </div>
+
+                  {/* Email: optional, collapsed */}
+                  {showEmail || formData.customerEmail ? (
+                    <div className="space-y-1.5">
+                      <Label htmlFor="email" className={labelClass}>
+                        {isAr ? "البريد الإلكتروني " : "Email "}
+                        <span className="font-normal text-[#5B6656]">{isAr ? "(اختياري)" : "(optional)"}</span>
+                      </Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        inputMode="email"
+                        autoComplete="email"
+                        dir="ltr"
+                        ref={emailInputRef}
+                        placeholder="example@email.com"
+                        value={formData.customerEmail}
+                        onChange={(e) => handleInputChange("customerEmail", e.target.value)}
+                        className={`${fieldClass} ${align}`}
+                      />
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowEmail(true);
+                        setTimeout(() => emailInputRef.current?.focus(), 0);
+                      }}
+                      className="min-h-[44px] text-sm font-bold text-[#3A5233]"
+                    >
+                      {isAr ? "+ أضف بريدك لاستلام رقم التتبع (اختياري)" : "+ Add your email to get the tracking number (optional)"}
+                    </button>
+                  )}
+                </fieldset>
+              </StripePaymentForm>
+            </>
+          )}
+        </main>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -493,7 +884,7 @@ const Order = () => {
                           <div className="flex-1 min-w-0">
                             <p className="font-semibold text-sm truncate">{isAr ? item.name : item.nameEn}</p>
                             <p className="text-primary text-sm font-bold">
-                              <PriceDisplay amount={item.price * item.quantity} currency="SAR" />
+                              <PriceDisplay {...getPriceData(item.price * item.quantity)} />
                             </p>
                           </div>
                           <div className="flex items-center border border-gray-200 rounded-full overflow-hidden bg-white">
@@ -537,14 +928,12 @@ const Order = () => {
                       </div>
                       <div className="flex justify-between items-center text-lg font-semibold">
                         <span className="text-gray-700">{t("order.total")}</span>
-                        <PriceDisplay amount={totalPrice} currency="SAR" className="text-2xl md:text-3xl text-primary" />
+                        <span className="flex items-baseline gap-1 text-2xl md:text-3xl text-primary">
+                          {isForeignCurrency && <span aria-label={isAr ? "تقريباً" : "approximately"}>≈</span>}
+                          <PriceDisplay {...getPriceData(totalPrice)} />
+                        </span>
                       </div>
-                      {selectedCurrency !== "SAR" && (
-                        <p className={`text-xs text-muted-foreground ${isAr ? "text-left" : "text-right"}`}>
-                          {isAr ? "تقريباً " : "approx. "}
-                          <PriceDisplay {...getPriceData(totalPrice)} /> — {isAr ? "يتم الخصم بالريال السعودي" : "charged in SAR"}
-                        </p>
-                      )}
+                      {chargeNote}
                     </div>
                   </CardContent>
                 </Card>

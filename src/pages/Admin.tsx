@@ -10,6 +10,7 @@ import { AdminSidebar, AdminBottomNav, menuItems } from "@/components/admin/Admi
 import { OrdersManagement } from "@/components/admin/OrdersManagement";
 import { ProductsManagement } from "@/components/admin/ProductsManagement";
 import BannerManagement from "@/components/admin/BannerManagement";
+import ThemeManagement from "@/components/admin/ThemeManagement";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { ShippingManagement } from "@/components/admin/ShippingManagement";
 import { AdminRequestsManagement } from "@/components/admin/AdminRequestsManagement";
@@ -179,6 +180,8 @@ const Admin = () => {
         return <ProductsManagement />;
       case "banner":
         return <BannerManagement />;
+      case "theme":
+        return <ThemeManagement />;
       case "admin-requests":
         return <AdminRequestsManagement />;
       case "dashboard":

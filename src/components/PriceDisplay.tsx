@@ -22,10 +22,11 @@ export const PriceDisplay = ({ amount, currency, className = "" }: PriceDisplayP
     );
   }
 
-  if (currency === 'USD') {
+  if (currency === 'USD' || currency === 'EUR' || currency === 'GBP') {
+    const symbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '£';
     return (
-      <span className={`inline-flex items-baseline ${className}`}>
-        <span className="text-[0.55em] opacity-70 mr-0.5" style={{ fontWeight: 300 }}>$</span>
+      <span dir="ltr" className={`inline-flex items-baseline ${className}`}>
+        <span className="text-[0.55em] opacity-70 mr-0.5" style={{ fontWeight: 300 }}>{symbol}</span>
         <span className="tabular-nums" style={{ fontWeight: 300 }}>{amount}</span>
       </span>
     );

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LanguageProvider from "./providers/LanguageProvider";
 import { CartProvider } from "@/contexts/CartContext";
+import { useStoreTheme } from "@/hooks/useStoreTheme";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 // import { ChatBot } from "@/components/ChatBot"; // hidden
 import ScrollToTop from "@/components/ScrollToTop";
@@ -29,6 +30,13 @@ import ShampooLanding from "./pages/landing/ShampooLanding";
 
 const queryClient = new QueryClient();
 
+// Load the admin-chosen store theme on the first page (e.g. a landing page),
+// so it is ready before the customer reaches /order.
+const StoreThemePrefetch = () => {
+  useStoreTheme();
+  return null;
+};
+
 // All page routes — shared between Arabic and English
 const pageRoutes = [
   { path: "",        element: <Index /> },
@@ -50,6 +58,7 @@ const pageRoutes = [
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <StoreThemePrefetch />
     <CartProvider>
       <TooltipProvider>
         <Toaster />

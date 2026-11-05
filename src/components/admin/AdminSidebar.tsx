@@ -1,7 +1,7 @@
 import { User } from '@supabase/supabase-js';
 import {
   LayoutDashboard, ShoppingCart, Package,
-  LogOut, Truck, UserPlus, Image,
+  LogOut, Truck, UserPlus, Image, Palette,
 } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
@@ -18,6 +18,7 @@ export const menuItems = [
   { id: "shipping",       label: "الشحن",       icon: Truck },
   { id: "products",       label: "المنتجات",    icon: Package },
   { id: "banner",         label: "البنر",       icon: Image },
+  { id: "theme",          label: "المظهر",      icon: Palette },
   { id: "admin-requests", label: "المسؤولين",   icon: UserPlus },
 ];
 
@@ -89,12 +90,12 @@ export function AdminBottomNav({ activeSection, setActiveSection }: {
   activeSection: string;
   setActiveSection: (s: string) => void;
 }) {
-  // Show only first 5 items in bottom nav
-  const visibleItems = menuItems.slice(0, 5);
+  // All sections, scrollable sideways on narrow phones.
+  const visibleItems = menuItems;
 
   return (
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 safe-bottom">
-      <div className="flex">
+      <div className="flex overflow-x-auto">
         {visibleItems.map(item => {
           const Icon = item.icon;
           const active = activeSection === item.id;
@@ -103,7 +104,7 @@ export function AdminBottomNav({ activeSection, setActiveSection }: {
               key={item.id}
               onClick={() => setActiveSection(item.id)}
               className={`
-                flex-1 flex flex-col items-center gap-0.5 py-2 px-1 transition-all
+                flex-1 min-w-[56px] shrink-0 flex flex-col items-center gap-0.5 py-2 px-1 transition-all
                 ${active ? 'text-primary' : 'text-gray-400 hover:text-gray-600'}
               `}
             >
