@@ -456,6 +456,7 @@ const Order = () => {
       email: formData.customerEmail,
       phone: toInternationalPhone(formData.customerPhone, formData.countryCode),
     },
+    billingCountry: formData.country,
     formError,
     validate: validateForm,
     prepare: preparePayment,
@@ -938,25 +939,10 @@ const Order = () => {
                   </CardContent>
                 </Card>
 
-                {/* ── Payment (wallets → details → card) ─────────────────── */}
+                {/* ── Details → payment method (wallet or card) ─────────────── */}
                 <Card className="mobile-card shadow-medium border-border/50">
                   <CardContent className="p-3 sm:p-4">
-                    <StripePaymentForm
-                      amountMinor={amountMinor}
-                      payLabel={payLabel}
-                      billingDetails={{
-                        name: formData.customerName,
-                        email: formData.customerEmail,
-                        phone: toInternationalPhone(formData.customerPhone, formData.countryCode),
-                      }}
-                      formError={formError}
-                      validate={validateForm}
-                      prepare={preparePayment}
-                      returnUrl={(orderId) =>
-                        `${window.location.origin}${langPath("/payment-success")}?order_id=${orderId}`
-                      }
-                      onProcessingChange={setProcessing}
-                    >
+                    <StripePaymentForm {...paymentFormProps}>
                       <fieldset disabled={processing} className="space-y-3">
                         <p className={`text-sm font-semibold text-gray-800 ${align}`}>
                           {isAr ? "بيانات التوصيل" : "Delivery details"}

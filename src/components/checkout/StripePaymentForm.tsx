@@ -16,6 +16,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, CreditCard, Loader2, Lock, RotateCcw, Shield, Truck } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { countries } from "@/data/countries";
+import visaLogo from "@/assets/payment-logos/visa.svg";
+import mastercardLogo from "@/assets/payment-logos/mastercard.svg";
+import applePayLogo from "@/assets/payment-logos/apple-pay.svg";
+import googlePayLogo from "@/assets/payment-logos/google-pay.svg";
 
 /** Customer details returned by Apple Pay / Google Pay. */
 export interface ExpressDetails {
@@ -38,6 +42,8 @@ interface StripePaymentFormProps {
   amountMinor: number;
   payLabel: string;
   billingDetails: { name?: string; email?: string; phone?: string };
+  /** Country from the delivery details, so the card form doesn't ask for it again. */
+  billingCountry?: string;
   /** Error from the parent's own form validation, shown next to the Pay button. */
   formError?: string | null;
   /** Card path: validates the customer-details form; return false to stop. */
@@ -46,13 +52,56 @@ interface StripePaymentFormProps {
   prepare: (express?: ExpressDetails) => Promise<PreparedPayment>;
   returnUrl: (orderId: string) => string;
   onProcessingChange?: (processing: boolean) => void;
-  /** Customer-details fields, rendered between the wallet buttons and the card form. */
+  /** Customer-details fields, rendered above the payment options. */
   children?: ReactNode;
   /** "simple" = the admin-selectable mobile-first checkout theme. */
   variant?: "classic" | "simple";
-  /** All required delivery fields are filled (the simple theme's button guides the customer). */
+  /**
+   * All required delivery fields are filled. Apple Pay / Google Pay then use
+   * them instead of asking for an address, and the simple theme's button moves on to the card.
+   */
   detailsComplete?: boolean;
 }
+
+type PaymentMethod = "wallet" | "card";
+
+/** One row of the payment-method list: its body opens when the row is selected. */
+const PaymentOption = ({
+  title,
+  logos,
+  selected,
+  disabled,
+  onSelect,
+  children,
+}: {
+  title: string;
+  logos: string[];
+  selected: boolean;
+  disabled: boolean;
+  onSelect: () => void;
+  children: ReactNode;
+}) => (
+  <div className={`rounded-xl border-[1.5px] bg-white transition-colors ${selected ? "border-primary ring-1 ring-primary" : "border-[#D3DCCD]"}`}>
+    <label className="flex items-center gap-3 min-h-[52px] px-3.5 py-2.5 cursor-pointer">
+      <input
+        type="radio"
+        name="payment-method"
+        checked={selected}
+        disabled={disabled}
+        onChange={onSelect}
+        className="w-5 h-5 shrink-0 accent-primary"
+      />
+      <span className="flex-1 min-w-0 text-[15px] font-bold text-gray-900">{title}</span>
+      <span dir="ltr" className="flex items-center gap-1.5 shrink-0">
+        {logos.map((logo) => (
+          <img key={logo} src={logo} alt="" className="h-6 w-auto" />
+        ))}
+      </span>
+    </label>
+    {/* Stays mounted while closed: Stripe's elements must not be display:none, and typed card details survive switching. */}
+    <div className={selected ? "px-3.5 pb-3.5 space-y-2.5" : "invisible h-0 overflow-hidden"}>{children}</div>
+  </div>
+);
 
 const SimpleSection = ({ number, title, children }: { number: string; title: string; children: ReactNode }) => (
   <section className="bg-white border border-[#E3EADF] rounded-2xl p-4 space-y-3">
@@ -91,24 +140,36 @@ class WalletBoundary extends Component<{ children: ReactNode; onFail: () => void
   }
 }
 
-const expressDetailsFromEvent = (event: StripeExpressCheckoutElementConfirmEvent): ExpressDetails => {
+const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
+
+// Banks in these countries check the postal code against the card, so it stays
+// in the card form. Everywhere else it is left out to keep the form short.
+const POSTAL_CODE_COUNTRIES = new Set(["US", "GB", "CA"]);
+
+const expressDetailsFromEvent = (
+  event: StripeExpressCheckoutElementConfirmEvent,
+  formHasEmail: boolean
+): ExpressDetails => {
   const ship = event.shippingAddress;
   const bill = event.billingDetails;
-  const a = ship?.address ?? bill?.address;
+  const a = ship?.address;
+  // No address from the wallet means it wasn't asked for one: the details typed
+  // in the form stand. The card's billing address is not a delivery address.
+  if (!a?.country) return formHasEmail ? {} : { customerEmail: bill?.email };
   return {
     customerName: ship?.name || bill?.name,
     customerEmail: bill?.email,
     customerPhone: bill?.phone,
-    country: a?.country,
-    city: a?.city || a?.state,
-    address: [a?.line1, a?.line2, a?.state, a?.postal_code].filter(Boolean).join("، "),
+    country: a.country,
+    city: a.city || a.state,
+    address: [a.line1, a.line2, a.state, a.postal_code].filter(Boolean).join("، "),
   };
 };
 
 /**
  * Apple Pay / Google Pay run inside their OWN Elements instance (see the nested
  * <Elements> below), so the card form can never affect them: a wallet payment
- * works with every field on the page left empty.
+ * works with every field on the page left empty, the wallet then supplies them.
  */
 const WalletButtons = ({
   options,
@@ -140,6 +201,7 @@ const CheckoutForm = ({
   amountMinor,
   payLabel,
   billingDetails,
+  billingCountry = "",
   formError,
   validate,
   prepare,
@@ -147,7 +209,7 @@ const CheckoutForm = ({
   onProcessingChange,
   children,
   variant = "classic",
-  detailsComplete = true,
+  detailsComplete = false,
   elementsOptions,
 }: StripePaymentFormProps & { elementsOptions: StripeElementsOptions }) => {
   const stripe = useStripe();
@@ -158,11 +220,17 @@ const CheckoutForm = ({
   const [walletProcessing, setWalletProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [walletError, setWalletError] = useState<string | null>(null);
-  const [hasWallets, setHasWallets] = useState(false);
+  const [available, setAvailable] = useState<StripeExpressCheckoutElementReadyEvent["availablePaymentMethods"]>();
   const [walletsChecked, setWalletsChecked] = useState(false);
-  const [engaged, setEngaged] = useState(false);
+  const [choice, setChoice] = useState<PaymentMethod | null>(null);
   const [cardComplete, setCardComplete] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  const hasWallets = !!available && Object.values(available).some(Boolean);
+  // Apple Pay / Google Pay open by default where the device supports them.
+  // Nothing opens until that's known, so the card form doesn't jump shut.
+  const method: PaymentMethod | null = hasWallets ? (choice ?? "wallet") : walletsChecked || choice ? "card" : null;
+  const formHasEmail = EMAIL_PATTERN.test(billingDetails.email?.trim() ?? "");
 
   // If Stripe never reports back about wallets, don't leave the customer without a pay button.
   useEffect(() => {
@@ -215,9 +283,11 @@ const CheckoutForm = ({
       );
     }
 
-    const billing = Object.fromEntries(
-      Object.entries(billingDetails).filter(([, v]) => typeof v === "string" && v.trim() !== "")
-    );
+    const billing = {
+      ...Object.fromEntries(Object.entries(billingDetails).filter(([, v]) => typeof v === "string" && v.trim() !== "")),
+      // Required: Stripe rejects the payment if a field hidden with "never" isn't passed here.
+      address: { country: billingCountry },
+    };
 
     const { error: confirmError } = await stripeApi.confirmPayment({
       elements: elementsApi,
@@ -234,7 +304,8 @@ const CheckoutForm = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isProcessing || !stripe || !elements) return;
+    // With a wallet selected the only way to pay is the wallet's own button.
+    if (method !== "card" || isProcessing || !stripe || !elements) return;
     if (!validate()) return;
     if (variant === "simple" && !cardComplete) {
       // Not an error: just take the customer to the next thing to fill in.
@@ -255,38 +326,54 @@ const CheckoutForm = ({
   };
 
   const handleExpressReady = (event: StripeExpressCheckoutElementReadyEvent) => {
-    const available = event.availablePaymentMethods;
-    setHasWallets(!!available && Object.values(available).some(Boolean));
+    setAvailable(event.availablePaymentMethods);
     setWalletsChecked(true);
+  };
+
+  const chooseMethod = (next: PaymentMethod) => {
+    setChoice(next);
+    if (next === "card") {
+      requestAnimationFrame(() => cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }));
+    }
   };
 
   const expressOptions = useMemo<StripeExpressCheckoutElementOptions>(
     () => ({
       buttonHeight: 48,
       buttonType: { applePay: "buy", googlePay: "buy" },
-      emailRequired: true,
-      phoneNumberRequired: true,
-      shippingAddressRequired: true,
+      // The wallet only asks for what the form doesn't have yet, so the sheet
+      // can't show an old saved address that differs from the one just typed.
+      emailRequired: !(detailsComplete && formHasEmail),
+      phoneNumberRequired: !detailsComplete,
+      shippingAddressRequired: !detailsComplete,
       allowedShippingCountries: WALLET_SHIPPING_COUNTRIES,
       shippingRates: [{ id: "free-shipping", displayName: isAr ? "شحن مجاني" : "Free shipping", amount: 0 }],
     }),
-    [isAr]
+    [isAr, detailsComplete, formHasEmail]
   );
 
   const shownError = formError || error;
 
-  // Stripe keeps the wallet element rendered but invisible until it knows
-  // whether any button will show (display:none can stop it loading).
-  const walletWrapperClass = hasWallets ? "" : "invisible h-0 overflow-hidden";
+  const walletMethods: { name: string; logo: string }[] = [];
+  if (available?.applePay) walletMethods.push({ name: "Apple Pay", logo: applePayLogo });
+  if (available?.googlePay) walletMethods.push({ name: "Google Pay", logo: googlePayLogo });
+  const walletName = walletMethods.map((m) => m.name).join(" / ") || (isAr ? "الدفع السريع" : "Express checkout");
 
   const expressElement = (
     <Elements stripe={stripePromise} options={elementsOptions}>
-      <WalletBoundary onFail={() => setWalletsChecked(true)}>
+      <WalletBoundary
+        onFail={() => {
+          setAvailable(undefined);
+          setWalletsChecked(true);
+        }}
+      >
         <WalletButtons
           options={expressOptions}
           onReady={handleExpressReady}
           onClick={handleExpressClick}
-          onPay={(stripeApi, elementsApi, event) => pay(stripeApi, elementsApi, expressDetailsFromEvent(event), event)}
+          onPay={(stripeApi, elementsApi, event) =>
+            pay(stripeApi, elementsApi, expressDetailsFromEvent(event, formHasEmail), event)
+          }
         />
       </WalletBoundary>
     </Elements>
@@ -294,9 +381,13 @@ const CheckoutForm = ({
 
   const walletNote = (
     <p className="text-xs text-center text-[#5B6656] leading-relaxed">
-      {isAr
-        ? "لا تحتاج لتعبئة أي حقل: بياناتك تأتي من جهازك، وطلبك يكتمل مباشرة بعد الدفع."
-        : "No need to fill in anything: your details come from your device and your order completes right after you pay."}
+      {detailsComplete
+        ? isAr
+          ? "سيصل طلبك إلى العنوان الذي كتبته أعلاه."
+          : "Your order will ship to the address you entered above."
+        : isAr
+          ? "لم تكمل بيانات التوصيل؟ لا بأس، ستختار عنوانك في نافذة الدفع."
+          : "Haven't finished your delivery details? No problem, you'll choose your address in the payment window."}
     </p>
   );
 
@@ -307,14 +398,6 @@ const CheckoutForm = ({
         {walletError} {isAr ? "لم يتم خصم أي مبلغ." : "You have not been charged."}
       </AlertDescription>
     </Alert>
-  );
-
-  const walletDivider = hasWallets && (
-    <div className="flex items-center gap-3 text-xs text-muted-foreground">
-      <div className="h-px flex-1 bg-border" />
-      <span>{isAr ? "أو ادفع بالبطاقة (عبّئ البيانات التالية)" : "or pay by card (fill in the details below)"}</span>
-      <div className="h-px flex-1 bg-border" />
-    </div>
   );
 
   // After the Apple Pay sheet closes the page would otherwise look like an
@@ -333,13 +416,49 @@ const CheckoutForm = ({
     <div ref={cardRef}>
       <PaymentElement
         onChange={(event) => setCardComplete(event.complete)}
-        onFocus={() => setEngaged(true)}
+        // A wallet check finishing late must not close a form the customer is typing in.
+        onFocus={() => setChoice("card")}
         options={{
           layout: "tabs",
-          // Wallets are already offered above; don't show them twice.
+          // Wallets have their own option in the list; don't show them twice.
           wallets: { applePay: "never", googlePay: "never" },
+          fields: {
+            billingDetails: {
+              address: POSTAL_CODE_COUNTRIES.has(billingCountry) ? { country: "never" } : "if_required",
+            },
+          },
+          // Tells the postal code field which country's format to expect.
+          defaultValues: { billingDetails: { address: { country: billingCountry || undefined } } },
         }}
       />
+    </div>
+  );
+
+  const paymentOptions = (
+    <div role="radiogroup" aria-label={isAr ? "طريقة الدفع" : "Payment method"}>
+      {/* Rendered before Stripe knows whether a wallet exists: display:none can stop it loading. */}
+      <div className={hasWallets ? "mb-2.5" : "invisible h-0 overflow-hidden"}>
+        <PaymentOption
+          title={walletName}
+          logos={walletMethods.map((m) => m.logo)}
+          selected={method === "wallet"}
+          disabled={isProcessing}
+          onSelect={() => chooseMethod("wallet")}
+        >
+          {expressElement}
+          {walletNote}
+          {walletErrorAlert}
+        </PaymentOption>
+      </div>
+      <PaymentOption
+        title={isAr ? "فيزا / ماستركارد" : "Visa / Mastercard"}
+        logos={[visaLogo, mastercardLogo]}
+        selected={method === "card"}
+        disabled={isProcessing}
+        onSelect={() => chooseMethod("card")}
+      >
+        {cardElement}
+      </PaymentOption>
     </div>
   );
 
@@ -352,17 +471,14 @@ const CheckoutForm = ({
 
   // ── "Simple" theme: numbered sections + pay bar fixed to the bottom ─────
   if (variant === "simple") {
-    const num = (n: number) => (isAr ? ["١", "٢", "٣"][n - 1] : String(n));
-    const offset = hasWallets ? 1 : 0;
     const trust = [
       { icon: Shield, label: isAr ? "دفع مشفّر" : "Encrypted" },
       { icon: Truck, label: isAr ? "شحن مجاني" : "Free shipping" },
       { icon: RotateCcw, label: isAr ? "ضمان 30 يوم" : "30-day guarantee" },
     ];
 
-    // Customers who can use Apple Pay see ONE action at first. The pay bar only
-    // appears once they choose the card path by starting on the form.
-    const showPayBar = walletsChecked && (!hasWallets || engaged || detailsComplete);
+    // A selected wallet has its own button, so the pay bar belongs to the card option only.
+    const showPayBar = method === "card";
     const readyToPay = detailsComplete && cardComplete;
     const nextStepLabel = !detailsComplete
       ? isAr ? "أكمل بيانات التوصيل" : "Complete your delivery details"
@@ -372,24 +488,12 @@ const CheckoutForm = ({
       <form onSubmit={handleSubmit} noValidate className="space-y-3.5">
         {walletOverlay}
 
-        <div className={walletWrapperClass}>
-          <SimpleSection number={num(1)} title={isAr ? "ادفع بلمسة واحدة" : "One-tap checkout"}>
-            {expressElement}
-            {walletNote}
-            {walletErrorAlert}
-          </SimpleSection>
-        </div>
+        <SimpleSection number={isAr ? "١" : "1"} title={isAr ? "بيانات التوصيل" : "Delivery details"}>
+          {children}
+        </SimpleSection>
 
-        {walletDivider}
-
-        <div onFocusCapture={() => setEngaged(true)}>
-          <SimpleSection number={num(offset + 1)} title={isAr ? "بيانات التوصيل" : "Delivery details"}>
-            {children}
-          </SimpleSection>
-        </div>
-
-        <SimpleSection number={num(offset + 2)} title={isAr ? "الدفع بالبطاقة" : "Pay by card"}>
-          {cardElement}
+        <SimpleSection number={isAr ? "٢" : "2"} title={isAr ? "طريقة الدفع" : "Payment method"}>
+          {paymentOptions}
         </SimpleSection>
 
         <div className="grid grid-cols-3 gap-2">
@@ -452,53 +556,46 @@ const CheckoutForm = ({
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       {walletOverlay}
 
-      {/* 1. Apple Pay / Google Pay first — one tap, no typing */}
-      <div className={`${walletWrapperClass} ${hasWallets ? "space-y-2" : ""}`}>
-        <p className={`text-sm font-semibold text-gray-800 ${isAr ? "text-right" : "text-left"}`}>
-          {isAr ? "دفع سريع" : "Express checkout"}
-        </p>
-        {expressElement}
-        {walletNote}
-        {walletErrorAlert}
-      </div>
-
-      {walletDivider}
-
-      {/* 2. Customer details (from the order page) */}
+      {/* 1. Customer details (from the order page) */}
       {children}
 
-      {/* 3. Card */}
+      {/* 2. Payment method: the chosen option opens below its row */}
       <div className="space-y-2">
         <p className={`text-sm font-semibold text-gray-800 flex items-center gap-2 ${isAr ? "text-right" : "text-left"}`}>
           <CreditCard className="w-4 h-4" />
-          {isAr ? "بيانات البطاقة" : "Card details"}
+          {isAr ? "طريقة الدفع" : "Payment method"}
         </p>
-        {cardElement}
+        {paymentOptions}
       </div>
 
-      {shownError && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription className={isAr ? "text-right" : "text-left"}>{shownError}</AlertDescription>
-        </Alert>
-      )}
+      {/* A selected wallet has its own button, so these belong to the card option only. */}
+      {method === "card" && (
+        <>
+          {shownError && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription className={isAr ? "text-right" : "text-left"}>{shownError}</AlertDescription>
+            </Alert>
+          )}
 
-      <Button
-        type="submit"
-        variant="hero"
-        size="lg"
-        className="w-full mobile-button touch-target"
-        disabled={!stripe || isProcessing}
-      >
-        {isProcessing ? (
-          processingContent
-        ) : (
-          <>
-            <Lock className="mr-2 h-4 w-4" />
-            {payLabel}
-          </>
-        )}
-      </Button>
+          <Button
+            type="submit"
+            variant="hero"
+            size="lg"
+            className="w-full mobile-button touch-target"
+            disabled={!stripe || isProcessing}
+          >
+            {isProcessing ? (
+              processingContent
+            ) : (
+              <>
+                <Lock className="mr-2 h-4 w-4" />
+                {payLabel}
+              </>
+            )}
+          </Button>
+        </>
+      )}
 
       <p className="text-xs text-center text-muted-foreground flex items-center justify-center gap-1">
         <Lock className="w-3 h-3" />
