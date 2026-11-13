@@ -71,7 +71,11 @@
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
+    <!-- Store database (theme, prices): connect while the app downloads. Stripe is left out on
+         purpose: loading Stripe.js here delayed the delivery form by over a second on slow 4G,
+         and its API calls come from Stripe's own frame, which can't reuse this page's connections. -->
+    <link rel="preconnect" href="https://dnvchztawygtkdddsiwn.supabase.co" crossorigin>
+
     <!-- Preload Critical Images -->
     <link rel="preload" as="image" href="/lovable-uploads/seven-green-icon.png" type="image/png">
     <link rel="preload" as="image" href="/lovable-uploads/0c009587-187a-4c47-8318-01d391fab457.png" type="image/png">

@@ -57,14 +57,38 @@ const walletPhone = (raw: string | undefined, countryCode: string | undefined): 
 
 const formatSar = (n: number) => (Number.isInteger(n) ? String(n) : n.toFixed(2));
 
-/** One-tap city buttons for the "simple" checkout theme: [Arabic, English]. */
-const QUICK_CITIES: Record<string, [string, string][]> = {
-  SA: [["الرياض", "Riyadh"], ["جدة", "Jeddah"], ["الدمام", "Dammam"], ["مكة", "Makkah"], ["المدينة", "Madinah"]],
-  AE: [["دبي", "Dubai"], ["أبوظبي", "Abu Dhabi"], ["الشارقة", "Sharjah"], ["عجمان", "Ajman"], ["العين", "Al Ain"]],
-  KW: [["مدينة الكويت", "Kuwait City"], ["حولي", "Hawalli"], ["الفروانية", "Farwaniya"], ["الأحمدي", "Ahmadi"], ["الجهراء", "Jahra"]],
-  QA: [["الدوحة", "Doha"], ["الريان", "Al Rayyan"], ["الوكرة", "Al Wakrah"], ["الخور", "Al Khor"]],
-  BH: [["المنامة", "Manama"], ["المحرق", "Muharraq"], ["الرفاع", "Riffa"], ["مدينة حمد", "Hamad Town"]],
-  OM: [["مسقط", "Muscat"], ["صلالة", "Salalah"], ["صحار", "Sohar"], ["نزوى", "Nizwa"]],
+const normalizeCountryName = (s: string) =>
+  s
+    .trim()
+    .toLowerCase()
+    .replace(/[ً-ْٰ]/g, "") // Arabic diacritics: "عُمان" = "عمان"
+    .replace(/[أإآ]/g, "ا")
+    .replace(/\s+/g, " ");
+
+/**
+ * Browser autofill writes the country as a code ("SA") or as a name in the
+ * browser's language ("Saudi Arabia", "المملكة العربية السعودية", "عمان").
+ * Exact matches win; otherwise the longest country name found inside the value
+ * ("Nigeria" must not become "Niger").
+ */
+const matchCountry = (value: string) => {
+  const v = normalizeCountryName(value);
+  if (!v) return undefined;
+  const exact = countries.find(
+    (c) => c.code.toLowerCase() === v || normalizeCountryName(c.nameEn) === v || normalizeCountryName(c.nameAr) === v
+  );
+  if (exact) return exact;
+  let best: (typeof countries)[number] | undefined;
+  let bestLength = 0;
+  for (const c of countries) {
+    for (const name of [c.nameEn, c.nameAr].map(normalizeCountryName)) {
+      if (name.length >= 4 && name.length > bestLength && v.includes(name)) {
+        best = c;
+        bestLength = name.length;
+      }
+    }
+  }
+  return best;
 };
 
 /** Supabase hides the response body for non-2xx replies; read it from the error context. */
@@ -119,7 +143,6 @@ const Order = () => {
   const storeTheme = useStoreTheme();
   // "simple" theme only
   const [showCountryPicker, setShowCountryPicker] = useState(false);
-  const [showEmail, setShowEmail] = useState(false);
 
   const nameInputRef = useRef<HTMLInputElement>(null);
   const phoneInputRef = useRef<HTMLInputElement>(null);
@@ -477,11 +500,9 @@ const Order = () => {
   // ── "Simple" checkout theme (chosen in Admin → المظهر) ──────────────────
   if (storeTheme.checkout === "simple") {
     const selectedCountry = countries.find((c) => c.code === formData.country);
-    const quickCities = QUICK_CITIES[formData.country] ?? [];
     const fieldClass =
       "h-[52px] rounded-xl border-[1.5px] border-[#D3DCCD] bg-white px-3.5 text-base focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-0 focus-visible:border-primary";
     const labelClass = `block text-sm font-semibold text-gray-900 ${align}`;
-    const cityValue = formData.city.trim();
 
     return (
       <div className="min-h-screen bg-[#F6F8F4] text-[#1F2A1B]" dir={isAr ? "rtl" : "ltr"}>
@@ -591,9 +612,7 @@ const Order = () => {
                     aria-hidden="true"
                     className="sr-only"
                     onChange={(e) => {
-                      const val = e.target.value.trim().toLowerCase();
-                      if (!val) return;
-                      const match = countries.find((c) => c.code.toLowerCase() === val || c.nameEn.toLowerCase() === val);
+                      const match = matchCountry(e.target.value);
                       if (match) selectCountry(match);
                     }}
                   />
@@ -691,35 +710,9 @@ const Order = () => {
                     </p>
                   </div>
 
-                  {/* City: quick buttons + free text */}
-                  <div className="space-y-2">
+                  {/* City */}
+                  <div className="space-y-1.5">
                     <Label htmlFor="city" className={labelClass}>{t("order.city")}</Label>
-                    {quickCities.length > 0 && (
-                      <div className="flex flex-wrap gap-2">
-                        {quickCities.map(([ar, en]) => {
-                          const label = isAr ? ar : en;
-                          const selected = cityValue === ar || cityValue === en;
-                          return (
-                            <button
-                              key={en}
-                              type="button"
-                              aria-pressed={selected}
-                              onClick={() => {
-                                handleInputChange("city", label);
-                                addressInputRef.current?.focus();
-                              }}
-                              className={`min-h-[44px] px-4 rounded-full border-[1.5px] text-sm font-bold transition-colors ${
-                                selected
-                                  ? "border-primary bg-[#E9F0E6] text-[#2A3D25]"
-                                  : "border-[#D3DCCD] bg-white text-gray-900"
-                              }`}
-                            >
-                              {label}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
                     <Input
                       id="city"
                       name="city"
@@ -728,9 +721,7 @@ const Order = () => {
                       enterKeyHint="next"
                       ref={cityInputRef}
                       onKeyDown={focusNext(addressInputRef)}
-                      placeholder={
-                        quickCities.length > 0 ? (isAr ? "أو اكتب مدينتك" : "or type your city") : t("order.city.placeholder")
-                      }
+                      placeholder={t("order.city.placeholder")}
                       value={formData.city}
                       onChange={(e) => handleInputChange("city", e.target.value)}
                       className={`${fieldClass} ${align}`}
@@ -745,14 +736,9 @@ const Order = () => {
                       name="address"
                       type="text"
                       autoComplete="street-address"
-                      enterKeyHint="done"
+                      enterKeyHint="next"
                       ref={addressInputRef}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          e.currentTarget.blur();
-                        }
-                      }}
+                      onKeyDown={focusNext(emailInputRef)}
                       placeholder={isAr ? "الحي، الشارع، رقم المنزل" : "District, street, building no."}
                       value={formData.address}
                       onChange={(e) => handleInputChange("address", e.target.value)}
@@ -760,39 +746,37 @@ const Order = () => {
                     />
                   </div>
 
-                  {/* Email: optional, collapsed */}
-                  {showEmail || formData.customerEmail ? (
-                    <div className="space-y-1.5">
-                      <Label htmlFor="email" className={labelClass}>
-                        {isAr ? "البريد الإلكتروني " : "Email "}
-                        <span className="font-normal text-[#5B6656]">{isAr ? "(اختياري)" : "(optional)"}</span>
-                      </Label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        inputMode="email"
-                        autoComplete="email"
-                        dir="ltr"
-                        ref={emailInputRef}
-                        placeholder="example@email.com"
-                        value={formData.customerEmail}
-                        onChange={(e) => handleInputChange("customerEmail", e.target.value)}
-                        className={`${fieldClass} ${align}`}
-                      />
-                    </div>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowEmail(true);
-                        setTimeout(() => emailInputRef.current?.focus(), 0);
+                  {/* Email: optional, but always on the page so browser autofill can fill it with the rest */}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="email" className={labelClass}>
+                      {isAr ? "البريد الإلكتروني " : "Email "}
+                      <span className="font-normal text-[#5B6656]">{isAr ? "(اختياري)" : "(optional)"}</span>
+                    </Label>
+                    <Input
+                      id="email"
+                      name="email"
+                      type="email"
+                      inputMode="email"
+                      autoComplete="email"
+                      enterKeyHint="done"
+                      dir="ltr"
+                      ref={emailInputRef}
+                      onKeyDown={(e) => {
+                        // Enter must not trigger the payment.
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          e.currentTarget.blur();
+                        }
                       }}
-                      className="min-h-[44px] text-sm font-bold text-[#3A5233]"
-                    >
-                      {isAr ? "+ أضف بريدك لاستلام رقم التتبع (اختياري)" : "+ Add your email to get the tracking number (optional)"}
-                    </button>
-                  )}
+                      placeholder="example@email.com"
+                      value={formData.customerEmail}
+                      onChange={(e) => handleInputChange("customerEmail", e.target.value)}
+                      className={`${fieldClass} ${align}`}
+                    />
+                    <p className={`text-xs text-[#5B6656] ${align}`}>
+                      {isAr ? "لإرسال تأكيد الطلب ورقم التتبع" : "For your order confirmation and tracking number"}
+                    </p>
+                  </div>
                 </fieldset>
               </StripePaymentForm>
             </>
@@ -989,11 +973,7 @@ const Order = () => {
                             aria-hidden="true"
                             className="sr-only"
                             onChange={(e) => {
-                              const val = e.target.value.trim().toLowerCase();
-                              if (!val) return;
-                              const match = countries.find(
-                                (c) => c.code.toLowerCase() === val || c.nameEn.toLowerCase() === val
-                              );
+                              const match = matchCountry(e.target.value);
                               if (match) selectCountry(match);
                             }}
                           />

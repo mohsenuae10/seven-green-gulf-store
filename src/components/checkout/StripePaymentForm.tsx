@@ -142,6 +142,20 @@ class WalletBoundary extends Component<{ children: ReactNode; onFail: () => void
 
 const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
 
+/**
+ * Safari says instantly whether the device can use Apple Pay, while Stripe's
+ * own wallet check takes seconds on a phone. Only used to choose which payment
+ * option opens first, so the payment section never sits closed while loading.
+ */
+const deviceSupportsApplePay = (() => {
+  try {
+    const session = (window as unknown as { ApplePaySession?: { canMakePayments: () => boolean } }).ApplePaySession;
+    return !!session && session.canMakePayments();
+  } catch {
+    return false;
+  }
+})();
+
 // Banks in these countries check the postal code against the card, so it stays
 // in the card form. Everywhere else it is left out to keep the form short.
 const POSTAL_CODE_COUNTRIES = new Set(["US", "GB", "CA"]);
@@ -224,17 +238,29 @@ const CheckoutForm = ({
   const [walletsChecked, setWalletsChecked] = useState(false);
   const [choice, setChoice] = useState<PaymentMethod | null>(null);
   const [cardComplete, setCardComplete] = useState(false);
+  const [cardReady, setCardReady] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const walletReadyRef = useRef(false);
 
   const hasWallets = !!available && Object.values(available).some(Boolean);
-  // Apple Pay / Google Pay open by default where the device supports them.
-  // Nothing opens until that's known, so the card form doesn't jump shut.
-  const method: PaymentMethod | null = hasWallets ? (choice ?? "wallet") : walletsChecked || choice ? "card" : null;
+  const walletUnavailable = walletsChecked && !hasWallets;
+  // Apple Pay devices start on Apple Pay; everyone else starts on the card, which
+  // opens straight away. Google Pay is offered as an option without taking over.
+  const defaultMethod: PaymentMethod =
+    deviceSupportsApplePay && !walletUnavailable && (!walletsChecked || !!available?.applePay) ? "wallet" : "card";
+  const method: PaymentMethod = choice === "wallet" && walletUnavailable ? "card" : choice ?? defaultMethod;
+  // Apple Pay is expected but Stripe's button hasn't loaded yet.
+  const walletLoading = deviceSupportsApplePay && !walletsChecked;
   const formHasEmail = EMAIL_PATTERN.test(billingDetails.email?.trim() ?? "");
 
-  // If Stripe never reports back about wallets, don't leave the customer without a pay button.
+  // If Stripe never reports back about wallets, open the card instead, and keep
+  // it open if Apple Pay turns up later (no switching under the customer).
   useEffect(() => {
-    const timer = setTimeout(() => setWalletsChecked(true), 3000);
+    const timer = setTimeout(() => {
+      if (walletReadyRef.current) return;
+      setChoice((current) => current ?? "card");
+      setWalletsChecked(true);
+    }, 6000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -326,6 +352,7 @@ const CheckoutForm = ({
   };
 
   const handleExpressReady = (event: StripeExpressCheckoutElementReadyEvent) => {
+    walletReadyRef.current = true;
     setAvailable(event.availablePaymentMethods);
     setWalletsChecked(true);
   };
@@ -355,7 +382,7 @@ const CheckoutForm = ({
   const shownError = formError || error;
 
   const walletMethods: { name: string; logo: string }[] = [];
-  if (available?.applePay) walletMethods.push({ name: "Apple Pay", logo: applePayLogo });
+  if (available?.applePay || walletLoading) walletMethods.push({ name: "Apple Pay", logo: applePayLogo });
   if (available?.googlePay) walletMethods.push({ name: "Google Pay", logo: googlePayLogo });
   const walletName = walletMethods.map((m) => m.name).join(" / ") || (isAr ? "الدفع السريع" : "Express checkout");
 
@@ -414,7 +441,28 @@ const CheckoutForm = ({
 
   const cardElement = (
     <div ref={cardRef}>
+      {/* The card section opens straight away; this holds its place until Stripe's fields arrive. */}
+      {!cardReady && (
+        <div className="space-y-3 py-1" role="status">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-[52px] rounded-xl bg-[#EEF2EB] animate-pulse" />
+          ))}
+          <p className="flex items-center justify-center gap-2 text-xs text-[#5B6656]">
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            {isAr ? "جاري تحميل نموذج البطاقة الآمن..." : "Loading the secure card form..."}
+          </p>
+        </div>
+      )}
       <PaymentElement
+        onReady={() => setCardReady(true)}
+        onLoadError={() => {
+          setCardReady(true);
+          setError(
+            isAr
+              ? "تعذّر تحميل نموذج البطاقة. حدّث الصفحة وحاول مرة أخرى."
+              : "The card form could not load. Please refresh the page and try again."
+          );
+        }}
         onChange={(event) => setCardComplete(event.complete)}
         // A wallet check finishing late must not close a form the customer is typing in.
         onFocus={() => setChoice("card")}
@@ -437,7 +485,7 @@ const CheckoutForm = ({
   const paymentOptions = (
     <div role="radiogroup" aria-label={isAr ? "طريقة الدفع" : "Payment method"}>
       {/* Rendered before Stripe knows whether a wallet exists: display:none can stop it loading. */}
-      <div className={hasWallets ? "mb-2.5" : "invisible h-0 overflow-hidden"}>
+      <div className={hasWallets || walletLoading ? "mb-2.5" : "invisible h-0 overflow-hidden"}>
         <PaymentOption
           title={walletName}
           logos={walletMethods.map((m) => m.logo)}
@@ -445,7 +493,16 @@ const CheckoutForm = ({
           disabled={isProcessing}
           onSelect={() => chooseMethod("wallet")}
         >
-          {expressElement}
+          <div className="relative min-h-[48px]">
+            {expressElement}
+            {/* Holds Apple Pay's place (and blocks taps) until Stripe's button is ready. */}
+            {walletLoading && (
+              <div className="absolute inset-0 rounded-md bg-black flex items-center justify-center" role="status">
+                <Loader2 className="w-5 h-5 animate-spin text-white" />
+                <span className="sr-only">{isAr ? "جاري تحميل Apple Pay" : "Loading Apple Pay"}</span>
+              </div>
+            )}
+          </div>
           {walletNote}
           {walletErrorAlert}
         </PaymentOption>
