@@ -122,7 +122,7 @@ async function runBatch(supabase: any) {
   const { data: paid } = emails.length
     ? await supabase
         .from("orders")
-        .select("customer_email, created_at")
+        .select("customer_email, created_at, updated_at")
         .eq("payment_status", "paid")
         .in("customer_email", list.map((o) => o.customer_email))
         .gt("created_at", new Date(now - 72 * HOUR).toISOString())
@@ -135,10 +135,17 @@ async function runBatch(supabase: any) {
     if (seen.has(email)) continue; // one reminder per customer (latest order)
     seen.add(email);
 
-    const boughtLater = (paid ?? []).some(
-      (p: any) => p.customer_email?.toLowerCase() === email && p.created_at >= order.created_at,
+    // Skip customers who bought: with a later order, or with an order paid in
+    // the 24 h before this one. The second case is a customer who paid, was
+    // wrongly told it failed, and retried on a new order. Their paid order is
+    // older than the abandoned one, so "later order" alone sent them a
+    // "complete your order" email.
+    const dayBefore = new Date(new Date(order.created_at).getTime() - 24 * HOUR).toISOString();
+    const alreadyBought = (paid ?? []).some(
+      (p: any) =>
+        p.customer_email?.toLowerCase() === email && (p.created_at >= order.created_at || p.updated_at >= dayBefore),
     );
-    if (boughtLater) continue;
+    if (alreadyBought) continue;
 
     // Claim the order first so concurrent runs can never double-send.
     const { data: claimed } = await supabase

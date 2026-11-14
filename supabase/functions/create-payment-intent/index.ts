@@ -10,6 +10,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import {
   CheckoutError,
   corsHeaders,
+  isUuid,
   jsonResponse,
   normalizePhone,
   phoneDigitCount,
@@ -43,6 +44,27 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
+
+    // The customer's checkout order is already paid: never start a second charge.
+    // (A customer who saw a wrong "payment failed" pressed Pay again, a new order
+    // was opened silently, and only an empty card stopped a double charge.)
+    // The browser takes them to the order's result page instead.
+    if (isUuid(body?.orderId) && isUuid(body?.checkoutToken)) {
+      const { data: previous } = await supabase
+        .from("orders")
+        .select("id, payment_status")
+        .eq("id", body.orderId)
+        .eq("checkout_token", body.checkoutToken)
+        .maybeSingle();
+      if (previous?.payment_status === "paid") {
+        return jsonResponse({
+          success: false,
+          code: "already_paid",
+          error: "هذا الطلب مدفوع بنجاح مسبقاً ✓ جاري فتح صفحة طلبك...",
+          order_id: previous.id,
+        });
+      }
+    }
 
     const items = await resolveCart(supabase, body?.cartItems);
     const order = await upsertCheckoutOrder(supabase, {
@@ -78,7 +100,13 @@ serve(async (req) => {
     if (order.paymentIntentId) {
       const existing = await stripe.paymentIntents.retrieve(order.paymentIntentId);
       if (existing.status === "succeeded" || existing.status === "processing") {
-        throw new CheckoutError("تمت معالجة الدفع لهذا الطلب مسبقاً", "already_paid");
+        // Paid at Stripe, webhook not in yet: same answer, so the browser shows the result.
+        return jsonResponse({
+          success: false,
+          code: "already_paid",
+          error: "هذا الطلب مدفوع بنجاح مسبقاً ✓ جاري فتح صفحة طلبك...",
+          order_id: order.id,
+        });
       }
       // A PaymentIntent from before this fix may carry server-set shipping, which
       // would block the browser again: replace it with a fresh one.

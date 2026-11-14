@@ -150,7 +150,14 @@ export async function upsertCheckoutOrder(
   if (existing) {
     const { data, error } = await supabase
       .from("orders")
-      .update({ ...fields, checkout_stage: nextStage })
+      .update({
+        ...fields,
+        checkout_stage: nextStage,
+        // A new payment attempt starts clean: a "failed" left by an earlier
+        // declined card made the result page show "payment failed" to a
+        // customer who had just paid. (last_payment_error is kept for the admin.)
+        ...(stage === "payment" ? { payment_status: "pending" } : {}),
+      })
       .eq("id", existing.id)
       .select("id, checkout_token, payment_intent_id")
       .single();

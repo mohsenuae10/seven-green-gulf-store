@@ -390,6 +390,12 @@ const Order = () => {
     if (error) throw new Error((isAr && (await readFunctionError(error))) || generic);
     if (!data?.success || !data.clientSecret) {
       const code: string | undefined = data?.code;
+      // This checkout's order is already paid: show its result instead of charging again.
+      if (code === "already_paid" && data?.order_id) {
+        window.setTimeout(() => {
+          window.location.assign(`${window.location.origin}${langPath("/payment-success")}?order_id=${data.order_id}`);
+        }, 1500);
+      }
       throw new Error(isAr ? data?.error || generic : (code && ERROR_MESSAGES_EN[code]) || generic);
     }
 

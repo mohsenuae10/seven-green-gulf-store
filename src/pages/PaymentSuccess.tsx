@@ -11,6 +11,7 @@ import { trackPurchase } from "@/lib/metaPixel";
 import { useCart } from "@/contexts/CartContext";
 import { useLangPath } from "@/hooks/useLanguage";
 import { clearCheckoutSession } from "@/lib/checkoutSession";
+import { getStripe } from "@/integrations/stripe/client";
 
 // TypeScript declaration for gtag
 declare global {
@@ -58,6 +59,8 @@ const markPurchaseTracked = (orderId: string) => {
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
   const orderId = searchParams.get('order_id');
+  // Added by Stripe to the return URL after a payment.
+  const paymentClientSecret = searchParams.get('payment_intent_client_secret');
   const [orderData, setOrderData] = useState<OrderData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -80,8 +83,24 @@ const PaymentSuccess = () => {
     let conversionTracked = false;
 
     // This page is DISPLAY-ONLY. The Stripe webhook is the single source of
-    // truth that marks an order paid. Here we just read the status, and poll
-    // briefly in case the webhook hasn't landed yet right after the redirect.
+    // truth that marks an order paid in the database. For what the customer
+    // SEES, Stripe's own answer comes first: after a payment Stripe redirects
+    // here with the PaymentIntent's client secret, so we ask Stripe directly.
+    // Reading only the database showed "payment failed" to a customer who had
+    // just paid: the order still carried "failed" from an earlier declined
+    // attempt, and the page stopped one second before the webhook marked it paid.
+    const fetchStripeStatus = async (): Promise<string | null> => {
+      if (!paymentClientSecret) return null;
+      try {
+        const stripe = await getStripe();
+        const result = await stripe?.retrievePaymentIntent(paymentClientSecret);
+        return result?.paymentIntent?.status ?? null;
+      } catch (stripeError) {
+        console.warn("[PaymentSuccess] could not read the payment status from Stripe:", stripeError);
+        return null;
+      }
+    };
+
     const fetchOrder = async () => {
       const { data, error: orderError } = await supabase
         .rpc('get_order_secure', { order_id_param: orderId });
@@ -136,10 +155,27 @@ const PaymentSuccess = () => {
         // minutes rather than giving up after a few seconds and silently
         // missing the Purchase conversion event.
         const maxAttempts = 40;
+        let stripeStatus: string | null = null;
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
-          const order = await fetchOrder();
-          console.log(`[PaymentSuccess] poll attempt ${attempt + 1}/${maxAttempts} — order ${order.id} payment_status=${order.payment_status}`);
+          if (stripeStatus !== "succeeded" && stripeStatus !== "requires_payment_method") {
+            stripeStatus = await fetchStripeStatus();
+          }
+          const dbOrder = await fetchOrder();
+          console.log(`[PaymentSuccess] poll attempt ${attempt + 1}/${maxAttempts} — order ${dbOrder.id} payment_status=${dbOrder.payment_status} stripe=${stripeStatus}`);
           if (cancelled) return;
+
+          // Stripe has the money: show it as paid even if the webhook hasn't landed yet.
+          // Stripe says it failed: show that, whatever the database still says.
+          // Still processing: never show an old "failed" left by an earlier attempt.
+          let paymentStatus = dbOrder.payment_status;
+          if (stripeStatus === "succeeded") paymentStatus = "paid";
+          else if (stripeStatus === "requires_payment_method" && paymentStatus !== "paid") paymentStatus = "failed";
+          else if (stripeStatus === "processing" && paymentStatus === "failed") paymentStatus = "pending";
+          // No answer from Stripe: a "failed" may be left over from an earlier
+          // attempt, so show "confirming" for the first ~15 s instead.
+          else if (stripeStatus === null && paymentStatus === "failed" && attempt < 5) paymentStatus = "pending";
+          const order = { ...dbOrder, payment_status: paymentStatus };
+
           setOrderData(order);
           // Stop showing the generic loading skeleton as soon as we have any
           // order data — the "pending confirmation" UI takes over from here
@@ -150,7 +186,9 @@ const PaymentSuccess = () => {
             trackConversion(order);
             break;
           }
-          if (order.payment_status === 'failed') break;
+          // Without Stripe's answer, a "failed" in the database may be left over
+          // from an earlier attempt: give the webhook ~15 s before believing it.
+          if (order.payment_status === 'failed' && (stripeStatus !== null || attempt >= 5)) break;
 
           // Still pending: wait and retry.
           if (attempt < maxAttempts - 1) {
@@ -175,7 +213,7 @@ const PaymentSuccess = () => {
     return () => {
       cancelled = true;
     };
-  }, [orderId, toast]);
+  }, [orderId, paymentClientSecret, toast]);
 
   // Loading state
   if (loading) {
