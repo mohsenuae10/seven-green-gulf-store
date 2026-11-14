@@ -18,8 +18,6 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { countries } from "@/data/countries";
 import visaLogo from "@/assets/payment-logos/visa.svg";
 import mastercardLogo from "@/assets/payment-logos/mastercard.svg";
-import applePayLogo from "@/assets/payment-logos/apple-pay.svg";
-import googlePayLogo from "@/assets/payment-logos/google-pay.svg";
 
 /** Customer details returned by Apple Pay / Google Pay. */
 export interface ExpressDetails {
@@ -63,43 +61,52 @@ interface StripePaymentFormProps {
   detailsComplete?: boolean;
 }
 
+/** "wallet" = the card form is closed and the Apple Pay / Google Pay button is the way to pay. */
 type PaymentMethod = "wallet" | "card";
 
-/** One row of the payment-method list: its body opens when the row is selected. */
-const PaymentOption = ({
+/**
+ * The Visa / Mastercard option: tapping the row opens the card fields under it.
+ * (Apple Pay has no row of its own: Apple only opens its payment sheet from its
+ * own button, so a row labelled "Apple Pay" would look tappable and do nothing.)
+ */
+const CardOption = ({
   title,
   logos,
-  selected,
+  open,
   disabled,
-  onSelect,
+  onToggle,
   children,
 }: {
   title: string;
   logos: string[];
-  selected: boolean;
+  open: boolean;
   disabled: boolean;
-  onSelect: () => void;
+  onToggle: () => void;
   children: ReactNode;
 }) => (
-  <div className={`rounded-xl border-[1.5px] bg-white transition-colors ${selected ? "border-primary ring-1 ring-primary" : "border-[#D3DCCD]"}`}>
-    <label className="flex items-center gap-3 min-h-[52px] px-3.5 py-2.5 cursor-pointer">
-      <input
-        type="radio"
-        name="payment-method"
-        checked={selected}
-        disabled={disabled}
-        onChange={onSelect}
-        className="w-5 h-5 shrink-0 accent-primary"
-      />
+  <div className={`rounded-xl border-[1.5px] bg-white transition-colors ${open ? "border-primary ring-1 ring-primary" : "border-[#D3DCCD]"}`}>
+    <button
+      type="button"
+      aria-expanded={open}
+      disabled={disabled}
+      onClick={onToggle}
+      className="w-full flex items-center gap-3 min-h-[52px] px-3.5 py-2.5 text-start"
+    >
+      <span
+        aria-hidden="true"
+        className={`w-5 h-5 shrink-0 rounded-full border-2 inline-flex items-center justify-center ${open ? "border-primary" : "border-[#9AA594]"}`}
+      >
+        {open && <span className="w-2.5 h-2.5 rounded-full bg-primary" />}
+      </span>
       <span className="flex-1 min-w-0 text-[15px] font-bold text-gray-900">{title}</span>
       <span dir="ltr" className="flex items-center gap-1.5 shrink-0">
         {logos.map((logo) => (
           <img key={logo} src={logo} alt="" className="h-6 w-auto" />
         ))}
       </span>
-    </label>
+    </button>
     {/* Stays mounted while closed: Stripe's elements must not be display:none, and typed card details survive switching. */}
-    <div className={selected ? "px-3.5 pb-3.5 space-y-2.5" : "invisible h-0 overflow-hidden"}>{children}</div>
+    <div className={open ? "px-3.5 pb-3.5 space-y-2.5" : "invisible h-0 overflow-hidden"}>{children}</div>
   </div>
 );
 
@@ -253,15 +260,21 @@ const CheckoutForm = ({
   const walletLoading = deviceSupportsApplePay && !walletsChecked;
   const formHasEmail = EMAIL_PATTERN.test(billingDetails.email?.trim() ?? "");
 
-  // If Stripe never reports back about wallets, open the card instead, and keep
-  // it open if Apple Pay turns up later (no switching under the customer).
+  // Stripe slow to report on wallets: open the card so there is always a way to
+  // pay. Apple Pay's placeholder keeps its place, so if the button turns up later
+  // it appears where it was expected instead of pushing the card form down.
+  // Only after 20 s without an answer is Apple Pay given up on.
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (walletReadyRef.current) return;
-      setChoice((current) => current ?? "card");
-      setWalletsChecked(true);
+    const openCard = setTimeout(() => {
+      if (!walletReadyRef.current) setChoice((current) => current ?? "card");
     }, 6000);
-    return () => clearTimeout(timer);
+    const giveUp = setTimeout(() => {
+      if (!walletReadyRef.current) setWalletsChecked(true);
+    }, 20000);
+    return () => {
+      clearTimeout(openCard);
+      clearTimeout(giveUp);
+    };
   }, []);
 
   const generic = isAr ? "تعذّر إتمام الدفع. حاول مرة أخرى." : "Payment could not be completed. Please try again.";
@@ -357,11 +370,16 @@ const CheckoutForm = ({
     setWalletsChecked(true);
   };
 
-  const chooseMethod = (next: PaymentMethod) => {
-    setChoice(next);
-    if (next === "card") {
-      requestAnimationFrame(() => cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }));
+  const showWallet = hasWallets || walletLoading;
+
+  // With a wallet button above, the card row opens and closes; without one it stays open.
+  const toggleCard = () => {
+    if (method === "card") {
+      if (showWallet) setChoice("wallet");
+      return;
     }
+    setChoice("card");
+    requestAnimationFrame(() => cardRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }));
   };
 
   const expressOptions = useMemo<StripeExpressCheckoutElementOptions>(
@@ -380,11 +398,6 @@ const CheckoutForm = ({
   );
 
   const shownError = formError || error;
-
-  const walletMethods: { name: string; logo: string }[] = [];
-  if (available?.applePay || walletLoading) walletMethods.push({ name: "Apple Pay", logo: applePayLogo });
-  if (available?.googlePay) walletMethods.push({ name: "Google Pay", logo: googlePayLogo });
-  const walletName = walletMethods.map((m) => m.name).join(" / ") || (isAr ? "الدفع السريع" : "Express checkout");
 
   const expressElement = (
     <Elements stripe={stripePromise} options={elementsOptions}>
@@ -483,39 +496,47 @@ const CheckoutForm = ({
   );
 
   const paymentOptions = (
-    <div role="radiogroup" aria-label={isAr ? "طريقة الدفع" : "Payment method"}>
-      {/* Rendered before Stripe knows whether a wallet exists: display:none can stop it loading. */}
-      <div className={hasWallets || walletLoading ? "mb-2.5" : "invisible h-0 overflow-hidden"}>
-        <PaymentOption
-          title={walletName}
-          logos={walletMethods.map((m) => m.logo)}
-          selected={method === "wallet"}
-          disabled={isProcessing}
-          onSelect={() => chooseMethod("wallet")}
-        >
-          <div className="relative min-h-[48px]">
-            {expressElement}
-            {/* Holds Apple Pay's place (and blocks taps) until Stripe's button is ready. */}
-            {walletLoading && (
-              <div className="absolute inset-0 rounded-md bg-black flex items-center justify-center" role="status">
-                <Loader2 className="w-5 h-5 animate-spin text-white" />
-                <span className="sr-only">{isAr ? "جاري تحميل Apple Pay" : "Loading Apple Pay"}</span>
-              </div>
-            )}
-          </div>
-          {walletNote}
-          {walletErrorAlert}
-        </PaymentOption>
+    <div className="space-y-3">
+      {/* 1. Apple Pay / Google Pay: their own button, one tap opens the payment sheet.
+          Rendered before Stripe knows whether a wallet exists: display:none can stop it loading. */}
+      <div className={showWallet ? "space-y-2" : "invisible h-0 overflow-hidden"}>
+        <div className="relative min-h-[48px]">
+          {expressElement}
+          {/* Holds the button's place until Stripe's real button is ready. Deliberately
+              grey with text, so nobody mistakes it for the Apple Pay button itself. */}
+          {walletLoading && (
+            <div
+              className="absolute inset-0 rounded-md bg-[#EEF2EB] border border-[#D3DCCD] flex items-center justify-center gap-2 text-sm font-semibold text-[#5B6656]"
+              role="status"
+              data-wallet-placeholder
+            >
+              <Loader2 className="w-4 h-4 animate-spin" />
+              {isAr ? "جاري تجهيز Apple Pay..." : "Getting Apple Pay ready..."}
+            </div>
+          )}
+        </div>
+        {walletNote}
+        {walletErrorAlert}
       </div>
-      <PaymentOption
+
+      {showWallet && (
+        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="h-px flex-1 bg-border" />
+          <span>{isAr ? "أو ادفع بالبطاقة" : "or pay by card"}</span>
+          <div className="h-px flex-1 bg-border" />
+        </div>
+      )}
+
+      {/* 2. Visa / Mastercard: the row opens the card fields */}
+      <CardOption
         title={isAr ? "فيزا / ماستركارد" : "Visa / Mastercard"}
         logos={[visaLogo, mastercardLogo]}
-        selected={method === "card"}
+        open={method === "card"}
         disabled={isProcessing}
-        onSelect={() => chooseMethod("card")}
+        onToggle={toggleCard}
       >
         {cardElement}
-      </PaymentOption>
+      </CardOption>
     </div>
   );
 
