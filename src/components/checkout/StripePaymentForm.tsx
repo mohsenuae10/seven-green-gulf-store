@@ -33,6 +33,8 @@ export interface PreparedPayment {
   clientSecret: string;
   orderId: string;
   amountMinor: number;
+  /** Delivery details for the card path. The server no longer puts shipping on the PaymentIntent. */
+  shipping?: { name: string; phone?: string; address: { line1: string; city: string; country: string } };
 }
 
 interface StripePaymentFormProps {
@@ -147,7 +149,6 @@ class WalletBoundary extends Component<{ children: ReactNode; onFail: () => void
   }
 }
 
-const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
 
 /**
  * Safari says instantly whether the device can use Apple Pay, while Stripe's
@@ -167,16 +168,19 @@ const deviceSupportsApplePay = (() => {
 // in the card form. Everywhere else it is left out to keep the form short.
 const POSTAL_CODE_COUNTRIES = new Set(["US", "GB", "CA"]);
 
-const expressDetailsFromEvent = (
-  event: StripeExpressCheckoutElementConfirmEvent,
-  formHasEmail: boolean
-): ExpressDetails => {
+/**
+ * The wallet always asks for the delivery address, phone and email, so the
+ * details the customer confirms in the Apple Pay / Google Pay sheet are used.
+ * (Asking for less once the form was filled stopped the Apple Pay sheet from
+ * opening at all, see expressOptions.)
+ */
+const expressDetailsFromEvent = (event: StripeExpressCheckoutElementConfirmEvent): ExpressDetails => {
   const ship = event.shippingAddress;
   const bill = event.billingDetails;
   const a = ship?.address;
-  // No address from the wallet means it wasn't asked for one: the details typed
-  // in the form stand. The card's billing address is not a delivery address.
-  if (!a?.country) return formHasEmail ? {} : { customerEmail: bill?.email };
+  // No shipping address: keep the typed delivery details (the card's billing
+  // address is not a delivery address).
+  if (!a?.country) return { customerEmail: bill?.email, customerPhone: bill?.phone };
   return {
     customerName: ship?.name || bill?.name,
     customerEmail: bill?.email,
@@ -258,7 +262,6 @@ const CheckoutForm = ({
   const method: PaymentMethod = choice === "wallet" && walletUnavailable ? "card" : choice ?? defaultMethod;
   // Apple Pay is expected but Stripe's button hasn't loaded yet.
   const walletLoading = deviceSupportsApplePay && !walletsChecked;
-  const formHasEmail = EMAIL_PATTERN.test(billingDetails.email?.trim() ?? "");
 
   // Stripe slow to report on wallets: open the card so there is always a way to
   // pay. Apple Pay's placeholder keeps its place, so if the button turns up later
@@ -333,7 +336,13 @@ const CheckoutForm = ({
       clientSecret: prepared.clientSecret,
       confirmParams: {
         return_url: returnUrl(prepared.orderId),
-        ...(express ? {} : { payment_method_data: { billing_details: billing } }),
+        // Wallets attach the shipping the customer chose in the sheet by themselves.
+        ...(express
+          ? {}
+          : {
+              payment_method_data: { billing_details: billing },
+              ...(prepared.shipping ? { shipping: prepared.shipping } : {}),
+            }),
       },
     });
 
@@ -386,15 +395,16 @@ const CheckoutForm = ({
     () => ({
       buttonHeight: 48,
       buttonType: { applePay: "buy", googlePay: "buy" },
-      // The wallet only asks for what the form doesn't have yet, so the sheet
-      // can't show an old saved address that differs from the one just typed.
-      emailRequired: !(detailsComplete && formHasEmail),
-      phoneNumberRequired: !detailsComplete,
-      shippingAddressRequired: !detailsComplete,
+      // Fixed on purpose: always ask for everything. Switching these off once the
+      // form was filled (to avoid asking twice) made Apple Pay's sheet stop
+      // opening on iPhone: tapping the button did nothing.
+      emailRequired: true,
+      phoneNumberRequired: true,
+      shippingAddressRequired: true,
       allowedShippingCountries: WALLET_SHIPPING_COUNTRIES,
       shippingRates: [{ id: "free-shipping", displayName: isAr ? "شحن مجاني" : "Free shipping", amount: 0 }],
     }),
-    [isAr, detailsComplete, formHasEmail]
+    [isAr]
   );
 
   const shownError = formError || error;
@@ -411,9 +421,7 @@ const CheckoutForm = ({
           options={expressOptions}
           onReady={handleExpressReady}
           onClick={handleExpressClick}
-          onPay={(stripeApi, elementsApi, event) =>
-            pay(stripeApi, elementsApi, expressDetailsFromEvent(event, formHasEmail), event)
-          }
+          onPay={(stripeApi, elementsApi, event) => pay(stripeApi, elementsApi, expressDetailsFromEvent(event), event)}
         />
       </WalletBoundary>
     </Elements>
@@ -421,13 +429,9 @@ const CheckoutForm = ({
 
   const walletNote = (
     <p className="text-xs text-center text-[#5B6656] leading-relaxed">
-      {detailsComplete
-        ? isAr
-          ? "سيصل طلبك إلى العنوان الذي كتبته أعلاه."
-          : "Your order will ship to the address you entered above."
-        : isAr
-          ? "لم تكمل بيانات التوصيل؟ لا بأس، ستختار عنوانك في نافذة الدفع."
-          : "Haven't finished your delivery details? No problem, you'll choose your address in the payment window."}
+      {isAr
+        ? "لا تحتاج لتعبئة الحقول أعلاه: ستختار عنوان التوصيل ورقم الجوال في نافذة الدفع."
+        : "No need to fill in the fields above: you'll choose your delivery address and phone in the payment window."}
     </p>
   );
 

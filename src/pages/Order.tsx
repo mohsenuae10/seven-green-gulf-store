@@ -406,7 +406,16 @@ const Order = () => {
       );
     }
 
-    return { clientSecret: data.clientSecret, orderId: data.order_id, amountMinor: data.amountMinor };
+    return {
+      clientSecret: data.clientSecret,
+      orderId: data.order_id,
+      amountMinor: data.amountMinor,
+      shipping: {
+        name: details.customerName,
+        phone: details.customerPhone,
+        address: { line1: details.address, city: details.city, country: details.country },
+      },
+    };
   };
 
   const title = isAr ? "اطلب سفن جرين الآن - توصيل سريع" : "Order Seven Green Now - Fast Delivery";

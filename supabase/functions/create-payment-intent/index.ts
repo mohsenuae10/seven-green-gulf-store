@@ -56,15 +56,19 @@ serve(async (req) => {
     const amount = Math.round(order.total * 100);
     if (!(amount > 0)) throw new CheckoutError("المبلغ الإجمالي غير صالح", "invalid_amount");
 
-    const shipping = {
-      name: customerName,
-      phone: customerPhone,
-      address: { line1: address, city, country },
-    };
+    // No `shipping` on the PaymentIntent here, on purpose. Shipping set with the
+    // secret key can't be changed from the browser, and Apple Pay / Google Pay
+    // send the address the customer picks in the wallet when they confirm, so
+    // Stripe rejected every wallet payment ("The shipping information on this
+    // PaymentIntent was last set with a secret key..."). The browser sends the
+    // shipping instead (wallet: automatically; card: from the form), and the
+    // delivery details are already saved on the order.
     const metadata = {
       order_id: order.id,
       customer_name: customerName,
       customer_phone: customerPhone,
+      customer_city: city,
+      customer_country: country,
       items_count: String(items.length),
       total_qty: String(items.reduce((s, i) => s + i.quantity, 0)),
     };
@@ -76,8 +80,10 @@ serve(async (req) => {
       if (existing.status === "succeeded" || existing.status === "processing") {
         throw new CheckoutError("تمت معالجة الدفع لهذا الطلب مسبقاً", "already_paid");
       }
-      if (REUSABLE.has(existing.status)) {
-        paymentIntent = await stripe.paymentIntents.update(existing.id, { amount, shipping, metadata });
+      // A PaymentIntent from before this fix may carry server-set shipping, which
+      // would block the browser again: replace it with a fresh one.
+      if (REUSABLE.has(existing.status) && !existing.shipping) {
+        paymentIntent = await stripe.paymentIntents.update(existing.id, { amount, metadata });
       } else if (existing.status !== "canceled") {
         // e.g. requires_action: a 3-D Secure step the customer abandoned.
         // Cancel it so it can never complete later against a stale amount.
@@ -96,7 +102,6 @@ serve(async (req) => {
         currency: "sar",
         automatic_payment_methods: { enabled: true },
         description: `Seven Green order #${order.id.slice(-8)}`,
-        shipping,
         metadata,
       });
       await supabase.from("orders").update({ payment_intent_id: paymentIntent.id }).eq("id", order.id);
