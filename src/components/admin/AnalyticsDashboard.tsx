@@ -3,7 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { useCurrency } from "@/hooks/useCurrency";
-import { 
+import { byNewestOrderDate, fetchAllRows, formatOrderDate, orderDate } from "@/lib/adminOrders";
+import {
   ShoppingCart, 
   Package, 
   DollarSign, 
@@ -50,10 +51,16 @@ export function AnalyticsDashboard() {
 
   const fetchAnalytics = async () => {
     try {
-      // Fetch orders data
-      const { data: orders, error: ordersError } = await supabase
-        .from('orders')
-        .select('*');
+      // Fetch orders data (every page: the store has more than 1,000 orders)
+      const { data: unsortedOrders, error: ordersError } = await fetchAllRows((from, to) =>
+        supabase
+          .from('orders')
+          .select('id, customer_name, total_amount, status, payment_status, created_at, paid_at')
+          .order('created_at', { ascending: false })
+          .order('id')
+          .range(from, to)
+      );
+      const orders = [...unsortedOrders].sort(byNewestOrderDate);
 
       // Fetch products data
       const { data: products, error: productsError } = await supabase
@@ -97,10 +104,10 @@ export function AnalyticsDashboard() {
       const currentMonth = new Date().getMonth();
       const currentYear = new Date().getFullYear();
       const monthlyRevenue = orders?.filter(order => {
-        const orderDate = new Date(order.created_at);
-        return order.payment_status === 'paid' && 
-               orderDate.getMonth() === currentMonth && 
-               orderDate.getFullYear() === currentYear;
+        const paidOn = new Date(orderDate(order));
+        return order.payment_status === 'paid' &&
+               paidOn.getMonth() === currentMonth &&
+               paidOn.getFullYear() === currentYear;
       }).reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0;
       
       const totalProducts = products?.length || 0;
@@ -216,7 +223,7 @@ export function AnalyticsDashboard() {
                     <div>
                       <p className="font-medium">{order.customer_name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {new Date(order.created_at).toLocaleDateString('ar-AE')}
+                        {formatOrderDate(orderDate(order))}
                       </p>
                     </div>
                     <div className="text-right">

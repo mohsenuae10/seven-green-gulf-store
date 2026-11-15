@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Truck, Package, User, MapPin, Phone, Mail, Calendar, CreditCard, Send } from "lucide-react";
+import { byNewestOrderDate, fetchAllRows, formatOrderDate, orderDate } from "@/lib/adminOrders";
 
 interface Order {
   id: string;
@@ -36,6 +37,7 @@ interface Order {
   shipped_at?: string;
   created_at: string;
   updated_at: string;
+  paid_at?: string | null;
   total_items?: number;
 }
 
@@ -58,15 +60,19 @@ export function ShippingManagement() {
 
   const fetchPaidOrders = async () => {
     try {
-      const { data, error } = await supabase
-        .from('orders')
-        .select(`
-          *,
-          order_items(quantity)
-        `)
-        .eq('payment_status', 'paid')
-        .in('status', ['confirmed', 'shipped'])
-        .order('created_at', { ascending: false });
+      const { data, error } = await fetchAllRows((from, to) =>
+        supabase
+          .from('orders')
+          .select(`
+            *,
+            order_items(quantity)
+          `)
+          .eq('payment_status', 'paid')
+          .in('status', ['confirmed', 'shipped'])
+          .order('created_at', { ascending: false })
+          .order('id')
+          .range(from, to)
+      );
 
       if (error) {
         console.error('Error fetching paid orders:', error);
@@ -79,10 +85,13 @@ export function ShippingManagement() {
       }
 
       // Calculate total items for each order
-      const ordersWithTotals = (data || []).map((order: any) => ({
-        ...order,
-        total_items: order.order_items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0
-      }));
+      // Newest payment first.
+      const ordersWithTotals = (data || [])
+        .map((order: any) => ({
+          ...order,
+          total_items: order.order_items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0
+        }))
+        .sort(byNewestOrderDate);
 
       setOrders(ordersWithTotals);
     } catch (error) {
@@ -355,7 +364,7 @@ function OrderShippingCard({
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4 text-muted-foreground" />
               <span className="text-sm">
-                {new Date(order.created_at).toLocaleDateString('ar-AE')}
+                {order.paid_at ? "دُفع " : ""}{formatOrderDate(orderDate(order))}
               </span>
             </div>
           </div>

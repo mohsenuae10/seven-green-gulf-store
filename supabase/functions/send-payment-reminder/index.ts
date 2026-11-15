@@ -14,7 +14,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { Resend } from "npm:resend@2.0.0";
-import { corsHeaders, isUuid, jsonResponse } from "../_shared/checkout.ts";
+import { boughtAnyway, corsHeaders, isUuid, jsonResponse } from "../_shared/checkout.ts";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const SITE = "https://sevensgreen.com";
@@ -119,13 +119,17 @@ async function runBatch(supabase: any) {
   const emails = [...new Set(list.map((o) => o.customer_email.toLowerCase()))];
 
   // Customers who bought anyway (with another order) must not get a reminder.
+  // Filtered by updated_at, which a payment always moves forward, and not by
+  // created_at: a checkout order is reused until it is paid, so an order paid
+  // today can have been opened days ago. (Filtering by created_at missed an
+  // order opened on 05/11 and paid on 14/11, and its customer got a reminder.)
   const { data: paid } = emails.length
     ? await supabase
         .from("orders")
-        .select("customer_email, created_at, updated_at")
+        .select("customer_email, created_at, updated_at, paid_at")
         .eq("payment_status", "paid")
         .in("customer_email", list.map((o) => o.customer_email))
-        .gt("created_at", new Date(now - 72 * HOUR).toISOString())
+        .gt("updated_at", new Date(now - 72 * HOUR).toISOString())
     : { data: [] as any[] };
 
   const seen = new Set<string>();
@@ -135,17 +139,8 @@ async function runBatch(supabase: any) {
     if (seen.has(email)) continue; // one reminder per customer (latest order)
     seen.add(email);
 
-    // Skip customers who bought: with a later order, or with an order paid in
-    // the 24 h before this one. The second case is a customer who paid, was
-    // wrongly told it failed, and retried on a new order. Their paid order is
-    // older than the abandoned one, so "later order" alone sent them a
-    // "complete your order" email.
-    const dayBefore = new Date(new Date(order.created_at).getTime() - 24 * HOUR).toISOString();
-    const alreadyBought = (paid ?? []).some(
-      (p: any) =>
-        p.customer_email?.toLowerCase() === email && (p.created_at >= order.created_at || p.updated_at >= dayBefore),
-    );
-    if (alreadyBought) continue;
+    const paidBySameCustomer = (paid ?? []).filter((p: any) => p.customer_email?.toLowerCase() === email);
+    if (boughtAnyway(order, paidBySameCustomer)) continue;
 
     // Claim the order first so concurrent runs can never double-send.
     const { data: claimed } = await supabase

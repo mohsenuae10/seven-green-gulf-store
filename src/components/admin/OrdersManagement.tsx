@@ -13,7 +13,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Eye, Package, User, MapPin, Phone, Mail, Calendar, CreditCard, Copy, Bell } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Eye, Package, User, MapPin, Phone, Mail, Calendar, CreditCard, Copy, Bell, Search } from "lucide-react";
+import {
+  byNewestOrderDate,
+  fetchAllRows,
+  formatOrderDate,
+  formatOrderTime,
+  orderDate,
+  paidLater,
+} from "@/lib/adminOrders";
 
 interface OrderItem {
   quantity: number;
@@ -36,6 +45,7 @@ interface Order {
   payment_status: string;
   created_at: string;
   updated_at: string;
+  paid_at?: string | null;
   total_items?: number;
   order_items?: OrderItem[];
   checkout_stage?: string | null;
@@ -117,12 +127,26 @@ const getCountryInfo = (code: string) => {
 
 const ORDERS_PER_PAGE = 15;
 
+// Search by order number (with or without #), name, email or phone.
+const matchesSearch = (order: Order, raw: string) => {
+  const q = raw.trim().replace(/^#/, "").toLowerCase();
+  if (!q) return true;
+  const isPhone = /^[\d\s+()-]+$/.test(q) && q.replace(/\D/g, "").length >= 3;
+  return (
+    order.id.toLowerCase().includes(q) ||
+    (order.customer_name ?? "").toLowerCase().includes(q) ||
+    (order.customer_email ?? "").toLowerCase().includes(q) ||
+    (isPhone && (order.customer_phone ?? "").replace(/\D/g, "").includes(q.replace(/\D/g, "")))
+  );
+};
+
 export function OrdersManagement() {
   const { formatPrice } = useCurrency();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [view, setView] = useState<OrdersView>("all");
+  const [search, setSearch] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -131,13 +155,17 @@ export function OrdersManagement() {
 
   const fetchOrders = async () => {
     try {
-      const { data, error } = await supabase
-        .from('orders')
-        .select(`
-          *,
-          order_items(quantity, unit_price, total_price, product_name, product_image_url)
-        `)
-        .order('created_at', { ascending: false });
+      const { data, error } = await fetchAllRows((from, to) =>
+        supabase
+          .from('orders')
+          .select(`
+            *,
+            order_items(quantity, unit_price, total_price, product_name, product_image_url)
+          `)
+          .order('created_at', { ascending: false })
+          .order('id')
+          .range(from, to)
+      );
 
       if (error) {
         console.error('Error fetching orders:', error);
@@ -150,10 +178,13 @@ export function OrdersManagement() {
       }
 
       // Calculate total items for each order
-      const ordersWithTotals = (data || []).map((order: any) => ({
-        ...order,
-        total_items: order.order_items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0
-      }));
+      // Newest payment (or, unpaid, newest opened) first.
+      const ordersWithTotals = (data || [])
+        .map((order: any) => ({
+          ...order,
+          total_items: order.order_items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0
+        }))
+        .sort(byNewestOrderDate);
 
       setOrders(ordersWithTotals);
     } catch (error) {
@@ -380,8 +411,9 @@ export function OrdersManagement() {
 
   const paidOrders = orders.filter((o) => o.payment_status === "paid");
   const abandonedOrders = orders.filter(isAbandoned);
-  const visibleOrders =
-    view === "paid" ? paidOrders : view === "abandoned" ? abandonedOrders : orders;
+  const visibleOrders = (
+    view === "paid" ? paidOrders : view === "abandoned" ? abandonedOrders : orders
+  ).filter((o) => matchesSearch(o, search));
 
   // Where customers stop — answers "is it a payment problem or did they just leave?"
   const stageCounts = abandonedOrders.reduce(
@@ -440,6 +472,23 @@ export function OrdersManagement() {
               </Button>
             ))}
           </div>
+          <div className="relative pt-3 max-w-sm">
+            <Search className="absolute right-3 top-1/2 mt-1.5 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
+              placeholder="ابحث برقم الطلب أو الاسم أو الجوال أو الإيميل"
+              className="pr-9"
+              aria-label="بحث في الطلبات"
+            />
+          </div>
+          <p className="text-xs text-muted-foreground pt-2">
+            الطلبات مرتبة بتاريخ الدفع، وغير المدفوعة بتاريخ فتحها.
+          </p>
         </CardHeader>
         <CardContent>
           {view === "abandoned" && abandonedOrders.length > 0 && (
@@ -480,7 +529,9 @@ export function OrdersManagement() {
           {visibleOrders.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-muted-foreground">
-                {view === "abandoned" ? "لا توجد سلات متروكة 🎉" : "لا توجد طلبات حتى الآن"}
+                {search.trim()
+                  ? "لا يوجد طلب يطابق البحث"
+                  : view === "abandoned" ? "لا توجد سلات متروكة 🎉" : "لا توجد طلبات حتى الآن"}
               </p>
             </div>
           ) : (
@@ -565,15 +616,19 @@ export function OrdersManagement() {
                         </div>
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4 text-muted-foreground" />
-                          <div className="text-sm">
-                            <div>{new Date(order.created_at).toLocaleDateString('ar-AE')}</div>
-                            <div className="text-muted-foreground text-xs">
-                              {new Date(order.created_at).toLocaleTimeString('ar-AE', { 
-                                hour: '2-digit', 
-                                minute: '2-digit',
-                                hour12: true 
-                              })}
+                          <div className="text-sm" data-order-date>
+                            <div className="text-xs text-muted-foreground">
+                              {order.paid_at ? "تاريخ الدفع" : "تاريخ فتح الطلب"}
                             </div>
+                            <div>{formatOrderDate(orderDate(order))}</div>
+                            <div className="text-muted-foreground text-xs">
+                              {formatOrderTime(orderDate(order))}
+                            </div>
+                            {paidLater(order) && (
+                              <div className="text-xs text-amber-700 mt-0.5">
+                                فُتح الطلب {formatOrderDate(order.created_at)} {formatOrderTime(order.created_at)} ودُفع لاحقاً
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

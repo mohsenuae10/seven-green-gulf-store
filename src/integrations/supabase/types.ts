@@ -112,6 +112,7 @@ export type Database = {
           customer_phone: string
           id: string
           last_payment_error: string | null
+          paid_at: string | null
           payment_intent_id: string | null
           payment_status: string | null
           reminder_sent_at: string | null
@@ -137,6 +138,7 @@ export type Database = {
           customer_phone: string
           id?: string
           last_payment_error?: string | null
+          paid_at?: string | null
           payment_intent_id?: string | null
           payment_status?: string | null
           reminder_sent_at?: string | null
@@ -162,6 +164,7 @@ export type Database = {
           customer_phone?: string
           id?: string
           last_payment_error?: string | null
+          paid_at?: string | null
           payment_intent_id?: string | null
           payment_status?: string | null
           reminder_sent_at?: string | null

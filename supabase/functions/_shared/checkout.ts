@@ -195,3 +195,60 @@ export async function upsertCheckoutOrder(
     total,
   };
 }
+
+// ── Paid orders ─────────────────────────────────────────────────────────────
+
+const HOUR = 60 * 60 * 1000;
+
+/** When an order was paid: paid_at, or updated_at for rows from before paid_at existed. */
+const paidTime = (o: { paid_at?: string | null; updated_at?: string | null }) =>
+  Date.parse(o.paid_at ?? o.updated_at ?? "");
+
+/** The order's lines and the cart hold the same products in the same quantities. */
+export function sameCart(
+  lines: { product_id: string; quantity: number }[],
+  items: { productId: string; quantity: number }[],
+): boolean {
+  const key = (pairs: string[]) => pairs.sort().join(",");
+  return key(lines.map((l) => `${l.product_id}:${l.quantity}`)) === key(items.map((i) => `${i.productId}:${i.quantity}`));
+}
+
+/**
+ * The customer is paying again for an order they just paid: same cart, paid
+ * less than 2 hours ago. (On 2026-11-14 a customer was wrongly told a paid
+ * order had failed, pressed Pay again, and only an empty card stopped a
+ * second charge.) A customer who comes back later, or with a different cart,
+ * is starting a new purchase from the same browser and gets a new order.
+ */
+export function isRepeatOfPaidOrder(
+  previous: {
+    payment_status: string | null;
+    paid_at?: string | null;
+    updated_at?: string | null;
+    order_items?: { product_id: string; quantity: number }[] | null;
+  },
+  items: { productId: string; quantity: number }[],
+  now = Date.now(),
+): boolean {
+  if (previous.payment_status !== "paid") return false;
+  if (!(now - paidTime(previous) < 2 * HOUR)) return false;
+  return sameCart(previous.order_items ?? [], items);
+}
+
+/**
+ * The customer bought anyway, so they must not get a "complete your order"
+ * reminder for this abandoned order. Either they paid a later order, or they
+ * paid an order in the 24 hours before this one was opened: a customer who
+ * paid, was wrongly told it failed, and retried on a new order. Their paid
+ * order can be days older than the payment itself, because a checkout order
+ * is reused until it is paid, so it is matched by its payment time.
+ */
+export function boughtAnyway(
+  order: { created_at: string },
+  paidOrdersOfSameCustomer: { created_at: string; paid_at?: string | null; updated_at?: string | null }[],
+): boolean {
+  const opened = Date.parse(order.created_at);
+  return paidOrdersOfSameCustomer.some(
+    (p) => Date.parse(p.created_at) >= opened || paidTime(p) >= opened - 24 * HOUR,
+  );
+}

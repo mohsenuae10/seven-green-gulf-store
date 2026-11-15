@@ -10,6 +10,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import {
   CheckoutError,
   corsHeaders,
+  isRepeatOfPaidOrder,
   isUuid,
   jsonResponse,
   normalizePhone,
@@ -45,18 +46,21 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
 
-    // The customer's checkout order is already paid: never start a second charge.
-    // (A customer who saw a wrong "payment failed" pressed Pay again, a new order
-    // was opened silently, and only an empty card stopped a double charge.)
-    // The browser takes them to the order's result page instead.
+    const items = await resolveCart(supabase, body?.cartItems);
+
+    // The customer is paying again for the order they just paid (same cart,
+    // paid minutes ago): never start a second charge. The browser takes them
+    // to the order's result page instead. A paid order with a different cart,
+    // or paid hours ago, means a new purchase: upsertCheckoutOrder opens a new
+    // order for it, since it never reuses a paid one.
     if (isUuid(body?.orderId) && isUuid(body?.checkoutToken)) {
       const { data: previous } = await supabase
         .from("orders")
-        .select("id, payment_status")
+        .select("id, payment_status, paid_at, updated_at, order_items(product_id, quantity)")
         .eq("id", body.orderId)
         .eq("checkout_token", body.checkoutToken)
         .maybeSingle();
-      if (previous?.payment_status === "paid") {
+      if (previous && isRepeatOfPaidOrder(previous, items)) {
         return jsonResponse({
           success: false,
           code: "already_paid",
@@ -65,8 +69,6 @@ serve(async (req) => {
         });
       }
     }
-
-    const items = await resolveCart(supabase, body?.cartItems);
     const order = await upsertCheckoutOrder(supabase, {
       orderId: body?.orderId,
       checkoutToken: body?.checkoutToken,
